@@ -1,0 +1,37 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/py-normalize-username"
+description = "Fix a small Python username normalization bug."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "fix", "t1", "python"]
+
+[metadata]
+category = "fix"
+tier = "t1"
+language = "python"
+subtype = "single-function-bugfix"
+expected_steps = 1
+calibration_status = "seed"
+weakest_model_pass_rate = 0.0
+weakest_model_rollouts = 0
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 300.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]
