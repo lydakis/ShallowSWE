@@ -2,7 +2,7 @@
   "schema_version": "shallowswe.panel.v0.1",
   "name": "deepswe-v1.1-expanded-pilot",
   "status": "pilot",
-  "description": "Expanded first-publish pilot panel: Claude Fable at low effort, low and medium effort rows for GPT-5.5, Claude Opus 4.8, and Claude Sonnet 5, plus Gemini medium and Kimi default from DeepSWE v1.1.",
+  "description": "Expanded first-publish pilot panel: GLM 5.2 high, Claude Fable at low effort, low and medium effort rows for GPT-5.5, Claude Opus 4.8, and Claude Sonnet 5, plus Gemini medium and Kimi default from DeepSWE v1.1.",
   "source": {
     "name": "DeepSWE v1.1 leaderboard-live.json",
     "url": "https://deepswe.datacurve.ai/artifacts/v1.1/leaderboard-live.json",
@@ -20,6 +20,7 @@
     "include": [
       "Claude Fable 5 low effort",
       "Low and medium DeepSWE v1.1 reasoning-effort rows for GPT-5.5, Claude Opus 4.8, and Claude Sonnet 5",
+      "GLM 5.2 high row because high is the lowest GLM 5.2 reasoning-effort row published in DeepSWE v1.1",
       "Gemini 3.5 Flash medium row",
       "Kimi K2.7 Code default row because no low- or medium-effort Kimi row exists in DeepSWE v1.1"
     ],
@@ -101,6 +102,15 @@
       "reasoning_effort": "medium",
       "deepswe_pass_at_1": 0.37389380530973454,
       "deepswe_mean_cost_usd": 7.341823985508849
+    },
+    {
+      "id": "mini_swe_agent_glm_5_2_high",
+      "model": "glm-5-2",
+      "openrouter_model": "z-ai/glm-5.2",
+      "upstream_provider": "z-ai",
+      "reasoning_effort": "high",
+      "deepswe_pass_at_1": 0.36283185840707965,
+      "deepswe_mean_cost_usd": 2.8355164725663715
     },
     {
       "id": "mini_swe_agent_kimi_k2_7_code_default",

@@ -196,5 +196,27 @@
     "mean_gateway_reported_cost_per_attempt": 0.19978716666666665,
     "mean_cost_delta_vs_gateway_per_attempt": 0.0,
     "cost_delta_vs_gateway_ratio": 0.0
+  },
+  {
+    "model_config": "z-ai/glm-5.2[high]",
+    "total_trials": 12,
+    "attempts": 12,
+    "excluded_attempts": 0,
+    "passes": 12,
+    "pass_rate": 1.0,
+    "mean_tokens_per_attempt": 43297.666666666664,
+    "tokens_per_success": 43297.666666666664,
+    "mean_input_tokens_per_attempt": 40051.25,
+    "mean_output_tokens_per_attempt": 3246.4166666666665,
+    "mean_cache_read_tokens_per_attempt": 29336.916666666668,
+    "mean_cache_write_tokens_per_attempt": 0.0,
+    "mean_reasoning_tokens_per_attempt": 2164.0,
+    "mean_turns": 10.083333333333334,
+    "mean_cost_per_attempt": 0.024984225,
+    "cpsc": 0.024984225,
+    "gateway_reported_attempts": 12,
+    "mean_gateway_reported_cost_per_attempt": 0.025825994010000002,
+    "mean_cost_delta_vs_gateway_per_attempt": -0.0008417690100000023,
+    "cost_delta_vs_gateway_ratio": -0.03259386684880604
   }
 ]

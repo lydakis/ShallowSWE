@@ -176,6 +176,7 @@ class PanelBudgetTests(unittest.TestCase):
                 "mini_swe_agent_gpt_5_5_low": "low",
                 "mini_swe_agent_gpt_5_5_medium": "medium",
                 "mini_swe_agent_gemini_3_5_flash_medium": "medium",
+                "mini_swe_agent_glm_5_2_high": "high",
                 "mini_swe_agent_kimi_k2_7_code_default": None,
             },
         )
@@ -190,8 +191,8 @@ class PanelBudgetTests(unittest.TestCase):
             token_basis=TokenBasis(),
         )
 
-        self.assertEqual(estimate["rows"], 9)
-        self.assertEqual(estimate["priced_rows"], 9)
+        self.assertEqual(estimate["rows"], 10)
+        self.assertEqual(estimate["priced_rows"], 10)
         self.assertEqual(estimate["missing_price_rows"], 0)
 
     def test_budget_limit_marks_over_budget_estimates(self) -> None:

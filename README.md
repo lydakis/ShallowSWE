@@ -41,7 +41,7 @@ uv run shallowswe compare-deepswe /tmp/shallowswe-workload-index.json \
 
 The workload index contains `task_weights`, per-model/task `cells`, and precomputed default `models`. A UI can recompute custom baskets client-side by changing category/tier weights and applying them to the cell metrics.
 
-Estimate a panel before running it. The July 3 expanded publish pilot includes Fable at low effort, low and medium rows for GPT-5.5, Claude Opus 4.8, and Claude Sonnet 5, plus Gemini medium and Kimi default. It excludes non-DeepSWE models:
+Estimate a panel before running it. The July 3 expanded publish pilot includes GLM 5.2 at high effort, Fable at low effort, low and medium rows for GPT-5.5, Claude Opus 4.8, and Claude Sonnet 5, plus Gemini medium and Kimi default. It excludes non-DeepSWE models:
 
 ```sh
 uv run shallowswe estimate-panel panels/deepswe-v1.1-expanded-pilot.json \
