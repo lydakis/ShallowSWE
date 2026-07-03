@@ -9,6 +9,8 @@ ShallowSWE is inspired by DeepSWE's rigor, but is not affiliated with DeepSWE, D
 - `SPEC.md` is the v0.1 product spec and source of truth.
 - `tasks/` is a Pier-compatible local dataset.
 - `src/shallowswe/` contains ShallowSWE metadata validation, Pier result export, and aggregation.
+- `prices/` contains dated provider price sheets used to derive dollar metrics from token usage.
+- `panels/` contains seed model-panel manifests. DeepSWE-aligned manifests are starting points, not the final ShallowSWE panel.
 - Pier owns execution, sandboxing, agents, verifier runs, and trajectories.
 
 ## Quick Checks
@@ -21,6 +23,8 @@ uv run shallowswe export-pier /tmp/shallowswe-pier/shallowswe_oracle_probe --tas
 uv run shallowswe aggregate /tmp/shallowswe-results.json
 ```
 
+Add `--prices prices/openai-2026-07-03.json` when the result rows use models covered by that price sheet.
+
 ## Boundary
 
-Do not build a ShallowSWE harness unless Pier cannot satisfy a concrete requirement. Local code should stay focused on the ShallowSWE problem definition: shallow-task metadata, calibration state, cost normalization, CPSC aggregation, and site-ready exports.
+Do not build a ShallowSWE harness unless Pier cannot satisfy a concrete requirement. Local code should stay focused on the ShallowSWE problem definition: shallow-task metadata, calibration state, token normalization, price-sheet based CPSC aggregation, and site-ready exports.

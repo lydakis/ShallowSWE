@@ -2,7 +2,7 @@
 
 Date checked: 2026-07-03.
 
-ShallowSWE is independent from DeepSWE. Pier is useful because it is a standard open-source eval runner with sandboxing, agents, verifier execution, token/cost fields, and a trajectory viewer.
+ShallowSWE is independent from DeepSWE. Pier is useful because it is a standard open-source eval runner with sandboxing, agents, verifier execution, token fields, and a trajectory viewer.
 
 ## What We Use From Pier
 
@@ -11,7 +11,7 @@ ShallowSWE is independent from DeepSWE. Pier is useful because it is a standard 
 - Docker or Modal environments.
 - Programmatic verifier execution.
 - Trial-level `result.json` files.
-- Agent trajectories and token/cost totals.
+- Agent trajectories and token totals.
 
 ## What ShallowSWE Owns
 
@@ -20,6 +20,7 @@ ShallowSWE is independent from DeepSWE. Pier is useful because it is a standard 
 - Category and tier taxonomy: Fix, Transform, Operate, Invoke; T1, T2, T3.
 - Calibration rules, including weakest-model saturation gates.
 - Normalized `results.json` for the ShallowSWE site.
+- Versioned price sheets.
 - CPSC and token-per-success reporting.
 
 ## Task Layout
@@ -47,3 +48,9 @@ subtype = "single-function-bugfix"
 ## Current Decision
 
 Use Pier as the runner until it fails a concrete ShallowSWE requirement. Do not maintain a parallel harness.
+
+## Accounting Decision
+
+Treat tokens as canonical and dollars as derived. The exporter prefers Pier's ATIF `final_metrics` only when they reconcile with recursive raw provider usage in the mini-swe-agent trajectory. Pier's `cost_usd` is not copied into ShallowSWE result rows because provider prices and cache rates need to be versioned separately.
+
+OpenRouter is the default gateway for broad model access during panel plumbing. Official runs should pin upstream provider routing, disable gateway fallbacks, and record both `inference_gateway` and `upstream_provider` in each row. Provider, network, credit, credential, and routing failures are excluded from CPSC and retried; model failures inside the task are scored.

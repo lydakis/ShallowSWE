@@ -5,7 +5,7 @@ import argparse
 import json
 
 from .pier_export import export_pier_job
-from .results import aggregate_results, dump_results, load_results
+from .results import aggregate_results, dump_results, load_prices, load_results
 from .task_metadata import discover_tasks
 
 
@@ -26,6 +26,11 @@ def main() -> None:
         "--group-by",
         default="model,category,tier",
         help="comma-separated RolloutResult fields",
+    )
+    aggregate_parser.add_argument(
+        "--prices",
+        type=Path,
+        help="versioned model price sheet used to derive dollar costs",
     )
 
     args = parser.parse_args()
@@ -57,7 +62,8 @@ def main() -> None:
     if args.command == "aggregate":
         group_by = tuple(field.strip() for field in args.group_by.split(",") if field.strip())
         rows = load_results(args.results_json)
-        print(json.dumps(aggregate_results(rows, group_by=group_by), indent=2))
+        prices = load_prices(args.prices) if args.prices else None
+        print(json.dumps(aggregate_results(rows, group_by=group_by, prices=prices), indent=2))
         return
 
     raise AssertionError(f"unhandled command: {args.command}")

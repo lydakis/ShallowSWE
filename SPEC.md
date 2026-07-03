@@ -18,12 +18,12 @@ Name is a deliberate foil to DeepSWE. Same rigor, opposite end of the pool.
 CPSC = mean_cost_per_attempt / pass_rate
 ```
 
-- `mean_cost_per_attempt`: average dollar cost across all rollouts (pass and fail), computed from API usage fields (input tokens, output tokens, cache reads) at published per-token prices. Read usage from the API response. Estimate nothing.
+- `mean_cost_per_attempt`: average dollar cost across all rollouts (pass and fail), derived from canonical token fields and a dated price sheet. Published provider prices are data, not baked into rollout rows.
 - `pass_rate`: fraction of rollouts that pass the verifier.
 - A model that passes 90% of the time pays an implicit 1.11x retry tax. This keeps a cheap-but-flaky model from gaming the leaderboard.
 
 Report alongside CPSC:
-- **Tokens per successful completion** (same formula, tokens instead of dollars). This is the pricing-independent, durable number. Dollars change monthly; tokens are the scientific object.
+- **Tokens per successful completion** (same formula, tokens instead of dollars). This is the pricing-independent, durable number. Dollars change; tokens are the scientific object.
 - **Turns to completion** (agentic tasks): number of agent-environment round trips.
 - Pass rate itself, for transparency.
 
@@ -90,10 +90,14 @@ Task generation workflow: coding agent drafts candidate tasks per category and t
   - Small: Claude Haiku 4.5, GPT-5 mini-class, one small open model (Qwen-class)
   - Mid: Claude Sonnet 4.6, GPT-5.5 standard
   - Large: Claude Opus 4.8, Claude Fable 5, GPT-5.5 high-effort
-- **Token accounting**: from API usage fields on every response, summed per rollout. Include cache read/write tokens and price them at the provider's cache rates.
+- **Token accounting**: from API usage fields on every response, summed per rollout. Pier/ATIF totals are acceptable only when they reconcile with recursive raw provider usage. Include cache read/write tokens and price them at the provider's cache rates.
 - **Limits**: per-task turn cap and token cap in task.toml. A rollout that hits a cap counts as a failure at full incurred cost. Caps should be generous (5-10x the reference solution's usage) so they catch flailing, not normal variance.
-- **Output**: one flat `results.json` per snapshot: `{model, task_id, category, tier, rollout, passed, input_tokens, output_tokens, cache_tokens, cost_usd, turns}`. The site consumes this file directly.
+- **Output**: one flat `results.json` per snapshot with canonical tokens, status, and provenance: `{schema_version, model, requested_model, resolved_model, provider, inference_gateway, upstream_provider, model_variant, reasoning_effort, temperature, sampling_config, task_id, category, tier, rollout, status, exclusion_reason, passed, input_tokens, output_tokens, reasoning_tokens, cache_read_tokens, cache_write_tokens, turns, peak_context_tokens, gateway_reported_cost_usd, agent, agent_version, runner, runner_version, scaffold_prompt_hash, token_source, started_at, finished_at}`. Dollar fields are derived later from versioned price sheets.
 - Every rollout's full transcript is stored and published. When the report says a model flailed for 40 turns, the receipts are one click away.
+
+### Scored vs excluded rows
+
+Normal verifier failures, context-window failures, task caps, and agent timeouts are scored failures when token usage is available. Provider, network, credential, credit, routing, and verifier infrastructure failures are excluded and retried until the target number of scored rollouts is reached. Publish exclusion counts per model/task.
 
 ## Site
 

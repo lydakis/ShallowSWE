@@ -1,0 +1,25 @@
+{
+  "schema_version": "shallowswe.prices.v0.1",
+  "effective_date": "2026-07-03",
+  "source_urls": [
+    "https://developers.openai.com/api/docs/models/gpt-5.5",
+    "https://developers.openai.com/api/docs/pricing"
+  ],
+  "models": {
+    "gpt-5.5": {
+      "provider": "openai",
+      "input_per_1m": 5.0,
+      "cached_input_per_1m": 0.5,
+      "output_per_1m": 30.0,
+      "cache_write_per_1m": null,
+      "long_context_threshold_tokens": 272000,
+      "long_context_input_per_1m": 10.0,
+      "long_context_cached_input_per_1m": 1.0,
+      "long_context_output_per_1m": 45.0,
+      "aliases": [
+        "openai/gpt-5.5",
+        "gpt-5.5-2026-04-23"
+      ]
+    }
+  }
+}

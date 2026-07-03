@@ -1,0 +1,233 @@
+{
+  "schema_version": "shallowswe.panel.v0.1",
+  "name": "deepswe-v1.1-seed",
+  "status": "seed",
+  "description": "DeepSWE v1.1 model-effort rows used as the initial ShallowSWE plumbing panel. This is not the final ShallowSWE panel; add smaller/cheaper models before an official snapshot.",
+  "source": {
+    "name": "DeepSWE v1.1 leaderboard-live.json",
+    "url": "https://deepswe.datacurve.ai/artifacts/v1.1/leaderboard-live.json",
+    "generated_at": "2026-07-01T21:40:08.677511+00:00",
+    "n_tasks_in_set": 113
+  },
+  "defaults": {
+    "harness": "mini-swe-agent",
+    "inference_gateway": "openrouter",
+    "provider_routing": {
+      "allow_fallbacks": false
+    }
+  },
+  "calibration": {
+    "floor_policy": "empirical_on_shallow_tasks",
+    "notes": "Do not use DeepSWE hard-task rank as the ShallowSWE floor. Gate candidate tasks against the cheapest/smallest candidate rows and pick the observed weakest row on shallow tasks."
+  },
+  "rows": [
+    {
+      "id": "mini_swe_agent_claude_fable_5_xhigh",
+      "model": "claude-fable-5",
+      "openrouter_model": "anthropic/claude-fable-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "xhigh",
+      "deepswe_pass_at_1": 0.6991150442477876
+    },
+    {
+      "id": "mini_swe_agent_claude_fable_5_max",
+      "model": "claude-fable-5",
+      "openrouter_model": "anthropic/claude-fable-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "max",
+      "deepswe_pass_at_1": 0.6972477064220184
+    },
+    {
+      "id": "mini_swe_agent_claude_fable_5_high",
+      "model": "claude-fable-5",
+      "openrouter_model": "anthropic/claude-fable-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "high",
+      "deepswe_pass_at_1": 0.686046511627907
+    },
+    {
+      "id": "mini_swe_agent_gpt_5_5_xhigh",
+      "model": "gpt-5-5",
+      "openrouter_model": "openai/gpt-5.5",
+      "upstream_provider": "openai",
+      "reasoning_effort": "xhigh",
+      "deepswe_pass_at_1": 0.6703539823008849
+    },
+    {
+      "id": "mini_swe_agent_claude_fable_5_medium",
+      "model": "claude-fable-5",
+      "openrouter_model": "anthropic/claude-fable-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "medium",
+      "deepswe_pass_at_1": 0.6536697247706422
+    },
+    {
+      "id": "mini_swe_agent_gpt_5_5_high",
+      "model": "gpt-5-5",
+      "openrouter_model": "openai/gpt-5.5",
+      "upstream_provider": "openai",
+      "reasoning_effort": "high",
+      "deepswe_pass_at_1": 0.6438053097345132
+    },
+    {
+      "id": "mini_swe_agent_claude_fable_5_low",
+      "model": "claude-fable-5",
+      "openrouter_model": "anthropic/claude-fable-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": 0.5958429561200924
+    },
+    {
+      "id": "mini_swe_agent_claude_opus_4_8_max",
+      "model": "claude-opus-4-8",
+      "openrouter_model": "anthropic/claude-opus-4.8",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "max",
+      "deepswe_pass_at_1": 0.5897435897435898
+    },
+    {
+      "id": "mini_swe_agent_claude_opus_4_8_xhigh",
+      "model": "claude-opus-4-8",
+      "openrouter_model": "anthropic/claude-opus-4.8",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "xhigh",
+      "deepswe_pass_at_1": 0.5436241610738255
+    },
+    {
+      "id": "mini_swe_agent_gpt_5_5_medium",
+      "model": "gpt-5-5",
+      "openrouter_model": "openai/gpt-5.5",
+      "upstream_provider": "openai",
+      "reasoning_effort": "medium",
+      "deepswe_pass_at_1": 0.5398230088495575
+    },
+    {
+      "id": "mini_swe_agent_claude_sonnet_5_max",
+      "model": "claude-sonnet-5",
+      "openrouter_model": "anthropic/claude-sonnet-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "max",
+      "deepswe_pass_at_1": 0.5384615384615384
+    },
+    {
+      "id": "mini_swe_agent_claude_opus_4_8_high",
+      "model": "claude-opus-4-8",
+      "openrouter_model": "anthropic/claude-opus-4.8",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "high",
+      "deepswe_pass_at_1": 0.5176991150442478
+    },
+    {
+      "id": "mini_swe_agent_gpt_5_4_xhigh",
+      "model": "gpt-5-4",
+      "openrouter_model": "openai/gpt-5.4",
+      "upstream_provider": "openai",
+      "reasoning_effort": "xhigh",
+      "deepswe_pass_at_1": 0.5176991150442478
+    },
+    {
+      "id": "mini_swe_agent_claude_sonnet_5_xhigh",
+      "model": "claude-sonnet-5",
+      "openrouter_model": "anthropic/claude-sonnet-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "xhigh",
+      "deepswe_pass_at_1": 0.49667405764966743
+    },
+    {
+      "id": "mini_swe_agent_claude_opus_4_8_medium",
+      "model": "claude-opus-4-8",
+      "openrouter_model": "anthropic/claude-opus-4.8",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "medium",
+      "deepswe_pass_at_1": 0.48672566371681414
+    },
+    {
+      "id": "mini_swe_agent_claude_sonnet_5_high",
+      "model": "claude-sonnet-5",
+      "openrouter_model": "anthropic/claude-sonnet-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "high",
+      "deepswe_pass_at_1": 0.4823008849557522
+    },
+    {
+      "id": "mini_swe_agent_glm_5_2_max",
+      "model": "glm-5-2",
+      "openrouter_model": "z-ai/glm-5.2",
+      "upstream_provider": "z-ai",
+      "reasoning_effort": "max",
+      "deepswe_pass_at_1": 0.43777777777777777
+    },
+    {
+      "id": "mini_swe_agent_claude_opus_4_8_low",
+      "model": "claude-opus-4-8",
+      "openrouter_model": "anthropic/claude-opus-4.8",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": 0.4079822616407982
+    },
+    {
+      "id": "mini_swe_agent_claude_sonnet_5_medium",
+      "model": "claude-sonnet-5",
+      "openrouter_model": "anthropic/claude-sonnet-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "medium",
+      "deepswe_pass_at_1": 0.3977777777777778
+    },
+    {
+      "id": "mini_swe_agent_gemini_3_5_flash_medium",
+      "model": "gemini-3-5-flash",
+      "openrouter_model": "google/gemini-3.5-flash",
+      "upstream_provider": "google",
+      "reasoning_effort": "medium",
+      "deepswe_pass_at_1": 0.37389380530973454
+    },
+    {
+      "id": "mini_swe_agent_glm_5_2_high",
+      "model": "glm-5-2",
+      "openrouter_model": "z-ai/glm-5.2",
+      "upstream_provider": "z-ai",
+      "reasoning_effort": "high",
+      "deepswe_pass_at_1": 0.36283185840707965
+    },
+    {
+      "id": "mini_swe_agent_kimi_k2_7_code_default",
+      "model": "kimi-k2-7-code",
+      "openrouter_model": "moonshotai/kimi-k2.7-code",
+      "upstream_provider": "moonshotai",
+      "reasoning_effort": null,
+      "deepswe_pass_at_1": 0.3053097345132743
+    },
+    {
+      "id": "mini_swe_agent_claude_sonnet_5_low",
+      "model": "claude-sonnet-5",
+      "openrouter_model": "anthropic/claude-sonnet-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": 0.3051224944320713
+    },
+    {
+      "id": "mini_swe_agent_claude_sonnet_4_6_high",
+      "model": "claude-sonnet-4-6",
+      "openrouter_model": "anthropic/claude-sonnet-4.6",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "high",
+      "deepswe_pass_at_1": 0.29933481152993346
+    },
+    {
+      "id": "mini_swe_agent_gpt_5_5_low",
+      "model": "gpt-5-5",
+      "openrouter_model": "openai/gpt-5.5",
+      "upstream_provider": "openai",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": 0.26991150442477874
+    },
+    {
+      "id": "mini_swe_agent_gemini_3_1_pro_preview_high",
+      "model": "gemini-3-1-pro-preview",
+      "openrouter_model": "google/gemini-3.1-pro-preview",
+      "upstream_provider": "google",
+      "reasoning_effort": "high",
+      "deepswe_pass_at_1": 0.11751662971175167
+    }
+  ]
+}
