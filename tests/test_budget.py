@@ -160,6 +160,40 @@ class PanelBudgetTests(unittest.TestCase):
         self.assertEqual(estimate["priced_rows"], 5)
         self.assertEqual(estimate["missing_price_rows"], 0)
 
+    def test_expanded_pilot_panel_is_priced_and_keeps_effort_variants_separate(self) -> None:
+        panel = load_panel(REPO_ROOT / "panels" / "deepswe-v1.1-expanded-pilot.json")
+        rows = panel["rows"]
+        effort_by_id = {row["id"]: row["reasoning_effort"] for row in rows}
+
+        self.assertEqual(
+            effort_by_id,
+            {
+                "mini_swe_agent_claude_fable_5_low": "low",
+                "mini_swe_agent_claude_sonnet_5_low": "low",
+                "mini_swe_agent_claude_sonnet_5_medium": "medium",
+                "mini_swe_agent_claude_opus_4_8_low": "low",
+                "mini_swe_agent_claude_opus_4_8_medium": "medium",
+                "mini_swe_agent_gpt_5_5_low": "low",
+                "mini_swe_agent_gpt_5_5_medium": "medium",
+                "mini_swe_agent_gemini_3_5_flash_medium": "medium",
+                "mini_swe_agent_kimi_k2_7_code_default": None,
+            },
+        )
+        self.assertTrue(any("fable" in row["id"] for row in rows))
+        self.assertFalse(any("laguna" in row["id"] for row in rows))
+
+        estimate = estimate_panel_budget(
+            panel,
+            load_prices(REPO_ROOT / "prices" / "openrouter-2026-07-03.json"),
+            task_count=1,
+            rollouts_per_task=1,
+            token_basis=TokenBasis(),
+        )
+
+        self.assertEqual(estimate["rows"], 9)
+        self.assertEqual(estimate["priced_rows"], 9)
+        self.assertEqual(estimate["missing_price_rows"], 0)
+
     def test_budget_limit_marks_over_budget_estimates(self) -> None:
         panel = {
             "rows": [

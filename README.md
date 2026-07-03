@@ -13,7 +13,7 @@ ShallowSWE is inspired by DeepSWE's rigor, but is not affiliated with DeepSWE, D
 - `panels/` contains seed and preview model-panel manifests. DeepSWE-aligned manifests are starting points, not the final ShallowSWE panel.
 - `docs/task-shape-catalog.md` defines durable task shapes used to instantiate original tasks.
 - `docs/task-sourcing-methodology.md` defines how official benchmark tasks are mined, authored, reviewed, and calibrated.
-- `docs/pilot-plan.md` defines the next 12-task calibration pilot.
+- `docs/pilot-plan.md` records the calibration plan. The July 3 pilot snapshot uses the first four realistic tasks.
 - Pier owns execution, sandboxing, agents, verifier runs, and trajectories.
 
 ## Quick Checks
@@ -41,10 +41,10 @@ uv run shallowswe compare-deepswe /tmp/shallowswe-workload-index.json \
 
 The workload index contains `task_weights`, per-model/task `cells`, and precomputed default `models`. A UI can recompute custom baskets client-side by changing category/tier weights and applying them to the cell metrics.
 
-Estimate a panel before running it. The recommended first publish preview uses the lowest DeepSWE-published effort per selected model: GPT and Claude rows at low effort, Gemini at medium, and Kimi at default. It excludes Claude Fable and non-DeepSWE models:
+Estimate a panel before running it. The July 3 expanded publish pilot includes Fable at low effort, low and medium rows for GPT-5.5, Claude Opus 4.8, and Claude Sonnet 5, plus Gemini medium and Kimi default. It excludes non-DeepSWE models:
 
 ```sh
-uv run shallowswe estimate-panel panels/deepswe-v1.1-lowest-preview.json \
+uv run shallowswe estimate-panel panels/deepswe-v1.1-expanded-pilot.json \
   --prices prices/openrouter-2026-07-03.json \
   --task-count 4 --rollouts 3 \
   --input-tokens 83820 --output-tokens 4119 --cache-read-tokens 58756 \

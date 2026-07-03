@@ -1,9 +1,7 @@
 {
   "schema_version": "shallowswe.run_manifest.v0.1",
   "name": "shallowswe-pilot-2026-07-03",
-  "generated_at": "2026-07-03T19:48:18.707368+00:00",
-  "panel": "panels/deepswe-v1.1-lowest-preview.json",
-  "prices": "prices/openrouter-2026-07-03.json",
+  "generated_at": "2026-07-03T21:26:24Z",
   "jobs_root": "/tmp/shallowswe-pier",
   "jobs": [
     {
@@ -41,6 +39,30 @@
     {
       "job_name": "shallowswe_publish_kimi_default_r3",
       "rows": 4
+    },
+    {
+      "job_name": "shallowswe_publish_fable_low_4task_r1",
+      "rows": 4
+    },
+    {
+      "job_name": "shallowswe_publish_fable_low_4task_r2",
+      "rows": 4
+    },
+    {
+      "job_name": "shallowswe_publish_fable_low_4task_r3",
+      "rows": 4
+    },
+    {
+      "job_name": "shallowswe_publish_medium_4task_clean_r1",
+      "rows": 12
+    },
+    {
+      "job_name": "shallowswe_publish_medium_4task_clean_r2",
+      "rows": 12
+    },
+    {
+      "job_name": "shallowswe_publish_medium_4task_clean_r3",
+      "rows": 12
     }
   ],
   "tasks": [
@@ -49,8 +71,10 @@
     "config-flag-ignored",
     "payout-reconcile"
   ],
+  "rollouts_per_task_model_config": 3,
+  "panel": "panels/deepswe-v1.1-expanded-pilot.json",
   "agent": "mini-swe-agent",
   "runner": "pier",
-  "rollouts_per_task_model_config": 3,
-  "notes": "First measured publish pilot. Lowest DeepSWE-published effort per selected model; Gemini medium and Kimi default because those are their DeepSWE rows."
+  "prices": "prices/openrouter-2026-07-03.json",
+  "notes": "Expanded measured publish pilot. Includes Fable low plus medium-effort rows for GPT-5.5, Claude Opus 4.8, and Claude Sonnet 5. Gemini medium and Kimi default are retained as their DeepSWE-published rows. Excludes the local smoke task py-normalize-username."
 }
