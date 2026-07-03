@@ -1,0 +1,56 @@
+{
+  "schema_version": "shallowswe.run_manifest.v0.1",
+  "name": "shallowswe-pilot-2026-07-03",
+  "generated_at": "2026-07-03T19:48:18.707368+00:00",
+  "panel": "panels/deepswe-v1.1-lowest-preview.json",
+  "prices": "prices/openrouter-2026-07-03.json",
+  "jobs_root": "/tmp/shallowswe-pier",
+  "jobs": [
+    {
+      "job_name": "shallowswe_publish_low_r1",
+      "rows": 12
+    },
+    {
+      "job_name": "shallowswe_publish_low_r2",
+      "rows": 12
+    },
+    {
+      "job_name": "shallowswe_publish_low_r3",
+      "rows": 12
+    },
+    {
+      "job_name": "shallowswe_publish_gemini_medium_r1",
+      "rows": 4
+    },
+    {
+      "job_name": "shallowswe_publish_gemini_medium_r2",
+      "rows": 4
+    },
+    {
+      "job_name": "shallowswe_publish_gemini_medium_r3",
+      "rows": 4
+    },
+    {
+      "job_name": "shallowswe_publish_kimi_default_r1",
+      "rows": 4
+    },
+    {
+      "job_name": "shallowswe_publish_kimi_default_r2",
+      "rows": 4
+    },
+    {
+      "job_name": "shallowswe_publish_kimi_default_r3",
+      "rows": 4
+    }
+  ],
+  "tasks": [
+    "invoice-cli-regression-test-fix",
+    "report-json-format",
+    "config-flag-ignored",
+    "payout-reconcile"
+  ],
+  "agent": "mini-swe-agent",
+  "runner": "pier",
+  "rollouts_per_task_model_config": 3,
+  "notes": "First measured publish pilot. Lowest DeepSWE-published effort per selected model; Gemini medium and Kimi default because those are their DeepSWE rows."
+}

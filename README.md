@@ -7,10 +7,13 @@ ShallowSWE is inspired by DeepSWE's rigor, but is not affiliated with DeepSWE, D
 ## Current Shape
 
 - `SPEC.md` is the v0.1 product spec and source of truth.
-- `tasks/` is a Pier-compatible local dataset.
+- `tasks/` is a Pier-compatible local dataset. `py-normalize-username` is harness smoke; the four quality-gate candidates are the first realistic suite slice.
 - `src/shallowswe/` contains ShallowSWE metadata validation, Pier result export, and aggregation.
 - `prices/` contains dated provider price sheets used to derive dollar metrics from token usage.
-- `panels/` contains seed model-panel manifests. DeepSWE-aligned manifests are starting points, not the final ShallowSWE panel.
+- `panels/` contains seed and preview model-panel manifests. DeepSWE-aligned manifests are starting points, not the final ShallowSWE panel.
+- `docs/task-shape-catalog.md` defines durable task shapes used to instantiate original tasks.
+- `docs/task-sourcing-methodology.md` defines how official benchmark tasks are mined, authored, reviewed, and calibrated.
+- `docs/pilot-plan.md` defines the next 12-task calibration pilot.
 - Pier owns execution, sandboxing, agents, verifier runs, and trajectories.
 
 ## Quick Checks
@@ -23,7 +26,44 @@ uv run shallowswe export-pier /tmp/shallowswe-pier/shallowswe_oracle_probe --tas
 uv run shallowswe aggregate /tmp/shallowswe-results.json
 ```
 
-Add `--prices prices/openai-2026-07-03.json` when the result rows use models covered by that price sheet.
+Add `--prices prices/openai-2026-07-03.json` when the result rows use models covered by that price sheet. Aggregates group by `model_config` by default, so reasoning-effort variants are separate rows.
+
+Build the site-ready workload index and optional DeepSWE all-dollars comparison:
+
+```sh
+uv run shallowswe workload-index /tmp/shallowswe-results.json \
+  --prices prices/openrouter-2026-07-03.json \
+  > /tmp/shallowswe-workload-index.json
+
+uv run shallowswe compare-deepswe /tmp/shallowswe-workload-index.json \
+  > /tmp/shallowswe-deepswe-comparison.json
+```
+
+The workload index contains `task_weights`, per-model/task `cells`, and precomputed default `models`. A UI can recompute custom baskets client-side by changing category/tier weights and applying them to the cell metrics.
+
+Estimate a panel before running it. The recommended first publish preview uses the lowest DeepSWE-published effort per selected model: GPT and Claude rows at low effort, Gemini at medium, and Kimi at default. It excludes Claude Fable and non-DeepSWE models:
+
+```sh
+uv run shallowswe estimate-panel panels/deepswe-v1.1-lowest-preview.json \
+  --prices prices/openrouter-2026-07-03.json \
+  --task-count 4 --rollouts 3 \
+  --input-tokens 83820 --output-tokens 4119 --cache-read-tokens 58756 \
+  --max-budget-usd 100 --fail-over-budget
+```
+
+OpenRouter smoke runs should cap model output while plumbing is being tested:
+
+```sh
+uv run pier run -p tasks --include-task-name py-normalize-username \
+  --agent mini-swe-agent \
+  --model openrouter/google/gemini-3.5-flash \
+  --agent-kwarg 'model_kwargs={"max_tokens":512}' \
+  --env docker \
+  --env-file /Users/lydakis/Developer/blue/apps/supervisor/.env.local \
+  --agent-env 'OPENROUTER_API_KEY=${OPENROUTER_API_KEY}' \
+  --job-name shallowswe_openrouter_gemini35_cap_probe \
+  --jobs-dir /tmp/shallowswe-pier -n 1 -k 1 -q --yes
+```
 
 ## Boundary
 

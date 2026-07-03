@@ -9,6 +9,8 @@ dist/
 build/
 *.egg-info/
 jobs/
-results/
+results/*
+!results/shallowswe-pilot-2026-07-03/
+!results/shallowswe-pilot-2026-07-03/*.json
 artifacts/
 tmp/

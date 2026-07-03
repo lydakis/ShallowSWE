@@ -1,0 +1,6 @@
+[
+  {"payment_id": "PAY-1", "invoice_id": "INV-100", "amount": 120.00},
+  {"payment_id": "PAY-2", "invoice_id": "INV-101", "amount": 85.50},
+  {"payment_id": "PAY-3", "invoice_id": "INV-102", "amount": 30.00},
+  {"payment_id": "PAY-4", "invoice_id": "INV-404", "amount": 99.00}
+]

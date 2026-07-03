@@ -5,8 +5,10 @@ from pathlib import Path
 import tomllib
 
 
-VALID_CATEGORIES = {"fix", "transform", "operate", "invoke"}
-VALID_TIERS = {"t1", "t2", "t3"}
+CATEGORY_ORDER = ("fix", "transform", "operate", "invoke")
+TIER_ORDER = ("t1", "t2", "t3")
+VALID_CATEGORIES = set(CATEGORY_ORDER)
+VALID_TIERS = set(TIER_ORDER)
 
 
 @dataclass(frozen=True)
@@ -17,6 +19,7 @@ class ShallowTask:
     tier: str
     language: str | None
     path: Path
+    shape: str | None = None
     subtype: str | None = None
 
 
@@ -49,6 +52,7 @@ def load_task(path: Path) -> ShallowTask:
         category=category,
         tier=tier,
         language=str(metadata["language"]) if "language" in metadata else None,
+        shape=str(metadata["shape"]) if "shape" in metadata else None,
         subtype=str(metadata["subtype"]) if "subtype" in metadata else None,
         path=path,
     )

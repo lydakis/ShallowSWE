@@ -1,0 +1,4 @@
+invoice_id,customer,amount,status
+INV-100,Ada Lovelace,125.50,open
+INV-101,Grace Hopper,80.00,paid
+INV-102,Katherine Johnson,40.25,open

@@ -1,0 +1,5 @@
+invoice_id,customer_id,status
+INV-100,C-100,paid
+INV-101,C-101,paid
+INV-102,C-999,paid
+INV-103,C-102,draft

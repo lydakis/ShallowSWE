@@ -57,6 +57,12 @@ class RolloutResult:
     def is_scored(self) -> bool:
         return self.status != EXCLUDED_STATUS
 
+    @property
+    def model_config(self) -> str:
+        if self.reasoning_effort:
+            return f"{self.model}[{self.reasoning_effort}]"
+        return self.model
+
 
 @dataclass(frozen=True)
 class ModelPrice:
@@ -64,6 +70,8 @@ class ModelPrice:
     cached_input_per_1m: float | None
     output_per_1m: float
     cache_write_per_1m: float | None = None
+    provider: str | None = None
+    gateway: str | None = None
     long_context_threshold_tokens: int | None = None
     long_context_input_per_1m: float | None = None
     long_context_cached_input_per_1m: float | None = None
@@ -145,11 +153,14 @@ def load_prices(path: Path) -> dict[str, ModelPrice]:
     for model, value in models.items():
         if not isinstance(value, dict):
             raise ValueError(f"{path} model {model!r} must be an object")
+        provider = _optional_str(value.get("provider"))
         price = ModelPrice(
             input_per_1m=float(value["input_per_1m"]),
             cached_input_per_1m=_optional_float(value.get("cached_input_per_1m")),
             output_per_1m=float(value["output_per_1m"]),
             cache_write_per_1m=_optional_float(value.get("cache_write_per_1m")),
+            provider=provider,
+            gateway=_optional_str(raw.get("gateway") or value.get("gateway") or provider),
             long_context_threshold_tokens=_optional_int(
                 value.get("long_context_threshold_tokens")
             ),
@@ -171,7 +182,7 @@ def load_prices(path: Path) -> dict[str, ModelPrice]:
 
 def aggregate_results(
     rows: Iterable[RolloutResult],
-    group_by: tuple[str, ...] = ("model", "category", "tier"),
+    group_by: tuple[str, ...] = ("model_config", "category", "tier"),
     prices: dict[str, ModelPrice] | None = None,
 ) -> list[dict[str, object]]:
     grouped: dict[tuple[object, ...], list[RolloutResult]] = defaultdict(list)
@@ -186,8 +197,24 @@ def aggregate_results(
         passes = sum(1 for row in scored if row.passed)
         pass_rate = passes / attempts if attempts else 0.0
         mean_tokens = sum(row.total_tokens for row in scored) / attempts if attempts else 0.0
+        mean_input_tokens = (
+            sum(row.input_tokens for row in scored) / attempts if attempts else 0.0
+        )
+        mean_output_tokens = (
+            sum(row.output_tokens for row in scored) / attempts if attempts else 0.0
+        )
+        mean_cache_read_tokens = (
+            sum(row.cache_read_tokens for row in scored) / attempts if attempts else 0.0
+        )
+        mean_cache_write_tokens = (
+            sum(row.cache_write_tokens for row in scored) / attempts if attempts else 0.0
+        )
+        mean_reasoning_tokens = (
+            sum(row.reasoning_tokens for row in scored) / attempts if attempts else 0.0
+        )
         mean_turns = sum(row.turns for row in scored) / attempts if attempts else 0.0
         mean_cost = _mean_cost(scored, prices) if prices and scored else None
+        cost_reconciliation = _cost_reconciliation(scored, prices) if prices and scored else None
 
         summary: dict[str, object] = dict(zip(group_by, key, strict=True))
         summary.update(
@@ -199,6 +226,11 @@ def aggregate_results(
                 "pass_rate": pass_rate,
                 "mean_tokens_per_attempt": mean_tokens,
                 "tokens_per_success": mean_tokens / pass_rate if pass_rate else None,
+                "mean_input_tokens_per_attempt": mean_input_tokens,
+                "mean_output_tokens_per_attempt": mean_output_tokens,
+                "mean_cache_read_tokens_per_attempt": mean_cache_read_tokens,
+                "mean_cache_write_tokens_per_attempt": mean_cache_write_tokens,
+                "mean_reasoning_tokens_per_attempt": mean_reasoning_tokens,
                 "mean_turns": mean_turns,
             }
         )
@@ -209,6 +241,8 @@ def aggregate_results(
                     "cpsc": mean_cost / pass_rate if pass_rate else None,
                 }
             )
+            if cost_reconciliation is not None:
+                summary.update(cost_reconciliation)
         summaries.append(summary)
 
     return summaries
@@ -243,6 +277,31 @@ def _mean_cost(
     return sum(rollout_cost_usd(row, prices) for row in rows) / len(rows)
 
 
+def _cost_reconciliation(
+    rows: list[RolloutResult],
+    prices: dict[str, ModelPrice] | None,
+) -> dict[str, object] | None:
+    if not prices:
+        return None
+    reported_rows = [
+        row for row in rows if row.gateway_reported_cost_usd is not None
+    ]
+    if not reported_rows:
+        return None
+
+    derived_total = sum(rollout_cost_usd(row, prices) for row in reported_rows)
+    reported_total = sum(row.gateway_reported_cost_usd or 0.0 for row in reported_rows)
+    delta = derived_total - reported_total
+    return {
+        "gateway_reported_attempts": len(reported_rows),
+        "mean_gateway_reported_cost_per_attempt": reported_total / len(reported_rows),
+        "mean_cost_delta_vs_gateway_per_attempt": delta / len(reported_rows),
+        "cost_delta_vs_gateway_ratio": (
+            delta / reported_total if reported_total else None
+        ),
+    }
+
+
 def _price_for_row(row: RolloutResult, prices: dict[str, ModelPrice]) -> ModelPrice:
     candidates = [
         row.model,
@@ -251,9 +310,15 @@ def _price_for_row(row: RolloutResult, prices: dict[str, ModelPrice]) -> ModelPr
         _strip_openai_prefix(row.resolved_model),
     ]
     for candidate in candidates:
-        if candidate and candidate in prices:
+        if candidate and candidate in prices and _price_matches_gateway(row, prices[candidate]):
             return prices[candidate]
     raise ValueError(f"no price found for model {row.model!r}")
+
+
+def _price_matches_gateway(row: RolloutResult, price: ModelPrice) -> bool:
+    if row.inference_gateway is None or price.gateway is None:
+        return True
+    return row.inference_gateway == price.gateway
 
 
 def _rates_for_row(row: RolloutResult, price: ModelPrice) -> tuple[float, float, float]:

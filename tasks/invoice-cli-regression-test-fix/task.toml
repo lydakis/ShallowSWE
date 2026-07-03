@@ -1,0 +1,45 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/invoice-cli-regression-test-fix"
+description = "Add regression coverage for duplicate invoice imports and fix the importer."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "fix", "t2", "python", "regression-test"]
+
+[metadata]
+category = "fix"
+tier = "t2"
+language = "python"
+shape = "regression-test-plus-fix"
+subtype = "duplicate-record-import"
+family = "regression_test_fix"
+maintenance_type = "corrective"
+domain = "cli"
+source_pattern = "duplicate record import should be idempotent"
+repo_origin = "small_original_repo"
+requires_test_authoring = true
+expected_engineer_minutes = 20
+expected_steps = 4
+calibration_status = "candidate"
+weakest_model_pass_rate = 0.0
+weakest_model_rollouts = 0
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 600.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]

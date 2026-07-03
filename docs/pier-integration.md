@@ -42,6 +42,7 @@ Put ShallowSWE-specific fields in `[metadata]`, not in custom directory structur
 [metadata]
 category = "fix"
 tier = "t1"
+shape = "implement-to-spec"
 subtype = "single-function-bugfix"
 ```
 
@@ -51,6 +52,6 @@ Use Pier as the runner until it fails a concrete ShallowSWE requirement. Do not 
 
 ## Accounting Decision
 
-Treat tokens as canonical and dollars as derived. The exporter prefers Pier's ATIF `final_metrics` only when they reconcile with recursive raw provider usage in the mini-swe-agent trajectory. Pier's `cost_usd` is not copied into ShallowSWE result rows because provider prices and cache rates need to be versioned separately.
+Treat tokens as canonical and dollars as derived. The exporter prefers Pier's ATIF `final_metrics` only when they reconcile with recursive raw provider usage in the mini-swe-agent trajectory. Pier or gateway `cost_usd` is stored only as `gateway_reported_cost_usd` reconciliation metadata; price-sheet derived CPSC remains the headline dollar metric.
 
 OpenRouter is the default gateway for broad model access during panel plumbing. Official runs should pin upstream provider routing, disable gateway fallbacks, and record both `inference_gateway` and `upstream_provider` in each row. Provider, network, credit, credential, and routing failures are excluded from CPSC and retried; model failures inside the task are scored.

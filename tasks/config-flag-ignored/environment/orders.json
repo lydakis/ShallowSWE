@@ -1,0 +1,6 @@
+[
+  {"id": "ORD-100", "region": "west", "status": "ready", "archived": false},
+  {"id": "ORD-101", "region": "west", "status": "ready", "archived": true},
+  {"id": "ORD-102", "region": "east", "status": "ready", "archived": false},
+  {"id": "ORD-103", "region": "west", "status": "blocked", "archived": false}
+]

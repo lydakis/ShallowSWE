@@ -432,6 +432,16 @@ def _collect_usage_responses(value: Any, responses: list[dict[str, Any]]) -> Non
 
 
 def _reasoning_effort(sampling_config: dict[str, Any] | None) -> str | None:
+    model_kwargs = (sampling_config or {}).get("model_kwargs")
+    if isinstance(model_kwargs, dict):
+        if model_kwargs.get("reasoning_effort") is not None:
+            return _optional_str(model_kwargs.get("reasoning_effort"))
+        reasoning_kwargs = model_kwargs.get("reasoning")
+        if isinstance(reasoning_kwargs, dict):
+            effort = reasoning_kwargs.get("effort")
+            if effort is not None:
+                return _optional_str(effort)
+
     reasoning = (sampling_config or {}).get("reasoning")
     if isinstance(reasoning, dict):
         return _optional_str(reasoning.get("effort"))

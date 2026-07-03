@@ -1,0 +1,78 @@
+{
+  "schema_version": "shallowswe.panel.v0.1",
+  "name": "deepswe-v1.1-lowest-preview",
+  "status": "preview",
+  "description": "Recommended first publish-preview panel: the lowest DeepSWE v1.1 effort row available for each selected non-Fable model. GPT and Claude rows use low effort; Gemini remains medium and Kimi remains default because those are the lowest DeepSWE rows published for those models.",
+  "source": {
+    "name": "DeepSWE v1.1 leaderboard-live.json",
+    "url": "https://deepswe.datacurve.ai/artifacts/v1.1/leaderboard-live.json",
+    "generated_at": "2026-07-01T21:40:08.677511+00:00",
+    "n_tasks_in_set": 113
+  },
+  "defaults": {
+    "harness": "mini-swe-agent",
+    "inference_gateway": "openrouter",
+    "provider_routing": {
+      "allow_fallbacks": false
+    }
+  },
+  "selection_policy": {
+    "include": [
+      "Lowest DeepSWE v1.1 reasoning-effort row for each selected model",
+      "Kimi K2.7 Code default row because no low- or medium-effort Kimi row exists in DeepSWE v1.1"
+    ],
+    "exclude": [
+      "Claude Fable rows",
+      "Non-DeepSWE models such as Laguna",
+      "DeepSWE rows above the selected model's lowest available effort"
+    ],
+    "display_policy": "Always display reasoning_effort. Default/null effort remains a separate model_config from low/medium/high/xhigh/max."
+  },
+  "rows": [
+    {
+      "id": "mini_swe_agent_gpt_5_5_low",
+      "model": "gpt-5-5",
+      "openrouter_model": "openai/gpt-5.5",
+      "upstream_provider": "openai",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": 0.26991150442477874,
+      "deepswe_mean_cost_usd": 1.2002025442477877
+    },
+    {
+      "id": "mini_swe_agent_claude_opus_4_8_low",
+      "model": "claude-opus-4-8",
+      "openrouter_model": "anthropic/claude-opus-4.8",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": 0.4079822616407982,
+      "deepswe_mean_cost_usd": 2.293369216740577
+    },
+    {
+      "id": "mini_swe_agent_claude_sonnet_5_low",
+      "model": "claude-sonnet-5",
+      "openrouter_model": "anthropic/claude-sonnet-5",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": 0.3051224944320713,
+      "deepswe_mean_cost_usd": 2.1865550832962137
+    },
+    {
+      "id": "mini_swe_agent_gemini_3_5_flash_medium",
+      "model": "gemini-3-5-flash",
+      "openrouter_model": "google/gemini-3.5-flash",
+      "upstream_provider": "google",
+      "reasoning_effort": "medium",
+      "deepswe_pass_at_1": 0.37389380530973454,
+      "deepswe_mean_cost_usd": 7.341823985508849
+    },
+    {
+      "id": "mini_swe_agent_kimi_k2_7_code_default",
+      "model": "kimi-k2-7-code",
+      "openrouter_model": "moonshotai/kimi-k2.7-code",
+      "upstream_provider": "moonshotai",
+      "reasoning_effort": null,
+      "deepswe_pass_at_1": 0.3053097345132743,
+      "deepswe_mean_cost_usd": 2.815536243274336
+    }
+  ]
+}

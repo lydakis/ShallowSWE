@@ -1,0 +1,45 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/report-json-format"
+description = "Add JSON output support to an existing account report CLI."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "operate", "t2", "python", "feature-wiring"]
+
+[metadata]
+category = "operate"
+tier = "t2"
+language = "python"
+shape = "small-feature-wiring"
+subtype = "cli-output-format"
+family = "small_feature_wiring"
+maintenance_type = "perfective"
+domain = "cli"
+source_pattern = "new CLI output format wired through existing serializer layer"
+repo_origin = "small_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 25
+expected_steps = 5
+calibration_status = "candidate"
+weakest_model_pass_rate = 0.0
+weakest_model_rollouts = 0
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 600.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]

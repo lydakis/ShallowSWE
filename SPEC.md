@@ -31,6 +31,8 @@ Exclude wall-clock time entirely. It depends on provider load and host hardware 
 
 ## Task suite
 
+The durable suite design lives at the shape level. See `docs/task-shape-catalog.md` for the current catalog used to instantiate original tasks.
+
 ### Categories (the routing axis)
 
 Four categories. Each answers "which model should I route this *kind* of work to?"
@@ -80,7 +82,7 @@ tasks/<category>/<tier>/<task-id>/
 
 Write every task from scratch. Adapt nothing from existing repos, commits, PRs, or public benchmark suites. Rationale: contamination here distorts *cost*, not correctness. A memorized solution takes fewer tokens than a derived one, and tokens are the entire product. Original trivial tasks are cheap to author; there is no excuse to copy.
 
-Task generation workflow: coding agent drafts candidate tasks per category and tier, human reviews for originality and calibration, weakest-model gate confirms saturation.
+Task generation workflow: source public GitHub and benchmark datasets only for abstract patterns, author original project-shaped tasks, run prompt-verifier review, validate alternate solutions, then use the weakest-model gate to confirm saturation. `docs/task-sourcing-methodology.md` is the task-quality source of truth.
 
 ## Harness
 
@@ -104,7 +106,9 @@ Normal verifier failures, context-window failures, task caps, and agent timeouts
 Single-page, DeepSWE-style in spirit: one thing to grasp in five seconds.
 
 - **Hero: the crossover map.** Per category, CPSC vs tier as a line per model. Inversion points (where a bigger model becomes cheaper than a smaller one) visually highlighted. This chart is the product; everything else supports it.
-- Below the hero: leaderboard table (CPSC by category, sortable), methodology, per-task drill-down with browsable rollout transcripts, results.json download.
+- **Workload index view.** Suite-level CPSC is a declared basket of routine work, with equal category/tier/task weights for the v1 default and UI controls for user-adjusted workload weights.
+- **DeepSWE comparison.** When DeepSWE cost metadata is available, show hard-work CPSC vs ShallowSWE routine-work CPSC as the primary cross-benchmark scatter. Capability percentage vs routine CPSC is secondary context.
+- Below the hero: leaderboard table (CPSC by category, sortable), methodology, per-task drill-down with browsable rollout transcripts, results.json and workload-index downloads.
 - Snapshot-dated. A stale price sheet is worse than none; the date is prominent.
 
 ## Build order
@@ -119,4 +123,4 @@ Single-page, DeepSWE-style in spirit: one thing to grasp in five seconds.
 
 - Final name check: confirm "ShallowSWE" has no collisions.
 - Exact model panel at build time (models move fast; freeze the panel at step 3, not before).
-- Whether reasoning-effort settings count as separate panel entries (DeepSWE v1.1 lists effort levels as separate rows; probably yes, since effort directly trades cost for reliability, which is exactly the tradeoff being measured).
+- Reasoning-effort settings count as separate panel entries. The display and aggregate identity is `model_config`, which is `model` plus effort level when present.

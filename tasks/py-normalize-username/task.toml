@@ -10,6 +10,7 @@ keywords = ["shallowswe", "fix", "t1", "python"]
 category = "fix"
 tier = "t1"
 language = "python"
+shape = "edge-case-patch"
 subtype = "single-function-bugfix"
 expected_steps = 1
 calibration_status = "seed"

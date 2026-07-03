@@ -50,6 +50,8 @@ subtype = "single-function-bugfix"
                             "n_agent_steps": 3,
                         },
                         "verifier_result": {"rewards": {"reward": 1.0}},
+                        "started_at": "2026-07-03T10:00:00Z",
+                        "finished_at": "2026-07-03T10:00:12Z",
                     }
                 )
             )
@@ -78,6 +80,15 @@ subtype = "single-function-bugfix"
             (agent_dir / "mini-swe-agent.trajectory.json").write_text(
                 json.dumps(
                     {
+                        "info": {
+                            "config": {
+                                "model": {
+                                    "model_kwargs": {
+                                        "reasoning_effort": "low",
+                                    }
+                                }
+                            }
+                        },
                         "messages": [
                             {
                                 "response": {
@@ -85,7 +96,14 @@ subtype = "single-function-bugfix"
                                     "usage": {
                                         "prompt_tokens": 100,
                                         "completion_tokens": 20,
-                                        "prompt_tokens_details": {"cached_tokens": 10},
+                                        "cost": 0.01,
+                                        "prompt_tokens_details": {
+                                            "cached_tokens": 10,
+                                            "cache_write_tokens": 0,
+                                        },
+                                        "completion_tokens_details": {
+                                            "reasoning_tokens": 5
+                                        },
                                     },
                                 }
                             }
@@ -107,14 +125,19 @@ subtype = "single-function-bugfix"
         self.assertEqual(rows[0].upstream_provider, "openai")
         self.assertEqual(rows[0].requested_model, "openai/example")
         self.assertEqual(rows[0].resolved_model, "example-2026-01-01")
+        self.assertEqual(rows[0].reasoning_effort, "low")
         self.assertEqual(rows[0].input_tokens, 100)
         self.assertEqual(rows[0].output_tokens, 20)
         self.assertEqual(rows[0].cache_read_tokens, 10)
         self.assertEqual(rows[0].cache_write_tokens, 0)
+        self.assertEqual(rows[0].reasoning_tokens, 5)
+        self.assertEqual(rows[0].gateway_reported_cost_usd, 0.01)
         self.assertEqual(rows[0].turns, 3)
         self.assertEqual(rows[0].peak_context_tokens, 90)
         self.assertEqual(rows[0].status, "scored")
         self.assertIsNone(rows[0].exclusion_reason)
+        self.assertEqual(rows[0].started_at, "2026-07-03T10:00:00Z")
+        self.assertEqual(rows[0].finished_at, "2026-07-03T10:00:12Z")
         self.assertEqual(rows[0].agent, "mini-swe-agent")
         self.assertEqual(rows[0].agent_version, "2.4.4")
         self.assertEqual(rows[0].runner, "pier")
