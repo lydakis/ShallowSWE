@@ -204,6 +204,9 @@ async def _run_pier_repair_loop(
         agent="shallowswe-resumable-mini-swe-agent",
         agent_version=trial._agent.version(),
         runner="pier-private-repair-loop-pilot",
+        inference_gateway=_gateway_from_model_name(model_name),
+        requested_model=model_name,
+        reasoning_effort=reasoning_effort,
         task_version=f"{shallow_task.task_id}@local",
         task_suite_version="shallowswe-v0.1-candidate",
         seed=seed,
@@ -336,3 +339,9 @@ def _file_sha256(path: Path) -> str | None:
     if not path.exists():
         return None
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _gateway_from_model_name(model_name: str) -> str | None:
+    if "/" not in model_name:
+        return None
+    return model_name.split("/", 1)[0] or None

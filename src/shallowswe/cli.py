@@ -20,6 +20,7 @@ from .pier_repair_loop import (
     load_env_file,
     run_pier_repair_loop,
 )
+from .repair_loop_batch import run_repair_loop_preview_batch
 from .repair_loop_pilot import audit_repair_loop_pilot_plan
 from .repair_loop_preview import audit_repair_loop_preview_plan
 from .results import (
@@ -96,6 +97,46 @@ def main() -> None:
     repair_loop_run_parser.add_argument("--wall-time-cap-seconds", type=int)
     repair_loop_run_parser.add_argument("--seed", type=int, default=0)
     repair_loop_run_parser.add_argument("--output", type=Path)
+
+    repair_loop_preview_run_parser = subparsers.add_parser(
+        "run-repair-loop-preview",
+        help="run the bounded repair-loop preview batch with a global hard stop",
+    )
+    repair_loop_preview_run_parser.add_argument("plan_json", type=Path)
+    repair_loop_preview_run_parser.add_argument("--output-dir", type=Path)
+    repair_loop_preview_run_parser.add_argument(
+        "--trials-dir",
+        type=Path,
+        default=Path("/tmp/shallowswe-pier-repair-loop-preview"),
+    )
+    repair_loop_preview_run_parser.add_argument("--job-name")
+    repair_loop_preview_run_parser.add_argument(
+        "--mini-swe-agent-source-dir",
+        type=Path,
+        default=Path.home() / "Developer" / "oss" / "mini-swe-agent",
+    )
+    repair_loop_preview_run_parser.add_argument(
+        "--config-file",
+        type=Path,
+        default=Path("configs") / "mini-swe-agent-repair-loop-preview.yaml",
+    )
+    repair_loop_preview_run_parser.add_argument("--env-file", type=Path)
+    repair_loop_preview_run_parser.add_argument(
+        "--prices",
+        action="append",
+        type=Path,
+        help="versioned model price sheet; may be supplied more than once",
+    )
+    repair_loop_preview_run_parser.add_argument(
+        "--max-rows",
+        type=int,
+        help="run only the first N scheduled rows; useful for smoke checks",
+    )
+    repair_loop_preview_run_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="write the schedule/report without invoking models",
+    )
 
     export_parser = subparsers.add_parser("export-pier", help="export Pier job results")
     export_parser.add_argument("job_dir", type=Path)
@@ -289,6 +330,24 @@ def main() -> None:
             args.output.write_text(output)
         else:
             print(output, end="")
+        return
+
+    if args.command == "run-repair-loop-preview":
+        agent_env = _load_agent_env(args.env_file)
+        report = run_repair_loop_preview_batch(
+            args.plan_json,
+            output_dir=args.output_dir,
+            trials_dir=args.trials_dir,
+            job_name=args.job_name,
+            mini_swe_agent_source_dir=args.mini_swe_agent_source_dir,
+            config_file=args.config_file,
+            agent_env=agent_env,
+            price_paths=args.prices or [],
+            max_rows=args.max_rows,
+            dry_run=args.dry_run,
+            progress=print,
+        )
+        print(json.dumps(report, indent=2))
         return
 
     if args.command == "export-pier":
