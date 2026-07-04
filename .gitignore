@@ -32,5 +32,11 @@ results/*
 !results/shallowswe-ceiling-second-opinion-opus48-medium-n1-2026-07-04/*.json
 !results/shallowswe-ceiling-diagnosis-2026-07-04/
 !results/shallowswe-ceiling-diagnosis-2026-07-04/*.json
+!results/shallowswe-repair-loop-pilot-2026-07-04/
+!results/shallowswe-repair-loop-pilot-2026-07-04/*.json
+!results/shallowswe-repair-loop-pilot-plan-2026-07-04/
+!results/shallowswe-repair-loop-pilot-plan-2026-07-04/*.json
+!results/shallowswe-repair-loop-preview-plan-2026-07-04/
+!results/shallowswe-repair-loop-preview-plan-2026-07-04/*.json
 artifacts/
 tmp/

@@ -1,0 +1,48 @@
+{
+  "schema_version": "shallowswe.repair_loop_pilot_plan_audit.v0.1",
+  "plan": "shallowswe-repair-loop-pilot-v0.1",
+  "snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+  "plan_path": "configs/shallowswe-repair-loop-pilot-v0.1.json",
+  "task_root": "/Users/lydakis/Developer/ShallowSWE/tasks",
+  "valid": true,
+  "ready_for_final_protocol_pilot": true,
+  "can_run_protocol_smoke": true,
+  "issues": [],
+  "blockers": [],
+  "task_count": 6,
+  "task_ids": [
+    "invoice-cli-regression-test-fix",
+    "cache-invalidates-on-settings-change",
+    "env-flags-to-json",
+    "access-log-to-incidents",
+    "config-flag-ignored",
+    "merge-divergent-config-branches"
+  ],
+  "categories": {
+    "artifact": 2,
+    "code": 2,
+    "workflow": 2
+  },
+  "sizes": {
+    "large": 2,
+    "medium": 2,
+    "small": 2
+  },
+  "allowed_feedback_classes": [
+    "generic_failure",
+    "runtime_error",
+    "missing_required_artifact",
+    "output_mismatch"
+  ],
+  "model_config_count": 2,
+  "final_protocol_eligible_model_configs": [
+    "resumable_mini_swe_gemini_3_5_flash_medium"
+  ],
+  "non_eligible_model_configs": [
+    "local_oracle_protocol_smoke"
+  ],
+  "fork_required": true,
+  "fork_satisfied": true,
+  "fork_missing_capabilities": [],
+  "budget_limit_usd": 25.0
+}

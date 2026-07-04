@@ -19,6 +19,7 @@ CAP_HIT_STOP_REASONS = frozenset(
         "submission_cap",
         "verifier_submission_cap",
         "step_cap",
+        "agent_step_cap",
     }
 )
 

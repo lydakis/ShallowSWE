@@ -85,6 +85,9 @@ def main() -> None:
     repair_loop_run_parser.add_argument("--reasoning-effort")
     repair_loop_run_parser.add_argument("--env-file", type=Path)
     repair_loop_run_parser.add_argument("--max-verifier-submissions", type=int, default=3)
+    repair_loop_run_parser.add_argument("--dollar-cap-usd", type=float)
+    repair_loop_run_parser.add_argument("--wall-time-cap-seconds", type=int)
+    repair_loop_run_parser.add_argument("--seed", type=int, default=0)
     repair_loop_run_parser.add_argument("--output", type=Path)
 
     export_parser = subparsers.add_parser("export-pier", help="export Pier job results")
@@ -264,7 +267,10 @@ def main() -> None:
             config_file=args.config_file,
             agent_env=agent_env,
             max_verifier_submissions=args.max_verifier_submissions,
+            dollar_cap_usd=args.dollar_cap_usd,
+            wall_time_cap_seconds=args.wall_time_cap_seconds,
             reasoning_effort=args.reasoning_effort,
+            seed=args.seed,
         )
         output = dump_repair_loop_rows([row])
         if args.output:

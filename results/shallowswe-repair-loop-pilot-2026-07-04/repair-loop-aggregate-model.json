@@ -1,0 +1,37 @@
+[
+  {
+    "model": "openrouter/google/gemini-3.5-flash",
+    "total_trials": 3,
+    "repair_loops": 3,
+    "excluded_repair_loops": 0,
+    "successes": 3,
+    "solve_rate": 1.0,
+    "cap_hits": 0,
+    "cap_hit_rate": 0.0,
+    "mean_tokens_per_repair_loop": 99632.66666666667,
+    "tokens_per_success": 99632.66666666667,
+    "conditional_tokens_among_solved_loops": 99632.66666666667,
+    "mean_tokens_per_solved_task": 99632.66666666667,
+    "mean_input_tokens_per_repair_loop": 92764.0,
+    "mean_output_tokens_per_repair_loop": 6868.666666666667,
+    "mean_cache_read_tokens_per_repair_loop": 55314.666666666664,
+    "mean_cache_write_tokens_per_repair_loop": 0.0,
+    "mean_reasoning_tokens_per_repair_loop": 0.0,
+    "mean_turns_per_repair_loop": 18.0,
+    "mean_agent_steps_per_repair_loop": 18.0,
+    "mean_verifier_submissions_per_repair_loop": 1.3333333333333333,
+    "mean_verifier_submissions_to_success": 1.3333333333333333,
+    "stop_reasons": {
+      "passed": 3
+    },
+    "total_model_spend_usd": 0.3788676,
+    "mean_cost_per_repair_loop": 0.12628920000000002,
+    "cpsc": 0.12628920000000002,
+    "conditional_spend_among_solved_loops": 0.12628920000000002,
+    "mean_spend_per_solved_task": 0.12628920000000002,
+    "gateway_reported_repair_loops": 3,
+    "mean_gateway_reported_cost_per_repair_loop": 0.12628920000000002,
+    "mean_cost_delta_vs_gateway_per_repair_loop": -1.850371707708594e-17,
+    "cost_delta_vs_gateway_ratio": -1.4651860235939367e-16
+  }
+]

@@ -1,0 +1,67 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_plan.v0.1",
+  "name": "shallowswe-repair-loop-preview-n3-18",
+  "snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+  "mode": "bounded_repair_loop_preview",
+  "task_root": "tasks",
+  "task_ids": [
+    "env-flags-to-json",
+    "extract-error-fields",
+    "payout-reconcile",
+    "access-log-to-incidents",
+    "billing-revenue-rollup",
+    "support-metrics-package",
+    "invoice-cli-regression-test-fix",
+    "retry-error-fallback",
+    "auth-token-expiry-regression",
+    "split-notification-renderer",
+    "cache-invalidates-on-settings-change",
+    "status-terminal-parity",
+    "post-build-status",
+    "ticket-cut-from-bug-report",
+    "config-flag-ignored",
+    "ticket-update-dont-duplicate",
+    "config-key-rollover",
+    "merge-divergent-config-branches"
+  ],
+  "selection_policy": {
+    "tasks_per_category_size_cell": 2,
+    "source_evidence": [
+      "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json",
+      "results/shallowswe-ceiling-diagnosis-2026-07-04/ceiling-diagnosis.json",
+      "results/shallowswe-admission-audit-2026-07-04/admission-audit.json"
+    ],
+    "notes": [
+      "Small cells use stable easy controls with alternate-solution evidence.",
+      "Medium and large cells include at least one row with cheap-floor failure pressure where available.",
+      "Artifact large remains riskier because the N=1 ceiling smoke failed the whole cell; it is included to test whether repair loops can resolve those failures, not as final admission evidence."
+    ]
+  },
+  "model_panel": "panels/deepswe-v1.1-expanded-pilot.json",
+  "repair_loop_seeds_per_task_model_config": 3,
+  "protocol": {
+    "single_model_run_invariant": true,
+    "no_fallbacks": true,
+    "requires_conversation_continuation": true,
+    "requires_filesystem_continuation": true,
+    "verifier_submission_cap": 20,
+    "agent_step_cap": 60,
+    "wall_time_cap_seconds": 1200,
+    "dollar_cap_usd": 1.5,
+    "allowed_feedback_classes": [
+      "generic_failure",
+      "runtime_error",
+      "missing_required_artifact",
+      "output_mismatch"
+    ]
+  },
+  "budget_gate": {
+    "max_budget_usd": 220.0,
+    "requires_explicit_approval_if_over_budget": true
+  },
+  "status": "preview_plan_not_publish_grade",
+  "notes": [
+    "This is a feedback-seeking preview run, not a final ShallowSWE snapshot.",
+    "Final publish-grade scoring remains N=10 repair-loop seeds per task/model_config, with N=20 only for disputed frontier cells."
+  ]
+}

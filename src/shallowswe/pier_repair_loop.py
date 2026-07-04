@@ -6,6 +6,7 @@ from pathlib import Path
 import asyncio
 import hashlib
 import json
+import time
 import traceback
 
 from pier.models.agent.context import AgentContext
@@ -14,7 +15,7 @@ from pier.models.trial.result import ExceptionInfo, TimingInfo, TrialResult
 from pier.models.verifier.result import VerifierResult
 from pier.trial.trial import Trial
 
-from .results import RepairLoopResult
+from .results import EXCLUDED_STATUS, RepairLoopResult
 from .task_metadata import load_task
 
 
@@ -34,11 +35,18 @@ def run_pier_repair_loop(
     config_file: Path,
     agent_env: dict[str, str],
     max_verifier_submissions: int = 3,
+    dollar_cap_usd: float | None = None,
+    wall_time_cap_seconds: int | None = None,
     environment_type: str = "docker",
     reasoning_effort: str | None = None,
+    seed: int = 0,
 ) -> RepairLoopResult:
     if max_verifier_submissions < 1:
         raise ValueError("max_verifier_submissions must be positive")
+    if dollar_cap_usd is not None and dollar_cap_usd <= 0:
+        raise ValueError("dollar_cap_usd must be positive")
+    if wall_time_cap_seconds is not None and wall_time_cap_seconds <= 0:
+        raise ValueError("wall_time_cap_seconds must be positive")
     return asyncio.run(
         _run_pier_repair_loop(
             task_path=task_path,
@@ -49,8 +57,11 @@ def run_pier_repair_loop(
             config_file=config_file,
             agent_env=agent_env,
             max_verifier_submissions=max_verifier_submissions,
+            dollar_cap_usd=dollar_cap_usd,
+            wall_time_cap_seconds=wall_time_cap_seconds,
             environment_type=environment_type,
             reasoning_effort=reasoning_effort,
+            seed=seed,
         )
     )
 
@@ -82,11 +93,15 @@ async def _run_pier_repair_loop(
     config_file: Path,
     agent_env: dict[str, str],
     max_verifier_submissions: int,
+    dollar_cap_usd: float | None,
+    wall_time_cap_seconds: int | None,
     environment_type: str,
     reasoning_effort: str | None,
+    seed: int,
 ) -> RepairLoopResult:
     shallow_task = load_task(task_path)
     started_at = datetime.now(timezone.utc)
+    monotonic_started_at = time.monotonic()
     config = TrialConfig(
         task=TaskConfig(path=task_path),
         trial_name=trial_name,
@@ -97,6 +112,7 @@ async def _run_pier_repair_loop(
             kwargs={
                 "mini_swe_agent_source_dir": str(mini_swe_agent_source_dir),
                 "config_file": str(config_file),
+                **({"cost_limit": dollar_cap_usd} if dollar_cap_usd is not None else {}),
                 **(
                     {"reasoning_effort": reasoning_effort}
                     if reasoning_effort is not None
@@ -114,6 +130,8 @@ async def _run_pier_repair_loop(
     verifier_submissions = 0
     passed = False
     stop_reason = "verifier_submission_cap"
+    status = "scored"
+    exclusion_reason = None
 
     try:
         await trial._setup_environment()
@@ -124,18 +142,33 @@ async def _run_pier_repair_loop(
 
         feedback = trial._task.instruction
         for _ in range(max_verifier_submissions):
+            if _wall_time_expired(
+                monotonic_started_at=monotonic_started_at,
+                wall_time_cap_seconds=wall_time_cap_seconds,
+            ):
+                status = EXCLUDED_STATUS
+                exclusion_reason = "infra_wall_time_guard"
+                stop_reason = "wall_time_cap"
+                break
             context = AgentContext()
             contexts.append(context)
             await _execute_agent_submission(trial=trial, instruction=feedback, context=context)
             exit_status = _mini_swe_exit_status(trial)
             if exit_status != "Submitted":
-                stop_reason = _stop_reason_for_agent_exit(exit_status)
+                stop_reason, status, exclusion_reason = _classify_agent_exit(
+                    exit_status=exit_status,
+                    context=context,
+                    dollar_cap_usd=dollar_cap_usd,
+                )
                 break
             verifier_result = await _verify_submission(trial)
             verifier_submissions += 1
             if _verifier_passed(verifier_result):
                 passed = True
                 stop_reason = "passed"
+                break
+            if _dollar_cap_hit(context=context, dollar_cap_usd=dollar_cap_usd):
+                stop_reason = "dollar_cap"
                 break
             feedback = DEFAULT_REPAIR_FEEDBACK
     except Exception as exc:
@@ -156,7 +189,7 @@ async def _run_pier_repair_loop(
         task_id=shallow_task.task_id,
         category=shallow_task.category,
         size=shallow_task.size,
-        loop=0,
+        loop=seed,
         passed=passed,
         stop_reason=stop_reason,
         verifier_submissions=verifier_submissions,
@@ -173,10 +206,12 @@ async def _run_pier_repair_loop(
         runner="pier-private-repair-loop-pilot",
         task_version=f"{shallow_task.task_id}@local",
         task_suite_version="shallowswe-v0.1-candidate",
-        seed=0,
+        seed=seed,
         run_id=trial_name,
         task_visibility="local-hidden-verifier",
         transcript_hash=transcript_hash,
+        status=status,
+        exclusion_reason=exclusion_reason,
         started_at=started_at.isoformat(),
         finished_at=finished_at.isoformat(),
     )
@@ -258,9 +293,43 @@ def _mini_swe_exit_status(trial: Trial) -> str | None:
 def _stop_reason_for_agent_exit(exit_status: str | None) -> str:
     if exit_status == "LimitsExceeded":
         return "agent_step_cap"
+    if exit_status == "TimeExceeded":
+        return "wall_time_cap"
     if exit_status:
         return f"agent_exit_{exit_status.lower()}"
     return "agent_exit_unknown"
+
+
+def _classify_agent_exit(
+    *,
+    exit_status: str | None,
+    context: AgentContext,
+    dollar_cap_usd: float | None,
+) -> tuple[str, str, str | None]:
+    if exit_status == "TimeExceeded":
+        return ("wall_time_cap", EXCLUDED_STATUS, "infra_wall_time_guard")
+    if exit_status == "LimitsExceeded" and _dollar_cap_hit(
+        context=context,
+        dollar_cap_usd=dollar_cap_usd,
+    ):
+        return ("dollar_cap", "scored", None)
+    return (_stop_reason_for_agent_exit(exit_status), "scored", None)
+
+
+def _dollar_cap_hit(*, context: AgentContext, dollar_cap_usd: float | None) -> bool:
+    if dollar_cap_usd is None or context.cost_usd is None:
+        return False
+    return context.cost_usd >= dollar_cap_usd
+
+
+def _wall_time_expired(
+    *,
+    monotonic_started_at: float,
+    wall_time_cap_seconds: int | None,
+) -> bool:
+    if wall_time_cap_seconds is None:
+        return False
+    return time.monotonic() - monotonic_started_at >= wall_time_cap_seconds
 
 
 def _file_sha256(path: Path) -> str | None:
