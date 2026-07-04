@@ -8,7 +8,7 @@ from shallowswe.deepswe import build_deepswe_comparison
 class DeepSWEComparisonTests(unittest.TestCase):
     def test_comparison_matches_provider_prefixed_model_names(self) -> None:
         workload_index = {
-            "schema_version": "shallowswe.workload_index.v0.1",
+            "schema_version": "shallowswe.workload_index.v0.2",
             "models": [
                 {
                     "model_config": "moonshotai/kimi-k2.7-code",

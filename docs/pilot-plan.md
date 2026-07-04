@@ -17,7 +17,34 @@ Before filling the full category-tier matrix, author and calibrate a small set o
 
 Current status: these four candidates exist under `tasks/` and have reference solutions plus verifiers. They are official candidates, not accepted benchmark tasks, until floor calibration and review pass.
 
+`config-key-rollover` also exists under `tasks/` as a T4 plumbing probe. It has a reference
+solution, an alternate solution, and a verifier, but its N=1 expanded-panel sweep saturated. Do not
+include it in the accepted task set without redesign.
+
+`ledger-schema-upgrade` exists under `tasks/` as a high-T3 transform candidate. Its corrected-prompt
+N=1 expanded-panel sweep was non-saturated, but N=15 calibration on
+`shallowswe-calibration-v0.1` produced anchor pass rates of 0.800, 0.867, and 0.933. That fails
+the T4 median band and fits the T3 band, so it is not accepted as T4.
+
+`ticket-state-reconcile` exists under `tasks/` as the first accepted T4 shelf-edge task. N=15
+cheap-anchor calibration produced pass rates of 0.333, 0.400, and 0.667, with median 0.400. The
+top-gated GPT-5.5 medium row passed 5/5. Include it in the same benchmark basket as the other
+accepted tasks.
+
 Run the cheap panel at N=3 first. If these tasks are too easy, ambiguous, or verifier-fragile, fix the methodology before expanding the suite.
+
+## Stage 0.5: Rubric And Verifier Gates
+
+Before authoring more tasks, apply the two task-quality gates:
+
+- `docs/task-selection-rubric.md`: decide whether the task type belongs in ShallowSWE.
+- `docs/verifier-contract.md`: decide whether a pass actually proves correctness.
+
+No new task should enter calibration without a candidate pattern card and a verifier contract review.
+
+Tier calibration uses `panels/shallowswe-calibration-v0.1.json`, not the publish panel. Run enough
+cheap-anchor rollouts for coarse bands and keep those calibration rollouts out of published
+leaderboard stats.
 
 Suggested first run:
 
@@ -116,6 +143,20 @@ Start with 12 task instances: one category-tier cell each.
 | Invoke | `cut-ticket` | `update-dont-duplicate` | `reconcile-states` |
 
 The old category-tier matrix below is a coverage target, not the immediate next authoring order.
+
+## Stage 1A: Shelf-Edge Probe
+
+Author shelf-edge probes with calibration gates, then include accepted tasks in the same basket:
+
+| Slot | Candidate shape | Purpose |
+| --- | --- | --- |
+| Fix T4 probe | `status-terminal-parity` | Authored and locally validated; N=1 cheap-anchor sweep saturated |
+| Operate T4 probe | `config-key-rollover` | Validate T4 packaging and demote if saturated |
+| Transform high-T3 probe | `ledger-schema-upgrade` | Calibrated below T4; use as evidence for how much harder the next transform shelf-edge task must be |
+| Invoke T4 signal | `ticket-state-reconcile` | Accepted T4; use API final state plus duplicate/destructive-overreach checks |
+
+T4 rows should remain visibly labeled as T4, but accepted T4 tasks are folded into the headline
+price index.
 
 ## Stage 2: N=1 Sizing Sweep
 

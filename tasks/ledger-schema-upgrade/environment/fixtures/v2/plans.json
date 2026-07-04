@@ -1,0 +1,4 @@
+[
+  {"plan_id": "basic", "currency": "USD", "unit_price_cents": 10},
+  {"plan_id": "pro", "currency": "USD", "unit_price_cents": 25}
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "DSP-100",
+    "region": "west",
+    "account": "acme",
+    "state": "active",
+    "ready": true
+  },
+  {
+    "id": "DSP-101",
+    "region": "west",
+    "account": "acme",
+    "state": "archived",
+    "ready": true
+  },
+  {
+    "id": "DSP-102",
+    "region": "west",
+    "account": "acme",
+    "state": "archived",
+    "ready": false
+  },
+  {
+    "id": "DSP-103",
+    "region": "west",
+    "account": "globex",
+    "state": "active",
+    "ready": true
+  },
+  {
+    "id": "DSP-104",
+    "region": "east",
+    "account": "acme",
+    "state": "active",
+    "ready": true
+  },
+  {
+    "id": "DSP-105",
+    "region": "west",
+    "account": "acme",
+    "state": "cancelled",
+    "ready": true
+  }
+]

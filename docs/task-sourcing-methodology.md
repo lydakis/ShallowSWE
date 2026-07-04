@@ -4,6 +4,8 @@ ShallowSWE should not treat the current `py-normalize-username` task as benchmar
 
 This document defines how to source, author, review, and calibrate official ShallowSWE tasks.
 
+Use this document as the end-to-end authoring pipeline. Use `docs/task-selection-rubric.md` as the entry gate for which work packets belong in the suite, and `docs/verifier-contract.md` as the pass/fail contract for task verifiers.
+
 ## Benchmark Lessons
 
 ### SWE-bench
@@ -163,6 +165,10 @@ An official ShallowSWE task is:
 - reviewed by at least two humans or review passes,
 - runnable offline in a reproducible Pier task environment.
 
+T4 shelf-edge tasks are still routine in kind and must meet the same prompt, contamination, and
+verifier standards. They are gated from the top instead of the floor, but once accepted they enter
+the same price-index basket as T1-T3.
+
 An official task is not:
 
 - a copied GitHub issue,
@@ -183,6 +189,7 @@ Allowed source uses:
 - Study patch statistics to calibrate files, hunks, and line-count bands.
 - Study issue phrasing to make prompts natural.
 - Study test failure modes to avoid brittle verifiers.
+- Keep source URLs in a private authoring log when they are needed for audit.
 
 Disallowed source uses:
 
@@ -190,6 +197,7 @@ Disallowed source uses:
 - Copying a patch.
 - Copying tests.
 - Reusing exact filenames, domain data, or identifiers from a public issue when that would make the original task recoverable by search.
+- Publishing public issue URLs in benchmark task files or candidate cards.
 
 Each task should record a `source_pattern` note, for example:
 
@@ -197,11 +205,13 @@ Each task should record a `source_pattern` note, for example:
 [metadata.source]
 type = "github_pattern"
 pattern = "config flag defined but not consumed"
-source_urls = ["https://github.com/..."]
 copied_text = false
 copied_patch = false
 copied_tests = false
 ```
+
+Public task artifacts should keep the abstract pattern and contamination notes, not the source URLs.
+The URL log is an authoring/audit artifact, not benchmark content.
 
 ## Maintenance Types
 
@@ -344,7 +354,10 @@ Verifier:
 
 ## Difficulty Bands
 
-ShallowSWE tiers should be calibrated by observed floor-model behavior, but initial authoring needs bands.
+ShallowSWE tiers should be calibrated by observed behavior on a versioned cheap calibration panel,
+but initial authoring needs bands. Do not define tiers by one control model; use the median or
+agreement across 2-3 anchor rows so a single model quirk does not decide difficulty.
+The current anchor manifest is `panels/shallowswe-calibration-v0.1.json`.
 
 ### T1
 
@@ -353,6 +366,8 @@ ShallowSWE tiers should be calibrated by observed floor-model behavior, but init
 - Expected experienced-engineer time: 5-10 minutes.
 - Prompt can name the failing area.
 - Purpose: sanity check and cheap calibration, but still project-shaped.
+- Calibration-panel target: median pass rate near 100%. This is still useful because saturated
+  tasks isolate flailing, turns, context rent, and cost among successful rollouts.
 
 ### T2
 
@@ -361,6 +376,8 @@ ShallowSWE tiers should be calibrated by observed floor-model behavior, but init
 - Expected experienced-engineer time: 10-25 minutes.
 - Prompt describes symptom or desired behavior, not the exact edit.
 - Purpose: main ShallowSWE routine-work band.
+- Calibration-panel target: median pass rate >=90%. This should remain mostly saturated so the
+  price index measures efficiency rather than failure variance.
 
 ### T3
 
@@ -368,17 +385,27 @@ ShallowSWE tiers should be calibrated by observed floor-model behavior, but init
 - Reference patch: 2-5 files, <= 10 hunks, <= 180 changed lines.
 - Expected experienced-engineer time: 25-60 minutes.
 - Requires multiple touch points, but no deep design or clever inference.
-- Purpose: expose flailing tax while staying below DeepSWE-style long-horizon work.
+- Purpose: expose flailing tax and the first retry-tax effects while staying below DeepSWE-style
+  long-horizon work.
+- Calibration-panel target: median pass rate 80-95%.
+
+### T4
+
+- Routine work with longer chains, more edge cases, or more local state.
+- Top-gated instead of floor-gated.
+- Purpose: find the shelf edge where a stronger row can become cheaper overall because failures
+  enter the cost-per-success denominator.
+- Calibration-panel target: median pass rate 30-70%.
+- Top-row target: strongest/top-gated row passes >=80%.
 
 ## Metadata
 
 Every official task should carry:
 
-- `category`: bug_localization, regression_test_fix, small_feature_wiring, data_transform, repo_operation, tool_api_workflow.
+- `category`: fix, transform, operate, or invoke.
 - `maintenance_type`: corrective, adaptive, perfective, preventive.
-- `tier`: t1, t2, t3.
+- `tier`: t1, t2, t3, or t4.
 - `source_pattern`: abstract source pattern.
-- `source_pattern_refs`: URLs used as inspiration, never copied.
 - `contamination_notes`.
 - `repo_origin`: synthetic_project, small_original_repo, public_repo_snapshot, or forked_public_repo_snapshot.
 - `language`.
@@ -413,6 +440,9 @@ Every official task should carry:
 - `flakiness_runs`.
 - `review_status`.
 
+`expected_engineer_minutes` is an authoring heuristic unless the task defines a repeatable estimate
+method. Do not present it as a measured result.
+
 ## Authoring Pipeline
 
 1. **Pattern mining**
@@ -421,11 +451,13 @@ Every official task should carry:
 
 2. **Task design**
    - Create an original small project or repository snapshot.
+   - Check the candidate against `docs/task-selection-rubric.md`.
    - Write a brief natural prompt.
    - Write the reference solution.
    - Record patch statistics.
 
 3. **Verifier design**
+   - Check the verifier against `docs/verifier-contract.md`.
    - Write fail-to-pass behavior tests from the prompt.
    - Write pass-to-pass regression tests.
    - Add hidden tests for acceptable alternate solutions.
@@ -438,6 +470,7 @@ Every official task should carry:
 
 5. **Alternate-solution validation**
    - Have at least one reviewer or baseline agent produce a non-reference solution.
+   - Prefer a deliberately different structure or helper decomposition from the reference patch.
    - If a plausible correct solution fails hidden tests, broaden the verifier or reject the task.
    - Add edge/property-style tests where they clarify behavior without adding hidden requirements.
 
@@ -448,12 +481,20 @@ Every official task should carry:
    - Any score of 2 or 3 blocks acceptance until fixed.
 
 7. **Floor calibration**
-   - Run the cheapest plausible floor candidates at N >= 5.
-   - Accept if the weakest accepted floor model passes >= 80%.
+   - Run the current versioned calibration panel at enough rollouts for coarse bands, usually N >= 15 on cheap anchor rows.
+   - Accept T1-T3 only inside the target calibration band for the hypothesized tier.
    - If all floor candidates pass 100% with low turns, escalate complexity.
    - If failures are ambiguity or verifier mismatch, rewrite. If failures are legitimate flailing, keep.
+   - Quarantine calibration rollouts from published leaderboard results.
 
-8. **Snapshot admission**
+8. **T4 calibration**
+   - Pre-register expected pass-rate bands and the predicted cheapest-correct row class.
+   - Run the current versioned calibration panel and the top-gated model class.
+   - Accept as T4 only if the calibration-panel median is 30-70%, the top-gated class passes
+     >= 80%, and scored rows show meaningful pass-rate or cost-efficiency divergence.
+   - Demote to T3 or keep as a probe if every row passes at saturation.
+
+9. **Snapshot admission**
    - Freeze task version, source pattern notes, metadata, and reference patch stats.
    - Add to the workload basket only after calibration and review.
 
@@ -474,7 +515,7 @@ Score each item 0-3.
 - Hidden tests do not require behavior absent from the prompt.
 - Public API/name checks are only used when the prompt makes that API/name part of the contract.
 - Base environment fails for the intended reason.
-- Reference solution passes in a clean environment twice.
+- Reference solution passes three clean verifier runs.
 - At least one regression check guards against collateral breakage.
 - Patch size matches the intended tier.
 - Source pattern is documented without copying issue text, tests, or patches.
@@ -524,3 +565,32 @@ Do not fill the full 36-task matrix yet. First author a quality gate pack:
    - Task: join invoices, payments, refunds, and customers into a payout report with rejects.
 
 Run the cheap panel at N=3 on this pack. Use the outcomes to decide the floor model and adjust task complexity before writing the remaining suite.
+
+Then add shelf-edge work to the same task set after calibration:
+
+1. `status-terminal-parity`
+   - Family: multi-entry status parity fix.
+   - Tier hypothesis: T4 signal.
+   - Status: authored with reference and alternate solutions; N=1 cheap-anchor sweep saturated.
+   - Decision: not accepted as T4 without redesign. Keep as flailing/probe evidence.
+
+2. `config-key-rollover`
+   - Family: cross-cutting config rollover.
+   - Tier hypothesis: T4 probe.
+   - Status: authored with reference and alternate solutions; N=1 expanded-panel sweep saturated.
+   - Decision: not accepted as T4 without redesign.
+
+3. `ledger-schema-upgrade`
+   - Family: schema-upgrade pipeline with rejects.
+   - Tier hypothesis: T4 signal.
+   - Status: authored with reference and alternate solutions; N=15 cheap-panel calibration complete.
+   - Decision: demoted to calibrated T3. Anchor pass rates were 0.800, 0.867, and 0.933, with
+     median 0.867, so the task fails the T4 median band and fits the T3 band.
+
+4. `ticket-state-reconcile`
+   - Family: local mock API reconciliation.
+   - Tier hypothesis: T4 signal.
+   - Status: authored with reference and alternate solutions; N=15 cheap-panel calibration and
+     N=5 top-gate calibration complete.
+   - Decision: accepted T4. Anchor pass rates were 0.333, 0.400, and 0.667, with median 0.400.
+     GPT-5.5 medium passed 5/5 as the top-gated row.

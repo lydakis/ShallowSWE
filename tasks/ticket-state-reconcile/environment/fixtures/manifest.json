@@ -1,0 +1,18 @@
+[
+  {
+    "external_key": "billing.invoice-missing",
+    "title": "Invoice missing from export",
+    "owner": "billing",
+    "severity": "high",
+    "desired_status": "open",
+    "labels": ["billing", "export"]
+  },
+  {
+    "external_key": "ops.rotate-secret",
+    "title": "Rotate stale ops secret",
+    "owner": "ops",
+    "severity": "medium",
+    "desired_status": "closed",
+    "labels": ["ops", "security"]
+  }
+]

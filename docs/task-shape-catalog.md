@@ -7,14 +7,17 @@ Repo note: task instances use Pier's flat local task layout under `tasks/<task-i
 Every shape must satisfy three invariants when instantiated:
 
 1. **Saturation**: floor model passes >=80% across rollouts, or the instance is simplified or cut.
-2. **Programmatic verifier**: tests behavior, not implementation. Runs twice against the oracle during acceptance to catch flakiness.
+2. **Programmatic verifier**: tests behavior, not implementation. Runs three times against the oracle during acceptance to catch flakiness.
 3. **Realism**: reads like a Tuesday-afternoon task someone hands an agent, not a puzzle.
 
 Tier calibration is empirical and two-directional. T3 means: as complex as possible while the floor model still clears the gate. During gating, about 60% floor pass rate means simplify; all floor candidates at 100% with low turn counts on a T3 instance means escalate the shape. The gate finds the tier's true level.
 
 Complexity boundary: complexity means more steps, more files, more sequencing, never cleverness. The moment a task requires insight rather than diligence, it belongs to DeepSWE and leaves this suite, even if the floor model happens to pass it.
 
-Per-cell target: 3 tasks instantiated for v1 from any of the listed shapes. 4 categories x 3 tiers x 3 tasks = 36.
+Per-cell target: 3 tasks instantiated for v1 from any of the listed T1-T3 shapes. 4 categories x 3 tiers x 3 tasks = 36.
+
+T4 shelf-edge tasks use the same categories, verifier standards, and price-index machinery as
+T1-T3 tasks.
 
 ## Fix
 
@@ -113,6 +116,23 @@ Tool-call precision. Agent gets a small tool set: file ops plus a task-specific 
 - `error-and-recover`: mid-chain endpoint returns a documented transient error on first call; correct behavior is the documented retry, then completion. Mock is deterministic and fails exactly once.
 - `bulk-triage-with-lookup`: triage 8-10 bug reports into tickets where severity depends on data fetched per report; includes two duplicates to link and one invalid report to close per rubric.
 
+## T4 Shelf Edge
+
+T4 is not "DeepSWE-lite." It remains routine work, but adds enough steps and state that cheap or low-effort rows may stop being cost-effective.
+
+Initial shelf-edge shapes should be selected from existing category families:
+
+- Fix: `parallel-fix` or `regression-from-diff` expanded to more touched sites and hidden edge cases.
+- Transform: `schema-upgrade-pipeline` or `report-from-many` with more inputs, intermediate output, and rejects.
+- Operate: `cross-cutting-rename`, `merge-divergent-branches`, or a config migration with compatibility aliases.
+- Invoke: `reconcile-states` or `bulk-triage-with-lookup` with more records and deterministic branch points.
+
+T4 acceptance is top-gated: the strongest calibrated row should pass >=80%, while floor
+models may fail. The candidate must also pre-register expected pass-rate bands and show
+meaningful divergence after calibration. If every row passes at saturation, demote the candidate
+to T3 or keep it as a probe. If a T4 task requires cleverness, external knowledge, or subjective
+product judgment, reject it.
+
 ## Instantiation Rules
 
 1. Write every instance from scratch. Take no content from GitHub issues, existing benchmarks, tutorial sites, or interview-question repositories. Shapes above are the only seed.
@@ -120,7 +140,10 @@ Tool-call precision. Agent gets a small tool set: file ops plus a task-specific 
 3. Keep repos small: T1 <= 3 files, T2 <= 8 files, T3 <= 20 files. Shallow means shallow: T3 earns its size through touch points, never through code that must be understood deeply.
 4. Reference solution first, verifier second, instruction last. Instruction states the goal and constraints the way a colleague would in a ticket: brief, concrete, no hints about implementation.
 5. Every environment is fully offline: vendor dependencies into the image, mock APIs served in-container.
-6. Acceptance pipeline per instance: verifier runs twice against oracle, floor-candidate gate >=80%, human review, then merge.
+6. Acceptance pipeline per instance: verifier runs three times against the oracle and a second
+   materially different correct solution, calibration gate, human review, then merge.
+7. T4 instances replace the floor-candidate gate with the shelf-edge top gate plus a divergence
+   gate, and must remain part of the same benchmark basket once accepted.
 
 ## Review Checklist
 

@@ -54,7 +54,13 @@ cells        = task-level metrics by model_config/category/tier/task
 models       = precomputed default basket summaries
 ```
 
-A UI can implement sliders by changing category and tier weights, recomputing normalized task weights over the selected cells, and calculating `sum(weight * metric)` for CPSC, tokens per success, pass rate, and similar task-level metrics. If any selected task lacks a numeric CPSC, the official basket CPSC is null; partial exploratory CPSC can still be shown with coverage metadata.
+A UI can implement sliders by changing category and tier weights, recomputing normalized task weights
+over the selected cells, and then calculating CPSC as weighted mean cost per attempt divided by
+weighted pass rate. Tokens per success use the same denominator. This keeps zero-success task cells
+in the basket instead of dropping their retry tax.
+
+T4 rows are normal workload rows. They enter `task_weights`, `cells`, and `models` the same way
+T1-T3 rows do.
 
 ## DeepSWE Comparison
 

@@ -7,7 +7,7 @@ from .results import ModelPrice, RolloutResult, aggregate_results
 from .task_metadata import CATEGORY_ORDER, TIER_ORDER
 
 
-WORKLOAD_INDEX_SCHEMA_VERSION = "shallowswe.workload_index.v0.1"
+WORKLOAD_INDEX_SCHEMA_VERSION = "shallowswe.workload_index.v0.3"
 
 
 def build_workload_index(
@@ -64,6 +64,7 @@ def build_workload_index(
         "weighting": {
             "scheme": "equal_category_equal_tier_observed_task",
             "normalization": "renormalized_over_observed_tasks",
+            "included_tiers": list(TIER_ORDER),
             "categories": [
                 {"category": category, "weight": 1 / len(CATEGORY_ORDER)}
                 for category in CATEGORY_ORDER
@@ -81,8 +82,8 @@ def build_workload_index(
                 "task_weight_within_category_tier, normalized over selected tasks"
             ),
             "basket_metric_formula": (
-                "sum(normalized_task_weight * task_metric); return null for the "
-                "official basket when any selected task has no numeric metric"
+                "weighted_mean_cost_per_attempt / weighted_pass_rate for CPSC; "
+                "weighted_mean_tokens_per_attempt / weighted_pass_rate for tokens"
             ),
             "primary_metrics": ["cpsc", "tokens_per_success", "pass_rate"],
         },
@@ -149,6 +150,19 @@ def _model_summaries(cells: list[dict[str, object]]) -> list[dict[str, object]]:
         covered_weight = sum(float(cell["default_weight"]) for cell in model_cells)
         priced_success_weight = _metric_weight(model_cells, "cpsc")
         token_success_weight = _metric_weight(model_cells, "tokens_per_success")
+        weighted_pass_rate = _weighted_metric(model_cells, "pass_rate")
+        weighted_mean_cost = _weighted_metric(
+            model_cells,
+            "mean_cost_per_attempt",
+            require_complete=True,
+        )
+        weighted_mean_tokens = _weighted_metric(
+            model_cells,
+            "mean_tokens_per_attempt",
+            require_complete=True,
+        )
+        partial_weighted_mean_cost = _weighted_metric(model_cells, "mean_cost_per_attempt")
+        partial_weighted_mean_tokens = _weighted_metric(model_cells, "mean_tokens_per_attempt")
         first_cell = model_cells[0]
         summary = {
             "model_config": model_config,
@@ -160,18 +174,18 @@ def _model_summaries(cells: list[dict[str, object]]) -> list[dict[str, object]]:
             "priced_success_weight": priced_success_weight,
             "token_success_weight": token_success_weight,
             "unresolved_weight": max(0.0, covered_weight - priced_success_weight),
-            "weighted_pass_rate": _weighted_metric(model_cells, "pass_rate"),
+            "weighted_pass_rate": weighted_pass_rate,
             "weighted_mean_turns": _weighted_metric(model_cells, "mean_turns"),
-            "basket_cpsc": _weighted_metric(model_cells, "cpsc", require_complete=True),
-            "partial_basket_cpsc": _weighted_metric(model_cells, "cpsc"),
-            "basket_tokens_per_success": _weighted_metric(
-                model_cells,
-                "tokens_per_success",
-                require_complete=True,
-            ),
-            "partial_basket_tokens_per_success": _weighted_metric(
-                model_cells,
-                "tokens_per_success",
+            "weighted_mean_cost_per_attempt": weighted_mean_cost,
+            "partial_weighted_mean_cost_per_attempt": partial_weighted_mean_cost,
+            "weighted_mean_tokens_per_attempt": weighted_mean_tokens,
+            "partial_weighted_mean_tokens_per_attempt": partial_weighted_mean_tokens,
+            "basket_cpsc": _ratio_or_none(weighted_mean_cost, weighted_pass_rate),
+            "partial_basket_cpsc": _ratio_or_none(partial_weighted_mean_cost, weighted_pass_rate),
+            "basket_tokens_per_success": _ratio_or_none(weighted_mean_tokens, weighted_pass_rate),
+            "partial_basket_tokens_per_success": _ratio_or_none(
+                partial_weighted_mean_tokens,
+                weighted_pass_rate,
             ),
         }
         summaries.append(summary)
@@ -252,3 +266,9 @@ def _is_number(value: object) -> bool:
 
 def _weights_match(left: float, right: float) -> bool:
     return abs(left - right) <= 1e-9
+
+
+def _ratio_or_none(numerator: float | None, denominator: float | None) -> float | None:
+    if numerator is None or denominator is None or denominator == 0:
+        return None
+    return numerator / denominator

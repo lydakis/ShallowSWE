@@ -6,7 +6,7 @@ import tomllib
 
 
 CATEGORY_ORDER = ("fix", "transform", "operate", "invoke")
-TIER_ORDER = ("t1", "t2", "t3")
+TIER_ORDER = ("t1", "t2", "t3", "t4")
 VALID_CATEGORIES = set(CATEGORY_ORDER)
 VALID_TIERS = set(TIER_ORDER)
 
@@ -21,6 +21,7 @@ class ShallowTask:
     path: Path
     shape: str | None = None
     subtype: str | None = None
+    calibration_status: str | None = None
 
 
 def load_task(path: Path) -> ShallowTask:
@@ -54,6 +55,9 @@ def load_task(path: Path) -> ShallowTask:
         language=str(metadata["language"]) if "language" in metadata else None,
         shape=str(metadata["shape"]) if "shape" in metadata else None,
         subtype=str(metadata["subtype"]) if "subtype" in metadata else None,
+        calibration_status=(
+            str(metadata["calibration_status"]) if "calibration_status" in metadata else None
+        ),
         path=path,
     )
 

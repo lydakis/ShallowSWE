@@ -1,0 +1,46 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/ledger-schema-upgrade"
+description = "Upgrade mixed billing inputs into a v3 ledger package with rejects and summary totals."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "transform", "t3", "python", "data"]
+
+[metadata]
+category = "transform"
+tier = "t3"
+language = "python"
+shape = "schema-upgrade-pipeline"
+subtype = "mixed-billing-ledger-v3"
+family = "data_transform"
+maintenance_type = "adaptive"
+domain = "data_pipeline"
+source_pattern = "mixed-version operational files converted into canonical outputs plus rejects"
+contamination_notes = "abstract source pattern only; no issue text, patch, tests, filenames, or domain data copied"
+repo_origin = "small_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 55
+expected_steps = 12
+calibration_status = "calibrated_t3"
+weakest_model_pass_rate = 0.8
+weakest_model_rollouts = 15
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]

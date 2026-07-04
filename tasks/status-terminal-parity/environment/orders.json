@@ -1,0 +1,6 @@
+[
+  {"order_id": "ORD-100", "status": "shipped", "customer": "Ada"},
+  {"order_id": "ORD-101", "status": "delivered", "customer": "Grace"},
+  {"order_id": "ORD-102", "status": "hold", "customer": "Linus"},
+  {"order_id": "ORD-103", "status": "lost", "customer": "Katherine"}
+]

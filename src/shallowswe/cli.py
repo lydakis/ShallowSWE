@@ -122,6 +122,7 @@ def main() -> None:
                         "language": task.language,
                         "shape": task.shape,
                         "subtype": task.subtype,
+                        "calibration_status": task.calibration_status,
                     }
                     for task in tasks
                 ],

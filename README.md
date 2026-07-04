@@ -7,13 +7,16 @@ ShallowSWE is inspired by DeepSWE's rigor, but is not affiliated with DeepSWE, D
 ## Current Shape
 
 - `SPEC.md` is the v0.1 product spec and source of truth.
-- `tasks/` is a Pier-compatible local dataset. `py-normalize-username` is harness smoke; the four quality-gate candidates are the first realistic suite slice.
+- `tasks/` is a Pier-compatible local dataset. `py-normalize-username` is harness smoke; the four quality-gate candidates are the first realistic T1-T3 slice; `config-key-rollover` and `status-terminal-parity` are saturated T4 plumbing probes; `ledger-schema-upgrade` calibrated to T3 rather than T4; `ticket-state-reconcile` is the first accepted T4 shelf-edge task.
 - `src/shallowswe/` contains ShallowSWE metadata validation, Pier result export, and aggregation.
 - `prices/` contains dated provider price sheets used to derive dollar metrics from token usage.
-- `panels/` contains seed and preview model-panel manifests. DeepSWE-aligned manifests are starting points, not the final ShallowSWE panel.
+- `panels/` contains seed, preview, and calibration model-panel manifests. `shallowswe-calibration-v0.1` is the cheap anchor panel for tier calibration; DeepSWE-aligned publish manifests are starting points, not the final ShallowSWE panel.
 - `docs/task-shape-catalog.md` defines durable task shapes used to instantiate original tasks.
+- `docs/task-selection-rubric.md` defines which work packets belong in ShallowSWE, including T4 shelf-edge tasks.
+- `docs/verifier-contract.md` defines what a passing rollout must prove and how task verifiers are reviewed.
 - `docs/task-sourcing-methodology.md` defines how official benchmark tasks are mined, authored, reviewed, and calibrated.
-- `docs/pilot-plan.md` records the calibration plan. The July 3 pilot snapshot uses the first four realistic tasks.
+- `docs/calibration-log.md` records tier-calibration runs and admission decisions.
+- `docs/pilot-plan.md` records the calibration plan. The July 3 pilot snapshot started with four realistic tasks and now includes the accepted Invoke T4 task.
 - Pier owns execution, sandboxing, agents, verifier runs, and trajectories.
 
 ## Quick Checks
@@ -49,6 +52,17 @@ uv run shallowswe estimate-panel panels/deepswe-v1.1-expanded-pilot.json \
   --task-count 4 --rollouts 3 \
   --input-tokens 83820 --output-tokens 4119 --cache-read-tokens 58756 \
   --max-budget-usd 100 --fail-over-budget
+```
+
+Use the calibration panel for high-N tier assignment. Calibration rollouts are not published
+leaderboard rollouts:
+
+```sh
+uv run shallowswe estimate-panel panels/shallowswe-calibration-v0.1.json \
+  --prices prices/openrouter-2026-07-03.json \
+  --task-count 1 --rollouts 15 \
+  --input-tokens 150000 --output-tokens 8000 --cache-read-tokens 100000 \
+  --max-budget-usd 25 --fail-over-budget
 ```
 
 OpenRouter smoke runs should cap model output while plumbing is being tested:

@@ -1,0 +1,25 @@
+{
+  "tickets": [
+    {
+      "id": "TKT-100",
+      "external_key": "billing.invoice-missing",
+      "title": "Old invoice title",
+      "owner": "billing",
+      "severity": "low",
+      "status": "open",
+      "labels": ["billing"],
+      "archived": false
+    },
+    {
+      "id": "TKT-101",
+      "external_key": "ops.rotate-secret",
+      "title": "Rotate stale ops secret",
+      "owner": "ops",
+      "severity": "medium",
+      "status": "open",
+      "labels": ["ops"],
+      "archived": false
+    }
+  ],
+  "transient_fail_once": []
+}

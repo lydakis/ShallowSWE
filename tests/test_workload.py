@@ -158,6 +158,67 @@ class WorkloadIndexTests(unittest.TestCase):
 
         self.assertEqual(configs, {"model[low]", "model[high]"})
 
+    def test_t4_rows_enter_default_basket(self) -> None:
+        prices = {"model": ModelPrice(1.0, None, 0.0)}
+        rows = [
+            row_from_mapping(
+                _row(
+                    model="model",
+                    task_id="fix-a",
+                    category="fix",
+                    tier="t1",
+                    input_tokens=1_000_000,
+                )
+            ),
+            row_from_mapping(
+                _row(
+                    model="model",
+                    task_id="fix-edge",
+                    category="fix",
+                    tier="t4",
+                    input_tokens=100_000_000,
+                )
+            ),
+        ]
+
+        index = build_workload_index(rows, prices=prices)
+        model = index["models"][0]
+
+        self.assertAlmostEqual(model["basket_cpsc"], 50.5)
+        self.assertEqual([task["task_id"] for task in index["task_weights"]], ["fix-a", "fix-edge"])
+        self.assertEqual([cell["task_id"] for cell in index["cells"]], ["fix-a", "fix-edge"])
+        self.assertEqual(index["weighting"]["included_tiers"], ["t1", "t2", "t3", "t4"])
+
+    def test_zero_success_task_contributes_to_basket_retry_tax(self) -> None:
+        prices = {"model": ModelPrice(1.0, None, 0.0)}
+        failed = _row(
+            model="model",
+            task_id="invoke-edge",
+            category="invoke",
+            tier="t4",
+            input_tokens=3_000_000,
+        )
+        failed["passed"] = False
+        rows = [
+            row_from_mapping(
+                _row(
+                    model="model",
+                    task_id="fix-a",
+                    category="fix",
+                    tier="t1",
+                    input_tokens=1_000_000,
+                )
+            ),
+            row_from_mapping(failed),
+        ]
+
+        index = build_workload_index(rows, prices=prices)
+        model = index["models"][0]
+
+        self.assertAlmostEqual(model["weighted_pass_rate"], 0.5)
+        self.assertAlmostEqual(model["weighted_mean_cost_per_attempt"], 2.0)
+        self.assertAlmostEqual(model["basket_cpsc"], 4.0)
+
 
 if __name__ == "__main__":
     unittest.main()
