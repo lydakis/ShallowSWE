@@ -1,0 +1,83 @@
+{
+  "schema_version": "shallowswe.calibration_plan.v0.1",
+  "name": "shallowswe-v1-calibration-plan",
+  "snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+  "task_root": "tasks",
+  "official_task_count": 36,
+  "protocol": {
+    "single_model_run_invariant": true,
+    "no_fallbacks": true,
+    "one_shot_ceiling_pass_threshold": 0.75,
+    "repair_loop_solve_rate_floor": 0.9,
+    "calibration_rollouts_excluded_from_publish": true,
+    "published_repair_loop_seeds_per_task_model_config": 10
+  },
+  "run_groups": [
+    {
+      "id": "ceiling-admission-primary-n16",
+      "mode": "one_shot",
+      "purpose": "Pinned-ceiling task admission gate.",
+      "panel": "panels/shallowswe-ceiling-v0.1.json",
+      "row_ids": [
+        "ceiling_gpt_5_5_medium"
+      ],
+      "target_rollouts_per_task": 16,
+      "task_manifest_calibration_section": "ceiling",
+      "single_model_per_row": true,
+      "published_leaderboard": false,
+      "acceptance": {
+        "pass_threshold": 0.75,
+        "accept_min_passes": 12,
+        "investigate_exact_passes": 11,
+        "fix_or_evict_max_passes": 10
+      },
+      "budget_gate": {
+        "estimate_artifact": "results/shallowswe-calibration-budget-2026-07-04/budget-estimates.json",
+        "estimate_path": [
+          "conservative_estimates",
+          "ceiling_primary_n16"
+        ],
+        "max_budget_usd": 200,
+        "requires_explicit_approval_if_over_budget": true
+      },
+      "expected_outputs": [
+        "results/shallowswe-ceiling-primary-gpt55-medium-n16-<date>/rollouts.json",
+        "results/shallowswe-ceiling-primary-gpt55-medium-n16-<date>/ceiling-gate.json"
+      ]
+    },
+    {
+      "id": "floor-size-calibration-panel-n10",
+      "mode": "one_shot",
+      "purpose": "Measured floor sweep for small, medium, and large size assignment.",
+      "panel": "panels/shallowswe-calibration-v0.1.json",
+      "row_ids": [
+        "anchor_gemini_3_5_flash_medium",
+        "anchor_glm_5_2_high",
+        "anchor_kimi_k2_7_code_default"
+      ],
+      "target_rollouts_per_task": 10,
+      "task_manifest_calibration_section": "floor",
+      "single_model_per_row": true,
+      "published_leaderboard": false,
+      "size_assignment": {
+        "small": "selected floor one-shot pass rate 0.70-1.00",
+        "medium": "selected floor one-shot pass rate 0.30-0.70",
+        "large": "selected floor one-shot pass rate 0.00-0.40"
+      },
+      "budget_gate": {
+        "estimate_artifact": "results/shallowswe-calibration-budget-2026-07-04/budget-estimates.json",
+        "estimate_path": [
+          "conservative_estimates",
+          "floor_candidate_panel_n10"
+        ],
+        "max_budget_usd": 500,
+        "requires_explicit_approval_if_over_budget": true
+      },
+      "expected_outputs": [
+        "results/shallowswe-floor-size-calibration-panel-n10-<date>/rollouts.json",
+        "results/shallowswe-floor-size-calibration-panel-n10-<date>/floor-selection.json",
+        "results/shallowswe-floor-size-calibration-panel-n10-<date>/task-floor-evidence.json"
+      ]
+    }
+  ]
+}

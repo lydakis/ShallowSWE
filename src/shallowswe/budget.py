@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 import json
 
-from .results import ModelPrice, RolloutResult, rollout_cost_usd
+from .results import PriceCatalog, RolloutResult, rollout_cost_usd
 
 
 BUDGET_SCHEMA_VERSION = "shallowswe.budget.v0.1"
@@ -30,7 +30,7 @@ def load_panel(path: Path) -> dict[str, Any]:
 
 def estimate_panel_budget(
     panel: dict[str, Any],
-    prices: dict[str, ModelPrice],
+    prices: PriceCatalog,
     *,
     task_count: int,
     rollouts_per_task: int,
@@ -133,7 +133,7 @@ def _rollout_for_estimate(
         model=model,
         task_id="budget-estimate",
         category="budget",
-        tier="estimate",
+        size="estimate",
         rollout=0,
         passed=True,
         input_tokens=token_basis.input_tokens,

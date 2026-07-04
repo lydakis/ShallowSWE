@@ -1,0 +1,103 @@
+{
+  "schema_version": "shallowswe.ceiling_failure_triage.v0.1",
+  "source": "results/shallowswe-ceiling-diagnosis-2026-07-04/ceiling-diagnosis.json",
+  "blocked_from_calibrated_snapshot": true,
+  "task_count": 11,
+  "failure_mode_counts": {
+    "artifact_output_mismatch": 4,
+    "branch_context_failure": 1,
+    "missing_required_output_file": 4,
+    "schema_output_mismatch": 1,
+    "workflow_state_mismatch": 1
+  },
+  "items": [
+    {
+      "task_id": "access-log-to-incidents",
+      "category": "artifact",
+      "size": "medium",
+      "failure_mode": "artifact_output_mismatch",
+      "failure_mode_note": "Verifier found the expected output file but JSON/content did not match hidden expected output.",
+      "recommended_action": "inspect_hidden_expected_output_and_accept_plausible_alternates_or_simplify"
+    },
+    {
+      "task_id": "audit-log-normalization",
+      "category": "artifact",
+      "size": "large",
+      "failure_mode": "missing_required_output_file",
+      "failure_mode_note": "Verifier could not find the required output file, suggesting prompt/output-path clarity or task execution mismatch.",
+      "recommended_action": "inspect_prompt_verifier_alignment_then_simplify_or_split"
+    },
+    {
+      "task_id": "billing-revenue-rollup",
+      "category": "artifact",
+      "size": "large",
+      "failure_mode": "artifact_output_mismatch",
+      "failure_mode_note": "Verifier found the expected output file but JSON/content did not match hidden expected output.",
+      "recommended_action": "inspect_hidden_expected_output_and_accept_plausible_alternates_or_simplify"
+    },
+    {
+      "task_id": "feature-branch-select-commits",
+      "category": "workflow",
+      "size": "large",
+      "failure_mode": "missing_required_output_file",
+      "failure_mode_note": "Verifier could not find the required output file, suggesting prompt/output-path clarity or task execution mismatch.",
+      "recommended_action": "inspect_prompt_verifier_alignment_then_simplify_or_split"
+    },
+    {
+      "task_id": "ledger-schema-upgrade",
+      "category": "artifact",
+      "size": "large",
+      "failure_mode": "schema_output_mismatch",
+      "failure_mode_note": "Agent produced schema-shaped output but missed rejection/summary semantics.",
+      "recommended_action": "inspect_hidden_expected_output_and_accept_plausible_alternates_or_simplify"
+    },
+    {
+      "task_id": "markdown-table-inventory",
+      "category": "artifact",
+      "size": "medium",
+      "failure_mode": "artifact_output_mismatch",
+      "failure_mode_note": "Verifier found the expected output file but JSON/content did not match hidden expected output.",
+      "recommended_action": "inspect_hidden_expected_output_and_accept_plausible_alternates_or_simplify"
+    },
+    {
+      "task_id": "merge-divergent-config-branches",
+      "category": "workflow",
+      "size": "large",
+      "failure_mode": "missing_required_output_file",
+      "failure_mode_note": "Verifier could not find the required output file, suggesting prompt/output-path clarity or task execution mismatch.",
+      "recommended_action": "inspect_prompt_verifier_alignment_then_simplify_or_split"
+    },
+    {
+      "task_id": "release-branch-cherry-pick",
+      "category": "workflow",
+      "size": "medium",
+      "failure_mode": "branch_context_failure",
+      "failure_mode_note": "Workflow failed because the agent did not satisfy the expected branch precondition before running the task script.",
+      "recommended_action": "inspect_prompt_verifier_alignment_then_simplify_or_split"
+    },
+    {
+      "task_id": "subscription-summary-report",
+      "category": "artifact",
+      "size": "medium",
+      "failure_mode": "artifact_output_mismatch",
+      "failure_mode_note": "Verifier found the expected output file but JSON/content did not match hidden expected output.",
+      "recommended_action": "inspect_hidden_expected_output_and_accept_plausible_alternates_or_simplify"
+    },
+    {
+      "task_id": "support-metrics-package",
+      "category": "artifact",
+      "size": "large",
+      "failure_mode": "missing_required_output_file",
+      "failure_mode_note": "Verifier could not find the required output file, suggesting prompt/output-path clarity or task execution mismatch.",
+      "recommended_action": "inspect_prompt_verifier_alignment_then_simplify_or_split"
+    },
+    {
+      "task_id": "ticket-update-dont-duplicate",
+      "category": "workflow",
+      "size": "medium",
+      "failure_mode": "workflow_state_mismatch",
+      "failure_mode_note": "Workflow produced state/call-log output but did not meet idempotency/update semantics.",
+      "recommended_action": "inspect_hidden_expected_output_and_accept_plausible_alternates_or_simplify"
+    }
+  ]
+}

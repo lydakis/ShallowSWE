@@ -158,16 +158,12 @@ An official ShallowSWE task is:
 
 - grounded in a realistic repository/workflow pattern,
 - authored from scratch,
-- shallow enough for a floor model to pass at least 80% after calibration,
+- shallow enough for the pinned ceiling pair to pass after calibration,
 - project-shaped enough to require orientation,
 - classifiable as routine maintenance work,
 - verified by behavior, not implementation shape,
 - reviewed by at least two humans or review passes,
 - runnable offline in a reproducible Pier task environment.
-
-T4 shelf-edge tasks are still routine in kind and must meet the same prompt, contamination, and
-verifier standards. They are gated from the top instead of the floor, but once accepted they enter
-the same price-index basket as T1-T3.
 
 An official task is not:
 
@@ -352,59 +348,51 @@ Verifier:
 - Call log diagnostics for duplicate/destructive actions.
 - Outcome is pass/fail; call count is reported as efficiency metadata unless overreach is destructive.
 
-## Difficulty Bands
+## Size Bands
 
-ShallowSWE tiers should be calibrated by observed behavior on a versioned cheap calibration panel,
-but initial authoring needs bands. Do not define tiers by one control model; use the median or
-agreement across 2-3 anchor rows so a single model quirk does not decide difficulty.
-The current anchor manifest is `panels/shallowswe-calibration-v0.1.json`.
+ShallowSWE sizes should be calibrated by observed behavior, but initial authoring needs bands. Do
+not define sizes by one control model, a price sheet, or patch size. Use
+`docs/calibration-protocol.md`: select a floor-probe configuration by measured dynamic range, pin a frontier
+ceiling, then assign size by floor one-shot behavior plus repair-loop effort signals.
 
-### T1
+### Small
 
 - 1-3 files in the repository.
 - Reference patch: usually 1 file, <= 2 hunks, <= 25 changed lines.
 - Expected experienced-engineer time: 5-10 minutes.
 - Prompt can name the failing area.
 - Purpose: sanity check and cheap calibration, but still project-shaped.
-- Calibration-panel target: median pass rate near 100%. This is still useful because saturated
-  tasks isolate flailing, turns, context rent, and cost among successful rollouts.
+- Floor one-shot target: 70-100%. This is still useful because saturated tasks isolate flailing,
+  turns, context rent, and cost among successful loops.
 
-### T2
+### Medium
 
 - 4-8 files in the repository.
 - Reference patch: 1-3 files, <= 5 hunks, <= 80 changed lines.
 - Expected experienced-engineer time: 10-25 minutes.
 - Prompt describes symptom or desired behavior, not the exact edit.
 - Purpose: main ShallowSWE routine-work band.
-- Calibration-panel target: median pass rate >=90%. This should remain mostly saturated so the
-  price index measures efficiency rather than failure variance.
+- Floor one-shot target: 30-70%. This is the main routine delegation band where up-front model
+  choice begins to matter.
 
-### T3
+### Large
 
 - 8-20 files in the repository.
 - Reference patch: 2-5 files, <= 10 hunks, <= 180 changed lines.
 - Expected experienced-engineer time: 25-60 minutes.
 - Requires multiple touch points, but no deep design or clever inference.
-- Purpose: expose flailing tax and the first retry-tax effects while staying below DeepSWE-style
-  long-horizon work.
-- Calibration-panel target: median pass rate 80-95%.
-
-### T4
-
-- Routine work with longer chains, more edge cases, or more local state.
-- Top-gated instead of floor-gated.
-- Purpose: find the shelf edge where a stronger row can become cheaper overall because failures
-  enter the cost-per-success denominator.
-- Calibration-panel target: median pass rate 30-70%.
-- Top-row target: strongest/top-gated row passes >=80%.
+- Purpose: expose flailing tax and repair-loop convergence pressure while staying below
+  DeepSWE-style long-horizon work.
+- Floor one-shot target: 0-40%. Large tasks should create convergence pressure while remaining
+  clear enough for the pinned ceiling to solve under the bounded repair loop.
 
 ## Metadata
 
 Every official task should carry:
 
-- `category`: fix, transform, operate, or invoke.
+- `category`: code, artifact, or workflow.
 - `maintenance_type`: corrective, adaptive, perfective, preventive.
-- `tier`: t1, t2, t3, or t4.
+- `size`: small, medium, or large.
 - `source_pattern`: abstract source pattern.
 - `contamination_notes`.
 - `repo_origin`: synthetic_project, small_original_repo, public_repo_snapshot, or forked_public_repo_snapshot.
@@ -480,21 +468,16 @@ method. Do not present it as a measured result.
    - Score prompt specificity, verifier scope, behavioral coverage, environment reliability, and realism from 0-3.
    - Any score of 2 or 3 blocks acceptance until fixed.
 
-7. **Floor calibration**
-   - Run the current versioned calibration panel at enough rollouts for coarse bands, usually N >= 15 on cheap anchor rows.
-   - Accept T1-T3 only inside the target calibration band for the hypothesized tier.
-   - If all floor candidates pass 100% with low turns, escalate complexity.
-   - If failures are ambiguity or verifier mismatch, rewrite. If failures are legitimate flailing, keep.
+7. **Calibration**
+   - Run the floor-selection sweep before final size assignment.
+   - Run the pinned ceiling and selected floor at enough rollouts for coarse bands.
+   - Check whether the task fits the hypothesized size band.
+   - If all floor candidates pass 100% with low turns on a large task, increase realistic state or sequencing.
+   - If the ceiling fails, apply the second-opinion rule and then fix or evict the task.
+   - If floor failures are ambiguity or verifier mismatch, rewrite. If failures are legitimate flailing, keep.
    - Quarantine calibration rollouts from published leaderboard results.
 
-8. **T4 calibration**
-   - Pre-register expected pass-rate bands and the predicted cheapest-correct row class.
-   - Run the current versioned calibration panel and the top-gated model class.
-   - Accept as T4 only if the calibration-panel median is 30-70%, the top-gated class passes
-     >= 80%, and scored rows show meaningful pass-rate or cost-efficiency divergence.
-   - Demote to T3 or keep as a probe if every row passes at saturation.
-
-9. **Snapshot admission**
+8. **Snapshot admission**
    - Freeze task version, source pattern notes, metadata, and reference patch stats.
    - Add to the workload basket only after calibration and review.
 
@@ -517,7 +500,7 @@ Score each item 0-3.
 - Base environment fails for the intended reason.
 - Reference solution passes three clean verifier runs.
 - At least one regression check guards against collateral breakage.
-- Patch size matches the intended tier.
+- Patch size matches the intended size band.
 - Source pattern is documented without copying issue text, tests, or patches.
 
 ## Verifier Red Flags
@@ -536,61 +519,54 @@ Reject or rewrite a task if any of these are true:
 - Task source, issue, PR, or reference patch is public and old enough to plausibly be in training data.
 - Reviewers disagree on what a correct fix should do.
 
-## Immediate Plan
+## Historical Immediate Plan
 
-Do not fill the full 36-task matrix yet. First author a quality gate pack:
+Fill the 36-task matrix across `code`, `artifact`, and `workflow`, with `small`, `medium`, and
+`large` sizes in each category. Current authored tasks map as follows:
 
 1. `invoice-cli-regression-test-fix`
    - Family: regression test plus fix.
-   - Tier: T2.
+   - Category/size: code small.
    - Surface: Python package with CLI, parser, fixtures, tests.
    - Task: add a regression test for duplicate invoice imports and fix dedupe.
 
 2. `report-json-format`
    - Family: small feature wiring.
-   - Tier: T2/T3.
+   - Category/size: code medium.
    - Surface: CLI, serializer, docs/help, fixtures.
    - Task: add `--format json` to an existing report command.
 
 3. `config-flag-ignored`
    - Family: bug localization / repo operation.
-   - Tier: T3.
+   - Category/size: workflow medium.
    - Surface: env file, config loader, service, tests, docs.
    - Task: documented flag is set but ignored at runtime; trace and fix while preserving fallback behavior.
 
 4. `payout-reconcile`
    - Family: data transform.
-   - Tier: T3.
+   - Category/size: artifact medium.
    - Surface: local CSV/JSON inputs, rejects file, exact output schema.
    - Task: join invoices, payments, refunds, and customers into a payout report with rejects.
 
-Run the cheap panel at N=3 on this pack. Use the outcomes to decide the floor model and adjust task complexity before writing the remaining suite.
-
-Then add shelf-edge work to the same task set after calibration:
-
-1. `status-terminal-parity`
+5. `status-terminal-parity`
    - Family: multi-entry status parity fix.
-   - Tier hypothesis: T4 signal.
-   - Status: authored with reference and alternate solutions; N=1 cheap-anchor sweep saturated.
-   - Decision: not accepted as T4 without redesign. Keep as flailing/probe evidence.
+   - Category/size: code large.
+   - Status: authored with reference and alternate solutions.
 
-2. `config-key-rollover`
+6. `config-key-rollover`
    - Family: cross-cutting config rollover.
-   - Tier hypothesis: T4 probe.
-   - Status: authored with reference and alternate solutions; N=1 expanded-panel sweep saturated.
-   - Decision: not accepted as T4 without redesign.
+   - Category/size: workflow large.
+   - Status: authored with reference and alternate solutions.
 
-3. `ledger-schema-upgrade`
+7. `ledger-schema-upgrade`
    - Family: schema-upgrade pipeline with rejects.
-   - Tier hypothesis: T4 signal.
+   - Category/size: artifact large.
    - Status: authored with reference and alternate solutions; N=15 cheap-panel calibration complete.
-   - Decision: demoted to calibrated T3. Anchor pass rates were 0.800, 0.867, and 0.933, with
-     median 0.867, so the task fails the T4 median band and fits the T3 band.
+   - Decision: calibrated as a large artifact task.
 
-4. `ticket-state-reconcile`
+8. `ticket-state-reconcile`
    - Family: local mock API reconciliation.
-   - Tier hypothesis: T4 signal.
+   - Category/size: workflow large.
    - Status: authored with reference and alternate solutions; N=15 cheap-panel calibration and
      N=5 top-gate calibration complete.
-   - Decision: accepted T4. Anchor pass rates were 0.333, 0.400, and 0.667, with median 0.400.
-     GPT-5.5 medium passed 5/5 as the top-gated row.
+   - Decision: calibrated as a large workflow task with visible convergence pressure.

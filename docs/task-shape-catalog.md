@@ -1,153 +1,133 @@
-# ShallowSWE Task Shape Catalog v0.1
+# ShallowSWE Task Shape Catalog v0.2
 
-The durable object of the benchmark. Tasks are instances; shapes are the spec. Each snapshot may rotate in freshly instantiated tasks from these shapes; cost comparability holds at the shape level.
+The durable object of the benchmark. Tasks are instances; shapes are reusable work patterns.
+Each snapshot may rotate freshly authored tasks from these shapes; cost comparability holds at the
+category-size-shape level.
 
-Repo note: task instances use Pier's flat local task layout under `tasks/<task-id>/`; category, tier, and shape should live in `[metadata]`.
+Repo note: task instances use Pier's flat local task layout under `tasks/<task-id>/`. Public
+taxonomy fields live in `[metadata]` as `category` and `size`. Fine-grained authoring detail lives
+in `shape`, `subtype`, `family`, and `maintenance_type`.
 
 Every shape must satisfy three invariants when instantiated:
 
-1. **Saturation**: floor model passes >=80% across rollouts, or the instance is simplified or cut.
-2. **Programmatic verifier**: tests behavior, not implementation. Runs three times against the oracle during acceptance to catch flakiness.
-3. **Realism**: reads like a Tuesday-afternoon task someone hands an agent, not a puzzle.
+1. **Realism**: reads like a normal work packet someone would hand to an engineer or sub-agent.
+2. **Programmatic verifier**: tests behavior, not implementation. No model judges in the scoring path.
+3. **Calibration**: repair-loop solve rate, turns, verifier submissions, cap hits, tokens,
+   measured cost, and CPSC are measured under `docs/calibration-protocol.md` before a task is
+   accepted into a snapshot.
 
-Tier calibration is empirical and two-directional. T3 means: as complex as possible while the floor model still clears the gate. During gating, about 60% floor pass rate means simplify; all floor candidates at 100% with low turn counts on a T3 instance means escalate the shape. The gate finds the tier's true level.
+Complexity means more touch points, state, sequencing, or regression surface. It never means hidden
+insight, obscure algorithms, subjective judgment, or external knowledge.
 
-Complexity boundary: complexity means more steps, more files, more sequencing, never cleverness. The moment a task requires insight rather than diligence, it belongs to DeepSWE and leaves this suite, even if the floor model happens to pass it.
+Per-cell target: 4 tasks instantiated for v1 from the public 3x3 matrix:
 
-Per-cell target: 3 tasks instantiated for v1 from any of the listed T1-T3 shapes. 4 categories x 3 tiers x 3 tasks = 36.
+```text
+3 categories x 3 sizes x 4 tasks = 36 tasks
+```
 
-T4 shelf-edge tasks use the same categories, verifier standards, and price-index machinery as
-T1-T3 tasks.
+## Code
 
-## Fix
+Change code behavior: bug fixes, tests, features, refactors, and API/CLI/UI behavior. Verifier:
+unit tests, command checks, public API checks, and regression guards.
 
-Deterministic coding. Single clear defect or gap, one obviously correct behavior. Verifier: unit tests.
+### Small
 
-### T1
-
-- `off-by-one`: a loop or slice bound is wrong; one failing test provided, make it pass.
-- `wrong-comparison`: `<` vs `<=`, `is` vs `==`, inverted boolean; symptom described in instruction.
 - `missing-null-guard`: function crashes on empty input; make the provided edge-case test pass.
-- `typo-identifier`: misspelled variable/function name breaks the module; error message given.
+- `wrong-comparison`: `<` vs `<=`, `is` vs `==`, inverted boolean; symptom described in instruction.
+- `regression-test-plus-fix`: add a focused failing test for a local bug, then fix the behavior.
+- `exception-handling`: a predictable error escapes; instruction specifies the fallback behavior.
 
-### T2
+### Medium
 
-- `implement-to-spec`: docstring and test suite exist, function body is `pass`; implement it. Example: `normalize-username`, though the existing seed task should not automatically count toward the pilot.
+- `small-feature-wiring`: add a CLI flag, endpoint, export format, or option across existing layers.
 - `fix-failing-test-suite`: 2-3 related tests fail from one root cause; find and fix it.
-- `edge-case-patch`: function works on happy path, fails on documented edge cases; provided tests cover them.
-- `exception-handling`: function lets a predictable error escape; instruction specifies the desired fallback behavior.
+- `debug-misleading-symptom`: error surfaces in one layer but originates in another.
+- `split-module-preserve-api`: split or move code while keeping public imports and behavior stable.
 
-### T3
+### Large
 
-- `implement-small-feature`: add a real feature such as a new endpoint, CLI subcommand, or export format touching 3-4 files, against provided acceptance tests. Diligence-heavy: wiring, registration, plumbing, no design decisions.
-- `debug-misleading-symptom`: error surfaces in one layer but originates in another. Stack trace is visible; cause requires tracing.
-- `regression-from-diff`: a recent multi-file change visible in git log broke behavior; identify the culprit hunk and correct it without reverting unrelated parts of the same commit.
-- `parallel-fix`: the same defect pattern was copied into 3-4 places; failing tests cover two, instruction requires fixing all occurrences, and verifier tests the untested ones too.
+- `parallel-fix`: the same defect pattern appears in several places; verifier covers hidden surfaces.
+- `status-parity`: add a new enum/status consistently across import, API, repair, help, and reports.
+- `regression-from-diff`: a recent multi-file change broke behavior; repair the culprit without
+  reverting unrelated work.
+- `implement-cross-surface-feature`: feature touches several code surfaces and existing behavior must
+  remain stable.
 
-## Transform
+## Artifact
 
-Extraction and reshaping. Input artifact in, output artifact out, fixed target schema. No editorializing. Verifier: exact or canonicalized output comparison.
+Turn inputs into outputs: data files, reports, migrations, summaries, docs-to-structured-output, and
+fixed-schema generation. Verifier: schema validation, canonicalized output comparison, aggregate
+checks, and reject/error-row checks where relevant.
 
-### T1
+### Small
 
-- `env-to-json`: convert a `.env` file to JSON, or `ini` to `toml`, or `csv` to `jsonl`.
+- `env-to-json`: convert a `.env`, `ini`, or small CSV file to a specified structured format.
 - `extract-fields`: pull specified fields from a messy JSON blob into a flat CSV.
 - `strip-and-sort`: deduplicate and sort a list file per stated rules.
+- `doc-to-checklist`: read a short markdown spec and produce a structured checklist or JSON summary.
 
-### T2
+### Medium
 
-- `log-to-schema`: parse a mixed-format log file into structured rows matching a given schema; malformed lines go to a rejects file.
-- `config-migration`: translate a config between formats where keys are renamed per a provided mapping table.
-- `report-summarize-fixed`: reduce a data file to a summary with exact specified aggregates in a fixed output format.
-- `markdown-table-restructure`: reshape tabular data embedded in markdown into a different specified layout.
+- `log-to-schema`: parse a mixed-format log file into structured rows; malformed lines go to rejects.
+- `report-summarize-fixed`: reduce a data file to a summary with exact specified aggregates.
+- `markdown-table-restructure`: reshape tabular markdown into a different specified layout.
+- `multi-source-join-with-rejects`: merge several files on shared keys with stated reject reasons.
 
-### T3
+### Large
 
-- `multi-source-join-with-rejects`: merge three files on shared keys with stated conflict-resolution rules; unmatched and malformed records route to separate reject files with reason codes.
-- `schema-upgrade-pipeline`: migrate records v1 to v3 through two documented schema versions where fields split, merge, and derive; intermediate v2 output is also verified.
-- `dirty-data-normalize-at-scale`: canonicalize a few thousand rows of inconsistent data to a fixed standard; edge-case rules are enumerated, verifier checks aggregate counts plus sampled rows.
-- `report-from-many`: produce one summary report from 5-6 heterogeneous input files with overlapping keys; exact aggregates and layout are specified.
+- `schema-upgrade-pipeline`: migrate mixed-version inputs into a canonical output package.
+- `report-from-many`: produce one summary report from several heterogeneous input files.
+- `dirty-data-normalize-at-scale`: canonicalize thousands of rows with enumerated edge-case rules.
+- `ledger-or-reconciliation-package`: emit multiple output files, rejects, and summary totals.
 
-## Operate
+## Workflow
 
-Multi-step work in a repo. Requires orientation and sequenced actions across files or git state. Verifier: repo end-state checks.
+Operate on repo, tool, or system state: config chains, git operations, deterministic mock APIs,
+tickets, local deployment-like chores, and idempotent reconciliation. Verifier: repo state, command
+output, mock API final state, call logs, and destructive-overreach checks.
 
-### T1
+### Small
 
-- `rename-symbol`: rename one function across 2-3 files including imports and call sites; tests verify.
-- `move-file-fix-imports`: relocate a module to a new package path and repair references.
-- `gitignore-and-untrack`: add patterns to `.gitignore` and remove already-tracked matching files from the index.
+- `rename-symbol`: rename one function across a few files including imports and call sites.
+- `move-file-fix-imports`: relocate a module and repair references.
+- `cut-ticket`: turn a short bug report into one well-formed local mock ticket.
+- `single-lookup-act`: query a local mock API for one record, then act on the answer.
 
-### T2
+### Medium
 
-- `config-chain`: change a value that flows through a chain such as env var to config loader to consumer; tests assert the end-to-end effect.
-- `branch-cherry-pick`: create a branch, cherry-pick a specified commit onto it, resolve the trivial conflict it causes.
-- `dependency-bump-fix`: upgrade one pinned dependency available offline in the image and fix the one renamed API call it breaks.
-- `split-module`: split one oversized file into two modules along an indicated seam, keeping the public interface stable.
+- `config-chain`: change a value that flows through env, loader, config object, and consumer.
+- `branch-cherry-pick`: create a branch, cherry-pick a specified commit, and resolve a trivial conflict.
+- `dependency-bump-fix`: upgrade one pinned dependency available offline and repair one renamed API.
+- `update-dont-duplicate`: find an existing mock ticket and update it instead of creating a duplicate.
 
-### T3
+### Large
 
-- `feature-branch-workflow`: branch from a specified commit, cherry-pick two of four candidate commits per stated criteria, resolve the resulting conflict, ensure tests pass, and leave the repo on the correct branch.
-- `cross-cutting-rename`: rename a concept across function names, config keys, CLI flags, docs, and test fixtures, with a deprecation shim for the old CLI flag per instruction.
-- `trace-and-fix-config-bug`: symptom is given; cause is a config indirection three or four hops away, with one red-herring config that plausibly looks responsible.
-- `restructure-package`: reorganize a flat module into the documented target package layout, repair imports, and keep the public API surface and tests green.
-- `merge-divergent-branches`: merge a branch that diverged by several commits, resolving 4-5 conflicts spanning code and config where correct resolutions are derivable from tests and comments.
-
-## Invoke
-
-Tool-call precision. Agent gets a small tool set: file ops plus a task-specific mock API served locally in the container. Goal is achievable in a known minimum number of calls. Verifier checks mock API recorded state and call log, asserting outcome state with call count as a diagnostic, not a pass condition.
-
-### T1
-
-- `cut-ticket`: turn a short bug report into one well-formed ticket via the ticket API.
-- `single-lookup-act`: query the mock API for one record, then act on the answer.
-- `post-status`: read a result file, post a correctly formatted status update via the API.
-
-### T2
-
-- `triage-batch`: given 5 bug reports, file tickets with correct severity and labels per a rubric; duplicates are filed once and linked.
-- `lookup-join-act`: answer requires combining two API queries, such as finding the owner of a failing service and assigning the ticket.
-- `update-dont-duplicate`: a ticket for the issue already exists; correct behavior is finding and updating it, not filing a new one.
-
-### T3
-
-- `dependent-chain-long`: six-to-eight-step workflow where each API call's input derives from previous outputs, including one branch point resolved via an extra lookup.
-- `reconcile-states`: diff a local manifest against API-side state across about 20 records and issue exactly the calls needed to converge. Verifier checks final state and flags destructive overreach.
-- `error-and-recover`: mid-chain endpoint returns a documented transient error on first call; correct behavior is the documented retry, then completion. Mock is deterministic and fails exactly once.
-- `bulk-triage-with-lookup`: triage 8-10 bug reports into tickets where severity depends on data fetched per report; includes two duplicates to link and one invalid report to close per rubric.
-
-## T4 Shelf Edge
-
-T4 is not "DeepSWE-lite." It remains routine work, but adds enough steps and state that cheap or low-effort rows may stop being cost-effective.
-
-Initial shelf-edge shapes should be selected from existing category families:
-
-- Fix: `parallel-fix` or `regression-from-diff` expanded to more touched sites and hidden edge cases.
-- Transform: `schema-upgrade-pipeline` or `report-from-many` with more inputs, intermediate output, and rejects.
-- Operate: `cross-cutting-rename`, `merge-divergent-branches`, or a config migration with compatibility aliases.
-- Invoke: `reconcile-states` or `bulk-triage-with-lookup` with more records and deterministic branch points.
-
-T4 acceptance is top-gated: the strongest calibrated row should pass >=80%, while floor
-models may fail. The candidate must also pre-register expected pass-rate bands and show
-meaningful divergence after calibration. If every row passes at saturation, demote the candidate
-to T3 or keep it as a probe. If a T4 task requires cleverness, external knowledge, or subjective
-product judgment, reject it.
+- `cross-cutting-rename`: rename a config or domain concept across code, fixtures, docs, and help.
+- `feature-branch-workflow`: choose and apply a small set of commits under deterministic criteria.
+- `merge-divergent-branches`: merge a branch and resolve several conflicts derivable from tests/docs.
+- `reconcile-states`: converge a local manifest against deterministic API-side state without deletes.
+- `error-and-recover`: follow a documented retry path after a deterministic transient API failure.
 
 ## Instantiation Rules
 
-1. Write every instance from scratch. Take no content from GitHub issues, existing benchmarks, tutorial sites, or interview-question repositories. Shapes above are the only seed.
-2. Vary surface details across instances of the same shape: language, domain flavor, naming, and file sizes.
-3. Keep repos small: T1 <= 3 files, T2 <= 8 files, T3 <= 20 files. Shallow means shallow: T3 earns its size through touch points, never through code that must be understood deeply.
-4. Reference solution first, verifier second, instruction last. Instruction states the goal and constraints the way a colleague would in a ticket: brief, concrete, no hints about implementation.
-5. Every environment is fully offline: vendor dependencies into the image, mock APIs served in-container.
-6. Acceptance pipeline per instance: verifier runs three times against the oracle and a second
-   materially different correct solution, calibration gate, human review, then merge.
-7. T4 instances replace the floor-candidate gate with the shelf-edge top gate plus a divergence
-   gate, and must remain part of the same benchmark basket once accepted.
+1. Write every instance from scratch. Take no content from GitHub issues, existing benchmarks,
+   tutorial sites, or interview-question repositories.
+2. Vary surface details across instances of the same shape: language, domain flavor, naming, and
+   file layout.
+3. Keep work shallow: small <= 3 files, medium <= 8 files, large <= 20 files unless the extra files
+   are fixtures or generated outputs. Large earns its size through touch points, not deep code.
+4. Reference solution first, verifier second, instruction last. Instruction states the goal and
+   constraints like a real ticket: brief, concrete, no implementation hints.
+5. Every environment is fully offline: vendor dependencies into the image, mock APIs served
+   in-container.
+6. Acceptance pipeline per instance: verifier fails the base for the intended reason, passes the
+   reference solution three clean times, passes a materially different alternate solution, then
+   passes human prompt-verifier review and calibration.
 
 ## Review Checklist
 
 - Would a working engineer recognize this as a real task?
 - Does the verifier pass any correct solution, including ones structured differently from the oracle?
 - Is there exactly one reasonable interpretation of the instruction?
-- Is the task solvable with zero cleverness?
+- Is the task solvable with diligence rather than cleverness?
+- Does every hidden assertion trace back to the prompt or existing repo behavior?

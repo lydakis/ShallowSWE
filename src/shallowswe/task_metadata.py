@@ -5,10 +5,25 @@ from pathlib import Path
 import tomllib
 
 
-CATEGORY_ORDER = ("fix", "transform", "operate", "invoke")
-TIER_ORDER = ("t1", "t2", "t3", "t4")
+CATEGORY_ORDER = ("code", "artifact", "workflow")
+SIZE_ORDER = ("small", "medium", "large")
+TIER_ORDER = SIZE_ORDER
 VALID_CATEGORIES = set(CATEGORY_ORDER)
-VALID_TIERS = set(TIER_ORDER)
+VALID_SIZES = set(SIZE_ORDER)
+VALID_TIERS = VALID_SIZES
+
+LEGACY_CATEGORY_MAP = {
+    "fix": "code",
+    "transform": "artifact",
+    "operate": "workflow",
+    "invoke": "workflow",
+}
+LEGACY_TIER_MAP = {
+    "t1": "small",
+    "t2": "medium",
+    "t3": "large",
+    "t4": "large",
+}
 
 
 @dataclass(frozen=True)
@@ -16,12 +31,16 @@ class ShallowTask:
     task_id: str
     package_name: str
     category: str
-    tier: str
+    size: str
     language: str | None
     path: Path
     shape: str | None = None
     subtype: str | None = None
     calibration_status: str | None = None
+
+    @property
+    def tier(self) -> str:
+        return self.size
 
 
 def load_task(path: Path) -> ShallowTask:
@@ -40,18 +59,18 @@ def load_task(path: Path) -> ShallowTask:
     if "/" not in package_name:
         raise ValueError(f"{config_path} [task].name must use org/name format")
 
-    category = str(metadata.get("category") or "").lower()
-    tier = str(metadata.get("tier") or "").lower()
+    category = normalize_category(str(metadata.get("category") or "").lower())
+    size = normalize_size(str(metadata.get("size") or metadata.get("tier") or "").lower())
     if category not in VALID_CATEGORIES:
         raise ValueError(f"{config_path} has invalid ShallowSWE category: {category}")
-    if tier not in VALID_TIERS:
-        raise ValueError(f"{config_path} has invalid ShallowSWE tier: {tier}")
+    if size not in VALID_SIZES:
+        raise ValueError(f"{config_path} has invalid ShallowSWE size: {size}")
 
     return ShallowTask(
         task_id=package_name.split("/", 1)[1],
         package_name=package_name,
         category=category,
-        tier=tier,
+        size=size,
         language=str(metadata["language"]) if "language" in metadata else None,
         shape=str(metadata["shape"]) if "shape" in metadata else None,
         subtype=str(metadata["subtype"]) if "subtype" in metadata else None,
@@ -77,3 +96,11 @@ def task_index(root: Path) -> dict[str, ShallowTask]:
         index[task.task_id] = task
         index[task.package_name] = task
     return index
+
+
+def normalize_category(category: str) -> str:
+    return LEGACY_CATEGORY_MAP.get(category, category)
+
+
+def normalize_size(size: str) -> str:
+    return LEGACY_TIER_MAP.get(size, size)

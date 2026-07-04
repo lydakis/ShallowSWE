@@ -1,188 +1,125 @@
-# ShallowSWE Pilot Plan
+# ShallowSWE Build Plan
 
-The pilot is for task-quality validation, sizing, and floor calibration. It is not the official 36-task suite.
+ShallowSWE is no longer in a pilot-only phase. This document tracks the path from the authored
+36-task candidate matrix to a calibrated v1 benchmark.
 
-Follow `docs/task-sourcing-methodology.md` before adding official candidate tasks. The existing `py-normalize-username` task remains a harness smoke task and should not be counted as benchmark evidence.
+The existing `py-normalize-username` task remains a harness smoke task and should not be counted as
+benchmark evidence.
 
-## Stage 0: Quality Gate Pack
+## Public Matrix
 
-Before filling the full category-tier matrix, author and calibrate a small set of realistic project-shaped candidates:
-
-| Task | Family | Tier | Purpose |
+| Category | Small | Medium | Large |
 | --- | --- | --- | --- |
-| `invoice-cli-regression-test-fix` | regression test plus fix | T2 | verifies test-writing and bug-fix realism |
-| `report-json-format` | small feature wiring | T2/T3 | verifies multi-file feature plumbing |
-| `config-flag-ignored` | bug localization / repo operation | T3 | verifies orientation and config tracing |
-| `payout-reconcile` | data transform | T3 | verifies realistic structured-output work |
+| Code | local bug/test/fix | feature wiring or multi-file bug | multi-surface code behavior |
+| Artifact | simple conversion/extraction | report/join with rejects | migration or multi-output package |
+| Workflow | small repo/API action | config/git/tool chain | stateful repo/API reconciliation |
 
-Current status: these four candidates exist under `tasks/` and have reference solutions plus verifiers. They are official candidates, not accepted benchmark tasks, until floor calibration and review pass.
+Target: 4 accepted tasks per cell, 36 tasks total.
 
-`config-key-rollover` also exists under `tasks/` as a T4 plumbing probe. It has a reference
-solution, an alternate solution, and a verifier, but its N=1 expanded-panel sweep saturated. Do not
-include it in the accepted task set without redesign.
+The concrete v1 candidate set lives in `docs/v1-task-matrix.md`.
 
-`ledger-schema-upgrade` exists under `tasks/` as a high-T3 transform candidate. Its corrected-prompt
-N=1 expanded-panel sweep was non-saturated, but N=15 calibration on
-`shallowswe-calibration-v0.1` produced anchor pass rates of 0.800, 0.867, and 0.933. That fails
-the T4 median band and fits the T3 band, so it is not accepted as T4.
+## Current Inventory
 
-`ticket-state-reconcile` exists under `tasks/` as the first accepted T4 shelf-edge task. N=15
-cheap-anchor calibration produced pass rates of 0.333, 0.400, and 0.667, with median 0.400. The
-top-gated GPT-5.5 medium row passed 5/5. Include it in the same benchmark basket as the other
-accepted tasks.
+The repository has 36 authored official candidate tasks: 4 tasks in each `category x size` cell.
+`py-normalize-username` remains smoke-only and is excluded from the matrix.
 
-Run the cheap panel at N=3 first. If these tasks are too easy, ambiguous, or verifier-fragile, fix the methodology before expanding the suite.
+Most tasks are still candidates because final size assignment requires the empirical
+floor-selection sweep and pinned-ceiling calibration in `docs/calibration-protocol.md`. Existing
+historical calibration data remains useful, but old T4 labels are not part of the public taxonomy.
 
-## Stage 0.5: Rubric And Verifier Gates
+## Gates Before Acceptance
 
-Before authoring more tasks, apply the two task-quality gates:
+Before a task enters a publish snapshot:
 
-- `docs/task-selection-rubric.md`: decide whether the task type belongs in ShallowSWE.
-- `docs/verifier-contract.md`: decide whether a pass actually proves correctness.
+1. Check `docs/task-selection-rubric.md` for realism and taxonomy fit.
+2. Check `docs/verifier-contract.md` for deterministic scoring quality.
+3. Run the verifier against the base repo and confirm it fails for the intended reason.
+4. Run the reference solution three clean times.
+5. Run at least one materially different alternate solution.
+6. Run the floor-selection sweep, then pinned-ceiling/selected-floor calibration.
+7. Record pass counts, rollouts, turns, tokens, measured attempt cost, CPSC, and uncertainty.
 
-No new task should enter calibration without a candidate pattern card and a verifier contract review.
+## Calibration Runs
 
-Tier calibration uses `panels/shallowswe-calibration-v0.1.json`, not the publish panel. Run enough
-cheap-anchor rollouts for coarse bands and keep those calibration rollouts out of published
-leaderboard stats.
+Use `panels/shallowswe-calibration-v0.1.json`, not the publish panel, for floor selection. Run
+enough cheap candidate rollouts for coarse size bands and keep those calibration rollouts out of
+published leaderboard stats.
 
-Suggested first run:
+Budget the 36-task floor-selection sweep before running it:
+
+```sh
+uv run shallowswe estimate-panel panels/shallowswe-calibration-v0.1.json \
+  --prices prices/openrouter-2026-07-03.json \
+  --task-count 36 --rollouts 10 \
+  --input-tokens 150000 --output-tokens 8000 --cache-read-tokens 100000 \
+  --max-budget-usd 500 --fail-over-budget
+```
+
+Suggested floor-selection shape:
 
 ```sh
 uv run pier run -p tasks \
-  --include-task-name invoice-cli-regression-test-fix \
-  --include-task-name report-json-format \
-  --include-task-name config-flag-ignored \
-  --include-task-name payout-reconcile \
+  --include-task-name <task-id> \
   --agent mini-swe-agent \
-  --model openrouter/poolside/laguna-xs-2.1 \
   --model openrouter/moonshotai/kimi-k2.7-code \
   --model openrouter/z-ai/glm-5.2 \
   --model openrouter/google/gemini-3.5-flash \
-  --agent-kwarg 'model_kwargs={"max_tokens":2048}' \
+  --agent-kwarg max_tokens=2048 \
+  --agent-kwarg config_file=configs/mini-swe-agent-calibration.yaml \
   --env docker \
   --env-file /Users/lydakis/Developer/blue/apps/supervisor/.env.local \
   --agent-env 'OPENROUTER_API_KEY=${OPENROUTER_API_KEY}' \
-  --job-name shallowswe_quality_gate_n3 \
-  --jobs-dir /tmp/shallowswe-pier -n 3 -k 1 -q --yes
+  --job-name shallowswe_floor_selection_v1 \
+  --jobs-dir /tmp/shallowswe-pier -n 3 -k 10 -q --yes
 ```
 
-## Publish-Preview Panel
+Keep concurrency conservative on local Docker. Higher values can exhaust Docker's predefined
+network address pools before model calibration starts.
 
-For a first public preview, keep the panel close to DeepSWE while avoiding a full expensive sweep:
-
-- Prefer `panels/deepswe-v1.1-lowest-preview.json` for the first run.
-- Keep `panels/deepswe-v1.1-medium-preview.json` as a cleaner medium-only comparison option.
-- Exclude Claude Fable rows.
-- Exclude Laguna because it is not a DeepSWE row.
-- Use the lowest DeepSWE-published effort for each selected model: GPT/Claude at low, Gemini at medium, Kimi at default.
-- Display `reasoning_effort` in every table and chart. Null/default effort is not the same model_config as medium.
-
-Because Pier CLI agent kwargs apply to the whole command, run the lowest-preview panel as three effort groups:
+After a floor-selection run, export and summarize the measured floor candidates:
 
 ```sh
-# Low-effort GPT/Claude group
-uv run pier run -p tasks \
-  --include-task-name invoice-cli-regression-test-fix \
-  --include-task-name report-json-format \
-  --include-task-name config-flag-ignored \
-  --include-task-name payout-reconcile \
-  --agent mini-swe-agent \
-  --model openrouter/openai/gpt-5.5 \
-  --model openrouter/anthropic/claude-opus-4.8 \
-  --model openrouter/anthropic/claude-sonnet-5 \
-  --agent-kwarg 'reasoning_effort=low' \
-  --agent-kwarg 'model_kwargs={"max_tokens":2048}' \
-  --env docker \
-  --env-file /Users/lydakis/Developer/blue/apps/supervisor/.env.local \
-  --agent-env 'OPENROUTER_API_KEY=${OPENROUTER_API_KEY}' \
-  --job-name shallowswe_publish_low_group \
-  --jobs-dir /tmp/shallowswe-pier -n 3 -k 1 -q --yes
+uv run shallowswe export-pier /tmp/shallowswe-pier/shallowswe_floor_selection_v1 \
+  --tasks-root tasks > /tmp/shallowswe-floor-selection.json
 
-# Gemini remains medium because that is its DeepSWE row.
-uv run pier run -p tasks \
-  --include-task-name invoice-cli-regression-test-fix \
-  --include-task-name report-json-format \
-  --include-task-name config-flag-ignored \
-  --include-task-name payout-reconcile \
-  --agent mini-swe-agent \
-  --model openrouter/google/gemini-3.5-flash \
-  --agent-kwarg 'reasoning_effort=medium' \
-  --agent-kwarg 'model_kwargs={"max_tokens":2048}' \
-  --env docker \
-  --env-file /Users/lydakis/Developer/blue/apps/supervisor/.env.local \
-  --agent-env 'OPENROUTER_API_KEY=${OPENROUTER_API_KEY}' \
-  --job-name shallowswe_publish_gemini_medium \
-  --jobs-dir /tmp/shallowswe-pier -n 3 -k 1 -q --yes
-
-# Kimi remains default because that is its DeepSWE row.
-uv run pier run -p tasks \
-  --include-task-name invoice-cli-regression-test-fix \
-  --include-task-name report-json-format \
-  --include-task-name config-flag-ignored \
-  --include-task-name payout-reconcile \
-  --agent mini-swe-agent \
-  --model openrouter/moonshotai/kimi-k2.7-code \
-  --agent-kwarg 'model_kwargs={"max_tokens":2048}' \
-  --env docker \
-  --env-file /Users/lydakis/Developer/blue/apps/supervisor/.env.local \
-  --agent-env 'OPENROUTER_API_KEY=${OPENROUTER_API_KEY}' \
-  --job-name shallowswe_publish_kimi_default \
-  --jobs-dir /tmp/shallowswe-pier -n 3 -k 1 -q --yes
+uv run shallowswe select-floor /tmp/shallowswe-floor-selection.json \
+  --saturation-threshold 0.85 > /tmp/shallowswe-floor-report.json
 ```
 
-## Stage 1: Author One Shape Per Cell
+The report recommends the non-saturated pair with the widest task pass-rate spread and records
+large-band task counts for audit.
 
-Start with 12 task instances: one category-tier cell each.
+## Build Order
 
-| Category | T1 | T2 | T3 |
-| --- | --- | --- | --- |
-| Fix | `missing-null-guard` | `implement-to-spec` | `implement-small-feature` |
-| Transform | `strip-and-sort` | `config-migration` | `multi-source-join-with-rejects` |
-| Operate | `rename-symbol` | `config-chain` | `trace-and-fix-config-bug` |
-| Invoke | `cut-ticket` | `update-dont-duplicate` | `reconcile-states` |
+1. Finish local verifier validation for all 36 candidate tasks.
+2. Run floor selection and choose the primary floor-probe configuration by dynamic range, not by
+   price.
+3. Run the pinned ceiling and selected floor at calibration N for every task.
+4. Move or reshape tasks that land outside their measured size band.
+5. Convert remaining static hidden fixtures to seeded generators where the verifier computes the
+   expected output internally.
+6. Gate the bounded repair-loop pilot with:
 
-The old category-tier matrix below is a coverage target, not the immediate next authoring order.
+   ```sh
+   uv run shallowswe repair-loop-pilot-plan configs/shallowswe-repair-loop-pilot-v0.1.json
+   ```
 
-## Stage 1A: Shelf-Edge Probe
+   Do not run a paid repair-loop pilot until this reports `ready_for_final_protocol_pilot = true`.
+   The current plan passes this gate through the local `lydakis/mini-swe-agent` fork and the
+   `shallowswe-resumable-mini-swe-agent` Pier import-path agent.
+7. Recompute the workload index after the calibrated task set freezes.
 
-Author shelf-edge probes with calibration gates, then include accepted tasks in the same basket:
+## Publication Metrics
 
-| Slot | Candidate shape | Purpose |
-| --- | --- | --- |
-| Fix T4 probe | `status-terminal-parity` | Authored and locally validated; N=1 cheap-anchor sweep saturated |
-| Operate T4 probe | `config-key-rollover` | Validate T4 packaging and demote if saturated |
-| Transform high-T3 probe | `ledger-schema-upgrade` | Calibrated below T4; use as evidence for how much harder the next transform shelf-edge task must be |
-| Invoke T4 signal | `ticket-state-reconcile` | Accepted T4; use API final state plus duplicate/destructive-overreach checks |
-
-T4 rows should remain visibly labeled as T4, but accepted T4 tasks are folded into the headline
-price index.
-
-## Stage 2: N=1 Sizing Sweep
-
-Run one scored rollout per candidate model on the 12-task pilot. This only answers:
-
-- Does Pier execution work across every category?
-- Are token/cost/turn metrics captured consistently?
-- Which cheap models appear to be floor candidates?
-- Are any task shapes obviously too hard or ambiguous?
-
-Do not use N=1 to accept saturation or publish pass-rate claims.
-
-## Stage 3: Floor Calibration
-
-Select the 2-3 cheapest or weakest-looking floor candidates from Stage 2. Run N=5 or more on each pilot task against those candidates.
-
-Accept a task only if the weakest floor candidate passes at >=80%. Simplify or cut anything below that threshold.
-
-## Stage 4: Expand To V1
-
-After the floor is named, instantiate two more tasks per category-tier cell to reach 36 total tasks. Keep the same shape catalog, but vary domains, languages, and file layouts across instances.
+- Headline: CPSC by `(model, effort)` pair, category, and size.
+- Diagnostics: solve rate, absolute loop cost per task, verifier submissions, cap hits, token
+  counts, and turns.
+- Intervals: Wilson intervals for solve rates and bootstrap intervals for CPSC.
+- Price basis: raw repair-loop tokens plus a dated price table.
 
 ## Stop Conditions
 
-- Do not run the 26-row DeepSWE seed panel end-to-end.
-- Do not run official snapshots on the Blue OpenRouter key.
-- Do not author only Fix tasks; Operate and Invoke are load-bearing.
-- Do not accept tasks that require cleverness, hidden inference, external knowledge, or non-programmatic judging.
-- Do not treat T3 as "hard" in the DeepSWE sense. T3 should add touch points and sequencing, not insight.
+- Do not run broad publish panels without a budget preflight.
+- Do not accept tasks that require cleverness, hidden inference, external knowledge, or subjective judging.
+- Do not let any hidden verifier assertion exceed the prompt or existing repo contract.
+- Do not fill the suite with only code tasks; artifact and workflow are load-bearing.

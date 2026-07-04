@@ -14,14 +14,16 @@ def _row(
     tier: str,
     input_tokens: int,
     reasoning_effort: str | None = None,
+    rollout: int = 0,
+    passed: bool = True,
 ) -> dict[str, object]:
     row: dict[str, object] = {
         "model": model,
         "task_id": task_id,
         "category": category,
         "tier": tier,
-        "rollout": 0,
-        "passed": True,
+        "rollout": rollout,
+        "passed": passed,
         "input_tokens": input_tokens,
         "output_tokens": 0,
         "cache_read_tokens": 0,
@@ -75,6 +77,7 @@ class WorkloadIndexTests(unittest.TestCase):
         model = index["models"][0]
 
         self.assertEqual(model["model_config"], "model")
+        self.assertEqual(index["weighting"]["target_tasks_per_category_size"], 4)
         self.assertAlmostEqual(model["basket_cpsc"], 51.0)
         self.assertEqual(model["rank_by_basket_cpsc"], 1)
         weights = {
@@ -158,7 +161,7 @@ class WorkloadIndexTests(unittest.TestCase):
 
         self.assertEqual(configs, {"model[low]", "model[high]"})
 
-    def test_t4_rows_enter_default_basket(self) -> None:
+    def test_legacy_t4_rows_enter_default_basket_as_large(self) -> None:
         prices = {"model": ModelPrice(1.0, None, 0.0)}
         rows = [
             row_from_mapping(
@@ -187,7 +190,7 @@ class WorkloadIndexTests(unittest.TestCase):
         self.assertAlmostEqual(model["basket_cpsc"], 50.5)
         self.assertEqual([task["task_id"] for task in index["task_weights"]], ["fix-a", "fix-edge"])
         self.assertEqual([cell["task_id"] for cell in index["cells"]], ["fix-a", "fix-edge"])
-        self.assertEqual(index["weighting"]["included_tiers"], ["t1", "t2", "t3", "t4"])
+        self.assertEqual(index["weighting"]["included_sizes"], ["small", "medium", "large"])
 
     def test_zero_success_task_contributes_to_basket_retry_tax(self) -> None:
         prices = {"model": ModelPrice(1.0, None, 0.0)}

@@ -1,0 +1,5 @@
+job_id,attempts,delay_seconds,mode
+job-1,2,15,standard
+job-2,4,60,fast
+job-3,n/a,20,standard
+job-4,1,none,slow

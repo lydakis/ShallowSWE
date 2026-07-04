@@ -30,12 +30,13 @@ calibration_status = "candidate"
             task = load_task(task_dir)
 
         self.assertEqual(task.task_id, "example")
-        self.assertEqual(task.category, "transform")
-        self.assertEqual(task.tier, "t2")
+        self.assertEqual(task.category, "artifact")
+        self.assertEqual(task.size, "medium")
+        self.assertEqual(task.tier, "medium")
         self.assertEqual(task.shape, "config-migration")
         self.assertEqual(task.calibration_status, "candidate")
 
-    def test_accepts_t4_metadata(self) -> None:
+    def test_accepts_legacy_t4_metadata_as_large_workflow(self) -> None:
         with TemporaryDirectory() as tmp:
             task_dir = Path(tmp) / "task"
             task_dir.mkdir()
@@ -54,5 +55,6 @@ shape = "cross-cutting-rename"
             task = load_task(task_dir)
 
         self.assertEqual(task.task_id, "shelf-edge")
-        self.assertEqual(task.category, "operate")
-        self.assertEqual(task.tier, "t4")
+        self.assertEqual(task.category, "workflow")
+        self.assertEqual(task.size, "large")
+        self.assertEqual(task.tier, "large")

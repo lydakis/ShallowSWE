@@ -10,6 +10,51 @@ from .results import EXCLUDED_STATUS, SCORED_STATUS, RolloutResult
 from .task_metadata import ShallowTask, task_index
 
 
+PROVIDER_ERROR_MARKERS = (
+    "openrouterapierror",
+    "openrouterratelimiterror",
+    "litellm.authenticationerror",
+    "litellm.ratelimiterror",
+    "litellm.apierror",
+    "provider returned error",
+    "requires more credits",
+    "rate limit exceeded",
+    "http 401",
+    "http 402",
+    "http 429",
+    "http 500",
+    "http 502",
+    "http 503",
+    "http 504",
+    "internal server error",
+    "bad gateway",
+    "service unavailable",
+    "gateway timeout",
+    "user not found",
+)
+TRANSPORT_ERROR_MARKERS = (
+    "connection refused",
+    "connection reset",
+    "connection aborted",
+    "connect timeout",
+    "read timed out",
+    "temporary failure in name resolution",
+    "name or service not known",
+    "network is unreachable",
+    "remote end closed connection",
+    "server disconnected",
+    "max retries exceeded",
+    "ssl error",
+)
+RUNNER_INFRASTRUCTURE_ERROR_MARKERS = (
+    "asyncio.exceptions.cancellederror",
+    "cancellederror",
+    "docker compose command failed",
+    "all predefined address pools have been fully subnetted",
+    "no space left on device",
+)
+
+
 def export_pier_job(job_dir: Path, tasks_root: Path) -> list[RolloutResult]:
     tasks = task_index(tasks_root)
     trial_paths = sorted(
@@ -31,11 +76,17 @@ def export_pier_job(job_dir: Path, tasks_root: Path) -> list[RolloutResult]:
         raw_trajectory = _load_json_if_exists(
             trial_path.parent / "agent/mini-swe-agent.trajectory.json"
         )
-        token_totals = _token_totals(trial, trajectory, raw_trajectory, trial_path)
         agent_info = trial.get("agent_info") or {}
         if not isinstance(agent_info, dict):
             agent_info = {}
         status, exclusion_reason = _status(trial, trial_path.parent)
+        token_totals = _token_totals(
+            trial,
+            trajectory,
+            raw_trajectory,
+            trial_path,
+            status=status,
+        )
         sampling_config = _sampling_config(raw_trajectory)
 
         rows.append(
@@ -53,7 +104,7 @@ def export_pier_job(job_dir: Path, tasks_root: Path) -> list[RolloutResult]:
                 gateway_reported_cost_usd=token_totals["gateway_reported_cost_usd"],
                 task_id=task.task_id,
                 category=task.category,
-                tier=task.tier,
+                size=task.size,
                 rollout=rollout,
                 passed=status == SCORED_STATUS and _passed(trial),
                 input_tokens=token_totals["input_tokens"],
@@ -160,32 +211,26 @@ def _status(trial: dict[str, Any], trial_dir: Path) -> tuple[str, str | None]:
         if part
     ).lower()
 
-    if any(
-        marker in haystack
-        for marker in (
-            "openrouterapierror",
-            "openrouterratelimiterror",
-            "litellm.authenticationerror",
-            "litellm.ratelimiterror",
-            "litellm.apierror",
-            "provider returned error",
-            "requires more credits",
-            "rate limit exceeded",
-            "http 401",
-            "http 402",
-            "http 429",
-            "user not found",
-            "request failed:",
-            "connection",
-            "network",
-        )
-    ):
+    if _has_provider_or_network_error(haystack):
         return EXCLUDED_STATUS, "provider_or_network_error"
+
+    if _has_runner_infrastructure_error(haystack):
+        return EXCLUDED_STATUS, "runner_infrastructure_error"
 
     if "verifier" in haystack and "exception" in haystack:
         return EXCLUDED_STATUS, "verifier_infrastructure_error"
 
     return SCORED_STATUS, None
+
+
+def _has_provider_or_network_error(haystack: str) -> bool:
+    return any(
+        marker in haystack for marker in PROVIDER_ERROR_MARKERS + TRANSPORT_ERROR_MARKERS
+    )
+
+
+def _has_runner_infrastructure_error(haystack: str) -> bool:
+    return any(marker in haystack for marker in RUNNER_INFRASTRUCTURE_ERROR_MARKERS)
 
 
 def _turns(trial: dict[str, Any]) -> int:
@@ -208,6 +253,8 @@ def _token_totals(
     trajectory: dict[str, Any] | None,
     raw_trajectory: dict[str, Any] | None,
     trial_path: Path,
+    *,
+    status: str = SCORED_STATUS,
 ) -> dict[str, Any]:
     final_totals = _atif_final_totals(trajectory)
     raw_totals = _raw_usage_totals(raw_trajectory)
@@ -224,6 +271,11 @@ def _token_totals(
                 f"{name}: atif={final_totals[name]} raw={raw_totals[name]}"
                 for name in mismatches
             )
+            if status == EXCLUDED_STATUS:
+                return {
+                    **raw_totals,
+                    "token_source": "raw_provider_usage_unreconciled_excluded",
+                }
             raise ValueError(f"token totals mismatch in {trial_path}: {details}")
         return {
             **final_totals,

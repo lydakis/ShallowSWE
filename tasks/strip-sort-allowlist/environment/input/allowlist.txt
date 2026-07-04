@@ -1,0 +1,6 @@
+# domains
+Example.com
+api.example.com
+example.com  # duplicate
+
+Docs.Example.com

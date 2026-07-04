@@ -1,0 +1,5 @@
+event_id,occurred_on,kind
+EV-1,2026-07-01,deploy
+EV-2,2026-07-02,incident
+EV-3,2026-07-03,deploy
+EV-4,2026-07-04,maintenance

@@ -1,16 +1,19 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 import tempfile
 import unittest
 
 from invoice_tool.importer import import_invoices
 from invoice_tool.summary import summarize
 
+APP_ROOT = Path(os.environ.get("APP_DIR", "/app"))
+
 
 class InvoiceSummaryTests(unittest.TestCase):
     def test_imports_and_summarizes_invoices(self) -> None:
-        invoices = import_invoices(Path("/app/sample_invoices.csv"))
+        invoices = import_invoices(APP_ROOT / "sample_invoices.csv")
 
         self.assertEqual(len(invoices), 3)
         self.assertEqual(

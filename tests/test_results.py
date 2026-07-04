@@ -1,8 +1,40 @@
 from __future__ import annotations
 
+from pathlib import Path
+import json
 import unittest
 
-from shallowswe.results import ModelPrice, aggregate_results, rollout_cost_usd, row_from_mapping
+from shallowswe.results import (
+    ModelPrice,
+    REPAIR_LOOP_SCHEMA_VERSION,
+    RESULT_SCHEMA_VERSION,
+    aggregate_repair_loops,
+    aggregate_results,
+    load_results,
+    merge_prices,
+    repair_loop_from_mapping,
+    rollout_cost_usd,
+    row_from_mapping,
+)
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+class ResultExampleTests(unittest.TestCase):
+    def test_sample_result_uses_current_public_schema(self) -> None:
+        path = REPO_ROOT / "examples" / "results.sample.json"
+        raw_rows = json.loads(path.read_text())
+
+        self.assertTrue(raw_rows)
+        for row in raw_rows:
+            self.assertEqual(row["schema_version"], RESULT_SCHEMA_VERSION)
+            self.assertIn("size", row)
+            self.assertNotIn("tier", row)
+
+        rows = load_results(path)
+        self.assertEqual(rows[0].category, "code")
+        self.assertEqual(rows[0].size, "small")
 
 
 class ResultAggregationTests(unittest.TestCase):
@@ -77,6 +109,147 @@ class ResultAggregationTests(unittest.TestCase):
             summary["cost_delta_vs_gateway_ratio"],
             -0.0002 / 0.0132,
         )
+
+    def test_repair_loop_cpsc_counts_failed_cap_spend(self) -> None:
+        prices = {
+            "small": ModelPrice(
+                input_per_1m=1.0,
+                cached_input_per_1m=None,
+                output_per_1m=1.0,
+            )
+        }
+        rows = [
+            repair_loop_from_mapping(
+                {
+                    "schema_version": REPAIR_LOOP_SCHEMA_VERSION,
+                    "model": "small",
+                    "task_id": "example",
+                    "category": "code",
+                    "size": "small",
+                    "loop": 0,
+                    "passed": True,
+                    "stop_reason": "passed",
+                    "verifier_submissions": 1,
+                    "input_tokens": 1_000_000,
+                    "output_tokens": 0,
+                    "turns": 2,
+                    "agent_steps": 4,
+                }
+            ),
+            repair_loop_from_mapping(
+                {
+                    "schema_version": REPAIR_LOOP_SCHEMA_VERSION,
+                    "model": "small",
+                    "task_id": "example",
+                    "category": "code",
+                    "size": "small",
+                    "loop": 1,
+                    "passed": True,
+                    "stop_reason": "passed",
+                    "verifier_submissions": 3,
+                    "input_tokens": 3_000_000,
+                    "output_tokens": 0,
+                    "turns": 6,
+                    "agent_steps": 12,
+                }
+            ),
+            repair_loop_from_mapping(
+                {
+                    "schema_version": REPAIR_LOOP_SCHEMA_VERSION,
+                    "model": "small",
+                    "task_id": "example",
+                    "category": "code",
+                    "size": "small",
+                    "loop": 2,
+                    "passed": False,
+                    "stop_reason": "submission_cap",
+                    "verifier_submissions": 5,
+                    "input_tokens": 2_000_000,
+                    "output_tokens": 0,
+                    "turns": 8,
+                    "agent_steps": 20,
+                }
+            ),
+            repair_loop_from_mapping(
+                {
+                    "schema_version": REPAIR_LOOP_SCHEMA_VERSION,
+                    "model": "small",
+                    "task_id": "example",
+                    "category": "code",
+                    "size": "small",
+                    "loop": 3,
+                    "passed": False,
+                    "stop_reason": "wall_time_cap",
+                    "verifier_submissions": 0,
+                    "input_tokens": 9_000_000,
+                    "output_tokens": 0,
+                    "turns": 0,
+                    "status": "excluded",
+                    "exclusion_reason": "infra_wall_time_guard",
+                }
+            ),
+        ]
+
+        summary = aggregate_repair_loops(rows, prices=prices)[0]
+
+        self.assertEqual(summary["repair_loops"], 3)
+        self.assertEqual(summary["excluded_repair_loops"], 1)
+        self.assertEqual(summary["successes"], 2)
+        self.assertAlmostEqual(summary["solve_rate"], 2 / 3)
+        self.assertEqual(summary["cap_hits"], 1)
+        self.assertAlmostEqual(summary["cap_hit_rate"], 1 / 3)
+        self.assertAlmostEqual(summary["total_model_spend_usd"], 6.0)
+        self.assertAlmostEqual(summary["mean_cost_per_repair_loop"], 2.0)
+        self.assertAlmostEqual(summary["cpsc"], 3.0)
+        self.assertAlmostEqual(summary["conditional_spend_among_solved_loops"], 2.0)
+        self.assertAlmostEqual(summary["mean_spend_per_solved_task"], 2.0)
+        self.assertAlmostEqual(summary["conditional_tokens_among_solved_loops"], 2_000_000.0)
+        self.assertAlmostEqual(summary["mean_verifier_submissions_to_success"], 2.0)
+        self.assertEqual(
+            summary["stop_reasons"],
+            {"passed": 2, "submission_cap": 1},
+        )
+
+    def test_repair_loop_rows_preserve_public_snapshot_provenance(self) -> None:
+        row = repair_loop_from_mapping(
+            {
+                "schema_version": REPAIR_LOOP_SCHEMA_VERSION,
+                "model": "small",
+                "task_id": "example",
+                "category": "code",
+                "size": "small",
+                "loop": 0,
+                "passed": True,
+                "stop_reason": "passed",
+                "verifier_submissions": 1,
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "turns": 2,
+                "task_version": "example@v1",
+                "task_suite_version": "shallowswe-v1",
+                "verifier_hash": "sha256:verifier",
+                "environment_image_digest": "sha256:image",
+                "repo_commit_sha": "abc123",
+                "price_sheet_version": "openrouter-2026-07-03",
+                "price_sheet_date": "2026-07-03",
+                "seed": 42,
+                "run_id": "run-1",
+                "task_visibility": "public",
+                "transcript_hash": "sha256:transcript",
+            }
+        )
+
+        self.assertEqual(row.task_version, "example@v1")
+        self.assertEqual(row.task_suite_version, "shallowswe-v1")
+        self.assertEqual(row.verifier_hash, "sha256:verifier")
+        self.assertEqual(row.environment_image_digest, "sha256:image")
+        self.assertEqual(row.repo_commit_sha, "abc123")
+        self.assertEqual(row.price_sheet_version, "openrouter-2026-07-03")
+        self.assertEqual(row.price_sheet_date, "2026-07-03")
+        self.assertEqual(row.seed, 42)
+        self.assertEqual(row.run_id, "run-1")
+        self.assertEqual(row.task_visibility, "public")
+        self.assertEqual(row.transcript_hash, "sha256:transcript")
 
     def test_cost_uses_long_context_rates_when_peak_context_crosses_threshold(self) -> None:
         prices = {
@@ -318,3 +491,56 @@ class ResultAggregationTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "no price found"):
             rollout_cost_usd(row, prices)
+
+    def test_merged_prices_preserve_gateway_specific_duplicate_aliases(self) -> None:
+        prices = merge_prices(
+            {
+                "openai/gpt-5.5": ModelPrice(
+                    input_per_1m=1.0,
+                    cached_input_per_1m=None,
+                    output_per_1m=10.0,
+                    provider="openai",
+                    gateway="openrouter",
+                )
+            },
+            {
+                "openai/gpt-5.5": ModelPrice(
+                    input_per_1m=100.0,
+                    cached_input_per_1m=None,
+                    output_per_1m=10.0,
+                    provider="openai",
+                    gateway="openai",
+                )
+            },
+        )
+        openrouter_row = row_from_mapping(
+            {
+                "model": "openai/gpt-5.5",
+                "task_id": "example",
+                "category": "fix",
+                "tier": "t1",
+                "rollout": 0,
+                "passed": True,
+                "input_tokens": 1_000_000,
+                "output_tokens": 0,
+                "turns": 1,
+                "inference_gateway": "openrouter",
+            }
+        )
+        direct_row = row_from_mapping(
+            {
+                "model": "openai/gpt-5.5",
+                "task_id": "example",
+                "category": "fix",
+                "tier": "t1",
+                "rollout": 0,
+                "passed": True,
+                "input_tokens": 1_000_000,
+                "output_tokens": 0,
+                "turns": 1,
+                "inference_gateway": "openai",
+            }
+        )
+
+        self.assertAlmostEqual(rollout_cost_usd(openrouter_row, prices), 1.0)
+        self.assertAlmostEqual(rollout_cost_usd(direct_row, prices), 100.0)

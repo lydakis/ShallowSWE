@@ -1,0 +1,92 @@
+{
+  "schema_version": "shallowswe.floor_selection.v0.1",
+  "saturation_threshold": 0.85,
+  "recommended_floor_model_config": "google/gemini-3.5-flash",
+  "selection_rule": "choose the non-saturated pair with the widest task pass-rate spread; large-band count breaks ties",
+  "candidates": [
+    {
+      "model_config": "google/gemini-3.5-flash",
+      "attempts": 36,
+      "tasks": 36,
+      "overall_pass_rate": 0.6666666666666666,
+      "saturated_overall": false,
+      "floor_candidate": true,
+      "task_pass_rate_min": 0.0,
+      "task_pass_rate_max": 1.0,
+      "task_pass_rate_range": 1.0,
+      "large_band_task_count": 0,
+      "size_pass_rates": {
+        "small": 1.0,
+        "medium": 0.5833333333333334,
+        "large": 0.4166666666666667
+      },
+      "category_size_pass_rates": {
+        "artifact/large": 0.25,
+        "artifact/medium": 0.25,
+        "artifact/small": 1.0,
+        "code/large": 0.75,
+        "code/medium": 1.0,
+        "code/small": 1.0,
+        "workflow/large": 0.25,
+        "workflow/medium": 0.5,
+        "workflow/small": 1.0
+      }
+    },
+    {
+      "model_config": "moonshotai/kimi-k2.7-code",
+      "attempts": 36,
+      "tasks": 36,
+      "overall_pass_rate": 0.6944444444444444,
+      "saturated_overall": false,
+      "floor_candidate": true,
+      "task_pass_rate_min": 0.0,
+      "task_pass_rate_max": 1.0,
+      "task_pass_rate_range": 1.0,
+      "large_band_task_count": 0,
+      "size_pass_rates": {
+        "small": 1.0,
+        "medium": 0.5,
+        "large": 0.5833333333333334
+      },
+      "category_size_pass_rates": {
+        "artifact/large": 0.25,
+        "artifact/medium": 0.0,
+        "artifact/small": 1.0,
+        "code/large": 1.0,
+        "code/medium": 1.0,
+        "code/small": 1.0,
+        "workflow/large": 0.5,
+        "workflow/medium": 0.5,
+        "workflow/small": 1.0
+      }
+    },
+    {
+      "model_config": "z-ai/glm-5.2",
+      "attempts": 36,
+      "tasks": 36,
+      "overall_pass_rate": 0.7222222222222222,
+      "saturated_overall": false,
+      "floor_candidate": true,
+      "task_pass_rate_min": 0.0,
+      "task_pass_rate_max": 1.0,
+      "task_pass_rate_range": 1.0,
+      "large_band_task_count": 0,
+      "size_pass_rates": {
+        "small": 1.0,
+        "medium": 0.5833333333333334,
+        "large": 0.5833333333333334
+      },
+      "category_size_pass_rates": {
+        "artifact/large": 0.25,
+        "artifact/medium": 0.25,
+        "artifact/small": 1.0,
+        "code/large": 1.0,
+        "code/medium": 1.0,
+        "code/small": 1.0,
+        "workflow/large": 0.5,
+        "workflow/medium": 0.5,
+        "workflow/small": 1.0
+      }
+    }
+  ]
+}

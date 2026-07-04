@@ -17,11 +17,11 @@ ShallowSWE is independent from DeepSWE. Pier is useful because it is a standard 
 
 - The problem definition in `SPEC.md`.
 - Original shallow tasks.
-- Category and tier taxonomy: Fix, Transform, Operate, Invoke; T1, T2, T3.
-- Calibration rules, including weakest-model saturation gates.
+- Category and size taxonomy: Code, Artifact, Workflow; small, medium, large.
+- Calibration rules, including pinned-ceiling and measured-floor gates.
 - Normalized `results.json` for the ShallowSWE site.
 - Versioned price sheets.
-- CPSC and token-per-success reporting.
+- Bounded repair-loop CPSC and token-per-success reporting.
 
 ## Task Layout
 
@@ -36,22 +36,65 @@ tasks/<task-id>/
   tests/
 ```
 
-Put ShallowSWE-specific fields in `[metadata]`, not in custom directory structure:
+Put ShallowSWE-specific fields in `[metadata]` and `[calibration]`, not in custom directory
+structure:
 
 ```toml
 [metadata]
-category = "fix"
-tier = "t1"
+category = "code"
+size = "small"
 shape = "implement-to-spec"
 subtype = "single-function-bugfix"
+
+[calibration]
+calibration_snapshot_id = "shallowswe-v0.1-candidate-2026-07-04"
+admission_decision = "candidate_pending_high_n"
+size_assignment_decision = "candidate_pending_high_n_floor"
 ```
 
 ## Current Decision
 
-Use Pier as the runner until it fails a concrete ShallowSWE requirement. Do not maintain a parallel harness.
+Use Pier as the runner until it fails a concrete ShallowSWE requirement. The final protocol needs a
+thin repair-loop controller around task execution: run the agent, run the hidden verifier, redact
+verifier output to the allowed feedback class, continue the same agent context, and stop at first
+pass or cap. Do not maintain a broader parallel harness unless Pier cannot support that controller.
+
+## Repair-Loop Continuation
+
+The current Pier `mini-swe-agent` integration is enough for one-shot calibration and filesystem
+plumbing, but it is not enough for final repair-loop scoring. The wrapper launches a fresh
+`mini-swe-agent` CLI process for each agent run, then Pier reads the resulting trajectory as output
+metadata. It does not feed the prior assistant/tool messages back into the next submission.
+
+Reusing the same sandbox would preserve edited files, but it would still be a fresh model
+conversation with appended feedback. That is a useful smoke test, not a scored ShallowSWE repair
+loop.
+
+For the v1 repair-loop pilot, ShallowSWE uses an import-path Pier agent:
+`shallowswe.pier_agents.resumable_mini_swe_agent:ResumableMiniSweAgent`. It uploads the local
+`lydakis/mini-swe-agent` fork into the task container, installs it into a venv, runs the first
+submission with `--task`, and runs later submissions with `--resume-from` plus sanitized
+`--resume-feedback`. That keeps the same workspace and conditions the next model call on the prior
+trajectory/messages.
+
+Before the first paid repair-loop pilot, use:
+
+```sh
+uv run shallowswe repair-loop-pilot-plan configs/shallowswe-repair-loop-pilot-v0.1.json
+```
+
+The plan must report `ready_for_final_protocol_pilot = true`. The current candidate plan passes this
+gate using the local mini-swe fork source at `/Users/lydakis/Developer/oss/mini-swe-agent`.
 
 ## Accounting Decision
 
-Treat tokens as canonical and dollars as derived. The exporter prefers Pier's ATIF `final_metrics` only when they reconcile with recursive raw provider usage in the mini-swe-agent trajectory. Pier or gateway `cost_usd` is stored only as `gateway_reported_cost_usd` reconciliation metadata; price-sheet derived CPSC remains the headline dollar metric.
+Treat tokens as canonical and dollars as derived. The exporter prefers Pier's ATIF `final_metrics`
+only when they reconcile with recursive raw provider usage in the mini-swe-agent trajectory. Pier or
+gateway `cost_usd` is stored only as `gateway_reported_cost_usd` reconciliation metadata;
+price-sheet derived repair-loop CPSC remains the headline dollar metric.
 
-OpenRouter is the default gateway for broad model access during panel plumbing. Official runs should pin upstream provider routing, disable gateway fallbacks, and record both `inference_gateway` and `upstream_provider` in each row. Provider, network, credit, credential, and routing failures are excluded from CPSC and retried; model failures inside the task are scored.
+OpenRouter is the default gateway for broad model access during panel plumbing. Official runs
+should pin upstream provider dispatch, disable gateway fallbacks, and record both
+`inference_gateway` and `upstream_provider` in each row. Provider, network, credit, credential,
+model-resolution, provider-dispatch, verifier-infra, and wall-time guard failures are excluded from
+CPSC and retried; model failures inside the repair loop are scored.

@@ -1,0 +1,186 @@
+{
+    "id": "882aed14-5d7b-4a82-80f9-7940cdcdaa80",
+    "started_at": "2026-07-04T12:10:15.505565",
+    "updated_at": "2026-07-04T13:17:55.669139",
+    "finished_at": "2026-07-04T13:17:55.669139",
+    "n_total_trials": 108,
+    "stats": {
+        "n_completed_trials": 108,
+        "n_errored_trials": 0,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "mini-swe-agent__google/gemini-3.5-flash__tasks": {
+                "n_trials": 36,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 0.5833333333333334
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "0.0": [
+                            "access-log-to-incidents__Ph4LaP7",
+                            "feature-branch-select-commits__c52z84s",
+                            "spec-to-release-checklist__ADs424A",
+                            "release-branch-cherry-pick__s9nRDp2",
+                            "post-build-status__SzpyZ4V",
+                            "markdown-table-inventory__X7XmUrT",
+                            "ticket-update-dont-duplicate__xD5Fa5q",
+                            "config-key-rollover__XtSD6GH",
+                            "merge-divergent-config-branches__Hkoay8Y",
+                            "subscription-summary-report__kCWHLkc",
+                            "billing-revenue-rollup__z2GQSFb",
+                            "support-metrics-package__FR4nrCZ",
+                            "env-flags-to-json__wiKBQQj",
+                            "audit-log-normalization__g3dpEbo",
+                            "ticket-cut-from-bug-report__LUaMuRy"
+                        ],
+                        "1.0": [
+                            "auth-token-expiry-regression__D693i3s",
+                            "cache-invalidates-on-settings-ch__mdGdXwo",
+                            "settings-null-default__6juqfCh",
+                            "config-flag-ignored__CdJ3Ean",
+                            "split-notification-renderer__97x3MbQ",
+                            "status-terminal-parity__NqV8sCL",
+                            "webhook-idempotency-parity__vkzR9g8",
+                            "strip-sort-allowlist__yRPgdKh",
+                            "api-pagination-consistency__Y9X4eSx",
+                            "rename-helper-symbol__y2sdRJS",
+                            "dependency-api-rename__5pYV58s",
+                            "date-window-inclusive__LX57tcr",
+                            "extract-error-fields__HLHJJAm",
+                            "ledger-schema-upgrade__9agpBJC",
+                            "user-export-field-rename__QZf4ifh",
+                            "invoice-cli-regression-test-fix__kkmJDfh",
+                            "payout-reconcile__o84UHmr",
+                            "ticket-state-reconcile__RE93n7t",
+                            "report-json-format__SUEtBhk",
+                            "move-module-fix-imports__EbMqnJq",
+                            "retry-error-fallback__gRoDhXG"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            },
+            "mini-swe-agent__moonshotai/kimi-k2.7-code__tasks": {
+                "n_trials": 36,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 0.6111111111111112
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "dependency-api-rename__zwTd8QC",
+                            "invoice-cli-regression-test-fix__NPjN4nB",
+                            "auth-token-expiry-regression__PSKuCE8",
+                            "cache-invalidates-on-settings-ch__diQjVv7",
+                            "config-flag-ignored__hEC2hpu",
+                            "extract-error-fields__ugCQiNC",
+                            "split-notification-renderer__6T3Tknt",
+                            "report-json-format__5N5xADX",
+                            "env-flags-to-json__bbb2vkz",
+                            "config-key-rollover__yCmPH8P",
+                            "strip-sort-allowlist__GwTfyhn",
+                            "status-terminal-parity__3rwfTTw",
+                            "webhook-idempotency-parity__Dm38Khj",
+                            "user-export-field-rename__4QVCPD7",
+                            "ticket-state-reconcile__VMqjecg",
+                            "ledger-schema-upgrade__RzTwHyJ",
+                            "date-window-inclusive__xkzCp7S",
+                            "api-pagination-consistency__28f6tCH",
+                            "rename-helper-symbol__dbSCXJF",
+                            "settings-null-default__FR6e69u",
+                            "move-module-fix-imports__KEHaUHe",
+                            "retry-error-fallback__mc8Bddi"
+                        ],
+                        "0.0": [
+                            "spec-to-release-checklist__6Xzavsm",
+                            "access-log-to-incidents__bA5JYin",
+                            "billing-revenue-rollup__pgzycHD",
+                            "release-branch-cherry-pick__ZCPGLKK",
+                            "support-metrics-package__bwdEfr5",
+                            "payout-reconcile__QPmyS6e",
+                            "markdown-table-inventory__Z3smH9Q",
+                            "post-build-status__jUsVSzc",
+                            "ticket-update-dont-duplicate__Wfi8gLg",
+                            "subscription-summary-report__f6Ad2Mu",
+                            "feature-branch-select-commits__2tcqT27",
+                            "merge-divergent-config-branches__FAZ9rEB",
+                            "audit-log-normalization__LQiJLQi",
+                            "ticket-cut-from-bug-report__RDdPEPM"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            },
+            "mini-swe-agent__z-ai/glm-5.2__tasks": {
+                "n_trials": 36,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 0.6388888888888888
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "config-flag-ignored__Y7nzWPH",
+                            "date-window-inclusive__Aa23cpZ",
+                            "settings-null-default__78tWrWf",
+                            "user-export-field-rename__zWZmr95",
+                            "payout-reconcile__y8v4rfs",
+                            "extract-error-fields__uuBVAeH",
+                            "config-key-rollover__x8PRQ2h",
+                            "cache-invalidates-on-settings-ch__GrweaCH",
+                            "ticket-state-reconcile__ujf5W3x",
+                            "strip-sort-allowlist__gbN6i4H",
+                            "ledger-schema-upgrade__QGHKV2J",
+                            "rename-helper-symbol__uJkuupg",
+                            "split-notification-renderer__HZpDdYC",
+                            "status-terminal-parity__JYpXAz7",
+                            "webhook-idempotency-parity__WyF3ZcE",
+                            "invoice-cli-regression-test-fix__G7QZN8N",
+                            "dependency-api-rename__tvui5xo",
+                            "api-pagination-consistency__u8DhZUE",
+                            "env-flags-to-json__7aXQwyN",
+                            "auth-token-expiry-regression__MigS6mT",
+                            "report-json-format__DCf8SNk",
+                            "move-module-fix-imports__mTmvp3j",
+                            "retry-error-fallback__426rtch"
+                        ],
+                        "0.0": [
+                            "spec-to-release-checklist__HwDYBTu",
+                            "support-metrics-package__quCRyvV",
+                            "release-branch-cherry-pick__vr6aFen",
+                            "subscription-summary-report__U2Lu4Gn",
+                            "access-log-to-incidents__dG3jZSj",
+                            "merge-divergent-config-branches__nJiaFKt",
+                            "feature-branch-select-commits__arRcwj9",
+                            "billing-revenue-rollup__iRtqRz8",
+                            "markdown-table-inventory__b9UTLir",
+                            "ticket-update-dont-duplicate__F2VGp3D",
+                            "post-build-status__RhRRPot",
+                            "audit-log-normalization__qGBKCzc",
+                            "ticket-cut-from-bug-report__TjJ4rVJ"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
+        },
+        "n_input_tokens": 5869603,
+        "n_cache_tokens": 3466600,
+        "n_output_tokens": 428149,
+        "cost_usd": 6.34346493448
+    }
+}

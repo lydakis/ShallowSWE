@@ -2,8 +2,8 @@
   {
     "model": "gpt-5.5",
     "task_id": "py-normalize-username",
-    "category": "fix",
-    "tier": "t1",
+    "category": "code",
+    "size": "small",
     "rollout": 0,
     "passed": true,
     "input_tokens": 7082,
@@ -45,6 +45,6 @@
     "exclusion_reason": null,
     "started_at": "2026-07-03T05:23:15.932663Z",
     "finished_at": "2026-07-03T05:23:49.218426Z",
-    "schema_version": "shallowswe.result.v0.2"
+    "schema_version": "shallowswe.result.v0.4"
   }
 ]

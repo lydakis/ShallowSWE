@@ -1,46 +1,47 @@
 {
-  "schema_version": "shallowswe.workload_index.v0.1",
+  "schema_version": "shallowswe.workload_index.v0.3",
   "weighting": {
-    "scheme": "equal_category_equal_tier_observed_task",
+    "scheme": "equal_category_equal_size_observed_task",
     "normalization": "renormalized_over_observed_tasks",
+    "included_sizes": [
+      "small",
+      "medium",
+      "large"
+    ],
     "categories": [
       {
-        "category": "fix",
-        "weight": 0.25
+        "category": "code",
+        "weight": 0.3333333333333333
       },
       {
-        "category": "transform",
-        "weight": 0.25
+        "category": "artifact",
+        "weight": 0.3333333333333333
       },
       {
-        "category": "operate",
-        "weight": 0.25
-      },
-      {
-        "category": "invoke",
-        "weight": 0.25
+        "category": "workflow",
+        "weight": 0.3333333333333333
       }
     ],
-    "tiers": [
+    "sizes": [
       {
-        "tier": "t1",
+        "size": "small",
         "weight_within_category": 0.3333333333333333
       },
       {
-        "tier": "t2",
+        "size": "medium",
         "weight_within_category": 0.3333333333333333
       },
       {
-        "tier": "t3",
+        "size": "large",
         "weight_within_category": 0.3333333333333333
       }
     ],
-    "target_tasks_per_category_tier": 3,
-    "declared_coverage_weight": 0.1111111111111111
+    "target_tasks_per_category_size": 3,
+    "declared_coverage_weight": 0.14814814814814814
   },
   "recompute_contract": {
-    "task_weight_formula": "category_weight * tier_weight_within_category * task_weight_within_category_tier, normalized over selected tasks",
-    "basket_metric_formula": "sum(normalized_task_weight * task_metric); return null for the official basket when any selected task has no numeric metric",
+    "task_weight_formula": "category_weight * size_weight_within_category * task_weight_within_category_size, normalized over selected tasks",
+    "basket_metric_formula": "weighted_mean_cost_per_attempt / weighted_pass_rate for CPSC; weighted_mean_tokens_per_attempt / weighted_pass_rate for tokens",
     "primary_metrics": [
       "cpsc",
       "tokens_per_success",
@@ -50,50 +51,50 @@
   "task_weights": [
     {
       "task_id": "invoice-cli-regression-test-fix",
-      "category": "fix",
-      "tier": "t2",
-      "category_weight": 0.25,
-      "tier_weight_within_category": 0.3333333333333333,
-      "observed_tasks_in_category_tier": 1,
-      "target_tasks_in_category_tier": 3,
-      "raw_observed_weight": 0.08333333333333333,
-      "declared_weight": 0.027777777777777776,
+      "category": "code",
+      "size": "medium",
+      "category_weight": 0.3333333333333333,
+      "size_weight_within_category": 0.3333333333333333,
+      "observed_tasks_in_category_size": 1,
+      "target_tasks_in_category_size": 3,
+      "raw_observed_weight": 0.1111111111111111,
+      "declared_weight": 0.037037037037037035,
       "default_weight": 0.25
     },
     {
       "task_id": "payout-reconcile",
-      "category": "transform",
-      "tier": "t3",
-      "category_weight": 0.25,
-      "tier_weight_within_category": 0.3333333333333333,
-      "observed_tasks_in_category_tier": 1,
-      "target_tasks_in_category_tier": 3,
-      "raw_observed_weight": 0.08333333333333333,
-      "declared_weight": 0.027777777777777776,
+      "category": "artifact",
+      "size": "large",
+      "category_weight": 0.3333333333333333,
+      "size_weight_within_category": 0.3333333333333333,
+      "observed_tasks_in_category_size": 1,
+      "target_tasks_in_category_size": 3,
+      "raw_observed_weight": 0.1111111111111111,
+      "declared_weight": 0.037037037037037035,
       "default_weight": 0.25
     },
     {
       "task_id": "report-json-format",
-      "category": "operate",
-      "tier": "t2",
-      "category_weight": 0.25,
-      "tier_weight_within_category": 0.3333333333333333,
-      "observed_tasks_in_category_tier": 1,
-      "target_tasks_in_category_tier": 3,
-      "raw_observed_weight": 0.08333333333333333,
-      "declared_weight": 0.027777777777777776,
+      "category": "workflow",
+      "size": "medium",
+      "category_weight": 0.3333333333333333,
+      "size_weight_within_category": 0.3333333333333333,
+      "observed_tasks_in_category_size": 1,
+      "target_tasks_in_category_size": 3,
+      "raw_observed_weight": 0.1111111111111111,
+      "declared_weight": 0.037037037037037035,
       "default_weight": 0.25
     },
     {
       "task_id": "config-flag-ignored",
-      "category": "operate",
-      "tier": "t3",
-      "category_weight": 0.25,
-      "tier_weight_within_category": 0.3333333333333333,
-      "observed_tasks_in_category_tier": 1,
-      "target_tasks_in_category_tier": 3,
-      "raw_observed_weight": 0.08333333333333333,
-      "declared_weight": 0.027777777777777776,
+      "category": "workflow",
+      "size": "large",
+      "category_weight": 0.3333333333333333,
+      "size_weight_within_category": 0.3333333333333333,
+      "observed_tasks_in_category_size": 1,
+      "target_tasks_in_category_size": 3,
+      "raw_observed_weight": 0.1111111111111111,
+      "declared_weight": 0.037037037037037035,
       "default_weight": 0.25
     }
   ],
@@ -102,8 +103,8 @@
       "model_config": "anthropic/claude-fable-5[low]",
       "model": "anthropic/claude-fable-5",
       "reasoning_effort": "low",
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -125,14 +126,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -1.850371707708594e-17,
       "cost_delta_vs_gateway_ratio": -1.4788421854563863e-16,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-fable-5[low]",
       "model": "anthropic/claude-fable-5",
       "reasoning_effort": "low",
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -154,14 +155,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-fable-5[low]",
       "model": "anthropic/claude-fable-5",
       "reasoning_effort": "low",
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -183,14 +184,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -1.850371707708594e-17,
       "cost_delta_vs_gateway_ratio": -2.121945346276173e-16,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-fable-5[low]",
       "model": "anthropic/claude-fable-5",
       "reasoning_effort": "low",
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -212,14 +213,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-opus-4.8[low]",
       "model": "anthropic/claude-opus-4.8",
       "reasoning_effort": "low",
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -241,14 +242,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-opus-4.8[low]",
       "model": "anthropic/claude-opus-4.8",
       "reasoning_effort": "low",
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -270,14 +271,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 1.850371707708594e-17,
       "cost_delta_vs_gateway_ratio": 2.0836776177748104e-16,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-opus-4.8[low]",
       "model": "anthropic/claude-opus-4.8",
       "reasoning_effort": "low",
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -299,14 +300,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 9.25185853854297e-18,
       "cost_delta_vs_gateway_ratio": 1.6067740499145494e-16,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-opus-4.8[low]",
       "model": "anthropic/claude-opus-4.8",
       "reasoning_effort": "low",
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -328,14 +329,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-opus-4.8[medium]",
       "model": "anthropic/claude-opus-4.8",
       "reasoning_effort": "medium",
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -357,14 +358,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-opus-4.8[medium]",
       "model": "anthropic/claude-opus-4.8",
       "reasoning_effort": "medium",
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -386,14 +387,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-opus-4.8[medium]",
       "model": "anthropic/claude-opus-4.8",
       "reasoning_effort": "medium",
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -415,14 +416,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-opus-4.8[medium]",
       "model": "anthropic/claude-opus-4.8",
       "reasoning_effort": "medium",
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -444,14 +445,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-sonnet-5[low]",
       "model": "anthropic/claude-sonnet-5",
       "reasoning_effort": "low",
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -473,14 +474,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-sonnet-5[low]",
       "model": "anthropic/claude-sonnet-5",
       "reasoning_effort": "low",
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -502,14 +503,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-sonnet-5[low]",
       "model": "anthropic/claude-sonnet-5",
       "reasoning_effort": "low",
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -531,14 +532,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 9.25185853854297e-18,
       "cost_delta_vs_gateway_ratio": 2.843226348661024e-16,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-sonnet-5[low]",
       "model": "anthropic/claude-sonnet-5",
       "reasoning_effort": "low",
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -560,14 +561,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -4.625929269271485e-18,
       "cost_delta_vs_gateway_ratio": -1.7241436992025753e-16,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-sonnet-5[medium]",
       "model": "anthropic/claude-sonnet-5",
       "reasoning_effort": "medium",
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -589,14 +590,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-sonnet-5[medium]",
       "model": "anthropic/claude-sonnet-5",
       "reasoning_effort": "medium",
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -618,14 +619,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-sonnet-5[medium]",
       "model": "anthropic/claude-sonnet-5",
       "reasoning_effort": "medium",
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -647,14 +648,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "anthropic/claude-sonnet-5[medium]",
       "model": "anthropic/claude-sonnet-5",
       "reasoning_effort": "medium",
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -676,14 +677,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "google/gemini-3.5-flash[medium]",
       "model": "google/gemini-3.5-flash",
       "reasoning_effort": "medium",
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -705,14 +706,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -1.850371707708594e-17,
       "cost_delta_vs_gateway_ratio": -1.5386625286693733e-16,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "google/gemini-3.5-flash[medium]",
       "model": "google/gemini-3.5-flash",
       "reasoning_effort": "medium",
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -734,14 +735,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "google/gemini-3.5-flash[medium]",
       "model": "google/gemini-3.5-flash",
       "reasoning_effort": "medium",
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -763,14 +764,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "google/gemini-3.5-flash[medium]",
       "model": "google/gemini-3.5-flash",
       "reasoning_effort": "medium",
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -792,14 +793,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -3.700743415417188e-17,
       "cost_delta_vs_gateway_ratio": -1.825005950009413e-16,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "moonshotai/kimi-k2.7-code",
       "model": "moonshotai/kimi-k2.7-code",
       "reasoning_effort": null,
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -821,14 +822,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -0.0034058533333333335,
       "cost_delta_vs_gateway_ratio": -0.1314077880922801,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "moonshotai/kimi-k2.7-code",
       "model": "moonshotai/kimi-k2.7-code",
       "reasoning_effort": null,
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -850,14 +851,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -0.006181983333333326,
       "cost_delta_vs_gateway_ratio": -0.1379362330663032,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "moonshotai/kimi-k2.7-code",
       "model": "moonshotai/kimi-k2.7-code",
       "reasoning_effort": null,
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -879,14 +880,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -0.005066690000000008,
       "cost_delta_vs_gateway_ratio": -0.14234390447344583,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "moonshotai/kimi-k2.7-code",
       "model": "moonshotai/kimi-k2.7-code",
       "reasoning_effort": null,
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -908,14 +909,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -0.0041748166666666685,
       "cost_delta_vs_gateway_ratio": -0.11512023906353369,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "openai/gpt-5.5[low]",
       "model": "openai/gpt-5.5",
       "reasoning_effort": "low",
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -937,14 +938,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "openai/gpt-5.5[low]",
       "model": "openai/gpt-5.5",
       "reasoning_effort": "low",
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -966,14 +967,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "openai/gpt-5.5[low]",
       "model": "openai/gpt-5.5",
       "reasoning_effort": "low",
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -995,14 +996,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "openai/gpt-5.5[low]",
       "model": "openai/gpt-5.5",
       "reasoning_effort": "low",
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -1024,14 +1025,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "openai/gpt-5.5[medium]",
       "model": "openai/gpt-5.5",
       "reasoning_effort": "medium",
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -1053,14 +1054,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "openai/gpt-5.5[medium]",
       "model": "openai/gpt-5.5",
       "reasoning_effort": "medium",
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -1082,14 +1083,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "openai/gpt-5.5[medium]",
       "model": "openai/gpt-5.5",
       "reasoning_effort": "medium",
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -1111,14 +1112,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "openai/gpt-5.5[medium]",
       "model": "openai/gpt-5.5",
       "reasoning_effort": "medium",
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -1140,14 +1141,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": 0.0,
       "cost_delta_vs_gateway_ratio": 0.0,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "z-ai/glm-5.2[high]",
       "model": "z-ai/glm-5.2",
       "reasoning_effort": "high",
-      "category": "fix",
-      "tier": "t2",
+      "category": "code",
+      "size": "medium",
       "task_id": "invoice-cli-regression-test-fix",
       "total_trials": 3,
       "attempts": 3,
@@ -1169,14 +1170,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -0.0005057771199999972,
       "cost_delta_vs_gateway_ratio": -0.03065961194867525,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "z-ai/glm-5.2[high]",
       "model": "z-ai/glm-5.2",
       "reasoning_effort": "high",
-      "category": "transform",
-      "tier": "t3",
+      "category": "artifact",
+      "size": "large",
       "task_id": "payout-reconcile",
       "total_trials": 3,
       "attempts": 3,
@@ -1198,14 +1199,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -0.0016274738800000077,
       "cost_delta_vs_gateway_ratio": -0.03184627124413354,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "z-ai/glm-5.2[high]",
       "model": "z-ai/glm-5.2",
       "reasoning_effort": "high",
-      "category": "operate",
-      "tier": "t2",
+      "category": "workflow",
+      "size": "medium",
       "task_id": "report-json-format",
       "total_trials": 3,
       "attempts": 3,
@@ -1227,14 +1228,14 @@
       "mean_cost_delta_vs_gateway_per_attempt": -0.00028793266666666634,
       "cost_delta_vs_gateway_ratio": -0.025628270890560412,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     },
     {
       "model_config": "z-ai/glm-5.2[high]",
       "model": "z-ai/glm-5.2",
       "reasoning_effort": "high",
-      "category": "operate",
-      "tier": "t3",
+      "category": "workflow",
+      "size": "large",
       "task_id": "config-flag-ignored",
       "total_trials": 3,
       "attempts": 3,
@@ -1256,7 +1257,7 @@
       "mean_cost_delta_vs_gateway_per_attempt": -0.000945892373333331,
       "cost_delta_vs_gateway_ratio": -0.03865767718495012,
       "default_weight": 0.25,
-      "declared_weight": 0.027777777777777776
+      "declared_weight": 0.037037037037037035
     }
   ],
   "models": [
@@ -1272,6 +1273,10 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 1.0,
       "weighted_mean_turns": 4.833333333333333,
+      "weighted_mean_cost_per_attempt": 0.11159087499999999,
+      "partial_weighted_mean_cost_per_attempt": 0.11159087499999999,
+      "weighted_mean_tokens_per_attempt": 16050.416666666666,
+      "partial_weighted_mean_tokens_per_attempt": 16050.416666666666,
       "basket_cpsc": 0.11159087499999999,
       "partial_basket_cpsc": 0.11159087499999999,
       "basket_tokens_per_success": 16050.416666666666,
@@ -1291,10 +1296,14 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 0.9166666666666666,
       "weighted_mean_turns": 7.0,
-      "basket_cpsc": 0.080944125,
-      "partial_basket_cpsc": 0.080944125,
-      "basket_tokens_per_success": 29304.416666666664,
-      "partial_basket_tokens_per_success": 29304.416666666664,
+      "weighted_mean_cost_per_attempt": 0.06984372916666667,
+      "partial_weighted_mean_cost_per_attempt": 0.06984372916666667,
+      "weighted_mean_tokens_per_attempt": 26023.25,
+      "partial_weighted_mean_tokens_per_attempt": 26023.25,
+      "basket_cpsc": 0.0761931590909091,
+      "partial_basket_cpsc": 0.0761931590909091,
+      "basket_tokens_per_success": 28389.0,
+      "partial_basket_tokens_per_success": 28389.0,
       "rank_by_basket_cpsc": 5,
       "rank_by_basket_tokens_per_success": 2
     },
@@ -1310,10 +1319,14 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 0.9166666666666666,
       "weighted_mean_turns": 8.25,
-      "basket_cpsc": 0.13729997916666667,
-      "partial_basket_cpsc": 0.13729997916666667,
-      "basket_tokens_per_success": 45685.25,
-      "partial_basket_tokens_per_success": 45685.25,
+      "weighted_mean_cost_per_attempt": 0.12091760416666665,
+      "partial_weighted_mean_cost_per_attempt": 0.12091760416666665,
+      "weighted_mean_tokens_per_attempt": 41779.75,
+      "partial_weighted_mean_tokens_per_attempt": 41779.75,
+      "basket_cpsc": 0.13191011363636362,
+      "partial_basket_cpsc": 0.13191011363636362,
+      "basket_tokens_per_success": 45577.909090909096,
+      "partial_basket_tokens_per_success": 45577.909090909096,
       "rank_by_basket_cpsc": 7,
       "rank_by_basket_tokens_per_success": 7
     },
@@ -1329,6 +1342,10 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 1.0,
       "weighted_mean_turns": 8.166666666666668,
+      "weighted_mean_cost_per_attempt": 0.031225783333333333,
+      "partial_weighted_mean_cost_per_attempt": 0.031225783333333333,
+      "weighted_mean_tokens_per_attempt": 32968.58333333333,
+      "partial_weighted_mean_tokens_per_attempt": 32968.58333333333,
       "basket_cpsc": 0.031225783333333333,
       "partial_basket_cpsc": 0.031225783333333333,
       "basket_tokens_per_success": 32968.58333333333,
@@ -1348,11 +1365,15 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 1.0,
       "weighted_mean_turns": 8.916666666666668,
+      "weighted_mean_cost_per_attempt": 0.039756525,
+      "partial_weighted_mean_cost_per_attempt": 0.039756525,
+      "weighted_mean_tokens_per_attempt": 39805.666666666664,
+      "partial_weighted_mean_tokens_per_attempt": 39805.666666666664,
       "basket_cpsc": 0.039756525,
       "partial_basket_cpsc": 0.039756525,
       "basket_tokens_per_success": 39805.666666666664,
       "partial_basket_tokens_per_success": 39805.666666666664,
-      "rank_by_basket_cpsc": 3,
+      "rank_by_basket_cpsc": 4,
       "rank_by_basket_tokens_per_success": 5
     },
     {
@@ -1367,10 +1388,14 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 0.9166666666666666,
       "weighted_mean_turns": 21.666666666666664,
-      "basket_cpsc": 0.24943966875,
-      "partial_basket_cpsc": 0.24943966875,
-      "basket_tokens_per_success": 212720.62499999997,
-      "partial_basket_tokens_per_success": 212720.62499999997,
+      "weighted_mean_cost_per_attempt": 0.2022469125,
+      "partial_weighted_mean_cost_per_attempt": 0.2022469125,
+      "weighted_mean_tokens_per_attempt": 174412.08333333334,
+      "partial_weighted_mean_tokens_per_attempt": 174412.08333333334,
+      "basket_cpsc": 0.22063299545454546,
+      "partial_basket_cpsc": 0.22063299545454546,
+      "basket_tokens_per_success": 190267.7272727273,
+      "partial_basket_tokens_per_success": 190267.7272727273,
       "rank_by_basket_cpsc": 10,
       "rank_by_basket_tokens_per_success": 10
     },
@@ -1386,11 +1411,15 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 0.8333333333333333,
       "weighted_mean_turns": 12.916666666666668,
-      "basket_cpsc": 0.05025937666666666,
-      "partial_basket_cpsc": 0.05025937666666666,
-      "basket_tokens_per_success": 88501.33333333333,
-      "partial_basket_tokens_per_success": 88501.33333333333,
-      "rank_by_basket_cpsc": 4,
+      "weighted_mean_cost_per_attempt": 0.03094152333333333,
+      "partial_weighted_mean_cost_per_attempt": 0.03094152333333333,
+      "weighted_mean_tokens_per_attempt": 56964.33333333333,
+      "partial_weighted_mean_tokens_per_attempt": 56964.33333333333,
+      "basket_cpsc": 0.037129828000000004,
+      "partial_basket_cpsc": 0.037129828000000004,
+      "basket_tokens_per_success": 68357.2,
+      "partial_basket_tokens_per_success": 68357.2,
+      "rank_by_basket_cpsc": 3,
       "rank_by_basket_tokens_per_success": 9
     },
     {
@@ -1405,6 +1434,10 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 1.0,
       "weighted_mean_turns": 8.916666666666668,
+      "weighted_mean_cost_per_attempt": 0.14507716666666667,
+      "partial_weighted_mean_cost_per_attempt": 0.14507716666666667,
+      "weighted_mean_tokens_per_attempt": 39179.75,
+      "partial_weighted_mean_tokens_per_attempt": 39179.75,
       "basket_cpsc": 0.14507716666666667,
       "partial_basket_cpsc": 0.14507716666666667,
       "basket_tokens_per_success": 39179.75,
@@ -1424,6 +1457,10 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 1.0,
       "weighted_mean_turns": 10.75,
+      "weighted_mean_cost_per_attempt": 0.19978716666666665,
+      "partial_weighted_mean_cost_per_attempt": 0.19978716666666665,
+      "weighted_mean_tokens_per_attempt": 62557.33333333333,
+      "partial_weighted_mean_tokens_per_attempt": 62557.33333333333,
       "basket_cpsc": 0.19978716666666665,
       "partial_basket_cpsc": 0.19978716666666665,
       "basket_tokens_per_success": 62557.33333333333,
@@ -1443,6 +1480,10 @@
       "unresolved_weight": 0.0,
       "weighted_pass_rate": 1.0,
       "weighted_mean_turns": 10.083333333333334,
+      "weighted_mean_cost_per_attempt": 0.024984225,
+      "partial_weighted_mean_cost_per_attempt": 0.024984225,
+      "weighted_mean_tokens_per_attempt": 43297.66666666667,
+      "partial_weighted_mean_tokens_per_attempt": 43297.66666666667,
       "basket_cpsc": 0.024984225,
       "partial_basket_cpsc": 0.024984225,
       "basket_tokens_per_success": 43297.66666666667,

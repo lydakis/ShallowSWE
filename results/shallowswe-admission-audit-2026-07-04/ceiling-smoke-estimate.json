@@ -1,0 +1,44 @@
+{
+  "schema_version": "shallowswe.budget.v0.1",
+  "panel": "shallowswe-ceiling-v0.1",
+  "panel_status": "calibration",
+  "task_count": 36,
+  "rollouts_per_task": 1,
+  "estimated_attempts_per_row": 36,
+  "estimated_total_attempts": 72,
+  "token_basis": {
+    "input_tokens": 150000,
+    "output_tokens": 8000,
+    "cache_read_tokens": 100000,
+    "cache_write_tokens": 0,
+    "peak_context_tokens": 2000
+  },
+  "rows": 2,
+  "priced_rows": 2,
+  "missing_price_rows": 0,
+  "priced_subset_cost_usd": 37.44,
+  "estimated_full_panel_cost_usd": 37.44,
+  "budget_limit_usd": 40.0,
+  "over_budget": false,
+  "row_estimates": [
+    {
+      "id": "ceiling_gpt_5_5_medium",
+      "model": "openai/gpt-5.5",
+      "upstream_provider": "openai",
+      "reasoning_effort": "medium",
+      "status": "priced",
+      "estimated_cost_per_attempt_usd": 0.54,
+      "estimated_row_cost_usd": 19.44
+    },
+    {
+      "id": "second_opinion_claude_opus_4_8_medium",
+      "model": "anthropic/claude-opus-4.8",
+      "upstream_provider": "anthropic",
+      "reasoning_effort": "medium",
+      "status": "priced",
+      "estimated_cost_per_attempt_usd": 0.5,
+      "estimated_row_cost_usd": 18.0
+    }
+  ],
+  "missing_prices": []
+}

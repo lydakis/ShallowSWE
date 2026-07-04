@@ -1,0 +1,74 @@
+{
+  "schema_version": "shallowswe.repair_loop_pilot_plan.v0.1",
+  "name": "shallowswe-repair-loop-pilot-v0.1",
+  "snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+  "task_root": "tasks",
+  "task_ids": [
+    "invoice-cli-regression-test-fix",
+    "cache-invalidates-on-settings-change",
+    "env-flags-to-json",
+    "access-log-to-incidents",
+    "config-flag-ignored",
+    "merge-divergent-config-branches"
+  ],
+  "protocol": {
+    "single_model_run_invariant": true,
+    "no_fallbacks": true,
+    "requires_conversation_continuation": true,
+    "requires_filesystem_continuation": true,
+    "allowed_feedback_classes": [
+      "generic_failure",
+      "runtime_error",
+      "missing_required_artifact",
+      "output_mismatch"
+    ],
+    "verifier_submission_cap": 3,
+    "agent_step_cap": 20,
+    "wall_time_cap_seconds": 1200,
+    "dollar_cap_usd": 5.0
+  },
+  "model_configs": [
+    {
+      "id": "resumable_mini_swe_gemini_3_5_flash_medium",
+      "agent": "shallowswe-resumable-mini-swe-agent",
+      "model": "openrouter/google/gemini-3.5-flash",
+      "effort": "medium",
+      "sampling_config": "configs/mini-swe-agent-calibration.yaml",
+      "single_model_per_run": true,
+      "allow_fallbacks": false,
+      "continuation_capability": "conversation_and_filesystem",
+      "final_protocol_eligible": true,
+      "notes": "Uses the local lydakis/mini-swe-agent fork plus the ShallowSWE Pier import-path agent to resume the prior trajectory, append sanitized verifier feedback, and continue in the same task container."
+    },
+    {
+      "id": "local_oracle_protocol_smoke",
+      "agent": "oracle",
+      "model": null,
+      "effort": "none",
+      "sampling_config": null,
+      "single_model_per_run": true,
+      "allow_fallbacks": false,
+      "continuation_capability": "not_model_scoring",
+      "final_protocol_eligible": false,
+      "notes": "No-cost local smoke row only. It can validate task packaging and verifier plumbing but cannot produce scored model evidence."
+    }
+  ],
+  "budget_gate": {
+    "max_budget_usd": 25.0,
+    "requires_explicit_approval_if_over_budget": true
+  },
+  "fork_requirement": {
+    "required": true,
+    "satisfied": true,
+    "target": "mini-swe-agent or equivalent SWE agent backend",
+    "source_dir": "/Users/lydakis/Developer/oss/mini-swe-agent",
+    "must_support": [
+      "resume prior trajectory/messages",
+      "condition every repair submission on the same conversation state",
+      "append sanitized verifier feedback as user message",
+      "continue in same workspace without resetting files",
+      "emit cumulative usage across repair submissions",
+      "preserve transcript hash across submissions"
+    ]
+  }
+}

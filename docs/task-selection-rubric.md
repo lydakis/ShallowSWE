@@ -12,12 +12,14 @@ Use `docs/verifier-contract.md` for the separate question of whether a candidate
 
 ShallowSWE measures the cost of routine software work delegated to coding agents. A task should look like a work packet an orchestrator could hand to a subagent with a concrete expected outcome.
 
-The benchmark has one weighted task surface with tiered difficulty:
+The benchmark has one weighted task surface with two public axes:
 
-- **T1-T3 price index**: the official shallow-work basket. These tasks should remain close to saturation for the accepted floor model so CPSC measures routine-work efficiency.
-- **T4 shelf edge**: an opt-in crossover tier. These tasks stay routine in kind, but add enough sequencing and edge cases that weaker or lower-effort models may fail. T4 locates the point where a more capable or higher-effort row becomes cheaper overall.
+- **Category**: code, artifact, or workflow.
+- **Size**: small, medium, or large.
 
-Do not make T1-T3 harder just to force low-effort failures. Keep T1-T3 calibrated to the shallow price-index promise, and use T4 for the crossover question.
+Do not make tasks harder just to force low-effort failures. The benchmark should model realistic
+company workload mixes, then let repair-loop solve rate, verifier submissions, turns, tokens, and
+CPSC reveal where the economical up-front model choice changes.
 
 ## Inclusion Rule
 
@@ -43,22 +45,24 @@ A task does not belong when any of these are true:
 
 Each task has exactly one primary category.
 
-### Fix
+### Code
 
-Correct a defect or regression in existing behavior.
+Change code behavior.
 
 Good examples:
 
 - A documented input path crashes on an edge case.
 - A duplicate import is counted twice.
-- A config alias is parsed but ignored downstream.
+- A regression test needs to be added before a fix.
+- A small feature needs CLI, serializer, or API wiring.
+- A new status or enum needs to behave consistently across code surfaces.
 
 Selection risks:
 
-- Too many Fix tasks make the benchmark a bugfix suite only.
+- Too many Code tasks make the benchmark a bugfix suite only.
 - Single-function fixes are useful for smoke tests but weak benchmark evidence unless project context matters.
 
-### Transform
+### Artifact
 
 Convert, join, normalize, or summarize local artifacts into a fixed output schema.
 
@@ -73,69 +77,53 @@ Selection risks:
 - If all rules are in one visible mapping table, the task may become clerical.
 - If rules are underspecified, the verifier becomes arbitrary.
 
-### Operate
+### Workflow
 
-Perform multi-step maintenance in a repo or local workflow.
+Perform multi-step maintenance in a repo, local workflow, or deterministic tool/API surface.
 
 Good examples:
 
 - Trace a config value through env, loader, service, and CLI.
 - Rename a concept across code, fixtures, docs, and compatibility aliases.
 - Move or split modules while preserving public imports.
-
-Selection risks:
-
-- Git/worktree tasks must have deterministic expected state.
-- Avoid chores that are mostly formatting, unless they expose meaningful repo orientation cost.
-
-### Invoke
-
-Use a deterministic local mock API or tool surface to reach a final state.
-
-Good examples:
-
 - Find an existing ticket and update it instead of creating a duplicate.
 - Reconcile a local manifest against API-side state.
 - Follow a documented retry path after a deterministic transient error.
 
 Selection risks:
 
+- Git/worktree tasks must have deterministic expected state.
 - The API must be local and fully deterministic.
 - Call count is usually diagnostic, not pass/fail. Use pass/fail only for final state and destructive overreach.
+- Avoid chores that are mostly formatting, unless they expose meaningful repo orientation cost.
 
-Invoke is load-bearing for ShallowSWE's positioning: as work gets decomposed into subagent-sized units, this category measures the cost of delegated tool/API action.
+Workflow is load-bearing for ShallowSWE's positioning: as work gets decomposed into subagent-sized units, this category measures the cost of delegated repo, tool, and API action.
 
-## Complexity Bands
+## Size Bands
 
-Initial tier labels are authoring hypotheses. Calibration data decides the final tier.
+Initial size labels are authoring hypotheses. Calibration data can move a task up or down.
 
-Tier calibration uses a versioned panel of 2-3 inexpensive anchor rows, not a single control model.
-This avoids overfitting tier labels to one model's quirks and gives the suite a reproducible ruler.
-Calibration runs are quarantined from published leaderboard stats; published snapshots use fresh
-rollouts and flag anchor rows when they are included.
+Size calibration uses the protocol in `docs/calibration-protocol.md`. Author labels are hypotheses;
+the final size is assigned by cheap first-submit behavior after the task clears the pre-registered
+ceiling one-shot gate. Published snapshots use fresh repair-loop seeds for scoring.
 
-| Tier | Purpose | Expected surface | Calibration gate |
+| Size | Purpose | Expected surface | Floor one-shot diagnostic |
 | --- | --- | --- | --- |
-| T1 | Sanity and cheap calibration | 1-3 files, obvious local behavior | Calibration-panel median near 100% |
-| T2 | Main routine-work band | 4-8 files, one small behavior change | Calibration-panel median >=90% |
-| T3 | Saturated shallow edge | 8-20 files, multiple touch points | Calibration-panel median 80-95% |
-| T4 | Shelf edge crossover | Routine work with longer chains, more edge cases, or more state | Calibration-panel median 30-70% and top row >=80% |
+| Small | Sanity and high-volume delegated work | 1-3 files, obvious local behavior | 70-100% |
+| Medium | Main routine-work band | 4-8 files, one routine behavior change | 30-70% |
+| Large | Bigger sub-agent work packets | 8-20 files, more state or sequencing | 0-40% |
 
-T4 is part of the same price index once accepted. It should still be labeled by tier so users can
-understand where failures start affecting CPSC.
+Use coarse bands only. Small-N results should be treated as plumbing or sizing hints, not final
+assignment. Spend high-N repair-loop calibration on the selected floor and ceiling before running
+expensive publish panels.
 
-Use coarse bands only. Distinguishing 95% from 85% requires enough rollouts that small-N results
-should be treated as sizing evidence, not tier assignment. Spend high-N calibration on cheap anchor
-rows before running expensive publish panels.
+The size axis measures two different mechanisms:
 
-The ladder measures two different mechanisms:
-
-- T1-T2 isolate flailing under saturation: models usually pass, but spend different turns, tokens,
-  and dollars.
-- T3 introduces the first retry-tax pressure while staying mostly inside the shallow price-index
-  promise.
-- T4 is the shelf edge where failures should appear often enough to expose capability/cost
-  crossovers.
+- Small isolates flailing under saturation: most rows pass, but spend different turns and dollars.
+- Medium is the routine delegation band where cheap rows may begin losing reliability.
+- Large introduces convergence pressure while staying inside realistic delegated work. It should
+  straddle the reliability-cost break-even zone for the selected floor or it is not doing useful
+  work.
 
 ## Complexity Levers
 
@@ -187,8 +175,8 @@ the source and add little value after the task has been rewritten from scratch.
 Before authoring an instance, write a short pattern card:
 
 ```toml
-category = "invoke"
-tier_hypothesis = "t3"
+category = "workflow"
+size_hypothesis = "large"
 maintenance_type = "corrective"
 shape = "reconcile-states"
 delegated_work_unit = "reconcile a service manifest against ticket API state"
@@ -217,21 +205,20 @@ A candidate can enter calibration only after these gates pass:
 4. **Reference independence**: the verifier accepts two materially different correct solutions.
 5. **Contamination control**: source pattern notes are present and no content was copied.
 6. **Environment reliability**: the base project and verifier run offline and deterministically.
-7. **Pre-registered calibration**: the card states expected pass-rate bands and the predicted
-   cheapest-correct row class before any model run.
+7. **Pre-registered calibration**: the card states expected one-shot calibration bands and the
+   predicted cheapest-correct row class before any model run.
 
 Official admission requires verifier validation, human review, and calibration as defined in `docs/verifier-contract.md` and `docs/task-sourcing-methodology.md`.
 
 ## Next Slice
 
-Do not fill the full matrix next. First add tasks that test the missing and uncertain dimensions:
+The 36-task scaffold is authored. The next slice is calibration and reshaping, not filling slots:
 
-| Task slot | Suggested shape | Why |
-| --- | --- | --- |
-| Invoke T2 | `update-dont-duplicate` | Adds the missing category with a realistic idempotency workflow |
-| Invoke T3 | `reconcile-states` | Tests delegated API/tool action with more state |
-| Fix T4 | `parallel-fix` or `regression-from-diff` | Finds whether higher capability beats low effort on multi-site repair |
-| Operate T4 | `cross-cutting-rename` or `merge-divergent-branches` | Tests sequencing and repo-state discipline |
-| Transform T4 | `schema-upgrade-pipeline` plus rejects | Tests longer deterministic transformation chains |
+- Run the floor-selection sweep and choose the floor by measured dynamic range.
+- Run the pinned ceiling and selected floor at calibration N.
+- Move or reshape tasks that miss their measured size band.
+- Add context-heavy large tasks only if the large band remains too fixture-small to expose
+  reliability-cost crossover behavior.
 
-The goal of this slice is not a publishable headline. It is to see whether the CPSC curves bend with complexity and whether the verifier contract is strong enough before scaling the suite.
+The goal is to make the CPSC denominator earn its place while keeping every task shallow enough for
+the ceiling to pass.

@@ -1,0 +1,102 @@
+{
+  "combined_from": {
+    "diagnostic_interrupted_kept_tasks": [
+      "access-log-to-incidents",
+      "api-pagination-consistency",
+      "audit-log-normalization",
+      "auth-token-expiry-regression",
+      "config-flag-ignored",
+      "config-key-rollover",
+      "dependency-api-rename",
+      "extract-error-fields",
+      "feature-branch-select-commits",
+      "invoice-cli-regression-test-fix",
+      "ledger-schema-upgrade",
+      "merge-divergent-config-branches",
+      "move-module-fix-imports",
+      "payout-reconcile",
+      "post-build-status",
+      "release-branch-cherry-pick",
+      "rename-helper-symbol",
+      "retry-error-fallback",
+      "spec-to-release-checklist",
+      "split-notification-renderer",
+      "strip-sort-allowlist",
+      "support-metrics-package",
+      "ticket-cut-from-bug-report",
+      "ticket-state-reconcile",
+      "ticket-update-dont-duplicate",
+      "user-export-field-rename",
+      "webhook-idempotency-parity"
+    ],
+    "recovery_date_env_tasks": [
+      "date-window-inclusive",
+      "env-flags-to-json"
+    ],
+    "recovery_nonstatus_tasks": [
+      "billing-revenue-rollup",
+      "cache-invalidates-on-settings-change",
+      "markdown-table-inventory",
+      "report-json-format",
+      "settings-null-default",
+      "subscription-summary-report"
+    ],
+    "recovery_status_long_tasks": [
+      "status-terminal-parity"
+    ]
+  },
+  "replacement_tasks": [
+    "billing-revenue-rollup",
+    "cache-invalidates-on-settings-change",
+    "date-window-inclusive",
+    "env-flags-to-json",
+    "markdown-table-inventory",
+    "report-json-format",
+    "settings-null-default",
+    "status-terminal-parity",
+    "subscription-summary-report"
+  ],
+  "row_count": 108,
+  "task_count": 36,
+  "status_counts": {
+    "scored": 108
+  },
+  "rows_per_task": {
+    "access-log-to-incidents": 3,
+    "api-pagination-consistency": 3,
+    "audit-log-normalization": 3,
+    "auth-token-expiry-regression": 3,
+    "billing-revenue-rollup": 3,
+    "cache-invalidates-on-settings-change": 3,
+    "config-flag-ignored": 3,
+    "config-key-rollover": 3,
+    "date-window-inclusive": 3,
+    "dependency-api-rename": 3,
+    "env-flags-to-json": 3,
+    "extract-error-fields": 3,
+    "feature-branch-select-commits": 3,
+    "invoice-cli-regression-test-fix": 3,
+    "ledger-schema-upgrade": 3,
+    "markdown-table-inventory": 3,
+    "merge-divergent-config-branches": 3,
+    "move-module-fix-imports": 3,
+    "payout-reconcile": 3,
+    "post-build-status": 3,
+    "release-branch-cherry-pick": 3,
+    "rename-helper-symbol": 3,
+    "report-json-format": 3,
+    "retry-error-fallback": 3,
+    "settings-null-default": 3,
+    "spec-to-release-checklist": 3,
+    "split-notification-renderer": 3,
+    "status-terminal-parity": 3,
+    "strip-sort-allowlist": 3,
+    "subscription-summary-report": 3,
+    "support-metrics-package": 3,
+    "ticket-cut-from-bug-report": 3,
+    "ticket-state-reconcile": 3,
+    "ticket-update-dont-duplicate": 3,
+    "user-export-field-rename": 3,
+    "webhook-idempotency-parity": 3
+  }
+}

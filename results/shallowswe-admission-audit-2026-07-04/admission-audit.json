@@ -1,0 +1,1983 @@
+{
+  "schema_version": "shallowswe.admission_audit.v0.2",
+  "tasks_root": "tasks",
+  "official_task_count": 36,
+  "ready_task_count": 36,
+  "ready_for_snapshot": true,
+  "ready_for_calibrated_snapshot_count": 0,
+  "ready_for_calibrated_snapshot": false,
+  "issue_counts": {},
+  "calibration_issue_counts": {
+    "admission_decision_not_accepted": 36,
+    "pending_ceiling_rollouts": 36,
+    "pending_floor_rollouts": 36,
+    "size_assignment_not_accepted": 36
+  },
+  "tasks": [
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "access-log-to-incidents",
+      "category": "artifact",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "api-pagination-consistency",
+      "category": "code",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "audit-log-normalization",
+      "category": "artifact",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "auth-token-expiry-regression",
+      "category": "code",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "billing-revenue-rollup",
+      "category": "artifact",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "cache-invalidates-on-settings-change",
+      "category": "code",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "config-flag-ignored",
+      "category": "workflow",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "config-key-rollover",
+      "category": "workflow",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "date-window-inclusive",
+      "category": "code",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "dependency-api-rename",
+      "category": "workflow",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "env-flags-to-json",
+      "category": "artifact",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "extract-error-fields",
+      "category": "artifact",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "feature-branch-select-commits",
+      "category": "workflow",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "invoice-cli-regression-test-fix",
+      "category": "code",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "ledger-schema-upgrade",
+      "category": "artifact",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "markdown-table-inventory",
+      "category": "artifact",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "merge-divergent-config-branches",
+      "category": "workflow",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "move-module-fix-imports",
+      "category": "workflow",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "payout-reconcile",
+      "category": "artifact",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "post-build-status",
+      "category": "workflow",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": false,
+      "accepted_alternate_solution_paths": [],
+      "calibration": {
+        "has_calibration_provenance": false
+      },
+      "task_id": "py-normalize-username",
+      "category": "code",
+      "size": "small",
+      "calibration_status": "smoke",
+      "official_candidate": false,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "release-branch-cherry-pick",
+      "category": "workflow",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "rename-helper-symbol",
+      "category": "workflow",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "report-json-format",
+      "category": "code",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "retry-error-fallback",
+      "category": "code",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "settings-null-default",
+      "category": "code",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "spec-to-release-checklist",
+      "category": "artifact",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "split-notification-renderer",
+      "category": "code",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "status-terminal-parity",
+      "category": "code",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "strip-sort-allowlist",
+      "category": "artifact",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "subscription-summary-report",
+      "category": "artifact",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "support-metrics-package",
+      "category": "artifact",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "small",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "ticket-cut-from-bug-report",
+      "category": "workflow",
+      "size": "small",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "ticket-state-reconcile",
+      "category": "workflow",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 0,
+          "one_shot_pass_rate": 0.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "ticket-update-dont-duplicate",
+      "category": "workflow",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "medium",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "user-export-field-rename",
+      "category": "code",
+      "size": "medium",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    },
+    {
+      "has_instruction": true,
+      "has_environment": true,
+      "has_verifier": true,
+      "verifier_propagates_status": true,
+      "has_reference_solution": true,
+      "has_alternate_solution": true,
+      "accepted_alternate_solution_paths": [
+        "solution_alt/solve.sh"
+      ],
+      "calibration": {
+        "has_calibration_provenance": true,
+        "calibration_snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+        "admission_decision": "candidate_pending_high_n",
+        "size_assignment_decision": "candidate_pending_high_n_floor",
+        "ceiling": {
+          "panel": "shallowswe-ceiling-v0.1",
+          "primary_model_config": "openai/gpt-5.5[medium]",
+          "one_shot_target_n": 16,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "gate_pass_threshold": 0.75,
+          "decision": "needs_more_rollouts",
+          "source_rollouts": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+        },
+        "floor": {
+          "panel": "shallowswe-calibration-v0.1",
+          "selected_model_config": "google/gemini-3.5-flash",
+          "one_shot_target_n": 10,
+          "one_shot_current_n": 1,
+          "one_shot_passes": 1,
+          "one_shot_pass_rate": 1.0,
+          "size_band": "large",
+          "decision": "needs_high_n_confirmation",
+          "source_rollouts": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json",
+          "evidence_artifact": "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
+        }
+      },
+      "task_id": "webhook-idempotency-parity",
+      "category": "code",
+      "size": "large",
+      "calibration_status": "candidate",
+      "official_candidate": true,
+      "admission_issues": [],
+      "ready_for_snapshot": true,
+      "calibration_issues": [
+        "admission_decision_not_accepted",
+        "size_assignment_not_accepted",
+        "pending_ceiling_rollouts",
+        "pending_floor_rollouts"
+      ],
+      "ready_for_calibrated_snapshot": false
+    }
+  ]
+}

@@ -27,8 +27,10 @@ for raw, expected in cases:
         raise SystemExit(f"normalize_username({raw!r}) returned {actual!r}, expected {expected!r}")
 PY
 
-if [[ $? -eq 0 ]]; then
+status=$?
+if [[ $status -eq 0 ]]; then
   echo 1 > /logs/verifier/reward.txt
 else
   echo 0 > /logs/verifier/reward.txt
 fi
+exit "$status"

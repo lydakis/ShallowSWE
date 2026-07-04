@@ -1,0 +1,269 @@
+from __future__ import annotations
+
+from dataclasses import asdict
+from datetime import datetime, timezone
+from pathlib import Path
+import asyncio
+import hashlib
+import json
+import traceback
+
+from pier.models.agent.context import AgentContext
+from pier.models.trial.config import AgentConfig, EnvironmentConfig, TaskConfig, TrialConfig
+from pier.models.trial.result import ExceptionInfo, TimingInfo, TrialResult
+from pier.models.verifier.result import VerifierResult
+from pier.trial.trial import Trial
+
+from .results import RepairLoopResult
+from .task_metadata import load_task
+
+
+RESUMABLE_MINI_SWE_AGENT_IMPORT_PATH = (
+    "shallowswe.pier_agents.resumable_mini_swe_agent:ResumableMiniSweAgent"
+)
+DEFAULT_REPAIR_FEEDBACK = "Verification failed. Continue working."
+
+
+def run_pier_repair_loop(
+    *,
+    task_path: Path,
+    trials_dir: Path,
+    trial_name: str,
+    model_name: str,
+    mini_swe_agent_source_dir: Path,
+    config_file: Path,
+    agent_env: dict[str, str],
+    max_verifier_submissions: int = 3,
+    environment_type: str = "docker",
+    reasoning_effort: str | None = None,
+) -> RepairLoopResult:
+    if max_verifier_submissions < 1:
+        raise ValueError("max_verifier_submissions must be positive")
+    return asyncio.run(
+        _run_pier_repair_loop(
+            task_path=task_path,
+            trials_dir=trials_dir,
+            trial_name=trial_name,
+            model_name=model_name,
+            mini_swe_agent_source_dir=mini_swe_agent_source_dir,
+            config_file=config_file,
+            agent_env=agent_env,
+            max_verifier_submissions=max_verifier_submissions,
+            environment_type=environment_type,
+            reasoning_effort=reasoning_effort,
+        )
+    )
+
+
+def dump_repair_loop_rows(rows: list[RepairLoopResult]) -> str:
+    return json.dumps([asdict(row) for row in rows], indent=2) + "\n"
+
+
+def load_env_file(path: Path, keys: set[str]) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for raw_line in path.read_text().splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if key in keys:
+            values[key] = value.strip().strip("'\"")
+    return values
+
+
+async def _run_pier_repair_loop(
+    *,
+    task_path: Path,
+    trials_dir: Path,
+    trial_name: str,
+    model_name: str,
+    mini_swe_agent_source_dir: Path,
+    config_file: Path,
+    agent_env: dict[str, str],
+    max_verifier_submissions: int,
+    environment_type: str,
+    reasoning_effort: str | None,
+) -> RepairLoopResult:
+    shallow_task = load_task(task_path)
+    started_at = datetime.now(timezone.utc)
+    config = TrialConfig(
+        task=TaskConfig(path=task_path),
+        trial_name=trial_name,
+        trials_dir=trials_dir,
+        agent=AgentConfig(
+            import_path=RESUMABLE_MINI_SWE_AGENT_IMPORT_PATH,
+            model_name=model_name,
+            kwargs={
+                "mini_swe_agent_source_dir": str(mini_swe_agent_source_dir),
+                "config_file": str(config_file),
+                **(
+                    {"reasoning_effort": reasoning_effort}
+                    if reasoning_effort is not None
+                    else {}
+                ),
+            },
+            env=agent_env,
+        ),
+        environment=EnvironmentConfig(type=environment_type, delete=True),
+    )
+    trial = await Trial.create(config)
+    _initialize_trial_result(trial, started_at=started_at)
+
+    contexts: list[AgentContext] = []
+    verifier_submissions = 0
+    passed = False
+    stop_reason = "verifier_submission_cap"
+
+    try:
+        await trial._setup_environment()
+        await trial._environment.run_healthcheck()
+        trial._environment.default_user = trial._task.config.agent.user
+        await trial._setup_agent()
+        trial._result.agent_info = trial._agent.to_agent_info()
+
+        feedback = trial._task.instruction
+        for _ in range(max_verifier_submissions):
+            context = AgentContext()
+            contexts.append(context)
+            await _execute_agent_submission(trial=trial, instruction=feedback, context=context)
+            exit_status = _mini_swe_exit_status(trial)
+            if exit_status != "Submitted":
+                stop_reason = _stop_reason_for_agent_exit(exit_status)
+                break
+            verifier_result = await _verify_submission(trial)
+            verifier_submissions += 1
+            if _verifier_passed(verifier_result):
+                passed = True
+                stop_reason = "passed"
+                break
+            feedback = DEFAULT_REPAIR_FEEDBACK
+    except Exception as exc:
+        trial.result.exception_info = ExceptionInfo.from_exception(exc)
+        trial._trial_paths.exception_message_path.write_text(traceback.format_exc())
+        stop_reason = "runner_exception"
+    finally:
+        try:
+            await trial._cleanup_and_finalize()
+        finally:
+            trial._close_logger_handler()
+
+    finished_at = datetime.now(timezone.utc)
+    final_context = contexts[-1] if contexts else AgentContext()
+    transcript_hash = _file_sha256(trial._trial_paths.agent_dir / "mini-swe-agent.trajectory.json")
+    return RepairLoopResult(
+        model=model_name,
+        task_id=shallow_task.task_id,
+        category=shallow_task.category,
+        size=shallow_task.size,
+        loop=0,
+        passed=passed,
+        stop_reason=stop_reason,
+        verifier_submissions=verifier_submissions,
+        input_tokens=final_context.n_input_tokens or 0,
+        output_tokens=final_context.n_output_tokens or 0,
+        cache_read_tokens=final_context.n_cache_tokens or 0,
+        cache_write_tokens=0,
+        turns=final_context.n_agent_steps or 0,
+        agent_steps=final_context.n_agent_steps or 0,
+        peak_context_tokens=final_context.peak_context_tokens,
+        gateway_reported_cost_usd=final_context.cost_usd,
+        agent="shallowswe-resumable-mini-swe-agent",
+        agent_version=trial._agent.version(),
+        runner="pier-private-repair-loop-pilot",
+        task_version=f"{shallow_task.task_id}@local",
+        task_suite_version="shallowswe-v0.1-candidate",
+        seed=0,
+        run_id=trial_name,
+        task_visibility="local-hidden-verifier",
+        transcript_hash=transcript_hash,
+        started_at=started_at.isoformat(),
+        finished_at=finished_at.isoformat(),
+    )
+
+
+def _initialize_trial_result(trial: Trial, *, started_at: datetime) -> None:
+    trial._trial_paths.trial_dir.mkdir(parents=True, exist_ok=True)
+    trial._trial_paths.config_path.write_text(trial.config.model_dump_json(indent=4))
+    trial._result = TrialResult(
+        trial_name=trial.config.trial_name,
+        task_name=trial._task.name,
+        task_id=trial.config.task.get_task_id(),
+        started_at=started_at,
+        config=trial.config,
+        task_checksum=trial._task.checksum,
+        trial_uri=trial._trial_paths.trial_dir.expanduser().resolve().as_uri(),
+        agent_info=trial._agent.to_agent_info(),
+        source=trial.config.task.source,
+    )
+
+
+async def _execute_agent_submission(
+    *,
+    trial: Trial,
+    instruction: str,
+    context: AgentContext,
+) -> None:
+    trial._are_agent_logs_downloaded = False
+    trial.result.agent_execution = TimingInfo(started_at=datetime.now(timezone.utc))
+    try:
+        trial._environment.default_user = trial._task.config.agent.user
+        await trial._execution.run_agent(instruction=instruction, context=context)
+        await trial._maybe_download_logs(
+            source_dir=trial._environment.env_paths.agent_dir.as_posix(),
+            target_dir=trial._trial_paths.agent_dir,
+        )
+        trial._maybe_populate_agent_context(context)
+        trial.result.agent_result = context
+        await trial._run_pre_artifacts_script()
+        trial._are_artifacts_collected = False
+        await trial._maybe_upload_agent_logs()
+        await trial._collect_artifacts()
+    finally:
+        trial.result.agent_execution.finished_at = datetime.now(timezone.utc)
+        trial._environment.default_user = None
+
+
+async def _verify_submission(trial: Trial) -> VerifierResult:
+    env_paths = trial._environment.env_paths
+    await trial._environment.reset_dirs(
+        remove_dirs=[env_paths.verifier_dir, env_paths.tests_dir],
+        create_dirs=[env_paths.verifier_dir, env_paths.tests_dir],
+        chmod_dirs=[env_paths.verifier_dir],
+    )
+    trial._environment.default_user = trial._task.config.verifier.user
+    try:
+        return await trial._verify_once(step_cfg=None)
+    finally:
+        trial._environment.default_user = None
+
+
+def _verifier_passed(verifier_result: VerifierResult) -> bool:
+    rewards = verifier_result.rewards or {}
+    return float(rewards.get("reward", 0.0)) >= 1.0
+
+
+def _mini_swe_exit_status(trial: Trial) -> str | None:
+    trajectory_path = trial._trial_paths.agent_dir / "mini-swe-agent.trajectory.json"
+    if not trajectory_path.exists():
+        return None
+    try:
+        trajectory = json.loads(trajectory_path.read_text())
+    except json.JSONDecodeError:
+        return None
+    exit_status = trajectory.get("info", {}).get("exit_status")
+    return str(exit_status) if exit_status else None
+
+
+def _stop_reason_for_agent_exit(exit_status: str | None) -> str:
+    if exit_status == "LimitsExceeded":
+        return "agent_step_cap"
+    if exit_status:
+        return f"agent_exit_{exit_status.lower()}"
+    return "agent_exit_unknown"
+
+
+def _file_sha256(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    return hashlib.sha256(path.read_bytes()).hexdigest()

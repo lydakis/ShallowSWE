@@ -1,0 +1,5 @@
+invoice_id,account_id,plan,amount,status
+INV-1,A-1,pro,120,paid
+INV-2,A-2,basic,40,paid
+INV-3,A-3,pro,120,paid
+INV-4,A-4,enterprise,500,void

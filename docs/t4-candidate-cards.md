@@ -1,11 +1,16 @@
-# T4 Shelf-Edge Candidate Cards
+# Historical T4 Candidate Cards
 
-These cards define the first proposed T4 task set. `ticket-state-reconcile`,
+Status: deprecated as active taxonomy. ShallowSWE now uses the public fields
+`category = code|artifact|workflow` and `size = small|medium|large`. These notes are retained only
+as calibration history for tasks that have since been folded into the large size band.
+
+These cards defined the first proposed T4 task set. `ticket-state-reconcile`,
 `config-key-rollover`, `status-terminal-parity`, and `ledger-schema-upgrade` now exist under
-`tasks/`. Each card must survive verifier review, calibration, and external critique before it is
-accepted as a T4 task.
+`tasks/`. Current acceptance happens through the small/medium/large calibration protocol, not
+through a T4 gate.
 
-T4 uses the same benchmark price index as T1-T3 once accepted. The goal is to find crossover points where cheap or low-effort rows stop being the cheapest path to a correct result.
+The useful idea from this file is the crossover pattern: find routine tasks where cheap or
+low-effort rows stop being the cheapest path to a correct result.
 
 ## Design Target
 
@@ -21,7 +26,7 @@ The expected failure mode for weaker rows is flailing, partial completion, dupli
 
 ## Admission Rules
 
-Each T4 card must pre-register a calibration hypothesis before any model run:
+Each historical card pre-registered a calibration hypothesis before any model run:
 
 - expected pass-rate band for floor or weak rows,
 - expected pass-rate band for frontier/top-gated rows,
@@ -34,8 +39,8 @@ Calibration rollouts are quarantined from published leaderboard results.
 Every accepted task must pass the verifier with two materially different correct solutions: the
 reference solution and an alternate solution with different structure or helper decomposition.
 
-If every scored row passes at saturation, the task is not accepted as T4. It can be demoted to T3
-or kept as an internal probe.
+Under the current protocol, if every scored floor candidate passes at saturation, the task is moved
+to small/medium or reshaped. It is not kept as a special tier.
 
 Issue links and public benchmark links are not published in this file. They may live in a private
 authoring log only. Public cards record the abstract shape and contamination notes.
@@ -49,10 +54,10 @@ authoring log only. Public cards record the abstract shape and contamination not
 | T4-FIX-001 | `status-terminal-parity` | Fix | `parallel-fix` | saturated N=1 probe |
 | T4-TRANSFORM-001 | `ledger-schema-upgrade` | Transform | `schema-upgrade-pipeline` | demoted to T3 after N=15 calibration |
 | T4-OPERATE-001 | `config-key-rollover` | Operate | `cross-cutting-rename` | saturated N=1 plumbing probe |
-| T4-INVOKE-001 | `ticket-state-reconcile` | Invoke | `reconcile-states` | accepted T4 after calibration |
+| T4-INVOKE-001 | `ticket-state-reconcile` | Invoke | `reconcile-states` | folded into large workflow |
 
-Invoke T4 has now proven the mock API pattern at the shelf edge. Smaller Invoke T1-T3 tasks are
-still needed for the default price-index basket.
+The mock API reconciliation pattern produced a real large workflow signal. Smaller workflow tasks
+now live in the default 3x3 basket.
 
 ## T4-FIX-001: `status-terminal-parity`
 
@@ -369,22 +374,22 @@ passed through the Docker runner.
 
 N=15 cheap-anchor calibration on `shallowswe-calibration-v0.1` produced anchor pass rates of
 0.333, 0.400, and 0.667, with median 0.400. GPT-5.5 medium passed 5/5 as the top-gated row.
-The task is accepted as T4 and marked `accepted_t4`.
+The task is retained as a large workflow candidate under the current taxonomy.
 
 ## First Authoring Recommendation
 
 Author in this order:
 
-1. `ticket-state-reconcile`: author next, because Invoke remains missing and state reconciliation
-   exposed real shelf-edge failures. It is now accepted T4 after calibration.
+1. `ticket-state-reconcile`: authored and retained because state reconciliation exposed real large
+   workflow failures.
 2. `status-terminal-parity`: authored and locally validated, but N=1 cheap-anchor sweep saturated.
-3. `config-key-rollover`: authored as a cheap plumbing probe. Its first N=1 expanded-panel sweep saturated, so do not accept it as T4 without redesign or calibration evidence.
-4. `ledger-schema-upgrade`: authored as the first true T4 signal candidate, but N=15 cheap-panel
-   calibration demoted it to T3. Anchor pass rates were 0.800, 0.867, and 0.933, with median
-   0.867, so the N=1 Gemini failure was not stable enough for T4 admission.
+3. `config-key-rollover`: authored as a cheap plumbing probe. Its first N=1 expanded-panel sweep
+   saturated, so it needs redesign or calibration evidence before large-size admission.
+4. `ledger-schema-upgrade`: authored as a large-signal candidate, but N=15 cheap-panel calibration
+   put it below the large band. Anchor pass rates were 0.800, 0.867, and 0.933, with median 0.867,
+   so the N=1 Gemini failure was not stable enough for large admission.
 
-Next, author smaller `cut-ticket` and `update-dont-duplicate` Invoke tasks so the basket has Invoke
-coverage below the shelf edge.
+The current 36-task scaffold already includes smaller ticket/update workflow coverage.
 
 ## Questions For External Review
 

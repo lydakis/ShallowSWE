@@ -1,0 +1,5 @@
+ticket_id,agent_id,priority,response_minutes
+T-1,A-1,p1,20
+T-2,A-1,p2,180
+T-3,A-2,p1,70
+T-4,A-3,p3,300

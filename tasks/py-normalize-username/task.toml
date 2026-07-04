@@ -4,16 +4,16 @@ schema_version = "1.2"
 name = "shallowswe/py-normalize-username"
 description = "Fix a small Python username normalization bug."
 authors = [{ name = "George Lydakis" }]
-keywords = ["shallowswe", "fix", "t1", "python"]
+keywords = ["shallowswe", "code", "small", "python", "smoke"]
 
 [metadata]
-category = "fix"
-tier = "t1"
+category = "code"
+size = "small"
 language = "python"
 shape = "edge-case-patch"
 subtype = "single-function-bugfix"
 expected_steps = 1
-calibration_status = "seed"
+calibration_status = "smoke"
 weakest_model_pass_rate = 0.0
 weakest_model_rollouts = 0
 

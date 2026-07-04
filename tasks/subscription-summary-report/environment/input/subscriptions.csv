@@ -1,0 +1,6 @@
+account_id,plan,status,mrr
+A-1,pro,active,120
+A-2,basic,active,40
+A-3,pro,cancelled,120
+A-4,enterprise,trialing,0
+A-5,basic,active,40

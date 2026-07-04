@@ -2,7 +2,7 @@
   "schema_version": "shallowswe.panel.v0.1",
   "name": "shallowswe-calibration-v0.1",
   "status": "calibration",
-  "description": "Versioned cheap anchor panel for ShallowSWE tier calibration. Calibration runs are quarantined from published leaderboard results.",
+  "description": "Versioned cheap candidate panel for ShallowSWE floor selection. Calibration runs are quarantined from published leaderboard results.",
   "defaults": {
     "harness": "mini-swe-agent",
     "inference_gateway": "openrouter",
@@ -11,14 +11,14 @@
     }
   },
   "selection_policy": {
-    "purpose": "Define T1-T4 difficulty bands by median pass rate across inexpensive anchor rows rather than one control model.",
+    "purpose": "Select a primary floor-probe configuration by measured dynamic range across ShallowSWE tasks, then assign small/medium/large by floor pass-rate bands.",
     "published_stats_policy": "Calibration rollouts do not count as published leaderboard rollouts.",
-    "versioning_policy": "Bump the calibration panel version when an anchor model disappears or the panel is materially changed.",
+    "versioning_policy": "Bump the calibration panel version when a candidate model disappears, pricing changes materially, or the selected floor saturates large tasks.",
+    "floor_selection_rule": "Choose the pair with the widest pass-rate spread that is useful across the task set.",
     "bands": {
-      "t1": "median pass rate near 100%",
-      "t2": "median pass rate >=90%",
-      "t3": "median pass rate 80-95%",
-      "t4": "median pass rate 30-70% plus top-gated row >=80%"
+      "small": "selected floor one-shot pass rate 70-100% plus pinned ceiling gate >=75%",
+      "medium": "selected floor one-shot pass rate 30-70% plus pinned ceiling gate >=75%",
+      "large": "selected floor one-shot pass rate 0-40% plus pinned ceiling gate >=75%"
     }
   },
   "rows": [

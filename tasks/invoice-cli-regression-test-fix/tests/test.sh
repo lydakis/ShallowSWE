@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-mkdir -p /logs/verifier
+APP_DIR="${APP_DIR:-/app}"
+LOG_DIR="${LOG_DIR:-/logs/verifier}"
+mkdir -p "$LOG_DIR"
 
 python3 - <<'PY'
 from pathlib import Path
 import csv
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, "/app")
+APP_ROOT = Path(os.environ.get("APP_DIR", "/app"))
+LOG_DIR = Path(os.environ.get("LOG_DIR", "/logs/verifier"))
+
+sys.path.insert(0, str(APP_ROOT))
 
 from invoice_tool.importer import import_invoices
 from invoice_tool.summary import summarize
@@ -42,8 +49,12 @@ class HiddenInvoiceBehaviorTests(unittest.TestCase):
         )
 
     def test_cli_uses_deduplicated_import(self) -> None:
+        env = dict(os.environ)
+        env["PYTHONPATH"] = str(APP_ROOT)
         result = subprocess.run(
             [sys.executable, "-m", "invoice_tool.cli", str(self.make_csv())],
+            cwd=APP_ROOT,
+            env=env,
             check=True,
             text=True,
             stdout=subprocess.PIPE,
@@ -53,11 +64,72 @@ class HiddenInvoiceBehaviorTests(unittest.TestCase):
         self.assertIn("total: $17.50", result.stdout)
 
     def test_agent_added_duplicate_regression_test(self) -> None:
-        test_files = list(Path("/app/tests").glob("test*.py"))
-        combined = "\n".join(path.read_text() for path in test_files)
+        def run_visible_tests(app_root: Path) -> subprocess.CompletedProcess[str]:
+            env = dict(os.environ)
+            env["PYTHONPATH"] = str(app_root)
+            return subprocess.run(
+                [sys.executable, "-m", "unittest", "discover", "-s", "tests"],
+                cwd=app_root,
+                env=env,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
 
-        self.assertIn("duplicate", combined.lower())
-        self.assertIn("invoice", combined.lower())
+        fixed_result = run_visible_tests(APP_ROOT)
+        self.assertEqual(
+            fixed_result.returncode,
+            0,
+            fixed_result.stdout + fixed_result.stderr,
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            mutant_app = Path(tmp) / "app"
+            shutil.copytree(
+                APP_ROOT,
+                mutant_app,
+                ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+            )
+            (mutant_app / "invoice_tool" / "importer.py").write_text(
+                '''from __future__ import annotations
+
+import csv
+from dataclasses import dataclass
+from pathlib import Path
+
+
+@dataclass(frozen=True)
+class Invoice:
+    invoice_id: str
+    customer: str
+    amount: float
+    status: str
+
+
+def import_invoices(path: str | Path) -> list[Invoice]:
+    invoices: list[Invoice] = []
+    with Path(path).open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            invoices.append(
+                Invoice(
+                    invoice_id=row["invoice_id"].strip(),
+                    customer=row["customer"].strip(),
+                    amount=float(row["amount"]),
+                    status=row["status"].strip().lower(),
+                )
+            )
+    return invoices
+'''
+            )
+
+            mutant_result = run_visible_tests(mutant_app)
+
+        self.assertNotEqual(
+            mutant_result.returncode,
+            0,
+            "visible tests still pass when duplicate-import bug is restored",
+        )
 
 
 if __name__ == "__main__":
@@ -68,8 +140,8 @@ PY
 
 status=$?
 if [[ $status -eq 0 ]]; then
-  echo 1 > /logs/verifier/reward.txt
+  echo 1 > "$LOG_DIR/reward.txt"
 else
-  echo 0 > /logs/verifier/reward.txt
+  echo 0 > "$LOG_DIR/reward.txt"
 fi
 exit "$status"

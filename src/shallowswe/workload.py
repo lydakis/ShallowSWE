@@ -3,8 +3,8 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Iterable
 
-from .results import ModelPrice, RolloutResult, aggregate_results
-from .task_metadata import CATEGORY_ORDER, TIER_ORDER
+from .results import PriceCatalog, RolloutResult, aggregate_results
+from .task_metadata import CATEGORY_ORDER, SIZE_ORDER
 
 
 WORKLOAD_INDEX_SCHEMA_VERSION = "shallowswe.workload_index.v0.3"
@@ -13,8 +13,8 @@ WORKLOAD_INDEX_SCHEMA_VERSION = "shallowswe.workload_index.v0.3"
 def build_workload_index(
     rows: Iterable[RolloutResult],
     *,
-    prices: dict[str, ModelPrice] | None = None,
-    target_tasks_per_cell: int = 3,
+    prices: PriceCatalog | None = None,
+    target_tasks_per_cell: int = 4,
 ) -> dict[str, object]:
     if target_tasks_per_cell <= 0:
         raise ValueError("target_tasks_per_cell must be positive")
@@ -22,7 +22,7 @@ def build_workload_index(
     row_list = list(rows)
     task_weights = _task_weights(row_list, target_tasks_per_cell=target_tasks_per_cell)
     task_weight_by_key = {
-        (str(task["category"]), str(task["tier"]), str(task["task_id"])): task
+        (str(task["category"]), str(task["size"]), str(task["task_id"])): task
         for task in task_weights
     }
     cell_summaries = aggregate_results(
@@ -32,7 +32,7 @@ def build_workload_index(
             "model",
             "reasoning_effort",
             "category",
-            "tier",
+            "size",
             "task_id",
         ),
         prices=prices,
@@ -43,7 +43,7 @@ def build_workload_index(
         weight = task_weight_by_key[
             (
                 str(summary["category"]),
-                str(summary["tier"]),
+                str(summary["size"]),
                 str(summary["task_id"]),
             )
         ]
@@ -62,24 +62,24 @@ def build_workload_index(
     return {
         "schema_version": WORKLOAD_INDEX_SCHEMA_VERSION,
         "weighting": {
-            "scheme": "equal_category_equal_tier_observed_task",
+            "scheme": "equal_category_equal_size_observed_task",
             "normalization": "renormalized_over_observed_tasks",
-            "included_tiers": list(TIER_ORDER),
+            "included_sizes": list(SIZE_ORDER),
             "categories": [
                 {"category": category, "weight": 1 / len(CATEGORY_ORDER)}
                 for category in CATEGORY_ORDER
             ],
-            "tiers": [
-                {"tier": tier, "weight_within_category": 1 / len(TIER_ORDER)}
-                for tier in TIER_ORDER
+            "sizes": [
+                {"size": size, "weight_within_category": 1 / len(SIZE_ORDER)}
+                for size in SIZE_ORDER
             ],
-            "target_tasks_per_category_tier": target_tasks_per_cell,
+            "target_tasks_per_category_size": target_tasks_per_cell,
             "declared_coverage_weight": coverage_weight,
         },
         "recompute_contract": {
             "task_weight_formula": (
-                "category_weight * tier_weight_within_category * "
-                "task_weight_within_category_tier, normalized over selected tasks"
+                "category_weight * size_weight_within_category * "
+                "task_weight_within_category_size, normalized over selected tasks"
             ),
             "basket_metric_formula": (
                 "weighted_mean_cost_per_attempt / weighted_pass_rate for CPSC; "
@@ -99,32 +99,32 @@ def _task_weights(
     target_tasks_per_cell: int,
 ) -> list[dict[str, object]]:
     tasks = sorted(
-        {(row.category, row.tier, row.task_id) for row in rows},
-        key=lambda item: (_category_rank(item[0]), _tier_rank(item[1]), item[2]),
+        {(row.category, row.size, row.task_id) for row in rows},
+        key=lambda item: (_category_rank(item[0]), _size_rank(item[1]), item[2]),
     )
     if not tasks:
         return []
 
     observed_by_cell: dict[tuple[str, str], int] = defaultdict(int)
-    for category, tier, _task_id in tasks:
-        observed_by_cell[(category, tier)] += 1
+    for category, size, _task_id in tasks:
+        observed_by_cell[(category, size)] += 1
 
     raw_weights = []
-    for category, tier, task_id in tasks:
+    for category, size, task_id in tasks:
         category_weight = 1 / len(CATEGORY_ORDER)
-        tier_weight = 1 / len(TIER_ORDER)
-        observed_tasks_in_cell = observed_by_cell[(category, tier)]
-        raw_observed_weight = category_weight * tier_weight / observed_tasks_in_cell
-        declared_weight = category_weight * tier_weight / target_tasks_per_cell
+        size_weight = 1 / len(SIZE_ORDER)
+        observed_tasks_in_cell = observed_by_cell[(category, size)]
+        raw_observed_weight = category_weight * size_weight / observed_tasks_in_cell
+        declared_weight = category_weight * size_weight / target_tasks_per_cell
         raw_weights.append(
             {
                 "task_id": task_id,
                 "category": category,
-                "tier": tier,
+                "size": size,
                 "category_weight": category_weight,
-                "tier_weight_within_category": tier_weight,
-                "observed_tasks_in_category_tier": observed_tasks_in_cell,
-                "target_tasks_in_category_tier": target_tasks_per_cell,
+                "size_weight_within_category": size_weight,
+                "observed_tasks_in_category_size": observed_tasks_in_cell,
+                "target_tasks_in_category_size": target_tasks_per_cell,
                 "raw_observed_weight": raw_observed_weight,
                 "declared_weight": declared_weight,
             }
@@ -247,7 +247,7 @@ def _cell_sort_key(cell: dict[str, object]) -> tuple[object, ...]:
     return (
         str(cell["model_config"]),
         _category_rank(str(cell["category"])),
-        _tier_rank(str(cell["tier"])),
+        _size_rank(str(cell["size"])),
         str(cell["task_id"]),
     )
 
@@ -256,8 +256,8 @@ def _category_rank(category: str) -> int:
     return CATEGORY_ORDER.index(category) if category in CATEGORY_ORDER else len(CATEGORY_ORDER)
 
 
-def _tier_rank(tier: str) -> int:
-    return TIER_ORDER.index(tier) if tier in TIER_ORDER else len(TIER_ORDER)
+def _size_rank(size: str) -> int:
+    return SIZE_ORDER.index(size) if size in SIZE_ORDER else len(SIZE_ORDER)
 
 
 def _is_number(value: object) -> bool:

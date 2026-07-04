@@ -4,11 +4,11 @@ schema_version = "1.2"
 name = "shallowswe/report-json-format"
 description = "Add JSON output support to an existing account report CLI."
 authors = [{ name = "George Lydakis" }]
-keywords = ["shallowswe", "operate", "t2", "python", "feature-wiring"]
+keywords = ["shallowswe", "code", "medium", "python", "feature-wiring"]
 
 [metadata]
-category = "operate"
-tier = "t2"
+category = "code"
+size = "medium"
 language = "python"
 shape = "small-feature-wiring"
 subtype = "cli-output-format"
@@ -21,8 +21,37 @@ requires_test_authoring = false
 expected_engineer_minutes = 25
 expected_steps = 5
 calibration_status = "candidate"
-weakest_model_pass_rate = 0.0
-weakest_model_rollouts = 0
+weakest_model_pass_rate = 1.0
+weakest_model_rollouts = 1
+
+[calibration]
+calibration_snapshot_id = "shallowswe-v0.1-candidate-2026-07-04"
+admission_decision = "candidate_pending_high_n"
+size_assignment_decision = "candidate_pending_high_n_floor"
+notes = "Local verifier and alternate-solution evidence are complete; high-N ceiling and floor calibration are pending."
+
+[calibration.ceiling]
+panel = "shallowswe-ceiling-v0.1"
+primary_model_config = "openai/gpt-5.5[medium]"
+one_shot_target_n = 16
+one_shot_current_n = 1
+one_shot_passes = 1
+one_shot_pass_rate = 1.0
+gate_pass_threshold = 0.75
+decision = "needs_more_rollouts"
+source_rollouts = "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+
+[calibration.floor]
+panel = "shallowswe-calibration-v0.1"
+selected_model_config = "google/gemini-3.5-flash"
+one_shot_target_n = 10
+one_shot_current_n = 1
+one_shot_passes = 1
+one_shot_pass_rate = 1.0
+size_band = "medium"
+decision = "needs_high_n_confirmation"
+source_rollouts = "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/rollouts.json"
+evidence_artifact = "results/shallowswe-floor-probe-n1-v2-postfix-2026-07-04/task-floor-evidence.json"
 
 [verifier]
 timeout_sec = 120.0
