@@ -23,7 +23,9 @@
     ]
   },
   "budget_gate": {
-    "max_budget_usd": 220.0,
+    "max_budget_usd": 250.0,
+    "global_hard_stop_usd": 250.0,
+    "estimate_artifact": "results/shallowswe-repair-loop-preview-plan-2026-07-04/budget-estimate.json",
     "requires_explicit_approval_if_over_budget": true
   },
   "theoretical_spend_if_every_row_hits_dollar_cap_usd": 810.0,
@@ -48,7 +50,7 @@
       "missing_price_rows": 0,
       "priced_subset_cost_usd": 159.27251561999998,
       "estimated_full_panel_cost_usd": 159.27251561999998,
-      "budget_limit_usd": 220.0,
+      "budget_limit_usd": 250.0,
       "over_budget": false,
       "row_estimates": [
         {
@@ -164,7 +166,7 @@
       "missing_price_rows": 0,
       "priced_subset_cost_usd": 205.76699999999997,
       "estimated_full_panel_cost_usd": 205.76699999999997,
-      "budget_limit_usd": 220.0,
+      "budget_limit_usd": 250.0,
       "over_budget": false,
       "row_estimates": [
         {

@@ -21,6 +21,7 @@ from .pier_repair_loop import (
     run_pier_repair_loop,
 )
 from .repair_loop_pilot import audit_repair_loop_pilot_plan
+from .repair_loop_preview import audit_repair_loop_preview_plan
 from .results import (
     aggregate_repair_loops,
     aggregate_results,
@@ -58,6 +59,12 @@ def main() -> None:
         help="audit a bounded repair-loop pilot plan",
     )
     repair_loop_pilot_parser.add_argument("plan_json", type=Path)
+
+    repair_loop_preview_parser = subparsers.add_parser(
+        "repair-loop-preview-plan",
+        help="audit a bounded repair-loop preview plan and budget hard stop",
+    )
+    repair_loop_preview_parser.add_argument("plan_json", type=Path)
 
     repair_loop_run_parser = subparsers.add_parser(
         "run-repair-loop-pilot",
@@ -254,6 +261,10 @@ def main() -> None:
 
     if args.command == "repair-loop-pilot-plan":
         print(json.dumps(audit_repair_loop_pilot_plan(args.plan_json), indent=2))
+        return
+
+    if args.command == "repair-loop-preview-plan":
+        print(json.dumps(audit_repair_loop_preview_plan(args.plan_json), indent=2))
         return
 
     if args.command == "run-repair-loop-pilot":

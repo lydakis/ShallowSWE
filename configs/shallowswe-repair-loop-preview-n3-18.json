@@ -56,12 +56,15 @@
     ]
   },
   "budget_gate": {
-    "max_budget_usd": 220.0,
+    "max_budget_usd": 250.0,
+    "global_hard_stop_usd": 250.0,
+    "estimate_artifact": "results/shallowswe-repair-loop-preview-plan-2026-07-04/budget-estimate.json",
     "requires_explicit_approval_if_over_budget": true
   },
   "status": "preview_plan_not_publish_grade",
   "notes": [
     "This is a feedback-seeking preview run, not a final ShallowSWE snapshot.",
+    "The global hard stop is separate from the per-row dollar cap; launch tooling must stop scheduling new rows when cumulative spend reaches the hard stop.",
     "Final publish-grade scoring remains N=10 repair-loop seeds per task/model_config, with N=20 only for disputed frontier cells."
   ]
 }
