@@ -5,7 +5,9 @@ from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable
+import hashlib
 import json
+import subprocess
 
 from .budget import load_panel
 from .pier_repair_loop import run_pier_repair_loop
@@ -38,6 +40,16 @@ class PreviewBatchItem:
     seed: int
     trial_name: str
     output_path: Path
+
+
+@dataclass(frozen=True)
+class BatchProvenance:
+    repo_commit_sha: str | None
+    runner_version: str | None
+    scaffold_prompt_hash: str | None
+    price_sheet_version: str | None
+    price_sheet_date: str | None
+    sampling_config_base: dict[str, Any] | None
 
 
 def build_repair_loop_preview_schedule(
@@ -132,7 +144,13 @@ def run_repair_loop_preview_batch(
             raise ValueError("max_rows must be positive")
         schedule = schedule[:max_rows]
 
-    prices = _load_prices(price_paths)
+    price_path_list = list(price_paths)
+    prices = _load_prices(price_path_list)
+    provenance = _batch_provenance(
+        repo_root=root,
+        config_file=config_file,
+        price_paths=price_path_list,
+    )
     protocol = plan.get("protocol") if isinstance(plan.get("protocol"), dict) else {}
     budget_gate = plan.get("budget_gate") if isinstance(plan.get("budget_gate"), dict) else {}
     per_row_dollar_cap = _optional_float(protocol.get("dollar_cap_usd"))
@@ -147,7 +165,16 @@ def run_repair_loop_preview_batch(
         existing_row = _load_existing_row(item.output_path)
         if existing_row is None:
             continue
-        completed[item.row_id] = existing_row
+        annotated_row = _annotate_row(
+            existing_row,
+            item=item,
+            plan=plan,
+            provenance=provenance,
+            task_root=task_root,
+        )
+        if annotated_row != existing_row:
+            item.output_path.write_text(dump_repair_loops([annotated_row]))
+        completed[item.row_id] = annotated_row
         skipped_existing += 1
 
     cumulative_spend = _cumulative_spend(completed.values(), prices)
@@ -237,7 +264,13 @@ def run_repair_loop_preview_batch(
             for future in done:
                 item = in_flight.pop(future)
                 reserved_spend -= row_cap_reserve
-                row = _annotate_row(future.result(), item=item, plan=plan)
+                row = _annotate_row(
+                    future.result(),
+                    item=item,
+                    plan=plan,
+                    provenance=provenance,
+                    task_root=task_root,
+                )
                 item.output_path.parent.mkdir(parents=True, exist_ok=True)
                 item.output_path.write_text(dump_repair_loops([row]))
                 completed[item.row_id] = row
@@ -355,7 +388,10 @@ def _annotate_row(
     *,
     item: PreviewBatchItem,
     plan: dict[str, Any],
+    provenance: BatchProvenance,
+    task_root: Path,
 ) -> RepairLoopResult:
+    sampling_config = row.sampling_config or _sampling_config_for_item(provenance, item)
     return replace(
         row,
         model=item.model_name,
@@ -363,7 +399,19 @@ def _annotate_row(
         upstream_provider=item.upstream_provider or row.upstream_provider,
         requested_model=item.model_name,
         reasoning_effort=item.reasoning_effort or row.reasoning_effort,
+        temperature=row.temperature if row.temperature is not None else _temperature(sampling_config),
+        sampling_config=sampling_config,
+        runner_version=row.runner_version or provenance.runner_version,
+        scaffold_prompt_hash=row.scaffold_prompt_hash or provenance.scaffold_prompt_hash,
         task_suite_version=str(plan.get("snapshot_id") or row.task_suite_version),
+        verifier_hash=row.verifier_hash or _tree_sha256(task_root / item.task_id / "tests"),
+        environment_image_digest=(
+            row.environment_image_digest
+            or _tree_sha256(task_root / item.task_id / "environment")
+        ),
+        repo_commit_sha=row.repo_commit_sha or provenance.repo_commit_sha,
+        price_sheet_version=row.price_sheet_version or provenance.price_sheet_version,
+        price_sheet_date=row.price_sheet_date or provenance.price_sheet_date,
     )
 
 
@@ -407,6 +455,132 @@ def _would_exceed_hard_stop(
         return False
     reserve = next_row_cap_usd or 0.0
     return cumulative_spend_usd + reserve > global_hard_stop_usd
+
+
+def _batch_provenance(
+    *,
+    repo_root: Path,
+    config_file: Path,
+    price_paths: list[Path],
+) -> BatchProvenance:
+    price_version, price_date = _price_sheet_metadata(price_paths)
+    repo_sha = _git_head_sha(repo_root)
+    return BatchProvenance(
+        repo_commit_sha=repo_sha,
+        runner_version=repo_sha,
+        scaffold_prompt_hash=_file_sha256(config_file),
+        price_sheet_version=price_version,
+        price_sheet_date=price_date,
+        sampling_config_base=_sampling_config_base(config_file),
+    )
+
+
+def _price_sheet_metadata(price_paths: list[Path]) -> tuple[str | None, str | None]:
+    versions: list[str] = []
+    dates: list[str] = []
+    for path in price_paths:
+        versions.append(path.stem)
+        try:
+            raw = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        effective_date = raw.get("effective_date")
+        if effective_date is not None:
+            dates.append(str(effective_date))
+    return _join_unique(versions), _join_unique(dates)
+
+
+def _join_unique(values: list[str]) -> str | None:
+    unique = list(dict.fromkeys(value for value in values if value))
+    return "+".join(unique) if unique else None
+
+
+def _sampling_config_for_item(
+    provenance: BatchProvenance,
+    item: PreviewBatchItem,
+) -> dict[str, Any] | None:
+    base = dict(provenance.sampling_config_base or {})
+    if not base:
+        base = {"model_name": item.model_name}
+    else:
+        base["model_name"] = item.model_name
+    if item.reasoning_effort is not None:
+        model_kwargs = base.get("model_kwargs")
+        if not isinstance(model_kwargs, dict):
+            model_kwargs = {}
+        base["model_kwargs"] = {**model_kwargs, "reasoning_effort": item.reasoning_effort}
+    return base
+
+
+def _sampling_config_base(config_file: Path) -> dict[str, Any] | None:
+    config = _load_config_mapping(config_file)
+    model_config = config.get("model") if isinstance(config.get("model"), dict) else {}
+    if not model_config:
+        return None
+    return {"config_file": str(config_file), **dict(model_config)}
+
+
+def _load_config_mapping(config_file: Path) -> dict[str, Any]:
+    if not config_file.exists():
+        return {}
+    raw = config_file.read_text()
+    if config_file.suffix == ".json":
+        loaded = json.loads(raw)
+        return loaded if isinstance(loaded, dict) else {}
+    try:
+        import yaml  # type: ignore[import-untyped]
+    except ModuleNotFoundError:
+        return {}
+    loaded = yaml.safe_load(raw)
+    return loaded if isinstance(loaded, dict) else {}
+
+
+def _temperature(sampling_config: dict[str, Any] | None) -> float | None:
+    value = (sampling_config or {}).get("temperature")
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _tree_sha256(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    if path.is_file():
+        return f"sha256:{hashlib.sha256(path.read_bytes()).hexdigest()}"
+    files = sorted(item for item in path.rglob("*") if item.is_file())
+    if not files:
+        return None
+    hasher = hashlib.sha256()
+    for item in files:
+        hasher.update(item.relative_to(path).as_posix().encode())
+        hasher.update(b"\0")
+        hasher.update(item.read_bytes())
+        hasher.update(b"\0")
+    return f"sha256:{hasher.hexdigest()}"
+
+
+def _file_sha256(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _git_head_sha(path: Path) -> str | None:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(path), "rev-parse", "HEAD"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return None
+    if result.returncode != 0:
+        return None
+    return result.stdout.strip() or None
 
 
 def _load_prices(price_paths: Iterable[Path]) -> PriceCatalog | None:

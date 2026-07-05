@@ -541,8 +541,18 @@ def aggregate_repair_loops(
                     if repair_loops
                     else 0.0
                 ),
+                "p95_turns_per_repair_loop": (
+                    _percentile([float(row.turns) for row in scored], 0.95)
+                    if repair_loops
+                    else 0.0
+                ),
                 "mean_agent_steps_per_repair_loop": (
                     sum(row.agent_steps or 0 for row in agent_step_rows) / len(agent_step_rows)
+                    if agent_step_rows
+                    else None
+                ),
+                "p95_agent_steps_per_repair_loop": (
+                    _percentile([float(row.agent_steps or 0) for row in agent_step_rows], 0.95)
                     if agent_step_rows
                     else None
                 ),
@@ -556,12 +566,15 @@ def aggregate_repair_loops(
             }
         )
         if prices and scored:
-            total_cost = sum(repair_loop_cost_usd(row, prices) for row in scored)
-            successful_cost = sum(repair_loop_cost_usd(row, prices) for row in successful)
+            row_costs = [repair_loop_cost_usd(row, prices) for row in scored]
+            successful_costs = [repair_loop_cost_usd(row, prices) for row in successful]
+            total_cost = sum(row_costs)
+            successful_cost = sum(successful_costs)
             summary.update(
                 {
                     "total_model_spend_usd": total_cost,
                     "mean_cost_per_repair_loop": total_cost / repair_loops,
+                    "p95_cost_per_repair_loop": _percentile(row_costs, 0.95),
                     "cpsc": total_cost / successes if successes else None,
                     "conditional_spend_among_solved_loops": (
                         successful_cost / successes if successes else None
@@ -728,3 +741,13 @@ def _count_stop_reasons(rows: list[RepairLoopResult]) -> dict[str, int]:
     for row in rows:
         counts[row.stop_reason] = counts.get(row.stop_reason, 0) + 1
     return dict(sorted(counts.items()))
+
+
+def _percentile(values: list[float], quantile: float) -> float:
+    if not values:
+        raise ValueError("values must not be empty")
+    if quantile < 0 or quantile > 1:
+        raise ValueError("quantile must be between 0 and 1")
+    ordered = sorted(values)
+    index = min(len(ordered) - 1, max(0, int((len(ordered) - 1) * quantile + 0.999999)))
+    return ordered[index]

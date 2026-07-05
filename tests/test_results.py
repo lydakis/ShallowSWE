@@ -217,10 +217,13 @@ class ResultAggregationTests(unittest.TestCase):
         self.assertAlmostEqual(summary["cap_hit_rate"], 3 / 5)
         self.assertAlmostEqual(summary["total_model_spend_usd"], 16.0)
         self.assertAlmostEqual(summary["mean_cost_per_repair_loop"], 16.0 / 5)
+        self.assertAlmostEqual(summary["p95_cost_per_repair_loop"], 9.0)
         self.assertAlmostEqual(summary["cpsc"], 8.0)
         self.assertAlmostEqual(summary["conditional_spend_among_solved_loops"], 2.0)
         self.assertAlmostEqual(summary["mean_spend_per_solved_task"], 2.0)
         self.assertAlmostEqual(summary["conditional_tokens_among_solved_loops"], 2_000_000.0)
+        self.assertAlmostEqual(summary["p95_turns_per_repair_loop"], 20.0)
+        self.assertAlmostEqual(summary["p95_agent_steps_per_repair_loop"], 20.0)
         self.assertAlmostEqual(summary["mean_verifier_submissions_to_success"], 2.0)
         self.assertEqual(
             summary["stop_reasons"],

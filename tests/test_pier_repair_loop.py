@@ -15,7 +15,9 @@ from shallowswe.pier_repair_loop import (
     _dollar_cap_hit,
     _hide_verifier_artifacts,
     _mini_swe_exit_status,
+    _sampling_config_from_file,
     _stop_reason_for_agent_exit,
+    _tree_sha256,
     _verify_submission,
 )
 
@@ -168,6 +170,52 @@ class PierRepairLoopTests(unittest.TestCase):
             _classify_runner_exception(),
             ("runner_exception", "excluded", "runner_infrastructure_error"),
         )
+
+    def test_tree_sha256_is_stable_and_path_sensitive(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "tests").mkdir()
+            (root / "tests" / "b.txt").write_text("two")
+            (root / "tests" / "a.txt").write_text("one")
+
+            digest = _tree_sha256(root / "tests")
+
+            self.assertIsNotNone(digest)
+            self.assertTrue(digest.startswith("sha256:"))
+            self.assertEqual(digest, _tree_sha256(root / "tests"))
+
+            (root / "tests" / "nested").mkdir()
+            (root / "tests" / "nested" / "a.txt").write_text("one")
+
+            self.assertNotEqual(digest, _tree_sha256(root / "tests"))
+
+    def test_sampling_config_from_file_records_model_and_effort(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            config_file = Path(tmp) / "config.json"
+            config_file.write_text(
+                json.dumps(
+                    {
+                        "model": {
+                            "temperature": 0,
+                            "model_kwargs": {"max_tokens": 8192},
+                        }
+                    }
+                )
+            )
+
+            sampling = _sampling_config_from_file(
+                config_file=config_file,
+                model_name="openrouter/example/model",
+                reasoning_effort="low",
+            )
+
+            self.assertEqual(sampling["config_file"], str(config_file))
+            self.assertEqual(sampling["model_name"], "openrouter/example/model")
+            self.assertEqual(sampling["temperature"], 0)
+            self.assertEqual(
+                sampling["model_kwargs"],
+                {"max_tokens": 8192, "reasoning_effort": "low"},
+            )
 
 
 if __name__ == "__main__":

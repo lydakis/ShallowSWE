@@ -3,9 +3,11 @@ from __future__ import annotations
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 import asyncio
 import hashlib
 import json
+import subprocess
 import time
 import traceback
 
@@ -100,6 +102,11 @@ async def _run_pier_repair_loop(
     seed: int,
 ) -> RepairLoopResult:
     shallow_task = load_task(task_path)
+    sampling_config = _sampling_config_from_file(
+        config_file=config_file,
+        model_name=model_name,
+        reasoning_effort=reasoning_effort,
+    )
     started_at = datetime.now(timezone.utc)
     monotonic_started_at = time.monotonic()
     config = TrialConfig(
@@ -201,15 +208,22 @@ async def _run_pier_repair_loop(
         turns=final_context.n_agent_steps or 0,
         agent_steps=final_context.n_agent_steps or 0,
         peak_context_tokens=final_context.peak_context_tokens,
+        temperature=_temperature_from_sampling_config(sampling_config),
+        sampling_config=sampling_config,
         gateway_reported_cost_usd=final_context.cost_usd,
         agent="shallowswe-resumable-mini-swe-agent",
         agent_version=trial._agent.version(),
         runner="pier-private-repair-loop-pilot",
+        runner_version=_git_head_sha(Path(__file__).resolve().parents[2]),
+        scaffold_prompt_hash=_file_sha256(config_file),
         inference_gateway=_gateway_from_model_name(model_name),
         requested_model=model_name,
         reasoning_effort=reasoning_effort,
         task_version=f"{shallow_task.task_id}@local",
         task_suite_version="shallowswe-v0.1-candidate",
+        verifier_hash=_tree_sha256(task_path / "tests"),
+        environment_image_digest=_tree_sha256(task_path / "environment"),
+        repo_commit_sha=_git_head_sha(task_path),
         seed=seed,
         run_id=trial_name,
         task_visibility="local-hidden-verifier",
@@ -361,6 +375,84 @@ def _file_sha256(path: Path) -> str | None:
     if not path.exists():
         return None
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _tree_sha256(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    if path.is_file():
+        return f"sha256:{hashlib.sha256(path.read_bytes()).hexdigest()}"
+    files = sorted(item for item in path.rglob("*") if item.is_file())
+    if not files:
+        return None
+    hasher = hashlib.sha256()
+    for item in files:
+        hasher.update(item.relative_to(path).as_posix().encode())
+        hasher.update(b"\0")
+        hasher.update(item.read_bytes())
+        hasher.update(b"\0")
+    return f"sha256:{hasher.hexdigest()}"
+
+
+def _git_head_sha(path: Path) -> str | None:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(path), "rev-parse", "HEAD"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return None
+    if result.returncode != 0:
+        return None
+    return result.stdout.strip() or None
+
+
+def _sampling_config_from_file(
+    *,
+    config_file: Path,
+    model_name: str,
+    reasoning_effort: str | None,
+) -> dict[str, Any]:
+    config = _load_config_mapping(config_file)
+    model_config = config.get("model") if isinstance(config.get("model"), dict) else {}
+    sampling: dict[str, Any] = {
+        "config_file": str(config_file),
+        "model_name": model_name,
+        **dict(model_config),
+    }
+    if reasoning_effort is not None:
+        model_kwargs = sampling.get("model_kwargs")
+        if not isinstance(model_kwargs, dict):
+            model_kwargs = {}
+        sampling["model_kwargs"] = {**model_kwargs, "reasoning_effort": reasoning_effort}
+    return sampling
+
+
+def _load_config_mapping(config_file: Path) -> dict[str, Any]:
+    if not config_file.exists():
+        return {}
+    raw = config_file.read_text()
+    if config_file.suffix == ".json":
+        loaded = json.loads(raw)
+        return loaded if isinstance(loaded, dict) else {}
+    try:
+        import yaml  # type: ignore[import-untyped]
+    except ModuleNotFoundError:
+        return {}
+    loaded = yaml.safe_load(raw)
+    return loaded if isinstance(loaded, dict) else {}
+
+
+def _temperature_from_sampling_config(sampling_config: dict[str, Any] | None) -> float | None:
+    value = (sampling_config or {}).get("temperature")
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 
 def _gateway_from_model_name(model_name: str) -> str | None:

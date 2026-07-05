@@ -16,6 +16,7 @@ from shallowswe.results import RepairLoopResult, dump_repair_loops, load_repair_
 REPO_ROOT = Path(__file__).resolve().parents[1]
 PLAN_PATH = REPO_ROOT / "configs" / "shallowswe-repair-loop-preview-n3-18.json"
 CONFIG_PATH = REPO_ROOT / "configs" / "mini-swe-agent-repair-loop-preview.yaml"
+PRICES_PATH = REPO_ROOT / "prices" / "openrouter-2026-07-03.json"
 
 
 class RepairLoopBatchTests(unittest.TestCase):
@@ -83,6 +84,7 @@ class RepairLoopBatchTests(unittest.TestCase):
                 mini_swe_agent_source_dir=REPO_ROOT,
                 config_file=CONFIG_PATH,
                 agent_env={},
+                price_paths=[PRICES_PATH],
                 max_rows=1,
                 runner=fake_runner,
             )
@@ -97,6 +99,26 @@ class RepairLoopBatchTests(unittest.TestCase):
         self.assertEqual(rows[0].inference_gateway, "openrouter")
         self.assertEqual(rows[0].upstream_provider, "anthropic")
         self.assertEqual(rows[0].model_config, "openrouter/anthropic/claude-fable-5[low]")
+        self.assertEqual(rows[0].price_sheet_version, "openrouter-2026-07-03")
+        self.assertEqual(rows[0].price_sheet_date, "2026-07-03")
+        self.assertEqual(
+            rows[0].task_suite_version,
+            "shallowswe-v0.1-candidate-2026-07-04",
+        )
+        self.assertIsNotNone(rows[0].repo_commit_sha)
+        self.assertEqual(rows[0].runner_version, rows[0].repo_commit_sha)
+        self.assertIsNotNone(rows[0].scaffold_prompt_hash)
+        self.assertIsNotNone(rows[0].sampling_config)
+        self.assertEqual(
+            rows[0].sampling_config.get("model_name"),
+            "openrouter/anthropic/claude-fable-5",
+        )
+        self.assertEqual(
+            rows[0].sampling_config.get("model_kwargs"),
+            {"max_tokens": 8192, "reasoning_effort": "low"},
+        )
+        self.assertTrue((rows[0].verifier_hash or "").startswith("sha256:"))
+        self.assertTrue((rows[0].environment_image_digest or "").startswith("sha256:"))
 
     def test_preview_batch_can_run_independent_rows_in_parallel(self) -> None:
         calls = []
@@ -178,6 +200,7 @@ class RepairLoopBatchTests(unittest.TestCase):
                 mini_swe_agent_source_dir=REPO_ROOT,
                 config_file=CONFIG_PATH,
                 agent_env={},
+                price_paths=[PRICES_PATH],
                 max_rows=2,
                 runner=fail_if_called,
             )
@@ -187,6 +210,56 @@ class RepairLoopBatchTests(unittest.TestCase):
         self.assertEqual(report["completed_rows"], 1)
         self.assertEqual(report["skipped_existing_rows"], 1)
         self.assertEqual(report["remaining_rows"], 1)
+
+    def test_preview_batch_dry_run_backfills_existing_row_provenance(self) -> None:
+        def fail_if_called(**kwargs):
+            raise AssertionError("dry run should not call runner")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp)
+            first_item = build_repair_loop_preview_schedule(
+                PLAN_PATH,
+                repo_root=REPO_ROOT,
+                output_dir=output_dir,
+            )[0]
+            first_item.output_path.parent.mkdir(parents=True)
+            first_item.output_path.write_text(
+                dump_repair_loops(
+                    [
+                        _result(
+                            model="placeholder",
+                            task_id=first_item.task_id,
+                            reasoning_effort=None,
+                            cost=0.25,
+                        )
+                    ]
+                )
+            )
+
+            report = run_repair_loop_preview_batch(
+                PLAN_PATH,
+                repo_root=REPO_ROOT,
+                output_dir=output_dir,
+                trials_dir=output_dir / "trials",
+                mini_swe_agent_source_dir=REPO_ROOT,
+                config_file=CONFIG_PATH,
+                agent_env={},
+                price_paths=[PRICES_PATH],
+                max_rows=1,
+                dry_run=True,
+                runner=fail_if_called,
+            )
+            rows = load_repair_loops(output_dir / "repair-loop-results.json")
+            row_file_rows = load_repair_loops(first_item.output_path)
+
+        self.assertEqual(report["completed_rows"], 1)
+        self.assertEqual(report["skipped_existing_rows"], 1)
+        self.assertEqual(rows, row_file_rows)
+        self.assertEqual(rows[0].model, "openrouter/anthropic/claude-fable-5")
+        self.assertEqual(rows[0].reasoning_effort, "low")
+        self.assertEqual(rows[0].price_sheet_version, "openrouter-2026-07-03")
+        self.assertIsNotNone(rows[0].repo_commit_sha)
+        self.assertIsNotNone(rows[0].sampling_config)
 
 
 def _result(
