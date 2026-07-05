@@ -4,7 +4,8 @@
   "gateway": "openrouter",
   "source_urls": [
     "https://openrouter.ai/api/v1/models",
-    "https://openrouter.ai/google/gemini-3.5-flash/api"
+    "https://openrouter.ai/google/gemini-3.5-flash/api",
+    "https://www.anthropic.com/news/claude-sonnet-5"
   ],
   "models": {
     "anthropic/claude-fable-5": {
@@ -39,10 +40,10 @@
     },
     "anthropic/claude-sonnet-5": {
       "provider": "anthropic",
-      "input_per_1m": 2.0,
-      "cached_input_per_1m": 0.2,
-      "output_per_1m": 10.0,
-      "cache_write_per_1m": 2.5,
+      "input_per_1m": 3.0,
+      "cached_input_per_1m": 0.3,
+      "output_per_1m": 15.0,
+      "cache_write_per_1m": 3.75,
       "aliases": [
         "openrouter/anthropic/claude-sonnet-5"
       ]

@@ -34,7 +34,7 @@ class RepairLoopPreviewPlanTests(unittest.TestCase):
         self.assertEqual(set(report["cell_counts"].values()), {2})
         self.assertEqual(report["verifier_submission_cap"], 20)
         self.assertEqual(report["agent_step_cap"], 60)
-        self.assertEqual(report["per_row_dollar_cap_usd"], 1.5)
+        self.assertEqual(report["per_row_dollar_cap_usd"], 3.0)
         self.assertEqual(report["global_hard_stop_usd"], 250.0)
         self.assertEqual(report["budget_limit_usd"], 250.0)
         self.assertLess(
