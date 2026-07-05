@@ -209,22 +209,22 @@ class ResultAggregationTests(unittest.TestCase):
 
         summary = aggregate_repair_loops(rows, prices=prices)[0]
 
-        self.assertEqual(summary["repair_loops"], 4)
-        self.assertEqual(summary["excluded_repair_loops"], 1)
+        self.assertEqual(summary["repair_loops"], 5)
+        self.assertEqual(summary["excluded_repair_loops"], 0)
         self.assertEqual(summary["successes"], 2)
-        self.assertAlmostEqual(summary["solve_rate"], 2 / 4)
-        self.assertEqual(summary["cap_hits"], 2)
-        self.assertAlmostEqual(summary["cap_hit_rate"], 2 / 4)
-        self.assertAlmostEqual(summary["total_model_spend_usd"], 7.0)
-        self.assertAlmostEqual(summary["mean_cost_per_repair_loop"], 1.75)
-        self.assertAlmostEqual(summary["cpsc"], 3.5)
+        self.assertAlmostEqual(summary["solve_rate"], 2 / 5)
+        self.assertEqual(summary["cap_hits"], 3)
+        self.assertAlmostEqual(summary["cap_hit_rate"], 3 / 5)
+        self.assertAlmostEqual(summary["total_model_spend_usd"], 16.0)
+        self.assertAlmostEqual(summary["mean_cost_per_repair_loop"], 16.0 / 5)
+        self.assertAlmostEqual(summary["cpsc"], 8.0)
         self.assertAlmostEqual(summary["conditional_spend_among_solved_loops"], 2.0)
         self.assertAlmostEqual(summary["mean_spend_per_solved_task"], 2.0)
         self.assertAlmostEqual(summary["conditional_tokens_among_solved_loops"], 2_000_000.0)
         self.assertAlmostEqual(summary["mean_verifier_submissions_to_success"], 2.0)
         self.assertEqual(
             summary["stop_reasons"],
-            {"passed": 2, "submission_cap": 1, "agent_step_cap": 1},
+            {"passed": 2, "submission_cap": 1, "agent_step_cap": 1, "wall_time_cap": 1},
         )
 
     def test_repair_loop_rows_preserve_public_snapshot_provenance(self) -> None:

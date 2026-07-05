@@ -133,6 +133,12 @@ def main() -> None:
         help="run only the first N scheduled rows; useful for smoke checks",
     )
     repair_loop_preview_run_parser.add_argument(
+        "--parallelism",
+        type=int,
+        default=1,
+        help="number of independent task/model/seed rows to run concurrently",
+    )
+    repair_loop_preview_run_parser.add_argument(
         "--dry-run",
         action="store_true",
         help="write the schedule/report without invoking models",
@@ -344,6 +350,7 @@ def main() -> None:
             agent_env=agent_env,
             price_paths=args.prices or [],
             max_rows=args.max_rows,
+            parallelism=args.parallelism,
             dry_run=args.dry_run,
             progress=print,
         )

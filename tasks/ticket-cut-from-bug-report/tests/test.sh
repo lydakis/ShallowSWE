@@ -34,28 +34,35 @@ def assert_text(path: Path, expected: str) -> None:
     assert path.exists(), f"missing {path}"
     assert path.read_text() == expected
 
-def copy_script_to_hidden(script_name: str) -> tuple[tempfile.TemporaryDirectory[str], Path]:
+def copy_script_to_fresh_root(script_name: str) -> tuple[tempfile.TemporaryDirectory[str], Path]:
     tmp = tempfile.TemporaryDirectory()
     root = Path(tmp.name) / "app"
     (root / "scripts").mkdir(parents=True)
     shutil.copy2(app / "scripts" / script_name, root / "scripts" / script_name)
     return tmp, root
+
+def write_file(root: Path, relative_path: str, text: str) -> None:
+    path = root / relative_path
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text)
+
 script = app / "scripts" / "apply_task.py"
 assert script.exists(), "missing scripts/apply_task.py"
-run_script("apply_task.py", app)
-assert_json(app / 'api_state/tickets.json', [{'component': 'checkout', 'id': 'T-100', 'labels': ['bug', 'checkout'], 'priority': 'P1', 'status': 'open', 'title': 'Checkout 500 with saved card after coupon'}])
-assert_text(app / 'api_state/calls.log', 'create_ticket T-100\n')
-tmp, hidden = copy_script_to_hidden("apply_task.py")
+
+tmp, visible = copy_script_to_fresh_root("apply_task.py")
 with tmp:
-    path = hidden / 'bug_report.md'
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text('# Bug report\n\nBilling payout retries return 503 in production.\n')
-    path = hidden / 'api_state/tickets.json'
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text('[]\n')
-    path = hidden / 'api_state/calls.log'
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text('')
+    write_file(visible, 'bug_report.md', '# Bug report\n\nCheckout returns a 500 when customers apply a saved card after a coupon. Impact is production checkout.\n')
+    write_file(visible, 'api_state/tickets.json', '[]\n')
+    write_file(visible, 'api_state/calls.log', '')
+    run_script("apply_task.py", visible)
+    assert_json(visible / 'api_state/tickets.json', [{'component': 'checkout', 'id': 'T-100', 'labels': ['bug', 'checkout'], 'priority': 'P1', 'status': 'open', 'title': 'Checkout 500 with saved card after coupon'}])
+    assert_text(visible / 'api_state/calls.log', 'create_ticket T-100\n')
+
+tmp, hidden = copy_script_to_fresh_root("apply_task.py")
+with tmp:
+    write_file(hidden, 'bug_report.md', '# Bug report\n\nBilling payout retries return 503 in production.\n')
+    write_file(hidden, 'api_state/tickets.json', '[]\n')
+    write_file(hidden, 'api_state/calls.log', '')
     run_script("apply_task.py", hidden)
     assert_json(hidden / 'api_state/tickets.json', [{'component': 'billing', 'id': 'T-200', 'labels': ['bug', 'billing'], 'priority': 'P1', 'status': 'open', 'title': 'Billing payout retry failure'}])
     assert_text(hidden / 'api_state/calls.log', 'create_ticket T-200\n')

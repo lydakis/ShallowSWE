@@ -304,7 +304,10 @@ class TaskAuditMetadataTests(unittest.TestCase):
             if "scripts/apply_task.py" in prompt:
                 with self.subTest(task=task_dir.name, script="apply_task.py"):
                     self.assertIn("scripts/apply_task.py", solution)
-                    self.assertIn("copy_script_to_hidden", verifier)
+                    self.assertRegex(
+                        verifier,
+                        r"copy_script_to_(hidden|fresh_root)",
+                    )
                     self.assertIn("apply_task.py", verifier)
 
 

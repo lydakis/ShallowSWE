@@ -20,6 +20,7 @@ CAP_HIT_STOP_REASONS = frozenset(
         "verifier_submission_cap",
         "step_cap",
         "agent_step_cap",
+        "wall_time_cap",
     }
 )
 
@@ -148,6 +149,8 @@ class RepairLoopResult:
 
     @property
     def is_scored(self) -> bool:
+        if self.stop_reason == "wall_time_cap":
+            return True
         return self.status != EXCLUDED_STATUS
 
     @property

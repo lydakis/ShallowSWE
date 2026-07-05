@@ -34,31 +34,52 @@ def assert_text(path: Path, expected: str) -> None:
     assert path.exists(), f"missing {path}"
     assert path.read_text() == expected
 
-def copy_script_to_hidden(script_name: str) -> tuple[tempfile.TemporaryDirectory[str], Path]:
+def copy_script_to_fresh_root(script_name: str) -> tuple[tempfile.TemporaryDirectory[str], Path]:
     tmp = tempfile.TemporaryDirectory()
     root = Path(tmp.name) / "app"
     (root / "scripts").mkdir(parents=True)
     shutil.copy2(app / "scripts" / script_name, root / "scripts" / script_name)
     return tmp, root
+
+def write_file(root: Path, relative_path: str, text: str) -> None:
+    path = root / relative_path
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text)
+
+def assert_ticket_updated(root: Path, ticket_id: str) -> None:
+    tickets_path = root / 'api_state/tickets.json'
+    assert tickets_path.exists(), f"missing {tickets_path}"
+    tickets = json.loads(tickets_path.read_text())
+    assert len(tickets) == 1, tickets
+    ticket = tickets[0]
+    assert ticket['id'] == ticket_id, ticket
+    assert ticket['priority'] == 'P0', ticket
+    comments = ticket.get('comments')
+    assert isinstance(comments, list) and len(comments) == 1, ticket
+    comment = comments[0]
+    assert isinstance(comment, str) and comment.strip(), ticket
+    lowered = comment.lower()
+    for token in ('saved', 'card', 'coupon'):
+        assert token in lowered, comment
+    assert_text(root / 'api_state/calls.log', f'update_ticket {ticket_id} priority=P0\n')
 script = app / "scripts" / "apply_task.py"
 assert script.exists(), "missing scripts/apply_task.py"
-run_script("apply_task.py", app)
-assert_json(app / 'api_state/tickets.json', [{'comments': ['Escalated from new report: checkout fully blocked for saved-card coupon purchases.'], 'component': 'checkout', 'id': 'T-101', 'priority': 'P0', 'status': 'open', 'title': 'Checkout 500 with saved card after coupon'}])
-assert_text(app / 'api_state/calls.log', 'update_ticket T-101 priority=P0\n')
-tmp, hidden = copy_script_to_hidden("apply_task.py")
+
+tmp, visible = copy_script_to_fresh_root("apply_task.py")
 with tmp:
-    path = hidden / 'new_report.md'
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text('# New report\n\nCheckout is blocked for saved card coupon purchases. Escalate to P0.\n')
-    path = hidden / 'api_state/tickets.json'
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text('[{"id":"T-202","title":"Checkout 500 with saved card after coupon","component":"checkout","priority":"P2","status":"open","comments":[]}]\n')
-    path = hidden / 'api_state/calls.log'
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text('')
+    write_file(visible, 'new_report.md', '# New report\n\nCheckout is now fully blocked for saved-card coupon purchases. Escalate to P0.\n')
+    write_file(visible, 'api_state/tickets.json', '[{"id":"T-101","title":"Checkout 500 with saved card after coupon","component":"checkout","priority":"P1","status":"open","comments":[]}]\n')
+    write_file(visible, 'api_state/calls.log', '')
+    run_script("apply_task.py", visible)
+    assert_ticket_updated(visible, 'T-101')
+
+tmp, hidden = copy_script_to_fresh_root("apply_task.py")
+with tmp:
+    write_file(hidden, 'new_report.md', '# New report\n\nCheckout is blocked for saved card coupon purchases. Escalate to P0.\n')
+    write_file(hidden, 'api_state/tickets.json', '[{"id":"T-202","title":"Checkout 500 with saved card after coupon","component":"checkout","priority":"P2","status":"open","comments":[]}]\n')
+    write_file(hidden, 'api_state/calls.log', '')
     run_script("apply_task.py", hidden)
-    assert_json(hidden / 'api_state/tickets.json', [{'comments': ['Escalated from new report: checkout fully blocked for saved-card coupon purchases.'], 'component': 'checkout', 'id': 'T-202', 'priority': 'P0', 'status': 'open', 'title': 'Checkout 500 with saved card after coupon'}])
-    assert_text(hidden / 'api_state/calls.log', 'update_ticket T-202 priority=P0\n')
+    assert_ticket_updated(hidden, 'T-202')
 PY
 
 status=$?

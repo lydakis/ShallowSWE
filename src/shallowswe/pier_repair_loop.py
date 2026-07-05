@@ -146,12 +146,13 @@ async def _run_pier_repair_loop(
                 monotonic_started_at=monotonic_started_at,
                 wall_time_cap_seconds=wall_time_cap_seconds,
             ):
-                status = EXCLUDED_STATUS
-                exclusion_reason = "infra_wall_time_guard"
+                status = "scored"
+                exclusion_reason = None
                 stop_reason = "wall_time_cap"
                 break
             context = AgentContext()
             contexts.append(context)
+            await _hide_verifier_artifacts(trial)
             await _execute_agent_submission(trial=trial, instruction=feedback, context=context)
             exit_status = _mini_swe_exit_status(trial)
             if exit_status != "Submitted":
@@ -262,6 +263,20 @@ async def _execute_agent_submission(
         trial._environment.default_user = None
 
 
+async def _hide_verifier_artifacts(trial: Trial) -> None:
+    environment = trial._environment
+    env_paths = environment.env_paths
+    paths = [env_paths.verifier_dir, env_paths.tests_dir]
+    # verifier_dir can be a bind mount, so empty it instead of removing the root.
+    result = await environment.empty_dirs(paths, chmod=False)
+    if result is not None and result.return_code != 0:
+        output = result.stderr or result.stdout or "no output"
+        raise RuntimeError(
+            "Failed to hide verifier artifacts "
+            f"{', '.join(str(path) for path in paths)}: {output}"
+        )
+
+
 async def _verify_submission(trial: Trial) -> VerifierResult:
     env_paths = trial._environment.env_paths
     await trial._environment.reset_dirs(
@@ -273,7 +288,10 @@ async def _verify_submission(trial: Trial) -> VerifierResult:
     try:
         return await trial._verify_once(step_cfg=None)
     finally:
-        trial._environment.default_user = None
+        try:
+            await _hide_verifier_artifacts(trial)
+        finally:
+            trial._environment.default_user = None
 
 
 def _verifier_passed(verifier_result: VerifierResult) -> bool:
@@ -310,7 +328,7 @@ def _classify_agent_exit(
     dollar_cap_usd: float | None,
 ) -> tuple[str, str, str | None]:
     if exit_status == "TimeExceeded":
-        return ("wall_time_cap", EXCLUDED_STATUS, "infra_wall_time_guard")
+        return ("wall_time_cap", "scored", None)
     if exit_status == "LimitsExceeded" and _dollar_cap_hit(
         context=context,
         dollar_cap_usd=dollar_cap_usd,

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
+import threading
 import tempfile
+import time
 import unittest
 
 from shallowswe.repair_loop_batch import (
@@ -95,6 +97,53 @@ class RepairLoopBatchTests(unittest.TestCase):
         self.assertEqual(rows[0].inference_gateway, "openrouter")
         self.assertEqual(rows[0].upstream_provider, "anthropic")
         self.assertEqual(rows[0].model_config, "openrouter/anthropic/claude-fable-5[low]")
+
+    def test_preview_batch_can_run_independent_rows_in_parallel(self) -> None:
+        calls = []
+        lock = threading.Lock()
+        active = 0
+        max_active = 0
+
+        def fake_runner(**kwargs):
+            nonlocal active, max_active
+            with lock:
+                calls.append(kwargs)
+                active += 1
+                max_active = max(max_active, active)
+            time.sleep(0.05)
+            with lock:
+                active -= 1
+            return _result(
+                model=kwargs["model_name"],
+                task_id=kwargs["task_path"].name,
+                reasoning_effort=kwargs["reasoning_effort"],
+                cost=0.25,
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp)
+            report = run_repair_loop_preview_batch(
+                PLAN_PATH,
+                repo_root=REPO_ROOT,
+                output_dir=output_dir,
+                trials_dir=output_dir / "trials",
+                mini_swe_agent_source_dir=REPO_ROOT,
+                config_file=CONFIG_PATH,
+                agent_env={},
+                max_rows=3,
+                parallelism=2,
+                runner=fake_runner,
+            )
+            rows = load_repair_loops(output_dir / "repair-loop-results.json")
+
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(max_active, 2)
+        self.assertEqual(report["parallelism"], 2)
+        self.assertEqual(report["completed_rows"], 3)
+        self.assertEqual([row.model_config for row in rows[:2]], [
+            "openrouter/anthropic/claude-fable-5[low]",
+            "openrouter/anthropic/claude-sonnet-5[low]",
+        ])
 
     def test_preview_batch_skips_existing_rows_and_stops_before_budget_overrun(self) -> None:
         def fail_if_called(**kwargs):

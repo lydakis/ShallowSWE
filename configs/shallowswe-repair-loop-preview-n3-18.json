@@ -45,9 +45,9 @@
     "requires_conversation_continuation": true,
     "requires_filesystem_continuation": true,
     "verifier_submission_cap": 20,
-    "agent_step_cap": 60,
-    "wall_time_cap_seconds": 1200,
-    "dollar_cap_usd": 3.0,
+    "agent_step_cap": 120,
+    "wall_time_cap_seconds": 2400,
+    "dollar_cap_usd": 5.0,
     "allowed_feedback_classes": [
       "generic_failure",
       "runtime_error",

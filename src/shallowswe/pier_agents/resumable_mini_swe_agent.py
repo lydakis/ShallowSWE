@@ -115,10 +115,12 @@ class ResumableMiniSweAgent(MiniSweAgent):
             command=_resume_aware_run_command(
                 run_model_name=self._run_model_name,
                 instruction=instruction,
+                remote_source_dir=self._REMOTE_SOURCE_DIR,
                 output_path=self._mini_swe_agent_trajectory_path,
                 previous_path=self._previous_mini_swe_agent_trajectory_path,
                 extra_flags=(self.build_cli_flags() + " ") if self.build_cli_flags() else "",
                 config_flags=await self._write_config_and_flags(environment),
+                extra_python_packages=self._install_python_packages,
             ),
             env=self._runtime_env(),
             timeout_sec=None,
@@ -171,26 +173,50 @@ def _agent_install_command(
     remote_source_dir: str,
     extra_python_packages: list[str],
 ) -> str:
+    return (
+        "set -euo pipefail\n"
+        + _agent_install_snippet(
+            remote_source_dir=remote_source_dir,
+            extra_python_packages=extra_python_packages,
+            force=True,
+        )
+        + "\nmini-swe-agent --help\n"
+    )
+
+
+def _agent_install_snippet(
+    *,
+    remote_source_dir: str,
+    extra_python_packages: list[str],
+    force: bool,
+) -> str:
     extra_packages = " ".join(shlex.quote(pkg) for pkg in extra_python_packages)
     install_extra = (
         f'"$venv/bin/python" -m pip install {extra_packages}\n'
         if extra_packages
         else ""
     )
+    condition = (
+        "true"
+        if force
+        else '[ ! -x "$venv/bin/python" ] || ! "$venv/bin/python" -c '
+        + shlex.quote("import minisweagent")
+        + " >/dev/null 2>&1"
+    )
     return f"""
-set -euo pipefail
 venv="$HOME/.local/share/shallowswe-mini-swe-agent-venv"
+if {condition}; then
 python3 -m venv "$venv"
 "$venv/bin/python" -m pip install --upgrade pip
 "$venv/bin/python" -m pip install {shlex.quote(remote_source_dir)}
 {install_extra}
+fi
 mkdir -p "$HOME/.local/bin"
 ln -sf "$venv/bin/mini-swe-agent" "$HOME/.local/bin/mini-swe-agent"
 cat > "$HOME/.local/bin/env" <<'EOF'
 export PATH="$HOME/.local/bin:$PATH"
 EOF
 source "$HOME/.local/bin/env"
-mini-swe-agent --help
 """
 
 
@@ -198,10 +224,12 @@ def _resume_aware_run_command(
     *,
     run_model_name: str,
     instruction: str,
+    remote_source_dir: str,
     output_path: PurePosixPath,
     previous_path: PurePosixPath,
     extra_flags: str,
     config_flags: str,
+    extra_python_packages: list[str],
 ) -> str:
     if not run_model_name or "/" not in run_model_name:
         raise ValueError("Model name must be in the format provider/model_name")
@@ -213,8 +241,15 @@ def _resume_aware_run_command(
         f"mini-swe-agent --yolo --model={escaped_model} --output={output} "
         f"{extra_flags}{config_flags}--exit-immediately"
     )
+    ensure_agent = _agent_install_snippet(
+        remote_source_dir=remote_source_dir,
+        extra_python_packages=extra_python_packages,
+        force=False,
+    )
     return (
-        '. "$HOME/.local/bin/env"; '
+        "set -euo pipefail\n"
+        + ensure_agent
+        + '\n. "$HOME/.local/bin/env"\n'
         f"if [ -f {output} ]; then "
         f"cp {output} {previous}; "
         f"{base} --resume-from={previous} --resume-feedback={escaped_instruction}; "
