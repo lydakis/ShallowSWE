@@ -1,0 +1,59 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_plan.v0.1",
+  "name": "shallowswe-floor-recal-oneshot-n3",
+  "snapshot_id": "shallowswe-v0.1-frozen-2026-07-05",
+  "mode": "bounded_repair_loop_preview",
+  "task_root": "tasks",
+  "task_ids": [
+    "env-flags-to-json",
+    "extract-error-fields",
+    "payout-reconcile",
+    "access-log-to-incidents",
+    "billing-revenue-rollup",
+    "support-metrics-package",
+    "invoice-cli-regression-test-fix",
+    "retry-error-fallback",
+    "auth-token-expiry-regression",
+    "split-notification-renderer",
+    "cache-invalidates-on-settings-change",
+    "status-terminal-parity",
+    "post-build-status",
+    "ticket-cut-from-bug-report",
+    "config-flag-ignored",
+    "ticket-update-dont-duplicate",
+    "config-key-rollover",
+    "merge-divergent-config-branches"
+  ],
+  "selection_policy": {
+    "purpose": "Post-amendment floor re-probe of the frozen 18-task suite. The spec amendments and verifier rework of 2026-07-05 invalidated the floor calibration recorded in task.toml files; this run re-measures floor one-shot pass rates so sizes can be reassigned per the SPEC.md calibration bands (small 70-100%, medium 30-70%, large 0-40%).",
+    "notes": [
+      "One-shot mode is expressed as verifier_submission_cap 1 on the fixed repair-loop runner so the probes run on the exact harness that produced the clean preview data.",
+      "Calibration rollouts are excluded from published leaderboard results per panel policy.",
+      "Frozen snapshot commit: the tasks in this plan must not change while this recalibration is in flight or its results are void."
+    ]
+  },
+  "model_panel": "panels/shallowswe-calibration-v0.1.json",
+  "repair_loop_seeds_per_task_model_config": 3,
+  "protocol": {
+    "single_model_run_invariant": true,
+    "no_fallbacks": true,
+    "requires_conversation_continuation": true,
+    "requires_filesystem_continuation": true,
+    "verifier_submission_cap": 1,
+    "agent_step_cap": 120,
+    "wall_time_cap_seconds": 2400,
+    "dollar_cap_usd": 3.0,
+    "allowed_feedback_classes": [
+      "generic_failure",
+      "runtime_error",
+      "missing_required_artifact",
+      "output_mismatch"
+    ]
+  },
+  "budget_gate": {
+    "max_budget_usd": 30.0,
+    "global_hard_stop_usd": 35.0,
+    "estimate_artifact": "results/shallowswe-floor-recal-plan-2026-07-05/budget-estimate.json",
+    "requires_explicit_approval_if_over_budget": true
+  }
+}
