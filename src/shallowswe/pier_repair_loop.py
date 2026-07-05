@@ -174,7 +174,7 @@ async def _run_pier_repair_loop(
     except Exception as exc:
         trial.result.exception_info = ExceptionInfo.from_exception(exc)
         trial._trial_paths.exception_message_path.write_text(traceback.format_exc())
-        stop_reason = "runner_exception"
+        stop_reason, status, exclusion_reason = _classify_runner_exception()
     finally:
         try:
             await trial._cleanup_and_finalize()
@@ -317,6 +317,10 @@ def _classify_agent_exit(
     ):
         return ("dollar_cap", "scored", None)
     return (_stop_reason_for_agent_exit(exit_status), "scored", None)
+
+
+def _classify_runner_exception() -> tuple[str, str, str]:
+    return ("runner_exception", EXCLUDED_STATUS, "runner_infrastructure_error")
 
 
 def _dollar_cap_hit(*, context: AgentContext, dollar_cap_usd: float | None) -> bool:

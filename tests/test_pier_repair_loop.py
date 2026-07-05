@@ -10,6 +10,7 @@ from pier.models.agent.context import AgentContext
 
 from shallowswe.pier_repair_loop import (
     _classify_agent_exit,
+    _classify_runner_exception,
     _dollar_cap_hit,
     _mini_swe_exit_status,
     _stop_reason_for_agent_exit,
@@ -79,6 +80,12 @@ class PierRepairLoopTests(unittest.TestCase):
                 dollar_cap_usd=1.5,
             ),
             ("wall_time_cap", "excluded", "infra_wall_time_guard"),
+        )
+
+    def test_classify_runner_exception_excludes_infra_failures(self) -> None:
+        self.assertEqual(
+            _classify_runner_exception(),
+            ("runner_exception", "excluded", "runner_infrastructure_error"),
         )
 
 
