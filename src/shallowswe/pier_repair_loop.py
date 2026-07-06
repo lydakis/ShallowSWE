@@ -139,6 +139,7 @@ async def _run_pier_repair_loop(
     stop_reason = "verifier_submission_cap"
     status = "scored"
     exclusion_reason = None
+    trajectory_path = trial._trial_paths.agent_dir / "mini-swe-agent.trajectory.json"
 
     try:
         await trial._setup_environment()
@@ -167,6 +168,7 @@ async def _run_pier_repair_loop(
                     exit_status=exit_status,
                     context=context,
                     dollar_cap_usd=dollar_cap_usd,
+                    trajectory_path=trajectory_path,
                 )
                 break
             verifier_result = await _verify_submission(trial)
@@ -175,7 +177,11 @@ async def _run_pier_repair_loop(
                 passed = True
                 stop_reason = "passed"
                 break
-            if _dollar_cap_hit(context=context, dollar_cap_usd=dollar_cap_usd):
+            if _dollar_cap_hit(
+                context=context,
+                dollar_cap_usd=dollar_cap_usd,
+                trajectory_path=trajectory_path,
+            ):
                 stop_reason = "dollar_cap"
                 break
             feedback = DEFAULT_REPAIR_FEEDBACK
@@ -191,7 +197,8 @@ async def _run_pier_repair_loop(
 
     finished_at = datetime.now(timezone.utc)
     final_context = contexts[-1] if contexts else AgentContext()
-    transcript_hash = _file_sha256(trial._trial_paths.agent_dir / "mini-swe-agent.trajectory.json")
+    usage = _final_usage_totals(final_context, trajectory_path)
+    transcript_hash = _file_sha256(trajectory_path)
     return RepairLoopResult(
         model=model_name,
         task_id=shallow_task.task_id,
@@ -201,16 +208,17 @@ async def _run_pier_repair_loop(
         passed=passed,
         stop_reason=stop_reason,
         verifier_submissions=verifier_submissions,
-        input_tokens=final_context.n_input_tokens or 0,
-        output_tokens=final_context.n_output_tokens or 0,
-        cache_read_tokens=final_context.n_cache_tokens or 0,
-        cache_write_tokens=0,
+        input_tokens=usage["input_tokens"],
+        output_tokens=usage["output_tokens"],
+        cache_read_tokens=usage["cache_read_tokens"],
+        cache_write_tokens=usage["cache_write_tokens"],
         turns=final_context.n_agent_steps or 0,
         agent_steps=final_context.n_agent_steps or 0,
         peak_context_tokens=final_context.peak_context_tokens,
+        reasoning_tokens=usage["reasoning_tokens"],
         temperature=_temperature_from_sampling_config(sampling_config),
         sampling_config=sampling_config,
-        gateway_reported_cost_usd=final_context.cost_usd,
+        gateway_reported_cost_usd=usage["gateway_reported_cost_usd"],
         agent="shallowswe-resumable-mini-swe-agent",
         agent_version=trial._agent.version(),
         runner="pier-private-repair-loop-pilot",
@@ -340,12 +348,14 @@ def _classify_agent_exit(
     exit_status: str | None,
     context: AgentContext,
     dollar_cap_usd: float | None,
+    trajectory_path: Path | None = None,
 ) -> tuple[str, str, str | None]:
     if exit_status == "TimeExceeded":
         return ("wall_time_cap", "scored", None)
     if exit_status == "LimitsExceeded" and _dollar_cap_hit(
         context=context,
         dollar_cap_usd=dollar_cap_usd,
+        trajectory_path=trajectory_path,
     ):
         return ("dollar_cap", "scored", None)
     return (_stop_reason_for_agent_exit(exit_status), "scored", None)
@@ -355,10 +365,187 @@ def _classify_runner_exception() -> tuple[str, str, str]:
     return ("runner_exception", EXCLUDED_STATUS, "runner_infrastructure_error")
 
 
-def _dollar_cap_hit(*, context: AgentContext, dollar_cap_usd: float | None) -> bool:
-    if dollar_cap_usd is None or context.cost_usd is None:
+def _dollar_cap_hit(
+    *,
+    context: AgentContext,
+    dollar_cap_usd: float | None,
+    trajectory_path: Path | None = None,
+) -> bool:
+    cost_usd = _context_or_trajectory_cost(context, trajectory_path)
+    if dollar_cap_usd is None or cost_usd is None:
         return False
-    return context.cost_usd >= dollar_cap_usd
+    return cost_usd >= dollar_cap_usd
+
+
+def _context_or_trajectory_cost(
+    context: AgentContext,
+    trajectory_path: Path | None,
+) -> float | None:
+    if trajectory_path is not None:
+        reported_cost = _reported_cost_from_trajectory(trajectory_path)
+        if reported_cost is not None:
+            return reported_cost
+    if context.cost_usd is not None:
+        return context.cost_usd
+    if trajectory_path is not None:
+        usage = _raw_usage_totals_from_trajectory(trajectory_path)
+        if usage:
+            return usage["gateway_reported_cost_usd"]
+    return None
+
+
+def _final_usage_totals(context: AgentContext, trajectory_path: Path) -> dict[str, Any]:
+    raw_usage = _raw_usage_totals_from_trajectory(trajectory_path)
+    cost_usd = _context_or_trajectory_cost(context, trajectory_path)
+    if raw_usage:
+        return {
+            **raw_usage,
+            "gateway_reported_cost_usd": (
+                cost_usd
+                if cost_usd is not None
+                else raw_usage["gateway_reported_cost_usd"]
+            ),
+        }
+    return {
+        "input_tokens": context.n_input_tokens or 0,
+        "output_tokens": context.n_output_tokens or 0,
+        "cache_read_tokens": context.n_cache_tokens or 0,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 0,
+        "gateway_reported_cost_usd": cost_usd,
+    }
+
+
+def _reported_cost_from_trajectory(path: Path) -> float | None:
+    if not path.exists():
+        return None
+    try:
+        trajectory = json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return None
+
+    if not isinstance(trajectory, dict):
+        return None
+    info = trajectory.get("info") or {}
+    if not isinstance(info, dict):
+        return None
+    model_stats = info.get("model_stats") or {}
+    if not isinstance(model_stats, dict):
+        return None
+    for key in ("instance_cost", "total_cost_usd", "cost_usd"):
+        cost = _float_or_none(model_stats.get(key))
+        if cost is not None:
+            return cost
+    return None
+
+
+def _raw_usage_totals_from_trajectory(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    try:
+        trajectory = json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return None
+
+    usage_entries: list[dict[str, Any]] = []
+    _collect_usage_entries(trajectory, usage_entries)
+    if not usage_entries:
+        return None
+    return {
+        "input_tokens": sum(_usage_input_tokens(usage) for usage in usage_entries),
+        "output_tokens": sum(_usage_output_tokens(usage) for usage in usage_entries),
+        "cache_read_tokens": sum(_usage_cache_read_tokens(usage) for usage in usage_entries),
+        "cache_write_tokens": sum(_usage_cache_write_tokens(usage) for usage in usage_entries),
+        "reasoning_tokens": sum(_usage_reasoning_tokens(usage) for usage in usage_entries),
+        "gateway_reported_cost_usd": _sum_optional_float(
+            usage.get("cost") for usage in usage_entries
+        ),
+    }
+
+
+def _collect_usage_entries(value: Any, entries: list[dict[str, Any]]) -> None:
+    if isinstance(value, dict):
+        usage = value.get("usage")
+        if isinstance(usage, dict):
+            entries.append(usage)
+        for child in value.values():
+            _collect_usage_entries(child, entries)
+    elif isinstance(value, list):
+        for child in value:
+            _collect_usage_entries(child, entries)
+
+
+def _usage_input_tokens(usage: dict[str, Any]) -> int:
+    return _first_int(usage, ("input_tokens", "prompt_tokens"))
+
+
+def _usage_output_tokens(usage: dict[str, Any]) -> int:
+    return _first_int(usage, ("output_tokens", "completion_tokens"))
+
+
+def _usage_cache_read_tokens(usage: dict[str, Any]) -> int:
+    details = usage.get("prompt_tokens_details") or usage.get("input_tokens_details") or {}
+    if not isinstance(details, dict):
+        return 0
+    return _int_or_zero(details.get("cached_tokens"))
+
+
+def _usage_cache_write_tokens(usage: dict[str, Any]) -> int:
+    details = usage.get("prompt_tokens_details") or usage.get("input_tokens_details") or {}
+    if not isinstance(details, dict):
+        return _first_int(usage, ("cache_creation_input_tokens", "cache_write_input_tokens"))
+    for key in ("cache_creation_tokens", "cache_write_tokens"):
+        if details.get(key) is not None:
+            return _int_or_zero(details.get(key))
+    return _first_int(usage, ("cache_creation_input_tokens", "cache_write_input_tokens"))
+
+
+def _usage_reasoning_tokens(usage: dict[str, Any]) -> int:
+    details = (
+        usage.get("completion_tokens_details")
+        or usage.get("output_tokens_details")
+        or {}
+    )
+    if not isinstance(details, dict):
+        return 0
+    return _int_or_zero(details.get("reasoning_tokens"))
+
+
+def _first_int(mapping: dict[str, Any], keys: tuple[str, ...]) -> int:
+    for key in keys:
+        if key in mapping:
+            return _int_or_zero(mapping[key])
+    return 0
+
+
+def _int_or_zero(value: Any) -> int:
+    try:
+        return int(value or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _sum_optional_float(values: Any) -> float | None:
+    total = 0.0
+    seen = False
+    for value in values:
+        if value is None:
+            continue
+        try:
+            total += float(value)
+            seen = True
+        except (TypeError, ValueError):
+            continue
+    return total if seen else None
+
+
+def _float_or_none(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 
 def _wall_time_expired(

@@ -13,8 +13,10 @@ from shallowswe.pier_repair_loop import (
     _classify_agent_exit,
     _classify_runner_exception,
     _dollar_cap_hit,
+    _final_usage_totals,
     _hide_verifier_artifacts,
     _mini_swe_exit_status,
+    _raw_usage_totals_from_trajectory,
     _sampling_config_from_file,
     _stop_reason_for_agent_exit,
     _tree_sha256,
@@ -138,6 +140,136 @@ class PierRepairLoopTests(unittest.TestCase):
         self.assertFalse(
             _dollar_cap_hit(context=AgentContext(cost_usd=1.5), dollar_cap_usd=None)
         )
+
+    def test_dollar_cap_hit_uses_reported_trajectory_cost_before_raw_cost_sum(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            trajectory = Path(tmp) / "mini-swe-agent.trajectory.json"
+            trajectory.write_text(
+                json.dumps(
+                    {
+                        "info": {"model_stats": {"instance_cost": 1.0}},
+                        "messages": [
+                            {"response": {"usage": {"prompt_tokens": 10, "cost": 0.75}}},
+                            {"response": {"usage": {"prompt_tokens": 10, "cost": 0.80}}},
+                        ]
+                    }
+                )
+            )
+
+            self.assertFalse(
+                _dollar_cap_hit(
+                    context=AgentContext(),
+                    dollar_cap_usd=1.5,
+                    trajectory_path=trajectory,
+                )
+            )
+
+    def test_final_usage_totals_use_raw_tokens_but_reported_trajectory_cost(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            trajectory = Path(tmp) / "mini-swe-agent.trajectory.json"
+            trajectory.write_text(
+                json.dumps(
+                    {
+                        "info": {"model_stats": {"instance_cost": 0.42}},
+                        "messages": [
+                            {
+                                "response": {
+                                    "usage": {
+                                        "prompt_tokens": 100,
+                                        "completion_tokens": 20,
+                                        "cost": 0.30,
+                                        "prompt_tokens_details": {
+                                            "cached_tokens": 40,
+                                            "cache_write_tokens": 5,
+                                        },
+                                        "completion_tokens_details": {
+                                            "reasoning_tokens": 7,
+                                        },
+                                    }
+                                }
+                            },
+                            {
+                                "response": {
+                                    "usage": {
+                                        "input_tokens": 50,
+                                        "output_tokens": 10,
+                                        "cost": 0.25,
+                                        "input_tokens_details": {
+                                            "cached_tokens": 15,
+                                            "cache_write_tokens": 3,
+                                        },
+                                        "output_tokens_details": {
+                                            "reasoning_tokens": 2,
+                                        },
+                                    }
+                                }
+                            },
+                        ]
+                    }
+                )
+            )
+
+            totals = _final_usage_totals(
+                AgentContext(
+                    n_input_tokens=1,
+                    n_output_tokens=1,
+                    n_cache_tokens=1,
+                    cost_usd=0.01,
+                ),
+                trajectory,
+            )
+
+        self.assertEqual(totals["input_tokens"], 150)
+        self.assertEqual(totals["output_tokens"], 30)
+        self.assertEqual(totals["cache_read_tokens"], 55)
+        self.assertEqual(totals["cache_write_tokens"], 8)
+        self.assertEqual(totals["reasoning_tokens"], 9)
+        self.assertAlmostEqual(totals["gateway_reported_cost_usd"], 0.42)
+
+    def test_raw_usage_totals_return_none_without_usage_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            trajectory = Path(tmp) / "mini-swe-agent.trajectory.json"
+            trajectory.write_text(json.dumps({"messages": []}))
+
+            self.assertIsNone(_raw_usage_totals_from_trajectory(trajectory))
+
+    def test_raw_usage_totals_count_cache_creation_token_keys(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            trajectory = Path(tmp) / "mini-swe-agent.trajectory.json"
+            trajectory.write_text(
+                json.dumps(
+                    {
+                        "messages": [
+                            {
+                                "response": {
+                                    "usage": {
+                                        "prompt_tokens": 100,
+                                        "completion_tokens": 20,
+                                        "prompt_tokens_details": {
+                                            "cache_creation_tokens": 30,
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "response": {
+                                    "usage": {
+                                        "input_tokens": 50,
+                                        "output_tokens": 10,
+                                        "cache_creation_input_tokens": 7,
+                                    },
+                                },
+                            },
+                        ],
+                    }
+                )
+            )
+
+            totals = _raw_usage_totals_from_trajectory(trajectory)
+
+        self.assertIsNotNone(totals)
+        assert totals is not None
+        self.assertEqual(totals["cache_write_tokens"], 37)
 
     def test_classify_agent_exit_separates_dollar_step_and_wall_caps(self) -> None:
         self.assertEqual(
