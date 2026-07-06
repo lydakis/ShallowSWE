@@ -1,0 +1,34 @@
+{
+  "schema_version": "shallowswe.panel.v0.1",
+  "name": "shallowswe-codex-mini-calibration-v0.1",
+  "status": "calibration",
+  "description": "Cheap Codex exec calibration panel for one-shot floor and plumbing probes. Calibration runs are quarantined from published leaderboard results.",
+  "defaults": {
+    "harness": "pier-codex",
+    "inference_gateway": "openai",
+    "provider_routing": {
+      "allow_fallbacks": false
+    }
+  },
+  "selection_policy": {
+    "purpose": "Measure whether Codex exec with a mini model can provide a cheaper floor-probe or plumbing-calibration signal before broader calibration spend.",
+    "published_stats_policy": "Calibration rollouts do not count as published leaderboard rollouts.",
+    "versioning_policy": "Bump the panel version when the selected Codex model, reasoning effort, or Codex scaffold behavior changes materially."
+  },
+  "rows": [
+    {
+      "id": "codex_gpt_5_4_mini_none",
+      "model": "gpt-5.4-mini",
+      "upstream_provider": "openai",
+      "reasoning_effort": "none",
+      "anchor_role": "cheapest_codex_exec_probe"
+    },
+    {
+      "id": "codex_gpt_5_4_mini_low",
+      "model": "gpt-5.4-mini",
+      "upstream_provider": "openai",
+      "reasoning_effort": "low",
+      "anchor_role": "cheap_codex_exec_coding_probe"
+    }
+  ]
+}

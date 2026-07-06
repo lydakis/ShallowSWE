@@ -98,3 +98,83 @@ should pin upstream provider dispatch, disable gateway fallbacks, and record bot
 `inference_gateway` and `upstream_provider` in each row. Provider, network, credit, credential,
 model-resolution, provider-dispatch, verifier-infra, and wall-time guard failures are excluded from
 CPSC and retried; model failures inside the repair loop are scored.
+
+## Cheap Codex Exec Calibration
+
+Pier ships a native `codex` agent, so ShallowSWE does not need a custom Codex harness for cheap
+one-shot calibration probes. Use it for one-shot floor or plumbing checks only; scored repair-loop
+runs still need the resumable mini-swe-agent path until Codex continuation semantics are explicitly
+validated for ShallowSWE.
+
+Budget the Codex mini panel before running it:
+
+```sh
+uv run shallowswe estimate-panel panels/shallowswe-codex-mini-calibration-v0.1.json \
+  --prices prices/openai-2026-07-06.json \
+  --task-count 18 \
+  --rollouts 3 \
+  --input-tokens 10000 \
+  --output-tokens 1000 \
+  --max-budget-usd 5 \
+  --fail-over-budget
+```
+
+For ChatGPT subscription-backed runs, use the local wrapper agent so Pier's filtered egress allows
+the `chatgpt.com` Codex endpoints while the task itself still has no general internet. The wrapper
+uses Codex `auth.json`; do not pass `OPENAI_API_KEY` for this mode.
+
+Run a single subscription-backed Codex row through Pier:
+
+```sh
+CODEX_FORCE_AUTH_JSON=true uv run pier run \
+  --path tasks \
+  --include-task-name 'env-flags-to-json' \
+  --job-name shallowswe_codex_subscription_gpt54_mini_low_smoke \
+  --jobs-dir /tmp/shallowswe-pier \
+  --n-attempts 1 \
+  --n-concurrent 1 \
+  --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent \
+  --model openai/gpt-5.4-mini \
+  --agent-kwarg version=0.142.0 \
+  --agent-kwarg reasoning_effort=low \
+  --agent-env CODEX_FORCE_AUTH_JSON=true \
+  --env docker \
+  --yes
+```
+
+For an ultra-cheap probe, use `--agent-kwarg reasoning_effort=none`; for a more coding-capable cheap
+probe, use `low`. The Pier Codex agent records Codex JSONL sessions and converts them to ATIF, so
+the normal ShallowSWE export path applies:
+
+```sh
+uv run shallowswe export-pier \
+  /tmp/shallowswe-pier/shallowswe_codex_subscription_gpt54_mini_low_smoke \
+  --tasks-root tasks > /tmp/shallowswe-codex-mini-rollouts.json
+```
+
+To size the current local task set with the subscription path, run:
+
+```sh
+uv run python scripts/run_codex_subscription_sizing.py --floor-attempts 3 --concurrency 1
+```
+
+That runner executes `gpt-5.5` medium across all local tasks, reruns medium failures at high, reruns
+remaining failures at xhigh, then runs a `gpt-5.4-mini` low floor probe and writes a combined report
+under `results/shallowswe-codex-subscription-sizing-<stamp>/`.
+
+If a run was started before report semantics changed, regenerate the report without rerunning Pier:
+
+```sh
+uv run python scripts/run_codex_subscription_sizing.py \
+  --report-only results/shallowswe-codex-subscription-sizing-<stamp>
+```
+
+The regenerated report treats `gpt-5.5[medium]` as the only ceiling calibration signal. `high` and
+`xhigh` are diagnostic rescue runs for medium failures only.
+
+To refresh live progress from existing Pier job directories:
+
+```sh
+uv run python scripts/run_codex_subscription_sizing.py \
+  --progress-only results/shallowswe-codex-subscription-sizing-<stamp>
+```

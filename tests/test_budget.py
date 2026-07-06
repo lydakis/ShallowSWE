@@ -160,6 +160,22 @@ class PanelBudgetTests(unittest.TestCase):
         self.assertEqual(estimate["priced_rows"], 5)
         self.assertEqual(estimate["missing_price_rows"], 0)
 
+    def test_codex_mini_calibration_panel_is_priced(self) -> None:
+        estimate = estimate_panel_budget(
+            load_panel(REPO_ROOT / "panels" / "shallowswe-codex-mini-calibration-v0.1.json"),
+            load_prices(REPO_ROOT / "prices" / "openai-2026-07-06.json"),
+            task_count=18,
+            rollouts_per_task=3,
+            token_basis=TokenBasis(input_tokens=10_000, output_tokens=1_000),
+            max_budget_usd=5,
+        )
+
+        self.assertEqual(estimate["rows"], 2)
+        self.assertEqual(estimate["priced_rows"], 2)
+        self.assertEqual(estimate["missing_price_rows"], 0)
+        self.assertAlmostEqual(estimate["estimated_full_panel_cost_usd"], 1.296)
+        self.assertFalse(estimate["over_budget"])
+
     def test_expanded_pilot_panel_is_priced_and_keeps_effort_variants_separate(self) -> None:
         panel = load_panel(REPO_ROOT / "panels" / "deepswe-v1.1-expanded-pilot.json")
         rows = panel["rows"]
