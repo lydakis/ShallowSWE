@@ -1,0 +1,26 @@
+[
+  {
+    "account_id": "acct-100",
+    "opened_at": "2026-07-01",
+    "severity": "critical",
+    "status": "open"
+  },
+  {
+    "account_id": "acct-100",
+    "opened_at": "2026-07-02",
+    "severity": "high",
+    "status": "open"
+  },
+  {
+    "account_id": "acct-200",
+    "opened_at": "2026-06-20",
+    "severity": "critical",
+    "status": "closed"
+  },
+  {
+    "account_id": "acct-300",
+    "opened_at": "2026-07-04",
+    "severity": "critical",
+    "status": "investigating"
+  }
+]

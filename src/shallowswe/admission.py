@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 import tomllib
 
-from .task_metadata import discover_tasks
+from .task_metadata import discover_tasks, is_official_calibration_status
 
 
 ADMISSION_AUDIT_SCHEMA_VERSION = "shallowswe.admission_audit.v0.2"
@@ -20,7 +20,7 @@ def audit_task_admission(root: Path) -> dict[str, Any]:
     calibration_issue_counts: Counter[str] = Counter()
 
     for task in discover_tasks(root):
-        is_smoke = task.calibration_status == "smoke"
+        is_official = is_official_calibration_status(task.calibration_status)
         row = _audit_one_task(task.path)
         row.update(
             {
@@ -28,14 +28,14 @@ def audit_task_admission(root: Path) -> dict[str, Any]:
                 "category": task.category,
                 "size": task.size,
                 "calibration_status": task.calibration_status,
-                "official_candidate": not is_smoke,
+                "official_candidate": is_official,
             }
         )
-        row["admission_issues"] = _admission_issues(row) if not is_smoke else []
+        row["admission_issues"] = _admission_issues(row) if is_official else []
         row["ready_for_snapshot"] = not row["admission_issues"]
-        row["calibration_issues"] = _calibration_issues(row["calibration"]) if not is_smoke else []
+        row["calibration_issues"] = _calibration_issues(row["calibration"]) if is_official else []
         row["ready_for_calibrated_snapshot"] = (
-            not is_smoke and row["ready_for_snapshot"] and not row["calibration_issues"]
+            is_official and row["ready_for_snapshot"] and not row["calibration_issues"]
         )
         for issue in row["admission_issues"]:
             issue_counts[issue] += 1

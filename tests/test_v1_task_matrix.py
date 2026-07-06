@@ -5,6 +5,8 @@ from pathlib import Path
 import tomllib
 import unittest
 
+from shallowswe.task_metadata import is_official_calibration_status
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -19,7 +21,7 @@ class V1TaskMatrixTests(unittest.TestCase):
             with config_path.open("rb") as handle:
                 raw = tomllib.load(handle)
             metadata = raw["metadata"]
-            if metadata.get("calibration_status") == "smoke":
+            if not is_official_calibration_status(metadata.get("calibration_status")):
                 continue
             rows.append((metadata["category"], metadata["size"], task_dir.name))
 

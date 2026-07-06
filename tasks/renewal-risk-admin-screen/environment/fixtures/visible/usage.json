@@ -1,0 +1,26 @@
+[
+  {
+    "account_id": "acct-100",
+    "active_users": 280,
+    "last_login_at": "2026-06-01",
+    "licensed_seats": 400
+  },
+  {
+    "account_id": "acct-200",
+    "active_users": 35,
+    "last_login_at": "2026-07-02",
+    "licensed_seats": 100
+  },
+  {
+    "account_id": "acct-300",
+    "active_users": 80,
+    "last_login_at": "2026-06-30",
+    "licensed_seats": 90
+  },
+  {
+    "account_id": "acct-400",
+    "active_users": 12,
+    "last_login_at": "2026-07-01",
+    "licensed_seats": 20
+  }
+]

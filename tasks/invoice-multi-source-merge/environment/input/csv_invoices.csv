@@ -1,0 +1,5 @@
+invoice_id,customer,amount,currency,status,issued_at,updated_at
+ inv-100 ,Acme Co,100.00,USD,open,2026-06-01,2026-06-03
+INV-101,Beta LLC,80.00,EUR,paid,2026-06-02,2026-06-05
+INV-200,CSV Loses,999.00,USD,paid,2026-06-01,2026-06-01
+INV-BAD,Unknown Currency,10.00,AUD,paid,2026-06-01,2026-06-01

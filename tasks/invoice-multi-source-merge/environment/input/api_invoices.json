@@ -1,0 +1,26 @@
+[
+  {
+    "id": "inv-200",
+    "account": {"name": "API Wins"},
+    "money": {"value": "50.005", "currency": "GBP"},
+    "state": "settled",
+    "issued": "2026-06-04",
+    "updated": "2026-06-06"
+  },
+  {
+    "id": "INV-300",
+    "account": {"name": "Gamma Inc"},
+    "money": {"value": "12.00", "currency": "USD"},
+    "state": "pending",
+    "issued": "2026-06-05",
+    "updated": "2026-06-05"
+  },
+  {
+    "id": "",
+    "account": {"name": "Missing"},
+    "money": {"value": "1.00", "currency": "USD"},
+    "state": "paid",
+    "issued": "2026-06-05",
+    "updated": "2026-06-05"
+  }
+]

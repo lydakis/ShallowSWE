@@ -1,0 +1,26 @@
+[
+  {
+    "account_id": "acct-100",
+    "name": "Acme Labs",
+    "owner": "Maya Stone",
+    "plan": "enterprise"
+  },
+  {
+    "account_id": "acct-200",
+    "name": "Beta Retail",
+    "owner": "Owen Park",
+    "plan": "pro"
+  },
+  {
+    "account_id": "acct-300",
+    "name": "Comet Health",
+    "owner": "Iris Chen",
+    "plan": "enterprise"
+  },
+  {
+    "account_id": "acct-400",
+    "name": "Delta Works",
+    "owner": "Noah Reed",
+    "plan": "starter"
+  }
+]

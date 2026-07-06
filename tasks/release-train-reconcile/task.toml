@@ -1,0 +1,44 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/release-train-reconcile"
+description = "Reconcile a deterministic release train state to a target release plan with ordering constraints."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "workflow", "large", "python", "release"]
+
+[metadata]
+category = "workflow"
+size = "large"
+language = "python"
+shape = "release-train-reconciliation"
+subtype = "ordered-release-plan"
+family = "local_api_operation"
+maintenance_type = "adaptive"
+domain = "release-management"
+source_pattern = "idempotent release-state reconciliation with checks, changelog, tag ordering, and no destructive calls"
+contamination_notes = "original local fixture; abstract release-management pattern only"
+repo_origin = "small_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 75
+expected_steps = 16
+calibration_status = "candidate_probe"
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]

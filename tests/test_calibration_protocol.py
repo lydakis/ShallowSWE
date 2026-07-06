@@ -5,6 +5,8 @@ from pathlib import Path
 import tomllib
 import unittest
 
+from shallowswe.task_metadata import is_official_calibration_status
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CURRENT_DOCS = [
@@ -190,7 +192,7 @@ class TaskAuditMetadataTests(unittest.TestCase):
 
         for task_toml in sorted((REPO_ROOT / "tasks").glob("*/task.toml")):
             metadata = tomllib.loads(task_toml.read_text())["metadata"]
-            if metadata.get("calibration_status") == "smoke":
+            if not is_official_calibration_status(metadata.get("calibration_status")):
                 continue
             with self.subTest(task=task_toml.parent.name):
                 self.assertEqual(required - set(metadata), set())
@@ -198,7 +200,7 @@ class TaskAuditMetadataTests(unittest.TestCase):
     def test_official_tasks_record_measured_floor_probe_evidence(self) -> None:
         for task_toml in sorted((REPO_ROOT / "tasks").glob("*/task.toml")):
             metadata = tomllib.loads(task_toml.read_text())["metadata"]
-            if metadata.get("calibration_status") == "smoke":
+            if not is_official_calibration_status(metadata.get("calibration_status")):
                 continue
             with self.subTest(task=task_toml.parent.name):
                 self.assertGreaterEqual(metadata["weakest_model_rollouts"], 1)
@@ -222,7 +224,7 @@ class TaskAuditMetadataTests(unittest.TestCase):
         for task_toml in sorted((REPO_ROOT / "tasks").glob("*/task.toml")):
             raw = tomllib.loads(task_toml.read_text())
             metadata = raw["metadata"]
-            if metadata.get("calibration_status") == "smoke":
+            if not is_official_calibration_status(metadata.get("calibration_status")):
                 continue
             task_id = task_toml.parent.name
             calibration = raw.get("calibration")
@@ -262,7 +264,7 @@ class TaskAuditMetadataTests(unittest.TestCase):
 
         for task_toml in sorted((REPO_ROOT / "tasks").glob("*/task.toml")):
             metadata = tomllib.loads(task_toml.read_text())["metadata"]
-            if metadata.get("calibration_status") == "smoke":
+            if not is_official_calibration_status(metadata.get("calibration_status")):
                 continue
             task_id = task_toml.parent.name
             with self.subTest(task=task_id):
@@ -288,7 +290,7 @@ class TaskAuditMetadataTests(unittest.TestCase):
         for instruction in sorted((REPO_ROOT / "tasks").glob("*/instruction.md")):
             task_dir = instruction.parent
             metadata = tomllib.loads((task_dir / "task.toml").read_text())["metadata"]
-            if metadata.get("calibration_status") == "smoke":
+            if not is_official_calibration_status(metadata.get("calibration_status")):
                 continue
 
             prompt = instruction.read_text()

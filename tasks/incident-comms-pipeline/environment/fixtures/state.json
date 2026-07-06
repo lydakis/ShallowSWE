@@ -1,0 +1,57 @@
+{
+  "components": {
+    "api": "operational",
+    "web": "operational",
+    "cache": "degraded",
+    "search": "operational",
+    "payments": "operational"
+  },
+  "subscribers": {
+    "all-execs": {
+      "components": ["*"],
+      "minimum_severity": "critical"
+    },
+    "cache-team": {
+      "components": ["cache"],
+      "minimum_severity": "low"
+    },
+    "customer-support": {
+      "components": ["api", "web", "payments"],
+      "minimum_severity": "high"
+    },
+    "frontend-team": {
+      "components": ["web"],
+      "minimum_severity": "medium"
+    }
+  },
+  "notification_queue": [
+    {
+      "notification_key": "incident:old-001:cache-team",
+      "subscriber_id": "cache-team",
+      "kind": "incident_update",
+      "target": "INC-100",
+      "at": "2026-07-05T14:00:00Z",
+      "severity": "medium",
+      "message": "Cache recovery is being monitored."
+    }
+  ],
+  "incidents": [
+    {
+      "id": "INC-100",
+      "incident_key": "old-cache",
+      "title": "Cache instability",
+      "status": "monitoring",
+      "components": ["cache"],
+      "updates": [
+        {
+          "update_key": "old-001",
+          "at": "2026-07-05T14:00:00Z",
+          "status": "monitoring",
+          "message": "Cache recovery is being monitored."
+        }
+      ]
+    }
+  ],
+  "next_incident_number": 101,
+  "call_log": []
+}

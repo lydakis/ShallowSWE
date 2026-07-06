@@ -1,0 +1,44 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/customer-health-dashboard-screen"
+description = "Add a customer-health dashboard screen to a multi-module static web app, including route wiring, selectors, UI rendering, nav, and regression coverage."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "code", "large", "python", "web-app"]
+
+[metadata]
+category = "code"
+size = "large"
+language = "python"
+shape = "repo-scale-web-feature-screen"
+subtype = "customer-health-dashboard"
+family = "code_maintenance"
+maintenance_type = "adaptive"
+domain = "customer-success"
+source_pattern = "implement a new dashboard screen across routing, navigation, selectors, rendering, and tests in a broad multi-module static web app"
+contamination_notes = "original generated local fixture; generic customer-health dashboard pattern only"
+repo_origin = "generated_original_repo"
+requires_test_authoring = true
+expected_engineer_minutes = 150
+expected_steps = 32
+calibration_status = "candidate_probe"
+
+[verifier]
+timeout_sec = 180.0
+
+[agent]
+timeout_sec = 1200.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]

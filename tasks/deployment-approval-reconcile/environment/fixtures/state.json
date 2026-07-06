@@ -1,0 +1,36 @@
+{
+  "services": {
+    "api": {
+      "rings": {
+        "canary": "1.9.0",
+        "internal": "1.9.0",
+        "prod": "1.8.5"
+      },
+      "history": []
+    },
+    "worker": {
+      "rings": {
+        "canary": "3.1.0",
+        "internal": "3.0.0",
+        "prod": "3.0.0"
+      },
+      "history": [
+        {
+          "action": "deploy",
+          "service": "worker",
+          "ring": "canary",
+          "version": "3.1.0"
+        }
+      ]
+    },
+    "admin": {
+      "rings": {
+        "canary": "0.5.0",
+        "internal": "0.5.0",
+        "prod": "0.5.0"
+      },
+      "history": []
+    }
+  },
+  "call_log": []
+}

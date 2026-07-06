@@ -13,6 +13,8 @@ Each row is now an authored benchmark task folder under `tasks/<task-id>/`.
 - `existing`: task folder exists.
 - `proposed`: task slot is defined, but no task folder exists yet.
 - `smoke`: harness-only task; not counted in the 36-task benchmark.
+- `candidate_probe`: authored refill probe; not counted in the frozen 36-task benchmark until it
+  passes admission and calibration.
 
 ## Code
 

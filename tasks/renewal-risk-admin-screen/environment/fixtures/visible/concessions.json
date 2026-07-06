@@ -1,0 +1,30 @@
+[
+  {
+    "account_id": "acct-200",
+    "amount": 5000,
+    "expires_on": "2026-07-18",
+    "reason": "competitive renewal",
+    "type": "discount"
+  },
+  {
+    "account_id": "acct-100",
+    "amount": 7500,
+    "expires_on": "2026-08-10",
+    "reason": "executive commitment",
+    "type": "service_credit"
+  },
+  {
+    "account_id": "acct-400",
+    "amount": 1200,
+    "expires_on": "2026-07-10",
+    "reason": "pilot ramp",
+    "type": "pilot_credit"
+  },
+  {
+    "account_id": "acct-200",
+    "amount": 3000,
+    "expires_on": "2026-06-30",
+    "reason": "expired",
+    "type": "legacy_discount"
+  }
+]

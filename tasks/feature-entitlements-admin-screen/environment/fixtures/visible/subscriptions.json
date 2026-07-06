@@ -1,0 +1,20 @@
+{
+  "report_date": "2026-07-05",
+  "subscriptions": [
+    {
+      "workspace_id": "ws-100",
+      "status": "active",
+      "renewal_date": "2026-08-04"
+    },
+    {
+      "workspace_id": "ws-200",
+      "status": "past_due",
+      "renewal_date": "2026-07-20"
+    },
+    {
+      "workspace_id": "ws-300",
+      "status": "trialing",
+      "renewal_date": "2026-07-16"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "enterprise": {
+    "api_access": {
+      "enabled": true,
+      "limit": null
+    },
+    "audit_logs": {
+      "enabled": true,
+      "limit": null
+    },
+    "priority_support": {
+      "enabled": true,
+      "limit": 25
+    },
+    "sso": {
+      "enabled": true,
+      "limit": null
+    }
+  },
+  "growth": {
+    "api_access": {
+      "enabled": true,
+      "limit": 10000
+    },
+    "audit_logs": {
+      "enabled": true,
+      "limit": 90
+    },
+    "priority_support": {
+      "enabled": true,
+      "limit": 5
+    },
+    "sso": {
+      "enabled": false,
+      "limit": null
+    }
+  },
+  "starter": {
+    "api_access": {
+      "enabled": true,
+      "limit": 1000
+    },
+    "audit_logs": {
+      "enabled": false,
+      "limit": 30
+    },
+    "priority_support": {
+      "enabled": false,
+      "limit": 0
+    },
+    "sso": {
+      "enabled": false,
+      "limit": null
+    }
+  }
+}

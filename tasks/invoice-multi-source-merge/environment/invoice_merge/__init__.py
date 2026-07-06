@@ -1,0 +1,1 @@
+"""Invoice merge fixture package."""

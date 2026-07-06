@@ -11,6 +11,7 @@ TIER_ORDER = SIZE_ORDER
 VALID_CATEGORIES = set(CATEGORY_ORDER)
 VALID_SIZES = set(SIZE_ORDER)
 VALID_TIERS = VALID_SIZES
+NON_OFFICIAL_CALIBRATION_STATUSES = {"smoke", "candidate_probe"}
 
 LEGACY_CATEGORY_MAP = {
     "fix": "code",
@@ -104,3 +105,7 @@ def normalize_category(category: str) -> str:
 
 def normalize_size(size: str) -> str:
     return LEGACY_TIER_MAP.get(size, size)
+
+
+def is_official_calibration_status(status: str | None) -> bool:
+    return status not in NON_OFFICIAL_CALIBRATION_STATUSES

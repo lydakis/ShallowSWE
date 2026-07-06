@@ -1,0 +1,44 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/incident-comms-pipeline"
+description = "Drive deterministic incident communications state from a timeline with dedupe and ordering constraints."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "workflow", "large", "python", "incident"]
+
+[metadata]
+category = "workflow"
+size = "large"
+language = "python"
+shape = "incident-comms-state-reconcile"
+subtype = "statuspage-component-incident-pipeline"
+family = "local_api_operation"
+maintenance_type = "adaptive"
+domain = "incident-management"
+source_pattern = "ordered incident communication reconciliation with components, dedupe, stale resolution, and audit log"
+contamination_notes = "original local fixture; abstract incident-comms pattern only"
+repo_origin = "small_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 110
+expected_steps = 24
+calibration_status = "candidate_probe"
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]

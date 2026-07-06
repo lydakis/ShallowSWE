@@ -1,0 +1,44 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/deployment-approval-reconcile"
+description = "Reconcile a deployment plan through ring order, health checks, approvals, freezes, and deterministic audit output."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "workflow", "large", "python", "deployment"]
+
+[metadata]
+category = "workflow"
+size = "large"
+language = "python"
+shape = "approval-gated-deployment-reconcile"
+subtype = "ringed-deploy-plan"
+family = "local_api_operation"
+maintenance_type = "adaptive"
+domain = "deployment-operations"
+source_pattern = "ordered deployment reconciliation with approvals, health gates, freezes, blocks, and idempotent audit output"
+contamination_notes = "original local fixture; abstract deployment-operations pattern only"
+repo_origin = "small_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 90
+expected_steps = 20
+calibration_status = "candidate_probe"
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]

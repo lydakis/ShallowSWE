@@ -1,0 +1,72 @@
+{
+  "events": [
+    {
+      "sequence": 20,
+      "at": "2026-07-05T15:10:00Z",
+      "type": "incident_update",
+      "incident_key": "api-latency",
+      "status": "identified",
+      "severity": "critical",
+      "components": ["api"],
+      "update_key": "api-002",
+      "message": "Database saturation identified."
+    },
+    {
+      "sequence": 10,
+      "at": "2026-07-05T15:00:00Z",
+      "type": "component_status",
+      "component": "api",
+      "component_status": "degraded"
+    },
+    {
+      "sequence": 11,
+      "at": "2026-07-05T15:00:00Z",
+      "type": "incident_opened",
+      "incident_key": "api-latency",
+      "title": "API latency elevated",
+      "status": "investigating",
+      "severity": "high",
+      "components": ["api"],
+      "update_key": "api-001",
+      "message": "We are investigating elevated API latency."
+    },
+    {
+      "sequence": 21,
+      "at": "2026-07-05T15:10:00Z",
+      "type": "incident_update",
+      "incident_key": "api-latency",
+      "status": "identified",
+      "severity": "critical",
+      "components": ["api"],
+      "update_key": "api-002",
+      "message": "Duplicate update should not repost."
+    },
+    {
+      "sequence": 30,
+      "at": "2026-07-05T15:30:00Z",
+      "type": "component_status",
+      "component": "web",
+      "component_status": "partial_outage"
+    },
+    {
+      "sequence": 40,
+      "at": "2026-07-05T16:00:00Z",
+      "type": "incident_resolved",
+      "incident_key": "api-latency",
+      "status": "resolved",
+      "severity": "medium",
+      "components": ["api", "web"],
+      "update_key": "api-003",
+      "message": "Latency has returned to normal."
+    },
+    {
+      "sequence": 41,
+      "at": "2026-07-05T16:05:00Z",
+      "type": "component_status",
+      "component": "api",
+      "component_status": "operational"
+    }
+  ],
+  "stale_incident_keys": ["old-cache"],
+  "stale_resolution_at": "2026-07-05T17:00:00Z"
+}

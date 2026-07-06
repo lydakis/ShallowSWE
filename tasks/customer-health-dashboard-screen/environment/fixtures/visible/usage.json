@@ -1,0 +1,22 @@
+[
+  {
+    "account_id": "acct-100",
+    "previous_period_events": 1000,
+    "current_period_events": 850
+  },
+  {
+    "account_id": "acct-200",
+    "previous_period_events": 600,
+    "current_period_events": 510
+  },
+  {
+    "account_id": "acct-300",
+    "previous_period_events": 900,
+    "current_period_events": 930
+  },
+  {
+    "account_id": "acct-400",
+    "previous_period_events": 300,
+    "current_period_events": 240
+  }
+]

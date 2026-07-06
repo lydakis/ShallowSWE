@@ -1,0 +1,102 @@
+[
+  {
+    "id": "DSP-100",
+    "region": "west",
+    "account": "acme",
+    "state": "active",
+    "ready": true,
+    "priority": 2,
+    "promised_at": "2026-07-06T09:00:00Z",
+    "destination_zone": "W1"
+  },
+  {
+    "id": "DSP-102",
+    "region": "west",
+    "account": "acme",
+    "state": "archived",
+    "ready": true,
+    "priority": 4,
+    "promised_at": "2026-07-06T10:00:00Z",
+    "destination_zone": "W1"
+  },
+  {
+    "id": "DSP-101",
+    "region": "west",
+    "account": "acme",
+    "state": "active",
+    "ready": true,
+    "priority": 5,
+    "promised_at": "2026-07-06T11:00:00Z",
+    "destination_zone": "W2"
+  },
+  {
+    "id": "DSP-110",
+    "region": "west",
+    "account": "acme",
+    "state": "active",
+    "ready": true,
+    "priority": 1,
+    "promised_at": "2026-07-06T12:00:00Z",
+    "destination_zone": "W3"
+  },
+  {
+    "id": "DSP-120",
+    "region": "west",
+    "account": "acme",
+    "state": "active",
+    "ready": true,
+    "priority": 9,
+    "promised_at": "2026-07-06T12:00:00Z",
+    "destination_zone": "W3"
+  },
+  {
+    "id": "DSP-130",
+    "region": "west",
+    "account": "acme",
+    "state": "active",
+    "ready": false,
+    "priority": 8,
+    "promised_at": "2026-07-06T08:00:00Z",
+    "destination_zone": "W1"
+  },
+  {
+    "id": "DSP-140",
+    "region": "east",
+    "account": "acme",
+    "state": "active",
+    "ready": true,
+    "priority": 7,
+    "promised_at": "2026-07-06T08:30:00Z",
+    "destination_zone": "E1"
+  },
+  {
+    "id": "DSP-150",
+    "region": "west",
+    "account": "globex",
+    "state": "active",
+    "ready": true,
+    "priority": 6,
+    "promised_at": "2026-07-06T08:45:00Z",
+    "destination_zone": "W1"
+  },
+  {
+    "id": "DSP-160",
+    "region": "west",
+    "account": "acme",
+    "state": "cancelled",
+    "ready": true,
+    "priority": 10,
+    "promised_at": "2026-07-06T07:00:00Z",
+    "destination_zone": "W1"
+  },
+  {
+    "id": "DSP-170",
+    "region": "west",
+    "account": "acme",
+    "state": "blocked",
+    "ready": true,
+    "priority": 10,
+    "promised_at": "2026-07-06T07:30:00Z",
+    "destination_zone": "W1"
+  }
+]

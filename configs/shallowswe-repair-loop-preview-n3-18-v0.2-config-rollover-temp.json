@@ -1,0 +1,99 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_plan.v0.1",
+  "name": "shallowswe-repair-loop-preview-n3-18-v0.2-config-rollover-temp",
+  "snapshot_id": "shallowswe-v0.2-large-replacement-candidate-2026-07-05",
+  "mode": "bounded_repair_loop_preview",
+  "task_root": "tasks",
+  "task_ids": [
+    "env-flags-to-json",
+    "extract-error-fields",
+    "payout-reconcile",
+    "access-log-to-incidents",
+    "billing-revenue-rollup",
+    "support-sla-business-hours",
+    "invoice-cli-regression-test-fix",
+    "retry-error-fallback",
+    "auth-token-expiry-regression",
+    "split-notification-renderer",
+    "cache-invalidates-on-settings-change",
+    "invoice-multi-source-merge",
+    "post-build-status",
+    "ticket-cut-from-bug-report",
+    "config-flag-ignored",
+    "ticket-update-dont-duplicate",
+    "merge-divergent-config-branches",
+    "config-key-rollover"
+  ],
+  "selection_policy": {
+    "tasks_per_category_size_cell": 2,
+    "purpose": "Preview run with one newly calibrated large replacement per category after the July 5 floor recalibration showed the original six large slots no longer retained large-band behavior. Temporary continuation excludes incident-comms-pipeline after it behaved as an over-hard outlier; config-key-rollover is restored for the workflow large slot pending tomorrow review.",
+    "source_evidence": [
+      "results/shallowswe-floor-recal-oneshot-n3-2026-07-05/floor-recal-report.json",
+      "results/shallowswe-probe-invoice-cl2-fixed-reason-codes-n3-diagnostic-2026-07-05/aggregate.json",
+      "results/shallowswe-probe-replacements-al2-wl2-n3-2026-07-05/aggregate.json",
+      "results/shallowswe-probe-incident-comms-expanded-combined-2026-07-05/aggregate-scored.json"
+    ],
+    "large_replacements": [
+      {
+        "category": "code",
+        "removed": "status-terminal-parity",
+        "added": "invoice-multi-source-merge",
+        "reason": "status-terminal-parity saturated at 9/9 in the July 5 floor recalibration; invoice-multi-source-merge produced large-band one-shot pressure."
+      },
+      {
+        "category": "artifact",
+        "removed": "support-metrics-package",
+        "added": "support-sla-business-hours",
+        "reason": "support-metrics-package saturated at 9/9 in the July 5 floor recalibration; support-sla-business-hours produced large-band one-shot pressure."
+      },
+      {
+        "category": "workflow",
+        "removed": "config-key-rollover",
+        "added": "incident-comms-pipeline",
+        "reason": "config-key-rollover saturated at 9/9 in the July 5 floor recalibration; incident-comms-pipeline produced large-band one-shot pressure after verifier repairs."
+      }
+    ],
+    "notes": [
+      "This is still a preview plan, not final snapshot admission.",
+      "The plan keeps one older large-labeled placeholder per category to preserve the 18-task matrix while the remaining large slots are refilled.",
+      "The three replacement tasks are marked candidate_probe in task metadata because this plan is explicit-task selection, not formal calibrated snapshot admission.",
+      "Temporary July 6 continuation: incident-comms-pipeline rows are retained locally but excluded from website/export aggregates; config-key-rollover rows are used in the workflow-large slot."
+    ],
+    "temporary_replacement": {
+      "category": "workflow",
+      "removed": "incident-comms-pipeline",
+      "added": "config-key-rollover",
+      "reason": "incident-comms-pipeline produced 1/10 pass behavior in the repair-loop run and is held aside for investigation."
+    }
+  },
+  "model_panel": "panels/deepswe-v1.1-expanded-pilot.json",
+  "repair_loop_seeds_per_task_model_config": 3,
+  "protocol": {
+    "single_model_run_invariant": true,
+    "no_fallbacks": true,
+    "requires_conversation_continuation": true,
+    "requires_filesystem_continuation": true,
+    "verifier_submission_cap": 20,
+    "agent_step_cap": 120,
+    "wall_time_cap_seconds": 2400,
+    "dollar_cap_usd": 5.0,
+    "allowed_feedback_classes": [
+      "generic_failure",
+      "runtime_error",
+      "missing_required_artifact",
+      "output_mismatch"
+    ]
+  },
+  "budget_gate": {
+    "max_budget_usd": 250.0,
+    "global_hard_stop_usd": 250.0,
+    "estimate_artifact": "results/shallowswe-repair-loop-preview-plan-v0.2-large-replacements-2026-07-05/budget-estimate.json",
+    "requires_explicit_approval_if_over_budget": true
+  },
+  "status": "preview_plan_not_publish_grade",
+  "notes": [
+    "This is a feedback-seeking preview run, not a final ShallowSWE snapshot.",
+    "Final publish-grade scoring remains N=10 repair-loop seeds per task/model_config, with N=20 only for disputed frontier cells.",
+    "Run validation should inspect preliminary trajectories immediately and stop early on verifier/task unfairness before retrying."
+  ]
+}

@@ -1,0 +1,44 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/invoice-multi-source-merge"
+description = "Merge CSV, API JSON, and legacy fixed-width invoices with precedence, normalization, rejects, and regression coverage."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "code", "large", "python", "invoice"]
+
+[metadata]
+category = "code"
+size = "large"
+language = "python"
+shape = "multi-source-import-merge"
+subtype = "invoice-precedence-normalization"
+family = "code_maintenance"
+maintenance_type = "adaptive"
+domain = "billing"
+source_pattern = "extend an invoice importer across multiple source formats while preserving public CLI behavior and adding focused regression coverage"
+contamination_notes = "original local fixture; abstract invoice-import pattern only"
+repo_origin = "small_original_repo"
+requires_test_authoring = true
+expected_engineer_minutes = 85
+expected_steps = 18
+calibration_status = "candidate_probe"
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]

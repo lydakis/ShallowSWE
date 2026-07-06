@@ -4,7 +4,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from shallowswe.task_metadata import load_task
+from shallowswe.task_metadata import is_official_calibration_status, load_task
 
 
 class TaskMetadataTests(unittest.TestCase):
@@ -58,3 +58,8 @@ shape = "cross-cutting-rename"
         self.assertEqual(task.category, "workflow")
         self.assertEqual(task.size, "large")
         self.assertEqual(task.tier, "large")
+
+    def test_candidate_probes_are_not_official_calibration_tasks(self) -> None:
+        self.assertFalse(is_official_calibration_status("smoke"))
+        self.assertFalse(is_official_calibration_status("candidate_probe"))
+        self.assertTrue(is_official_calibration_status("candidate"))

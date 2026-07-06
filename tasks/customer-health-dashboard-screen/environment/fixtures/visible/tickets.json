@@ -1,0 +1,42 @@
+[
+  {
+    "ticket_id": "T-100-1",
+    "account_id": "acct-100",
+    "status": "open"
+  },
+  {
+    "ticket_id": "T-100-2",
+    "account_id": "acct-100",
+    "status": "open"
+  },
+  {
+    "ticket_id": "T-100-3",
+    "account_id": "acct-100",
+    "status": "closed"
+  },
+  {
+    "ticket_id": "T-200-1",
+    "account_id": "acct-200",
+    "status": "open"
+  },
+  {
+    "ticket_id": "T-200-2",
+    "account_id": "acct-200",
+    "status": "open"
+  },
+  {
+    "ticket_id": "T-200-3",
+    "account_id": "acct-200",
+    "status": "open"
+  },
+  {
+    "ticket_id": "T-200-4",
+    "account_id": "acct-200",
+    "status": "open"
+  },
+  {
+    "ticket_id": "T-300-1",
+    "account_id": "acct-300",
+    "status": "open"
+  }
+]

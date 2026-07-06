@@ -1,0 +1,3 @@
+entry_id,account_id,posted_at,amount_cents,memo
+jan-001,acct-a,2026-01-05T10:00:00Z,10000,subscription
+jan-002,acct-b,2026-01-18T12:00:00Z,5000,usage

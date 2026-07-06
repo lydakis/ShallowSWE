@@ -1,0 +1,27 @@
+[
+  {
+    "workspace_id": "ws-100",
+    "feature": "priority_support",
+    "current_usage": 31
+  },
+  {
+    "workspace_id": "ws-200",
+    "feature": "api_access",
+    "current_usage": 12000
+  },
+  {
+    "workspace_id": "ws-200",
+    "feature": "audit_logs",
+    "current_usage": 44
+  },
+  {
+    "workspace_id": "ws-300",
+    "feature": "api_access",
+    "current_usage": 900
+  },
+  {
+    "workspace_id": "ws-300",
+    "feature": "sso",
+    "current_usage": 0
+  }
+]

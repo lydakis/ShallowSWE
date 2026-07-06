@@ -1,0 +1,44 @@
+{
+  "now": "2026-08-10T15:00:00Z",
+  "ring_order": ["canary", "internal", "prod"],
+  "deployments": [
+    {
+      "service": "api",
+      "target_version": "2.0.0",
+      "rings": ["canary", "internal", "prod"],
+      "required_checks": {
+        "canary": ["smoke"],
+        "internal": ["smoke", "latency"],
+        "prod": ["smoke", "latency"]
+      },
+      "approval_required_for": ["prod"]
+    },
+    {
+      "service": "worker",
+      "target_version": "3.1.0",
+      "rings": ["canary", "internal", "prod"],
+      "required_checks": {
+        "canary": ["smoke"],
+        "internal": ["smoke"],
+        "prod": ["smoke"]
+      },
+      "approval_required_for": ["prod"]
+    }
+  ],
+  "approvals": [
+    {"service": "api", "target_version": "2.0.0", "ring": "prod", "approved": true}
+  ],
+  "checks": [
+    {"service": "api", "target_version": "2.0.0", "ring": "canary", "check": "smoke", "result": "pass"},
+    {"service": "api", "target_version": "2.0.0", "ring": "internal", "check": "smoke", "result": "pass"},
+    {"service": "api", "target_version": "2.0.0", "ring": "internal", "check": "latency", "result": "pass"},
+    {"service": "api", "target_version": "2.0.0", "ring": "prod", "check": "smoke", "result": "pass"},
+    {"service": "api", "target_version": "2.0.0", "ring": "prod", "check": "latency", "result": "pass"},
+    {"service": "worker", "target_version": "3.1.0", "ring": "canary", "check": "smoke", "result": "pass"},
+    {"service": "worker", "target_version": "3.1.0", "ring": "internal", "check": "smoke", "result": "pass"},
+    {"service": "worker", "target_version": "3.1.0", "ring": "prod", "check": "smoke", "result": "pass"}
+  ],
+  "freeze_windows": [
+    {"service": "api", "ring": "prod", "start": "2026-08-10T14:00:00Z", "end": "2026-08-10T16:00:00Z"}
+  ]
+}

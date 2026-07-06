@@ -7,7 +7,7 @@ import json
 import tomllib
 
 from .budget import load_panel
-from .task_metadata import discover_tasks
+from .task_metadata import discover_tasks, is_official_calibration_status
 
 
 CALIBRATION_PLAN_SCHEMA_VERSION = "shallowswe.calibration_plan.v0.1"
@@ -32,7 +32,7 @@ def audit_calibration_plan(
     official_tasks = [
         task
         for task in discover_tasks(task_root)
-        if task.calibration_status != "smoke"
+        if is_official_calibration_status(task.calibration_status)
     ]
     planned_task_count = int(plan.get("official_task_count") or 0)
     if planned_task_count != len(official_tasks):

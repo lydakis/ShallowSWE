@@ -1,0 +1,3 @@
+entry_id,account_id,posted_at,amount_cents,memo
+feb-001,acct-a,2026-02-02T09:30:00Z,7000,subscription
+feb-002,acct-c,2026-02-20T18:00:00Z,-1000,credit

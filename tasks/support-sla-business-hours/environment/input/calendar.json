@@ -1,0 +1,11 @@
+{
+  "timezone": "America/New_York",
+  "business_start": "09:00",
+  "business_end": "17:00",
+  "holidays": ["2026-07-03"],
+  "thresholds_by_priority": {
+    "p1": {"response_minutes": 60, "resolution_minutes": 480},
+    "p2": {"response_minutes": 240, "resolution_minutes": 960},
+    "p3": {"response_minutes": 480, "resolution_minutes": 2400}
+  }
+}

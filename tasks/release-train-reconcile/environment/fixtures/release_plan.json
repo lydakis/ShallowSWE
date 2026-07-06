@@ -1,0 +1,20 @@
+{
+  "release_branch": "release/2.7",
+  "source_branch": "main",
+  "release_tag": "v2.7.0",
+  "required_checks": ["unit", "integration", "smoke"],
+  "required_commits": [
+    {
+      "sha": "c4",
+      "title": "Fix payout rounding",
+      "changelog": "- Fix payout rounding drift."
+    },
+    {
+      "sha": "c5",
+      "title": "Patch invoice export",
+      "changelog": "- Patch invoice export ordering."
+    }
+  ],
+  "blocked_commits": ["c6"],
+  "changelog_heading": "## v2.7.0 - 2026-07-05"
+}

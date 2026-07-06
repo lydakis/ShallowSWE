@@ -55,6 +55,10 @@ should one-shot it by reading the repo — and targets floor thrash through one 
 | WL-1 | `release-train-reconcile` | workflow | large | L6 + L5 |
 | WL-2 | `incident-comms-pipeline` | workflow | large | L4 + L6 |
 
+Current branch status: CL-1, AL-1, and WL-1 have been authored as `candidate_probe` tasks for
+local validation. They are intentionally excluded from the frozen benchmark counts until they pass
+the admission and calibration gates.
+
 ## Cards
 
 ### CM-1 `retry-policy-migration` (code / medium / L2)

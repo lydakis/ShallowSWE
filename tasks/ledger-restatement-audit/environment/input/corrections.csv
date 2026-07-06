@@ -1,0 +1,4 @@
+correction_id,target_entry_id,restated_amount_cents,reason,applied_at
+corr-001,jan-002,4500,usage_reprice,2026-03-01T12:00:00Z
+corr-002,feb-001,9000,late_upgrade,2026-03-03T12:00:00Z
+corr-003,missing-001,1200,unknown_entry,2026-03-04T12:00:00Z

@@ -1,0 +1,20 @@
+[
+  {
+    "workspace_id": "ws-100",
+    "name": "Atlas Finance",
+    "owner": "Maya Stone",
+    "plan": "enterprise"
+  },
+  {
+    "workspace_id": "ws-200",
+    "name": "Beacon Retail",
+    "owner": "Owen Park",
+    "plan": "growth"
+  },
+  {
+    "workspace_id": "ws-300",
+    "name": "Comet Health",
+    "owner": "Iris Chen",
+    "plan": "starter"
+  }
+]

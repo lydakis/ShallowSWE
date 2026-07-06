@@ -1,0 +1,23 @@
+[
+  {
+    "workspace_id": "ws-300",
+    "feature": "sso",
+    "enabled": true,
+    "expires_on": "2026-07-12",
+    "reason": "trial migration"
+  },
+  {
+    "workspace_id": "ws-200",
+    "feature": "sso",
+    "enabled": true,
+    "expires_on": "2026-06-30",
+    "reason": "expired pilot"
+  },
+  {
+    "workspace_id": "ws-100",
+    "feature": "api_access",
+    "enabled": false,
+    "expires_on": "2026-08-01",
+    "reason": "security hold"
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "branches": {
+    "main": {
+      "head": "c6",
+      "commits": ["c1", "c2", "c3", "c4", "c5", "c6"]
+    },
+    "release/2.7": {
+      "head": "c3",
+      "commits": ["c1", "c2", "c3"]
+    },
+    "release/2.6": {
+      "head": "c2",
+      "commits": ["c1", "c2"]
+    }
+  },
+  "tags": {
+    "v2.6.0": "c2"
+  },
+  "status_checks": {
+    "c4": {
+      "unit": "passed",
+      "integration": "passed",
+      "smoke": "passed"
+    },
+    "c5": {
+      "unit": "passed",
+      "integration": "failed"
+    },
+    "c6": {
+      "unit": "passed",
+      "integration": "passed",
+      "smoke": "passed"
+    }
+  },
+  "changelog": {
+    "release/2.7": [
+      "# Release notes",
+      "## v2.6.0 - 2026-06-01",
+      "- Ship previous release."
+    ],
+    "release/2.6": [
+      "# Release notes",
+      "## v2.6.0 - 2026-06-01",
+      "- Ship previous release."
+    ]
+  },
+  "call_log": []
+}
