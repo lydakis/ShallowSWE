@@ -1,0 +1,30 @@
+{
+  "info": {"service_id": "billing", "version": "2026-07-01"},
+  "paths": {
+    "/v1/invoices": {
+      "get": {
+        "operationId": "listInvoices",
+        "visibility": "public",
+        "flags": ["paginated"]
+      },
+      "post": {
+        "operationId": "createInvoice",
+        "visibility": "partner"
+      }
+    },
+    "/v1/invoices/{id}": {
+      "get": {
+        "operationId": "getInvoice",
+        "visibility": "public"
+      }
+    },
+    "/v1/legacy-charges": {
+      "post": {
+        "operationId": "createLegacyCharge",
+        "visibility": "public",
+        "deprecated": true,
+        "sunset": "2026-09-30"
+      }
+    }
+  }
+}

@@ -22,4 +22,6 @@ def test_cli_writes_expected_files() -> None:
             check=True,
         )
         assert (output / "ticket_sla.csv").exists()
+        assert (output / "account_sla_summary.csv").exists()
+        assert (output / "escalation_audit.csv").exists()
         assert (output / "breach_summary.json").exists()

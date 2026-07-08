@@ -11,7 +11,8 @@
         "internal": ["smoke", "latency"],
         "prod": ["smoke", "latency"]
       },
-      "approval_required_for": ["prod"]
+      "approval_required_for": ["prod"],
+      "change_request_required_for": ["prod"]
     },
     {
       "service": "worker",
@@ -22,11 +23,20 @@
         "internal": ["smoke"],
         "prod": ["smoke"]
       },
-      "approval_required_for": ["prod"]
+      "approval_required_for": ["prod"],
+      "change_request_required_for": ["prod"]
     }
   ],
+  "service_owners": {
+    "api": "team-api",
+    "worker": "team-worker"
+  },
   "approvals": [
     {"service": "api", "target_version": "2.0.0", "ring": "prod", "approved": true}
+  ],
+  "change_requests": [
+    {"request_id": "CR-100", "service": "api", "target_version": "2.0.0", "ring": "prod", "status": "approved"},
+    {"request_id": "CR-200", "service": "worker", "target_version": "3.1.0", "ring": "prod", "status": "approved"}
   ],
   "checks": [
     {"service": "api", "target_version": "2.0.0", "ring": "canary", "check": "smoke", "result": "pass"},

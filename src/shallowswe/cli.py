@@ -32,6 +32,7 @@ from .results import (
     load_results,
     merge_prices,
 )
+from .task_funnel import audit_task_funnel
 from .task_metadata import discover_tasks
 from .workload import build_workload_index
 
@@ -54,6 +55,12 @@ def main() -> None:
         help="audit a pre-registered calibration run plan",
     )
     calibration_plan_parser.add_argument("plan_json", type=Path)
+
+    task_funnel_parser = subparsers.add_parser(
+        "task-funnel",
+        help="audit a low-spend task-funnel ledger before broad scoring",
+    )
+    task_funnel_parser.add_argument("manifest_json", type=Path)
 
     repair_loop_pilot_parser = subparsers.add_parser(
         "repair-loop-pilot-plan",
@@ -304,6 +311,10 @@ def main() -> None:
 
     if args.command == "calibration-plan":
         print(json.dumps(audit_calibration_plan(args.plan_json), indent=2))
+        return
+
+    if args.command == "task-funnel":
+        print(json.dumps(audit_task_funnel(args.manifest_json), indent=2))
         return
 
     if args.command == "repair-loop-pilot-plan":

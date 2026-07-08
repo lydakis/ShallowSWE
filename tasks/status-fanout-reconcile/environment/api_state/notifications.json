@@ -1,0 +1,9 @@
+[
+  {
+    "key": "result:old:legacy:unit:failure",
+    "channel": "#legacy",
+    "owner": "legacy",
+    "kind": "result_failure",
+    "summary": "legacy/unit failed on protected branch main for old"
+  }
+]

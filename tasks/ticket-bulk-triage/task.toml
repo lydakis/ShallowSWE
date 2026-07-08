@@ -1,0 +1,50 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/ticket-bulk-triage"
+description = "Bulk-triage existing tickets idempotently with precedence rules and a minimal call log."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "workflow", "medium", "python", "tickets"]
+
+[metadata]
+category = "workflow"
+size = "medium"
+language = "python"
+shape = "bulk-idempotent-reconcile"
+subtype = "ticket-triage-policy"
+family = "workflow_operation"
+maintenance_type = "adaptive"
+domain = "mock_api"
+source_pattern = "bulk ticket triage must update only changed existing records under priority precedence"
+contamination_notes = "original local fixture; abstract ticket-triage pattern only"
+repo_origin = "small_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 50
+expected_steps = 11
+calibration_status = "candidate_probe"
+
+[calibration]
+calibration_snapshot_id = "shallowswe-v1-task-funnel-tranche-1"
+admission_decision = "candidate_pending_two_sided_gate"
+size_assignment_decision = "candidate_pending_floor_probe"
+notes = "WM-1 refill candidate from docs/medium-large-refill-candidate-cards.md."
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]

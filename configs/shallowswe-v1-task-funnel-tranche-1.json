@@ -1,0 +1,1209 @@
+{
+  "schema_version": "shallowswe.task_funnel.v0.1",
+  "name": "shallowswe-v1-task-funnel-tranche-1",
+  "phase": "v1-task-funnel-tranche-1",
+  "snapshot_target": "shallowswe-v1",
+  "task_root": "tasks",
+  "source": {
+    "candidate_cards": "docs/medium-large-refill-candidate-cards.md",
+    "protocol": "docs/calibration-protocol.md"
+  },
+  "candidate_target": {
+    "min": 12,
+    "max": 20,
+    "final_v1_task_target": 36
+  },
+  "low_spend_policy": {
+    "broad_scoring_allowed": false,
+    "codex_subscription_triage": true,
+    "bridge_required_before_official_label": true,
+    "candidate_triage_floor_attempts": 3,
+    "bridge_harness_target_n": 2,
+    "notes": "Use Codex subscription capacity for authoring and triage. Medium runs are smoke checks only; formal admission still requires the Extra High ceiling default below. Do not launch broad paid API scoring until the task distribution has enough calibrated medium/large pressure.",
+    "medium_smoke_attempts": 1,
+    "extra_high_probe_attempts": 1
+  },
+  "formal_ceiling_defaults": {
+    "model_config": "openai/gpt-5.5[extra_high]",
+    "target_n": 8,
+    "pass_threshold": 0.75,
+    "purpose": "Admission judge only; not a scored leaderboard row."
+  },
+  "bridge_validation_defaults": {
+    "harness": "pier/mini-swe-agent one-shot",
+    "target_n": 2,
+    "purpose": "Confirm Codex triage transfers to the real scoring scaffold before any official label."
+  },
+  "candidates": [
+    {
+      "slot": "CM-1",
+      "task_id": "retry-policy-migration",
+      "category": "code",
+      "size_hypothesis": "medium",
+      "authoring_status": "authored",
+      "funnel_bucket": "too_easy_duplicate",
+      "difficulty_levers": [
+        "L2"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 3,
+        "floor_passes": 3,
+        "provisional_floor_size": "small",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tranche1-new-medium-r3/codex-subscription-sizing-report.json",
+        "trajectory_audit": "All three floor successes and the medium-smoke success were audited. Solutions changed parser/scheduler code and hidden tests covered non-visible CLI/backoff cases; no hardcoding issue found. Floor saturation makes the task too easy for medium.",
+        "medium_smoke_model_config": "openai/gpt-5.5[medium]",
+        "medium_smoke_attempts": 1,
+        "medium_smoke_passes": 1
+      },
+      "formal_ceiling": {
+        "status": "not_run",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75
+      },
+      "bridge_validation": {
+        "status": "not_started",
+        "harness": "pier/mini-swe-agent one-shot",
+        "target_n": 2
+      },
+      "next_action": "reshape_or_archive"
+    },
+    {
+      "slot": "CM-2",
+      "task_id": "notification-locale-fallback",
+      "category": "code",
+      "size_hypothesis": "medium",
+      "authoring_status": "authored",
+      "funnel_bucket": "too_easy_duplicate",
+      "difficulty_levers": [
+        "L3"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 3,
+        "floor_passes": 3,
+        "provisional_floor_size": "small",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tranche1-new-medium-r3/codex-subscription-sizing-report.json",
+        "trajectory_audit": "All three floor successes and the medium-smoke success were audited. Solutions implemented renderer-level locale fallback and escaping, and hidden tests covered base-language fallback, missing variables, escaping, and CLI/catalog behavior. Floor saturation makes the task too easy for medium.",
+        "medium_smoke_model_config": "openai/gpt-5.5[medium]",
+        "medium_smoke_attempts": 1,
+        "medium_smoke_passes": 1
+      },
+      "formal_ceiling": {
+        "status": "not_run",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75
+      },
+      "bridge_validation": {
+        "status": "not_started",
+        "harness": "pier/mini-swe-agent one-shot",
+        "target_n": 2
+      },
+      "next_action": "reshape_or_archive"
+    },
+    {
+      "slot": "CL-1",
+      "task_id": "dispatch-planner-split-parity",
+      "category": "code",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "too_easy_duplicate",
+      "difficulty_levers": [
+        "L3",
+        "L1"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 3,
+        "floor_passes": 3,
+        "source_report": "docs/codex-subscription-calibration-2026-07-06.md",
+        "medium_smoke_model_config": "openai/gpt-5.5[medium]",
+        "medium_smoke_attempts": 1,
+        "medium_smoke_passes": 1
+      },
+      "formal_ceiling": {
+        "status": "not_run",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75
+      },
+      "bridge_validation": {
+        "status": "not_started",
+        "harness": "pier/mini-swe-agent one-shot",
+        "target_n": 2
+      },
+      "next_action": "reshape_or_archive"
+    },
+    {
+      "slot": "CL-2",
+      "task_id": "invoice-multi-source-merge",
+      "category": "code",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 2,
+        "floor_passes": 0,
+        "provisional_floor_size": "large",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/floor-gpt54mini-low-rollouts.json",
+        "previous_floor_evidence": {
+          "source_report": "docs/codex-subscription-calibration-2026-07-06.md",
+          "floor_attempts": 3,
+          "floor_passes": 1,
+          "medium_smoke_passes": 1
+        },
+        "trajectory_audit": "Corrected Extra High n=1 passed with a valid generalized CSV/API/legacy merge solution; hidden precedence and mutation checks passed. The first low floor failed fairly by leaving legacy YYYYMMDD dates unnormalized to ISO. The bridge low floor also failed fairly after implementing all sources and passing its own tests: it sorted rejects legacy/csv/api instead of the required api/csv/legacy order on visible and hidden fixtures. No hardcoding or verifier unfairness found."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/codex-subscription-sizing-report.json",
+          "note": "N=1 corrected ceiling probe; full n=8 admission gate is not complete."
+        },
+        "current_n": 1,
+        "passes": 1
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 2,
+        "attempts": 2,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/floor-gpt54mini-low-rollouts.json",
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-invoice-merge-bridge-floor-n1/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Bridge complete for the provisional candidate lane. Full n=8 Extra High admission gate remains pending."
+      },
+      "next_action": "keep_provisional_large_pending_full_extra_high_gate"
+    },
+    {
+      "slot": "AM-1",
+      "task_id": "access-log-sessionize",
+      "category": "artifact",
+      "size_hypothesis": "medium",
+      "authoring_status": "authored",
+      "funnel_bucket": "too_easy_duplicate",
+      "difficulty_levers": [
+        "L7"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 3,
+        "floor_passes": 3,
+        "provisional_floor_size": "small",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tranche1-new-medium-r3/codex-subscription-sizing-report.json",
+        "trajectory_audit": "All three floor successes and the medium-smoke success were audited. Solutions implemented scripts/sessionize.py and hidden tests covered boundary and sorting behavior beyond the visible fixture. Floor saturation makes the task too easy for medium.",
+        "medium_smoke_model_config": "openai/gpt-5.5[medium]",
+        "medium_smoke_attempts": 1,
+        "medium_smoke_passes": 1
+      },
+      "formal_ceiling": {
+        "status": "not_run",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75
+      },
+      "bridge_validation": {
+        "status": "not_started",
+        "harness": "pier/mini-swe-agent one-shot",
+        "target_n": 2
+      },
+      "next_action": "reshape_or_archive"
+    },
+    {
+      "slot": "AM-2",
+      "task_id": "billing-proration-schedule",
+      "category": "artifact",
+      "size_hypothesis": "medium",
+      "authoring_status": "authored",
+      "funnel_bucket": "too_easy_duplicate",
+      "difficulty_levers": [
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 3,
+        "floor_passes": 3,
+        "provisional_floor_size": "small",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tranche1-new-medium-r3/codex-subscription-sizing-report.json",
+        "trajectory_audit": "All three floor successes and the medium-smoke success were audited. Solutions implemented a generic proration schedule builder and hidden tests covered leap-boundary and cancel value cases. Floor saturation makes the task too easy for medium.",
+        "medium_smoke_model_config": "openai/gpt-5.5[medium]",
+        "medium_smoke_attempts": 1,
+        "medium_smoke_passes": 1
+      },
+      "formal_ceiling": {
+        "status": "not_run",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75
+      },
+      "bridge_validation": {
+        "status": "not_started",
+        "harness": "pier/mini-swe-agent one-shot",
+        "target_n": 2
+      },
+      "next_action": "reshape_or_archive"
+    },
+    {
+      "slot": "AL-1",
+      "task_id": "privacy-retention-evidence-package",
+      "category": "artifact",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L7",
+        "L5",
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 0,
+        "provisional_floor_size": "large_signal",
+        "reference_replay": {
+          "status": "passed",
+          "image": "sha256:c9190c32546c8b67d50b39a5ef2699d87618ca0f9e82db217c2e0e97ea9c77bb",
+          "note": "Fresh privacy-retention evidence package reference replay passed before model calibration."
+        },
+        "replacement_for": {
+          "task_id": "ledger-restatement-audit",
+          "reason": "Too easy for artifact-large after controls expansion; repaired low floor passed 1/1 with a generalized hidden-fixture solution.",
+          "latest_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-ledger-restatement-controls-floor-n1/floor-gpt54mini-low-rollouts.json",
+          "latest_source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-ledger-restatement-controls-floor-n1/pier-result.json"
+        },
+        "trajectory_audit": "Low-floor gpt-5.4-mini[low] failed fairly after building a general retention audit script: visible/hidden schema checks passed, but visible verification caught the internal legal_hold action code instead of the documented review active legal hold label. The trajectory read visible inputs and service source files, generated deterministic outputs, and showed no hidden-test, verifier, reward, solution, /tmp/shallowswe-pier, hardcoding, or gaming signal.",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-privacy-retention-floor-n1/floor-gpt54mini-low-rollouts.json",
+        "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-privacy-retention-floor-n1/pier-result.json"
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-privacy-retention-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+          "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-privacy-retention-xhigh-n1/pier-result.json",
+          "trajectory_audit": "Extra High passed visible and hidden verification with a general builder, py_compile, schema/header assertions, and deterministic rerun hash checks. No hidden-test, verifier, reward, solution, /tmp/shallowswe-pier, hardcoding, or gaming signal found. Medium rows are smoke-only and are not ceiling evidence.",
+          "note": "N=1 Extra High probe passed after a fair low-floor failure. Full n=8 admission gate is not complete."
+        },
+        "current_n": 1,
+        "passes": 1
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 1,
+        "attempts": 1,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-privacy-retention-floor-n1/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Bridge complete for the provisional candidate lane. The low floor failed fairly on the documented legal-hold action label while Extra High n=1 passed. Full n=8 Extra High admission gate remains pending."
+      },
+      "next_action": "keep_provisional_artifact_large_pending_full_extra_high_gate"
+    },
+    {
+      "slot": "AL-2",
+      "task_id": "repo-observability-coverage-audit",
+      "category": "artifact",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L7",
+        "L5",
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 0,
+        "floor_pass_rate": 0.0,
+        "provisional_floor_size": "large",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-remediation-floor-n1-r3/floor-gpt54mini-low-rollouts.json",
+        "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-remediation-floor-n1-r3/pier-result.json",
+        "reference_replay": {
+          "status": "passed",
+          "image": "sha256:e491aaa49c12bde4ceae579dca69978a70a17167f9e1d35d8274e41257bf4927",
+          "note": "Expanded route-observability remediation scope reference replay passed before model calibration."
+        },
+        "invalid_floor_probes": [
+          {
+            "status": "excluded_prompt_ambiguity",
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-remediation-floor-n1/floor-gpt54mini-low-rollouts.json",
+            "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-remediation-floor-n1/pier-result.json",
+            "note": "Tier threshold wording was ambiguous; model interpreted tier 1 as not at-or-above tier 2. Instruction now states lower numeric tier is more critical and threshold means tier <= required tier."
+          },
+          {
+            "status": "excluded_verifier_brittleness",
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-remediation-floor-n1-r2/floor-gpt54mini-low-rollouts.json",
+            "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-remediation-floor-n1-r2/pier-result.json",
+            "note": "Only mismatch was trailing markdown whitespace in observability_board.md; verifier now normalizes trailing whitespace."
+          }
+        ],
+        "superseded_pre_expansion_evidence": {
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-floor-n1-r2/floor-gpt54mini-low-rollouts.json",
+          "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-floor-n1-r2/pier-result.json",
+          "floor_attempts": 1,
+          "floor_passes": 1,
+          "note": "The prior route-scoped observability audit saturated the low floor after verifier repair. The current candidate adds downstream trace edges, runbook freshness, recent deploy rollback readiness, expanded rollups, and remediation_plan.csv."
+        },
+        "replacement_for": {
+          "task_id": "support-sla-business-hours",
+          "reason": "Too easy for artifact-large after SLA operations expansion and prompt clarifications; repaired low floor passed 1/1 with a generalized hidden-fixture solution.",
+          "latest_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-support-sla-ops-floor-n1-r3/floor-gpt54mini-low-rollouts.json",
+          "latest_source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-support-sla-ops-floor-n1-r3/pier-result.json"
+        },
+        "trajectory_audit": "Repaired low floor R3 failed fairly on explicit observability board action priority after implementing the broader package. It used general parsing and generated all required outputs but chose resolve-open-incident before the first missing-control action for affected routes. No hidden/test/verifier/reward/solution access or hardcoding signal found."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "current_n": 1,
+        "passes": 1,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-remediation-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+          "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-remediation-xhigh-n1/pier-result.json",
+          "trajectory_audit": "Valid Extra High pass. The agent inspected visible repository inputs, wrote a general standard-library observability audit script, generated all five required artifacts, reran with explicit --root/--output, parsed JSON outputs, byte-compiled, and diffed repeated outputs. Command audit found no hidden-test, verifier, reward, solution, or /tmp/shallowswe-pier access and no hardcoding/gaming signal.",
+          "note": "N=1 Extra High probe passed after a fair repaired low-floor failure. Full n=8 admission gate is not complete. Medium rows are smoke-only and are not ceiling evidence."
+        }
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 1,
+        "attempts": 1,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-remediation-floor-n1-r3/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Bridge complete for the provisional candidate lane. The repaired low floor failed fairly; Extra High n=1 passed. Full n=8 Extra High admission gate remains pending."
+      },
+      "next_action": "keep_provisional_artifact_large_pending_full_extra_high_gate"
+    },
+    {
+      "slot": "WM-1",
+      "task_id": "ticket-bulk-triage",
+      "category": "workflow",
+      "size_hypothesis": "medium",
+      "authoring_status": "authored",
+      "funnel_bucket": "too_easy_duplicate",
+      "difficulty_levers": [
+        "L5"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 3,
+        "floor_passes": 3,
+        "provisional_floor_size": "small",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tranche1-new-medium-r3/codex-subscription-sizing-report.json",
+        "trajectory_audit": "All three floor successes and the medium-smoke success were audited. Solutions implemented a generic ticket policy script; hidden tests covered idempotency and precedence. Floor saturation makes the task too easy for medium.",
+        "medium_smoke_model_config": "openai/gpt-5.5[medium]",
+        "medium_smoke_attempts": 1,
+        "medium_smoke_passes": 1
+      },
+      "formal_ceiling": {
+        "status": "not_run",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75
+      },
+      "bridge_validation": {
+        "status": "not_started",
+        "harness": "pier/mini-swe-agent one-shot",
+        "target_n": 2
+      },
+      "next_action": "reshape_or_archive"
+    },
+    {
+      "slot": "WL-5",
+      "task_id": "status-fanout-reconcile",
+      "category": "workflow",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L5",
+        "L6",
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 0,
+        "floor_pass_rate": 0.0,
+        "provisional_floor_size": "large",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-floor-n1-r2/floor-gpt54mini-low-rollouts.json",
+        "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-floor-n1-r2/pier-result.json",
+        "reference_replay": {
+          "status": "passed",
+          "image": "sha256:2bb96bb2cd51861f206f46573cb1546ae7acea824cca00b50f3954477f0acbb2",
+          "note": "The release-signal fanout expansion reference and alternate solution replays passed before model calibration."
+        },
+        "invalid_floor_probe": {
+          "status": "excluded_from_floor_evidence",
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-floor-n1/floor-gpt54mini-low-rollouts.json",
+          "reason": "The first verifier copied visible fixtures from mutable /app state after the agent self-test, so the visible expected calls log was wrong."
+        },
+        "superseded_pre_expansion_evidence": {
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/codex-subscription-sizing-report.json",
+          "floor_attempts": 1,
+          "floor_passes": 1,
+          "note": "The smaller status-only/medium candidate passed the latest low floor before the status/gate/notification/summary expansion."
+        },
+        "trajectory_audit": "The repaired low-floor failure is fair. The agent implemented the broad reconciliation workflow and self-tested, but emitted notification calls in result-then-gate order instead of the explicit sorted notification-key order. Hidden and visible failures were the same ordering miss, with no hardcoding or verifier gaming signal."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "current_n": 1,
+        "passes": 1,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+          "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-xhigh-n1/pier-result.json",
+          "note": "N=1 Extra High probe passed validly after the repaired low-floor failure. Full n=8 admission gate is not complete. Medium rows are smoke-only and are not ceiling evidence."
+        }
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 1,
+        "attempts": 1,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-floor-n1-r2/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Expanded bridge/floor probe failed fairly on explicit notification call ordering. Extra High n=1 passed validly. Full n=8 Extra High admission gate remains pending."
+      },
+      "next_action": "keep_provisional_large_pending_full_extra_high_gate"
+    },
+    {
+      "slot": "WL-1",
+      "task_id": "release-train-reconcile",
+      "category": "workflow",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L6",
+        "L5"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 0,
+        "provisional_floor_size": "large",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-release-train-expanded-floor-n1/floor-gpt54mini-low-rollouts.json",
+        "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-release-train-expanded-floor-n1/pier-result.json",
+        "previous_floor_evidence": {
+          "pre_expansion_current_floor_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/floor-gpt54mini-low-rollouts.json",
+          "pre_expansion_bridge_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-release-train-bridge-floor-n1/floor-gpt54mini-low-rollouts.json",
+          "pre_expansion_floor_attempts": 2,
+          "pre_expansion_floor_passes": 1,
+          "older_source_report": "docs/codex-subscription-calibration-2026-07-06.md",
+          "older_floor_attempts": 3,
+          "older_floor_passes": 2,
+          "medium_smoke_passes": 1
+        },
+        "trajectory_audit": "Expanded with release manifests and promotion-ring readiness records. The post-expansion low floor failed fairly after implementing most of the workflow: it ran promotion checks after update_changelog even though the instruction requires all run_check audit rows before update_changelog. This is a legitimate ordering miss on visible and hidden fixtures, not hardcoding or verifier unfairness."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "current_n": 1,
+        "passes": 1,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-release-train-expanded-xhigh-n1-r2/ceiling-gpt55-xhigh-rollouts.json",
+          "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-release-train-expanded-xhigh-n1-r2/pier-result.json",
+          "note": "Corrected N=1 Extra High probe after prompt clarification that audit detail must be a non-empty string. Full n=8 admission gate is not complete."
+        },
+        "repaired_unfair_probe": {
+          "status": "excluded_from_ceiling_evidence",
+          "source_pier_result": "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-release-train-expanded-xhigh-n1/result.json",
+          "reason": "The model solved the expanded workflow but used JSON object audit details; the instruction had not yet explicitly required detail to be a string."
+        }
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 1,
+        "attempts": 1,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-release-train-expanded-floor-n1/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Post-expansion bridge floor failed fairly on phase ordering. Corrected Extra High n=1 passed. Full n=8 Extra High admission gate remains pending."
+      },
+      "next_action": "keep_provisional_large_pending_full_extra_high_gate"
+    },
+    {
+      "slot": "WL-2",
+      "task_id": "tenant-offboarding-reconcile",
+      "category": "workflow",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L5",
+        "L6"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 0,
+        "floor_pass_rate": 0.0,
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-expanded-floor-n1/pier-result.json",
+        "source_rollouts": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-expanded-floor-n1/floor-gpt54mini-low-rollouts.json",
+        "reference_replay": {
+          "status": "passed",
+          "note": "Expanded verifier/reference replay passed visible and hidden idempotence cases after adding integrations and billing phases."
+        },
+        "floor_failure_audit": "The expanded low-floor failure is fair. The agent inspected the state files and implemented the full phase structure, but did not persist runbook.json after marking requests completed, so visible and hidden verifier checks found approved requests where completed requests were required. No hardcoding or verifier flaw was found.",
+        "superseded_pre_expansion_evidence": [
+          {
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-floor-n1-r2/pier-result.json",
+            "source_rollouts": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-floor-n1-r2/floor-gpt54mini-low-rollouts.json",
+            "verdict": "repaired_low_floor_success_on_smaller_pre_expansion_contract"
+          },
+          {
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-floor-n1/pier-result.json",
+            "source_rollouts": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-floor-n1/floor-gpt54mini-low-rollouts.json",
+            "verdict": "fair_low_floor_failure_before_verifier_order_repair"
+          },
+          {
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-xhigh-n1/pier-result.json",
+            "source_rollouts": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+            "verdict": "invalid_pre_repair_ceiling_failure_due_nonsemantic_list_order"
+          }
+        ],
+        "trajectory_audit": "The prior repaired low-floor pass is retained only as historical evidence for the smaller pre-expansion contract. The current expanded contract adds integration quiescing and billing-lock phases plus visible and hidden verifier coverage. The expanded low floor failed fairly by missing runbook.json persistence after completing requests."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-expanded-xhigh-n1/pier-result.json",
+          "source_rollouts": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-expanded-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+          "note": "Formal ceiling is Extra High. This N=1 probe passed after a fair low-floor failure; full N=8 admission gate remains pending."
+        },
+        "pre_repair_probe": {
+          "status": "superseded_by_verifier_repair",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-xhigh-n1/pier-result.json",
+          "source_rollouts": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+          "note": "The pre-repair Extra High failure exposed an unfair verifier assumption about JSON list ordering. It is not counted as formal ceiling evidence."
+        },
+        "trajectory_audit": "Extra High passed visible and hidden verifier checks. The agent created a generic reconciler, read the state model and local JSON helper, verified on a copied visible state, wrote all state files including runbook.json, deduped call-log operation keys, and kept state/order logic data-driven. No hardcoding or verifier gaming was found."
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 1,
+        "attempts": 1,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-expanded-floor-n1/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Expanded floor failed fairly; this is valid floor-pressure evidence, not a ceiling substitute."
+      },
+      "next_action": "keep_provisional_large_pending_full_extra_high_gate"
+    },
+    {
+      "slot": "CL-3",
+      "task_id": "seat-compliance-admin-console",
+      "category": "code",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L1",
+        "L2",
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 0,
+        "provisional_floor_size": "large",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-floor-n1-r3/floor-gpt54mini-low-rollouts.json",
+        "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-floor-n1-r3/pier-result.json",
+        "superseded_floor_evidence": [
+          {
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-floor-n1/floor-gpt54mini-low-rollouts.json",
+            "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-floor-n1/pier-result.json",
+            "status": "pre_expansion_contract",
+            "attempts": 1,
+            "passes": 1,
+            "note": "Initial three-route version passed low floor, so the task was expanded with action-log and export surfaces."
+          },
+          {
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-floor-n1/floor-gpt54mini-low-rollouts.json",
+            "status": "superseded_by_metric_parser_repair",
+            "attempts": 1,
+            "passes": 0,
+            "note": "Failure was invalid because the verifier captured stat-card labels instead of trailing numeric metric text."
+          },
+          {
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-floor-n1-r2/floor-gpt54mini-low-rollouts.json",
+            "status": "superseded_by_metric_definition_clarification",
+            "attempts": 1,
+            "passes": 0,
+            "note": "Failure exposed an ambiguous owner-escalations metric; the prompt now defines it as action-row count."
+          }
+        ],
+        "replacement_for": {
+          "task_id": "customer-health-dashboard-screen",
+          "reason": "Too easy for code-large after expanded repaired low floor passed 1/1 with a generalized hidden-fixture solution.",
+          "latest_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-expanded-floor-n1-r2/floor-gpt54mini-low-rollouts.json",
+          "latest_source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-expanded-floor-n1-r2/pier-result.json",
+          "previous_floor_evidence": {
+            "source_report": "docs/codex-subscription-calibration-2026-07-06.md",
+            "floor_attempts": 3,
+            "floor_passes": 2,
+            "medium_smoke_passes": 0
+          }
+        },
+        "trajectory_audit": "The repaired-contract low floor failed fairly on data-account-id semantics after implementing the feature, passing its own tests, and rendering visible routes: it used account names as data-account-id values despite the prompt requiring account_id. Earlier expanded low-floor failures were invalid due verifier/prompt contract issues and are superseded. No hardcoding or verifier gaming was found in the fair failure."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "current_n": 1,
+        "passes": 1,
+        "pass_threshold": 0.75,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-xhigh-n1-r3/ceiling-gpt55-xhigh-rollouts.json",
+          "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-xhigh-n1-r3/pier-result.json",
+          "trajectory_audit": "Valid pass. The Extra High agent inspected the app and fixtures, added a shared selector, four screen modules, route/nav/CLI export wiring, and CLI-level regression tests; visible smoke checks exercised rendered HTML and JSON export, own unittest suite passed, and hidden verifier returned reward 1.0. No hardcoding or gaming signal found."
+        },
+        "superseded_probe": {
+          "status": "superseded_by_export_contract_repair",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-xhigh-n1-r2/ceiling-gpt55-xhigh-rollouts.json",
+          "note": "The r2 Extra High implementation was valid against the prompt, but the verifier expected an internal account_id field in exported action rows. The verifier now projects export rows to the prompted fields."
+        }
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 1,
+        "attempts": 1,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-floor-n1-r3/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Low-floor bridge failed fairly under the repaired contract. Full n=8 Extra High admission gate remains pending."
+      },
+      "next_action": "keep_provisional_large_pending_full_extra_high_gate_and_independent_alt_solution"
+    },
+    {
+      "slot": "CL-4",
+      "task_id": "feature-entitlements-admin-screen",
+      "category": "code",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L1",
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 2,
+        "floor_passes": 0,
+        "provisional_floor_size": "large",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/floor-gpt54mini-low-rollouts.json",
+        "previous_floor_evidence": {
+          "source_report": "docs/codex-subscription-calibration-2026-07-06.md",
+          "floor_attempts": 3,
+          "floor_passes": 2,
+          "medium_smoke_passes": 1
+        },
+        "trajectory_audit": "Corrected Extra High n=1 passed with a valid two-screen admin implementation. The first current low floor failed fairly on hidden override metric semantics after visible tests passed. The bridge low floor also failed fairly after implementing both screens and passing its own visible tests: it emitted only the priority subscription_not_serviceable reason and omitted the independently applicable usage_over_limit reason on visible and hidden fixtures. No hardcoding or verifier unfairness found."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "current_n": 1,
+        "passes": 1,
+        "pass_threshold": 0.75,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/codex-subscription-sizing-report.json",
+          "note": "N=1 corrected ceiling probe; full n=8 admission gate is not complete."
+        }
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 2,
+        "attempts": 2,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/floor-gpt54mini-low-rollouts.json",
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-feature-entitlements-bridge-floor-n1/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Bridge complete for the provisional candidate lane. Full n=8 Extra High admission gate remains pending."
+      },
+      "next_action": "keep_provisional_large_pending_full_extra_high_gate"
+    },
+    {
+      "slot": "CL-5",
+      "task_id": "renewal-risk-admin-screen",
+      "category": "code",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L1",
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 2,
+        "floor_passes": 0,
+        "provisional_floor_size": "large",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-floor-n1/floor-gpt54mini-low-rollouts.json",
+        "bridge_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-bridge-floor-n1/pier-result.json",
+        "bridge_source_rollouts": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-bridge-floor-n1/floor-gpt54mini-low-rollouts.json",
+        "previous_floor_evidence": {
+          "source_report": "docs/codex-subscription-calibration-2026-07-06.md",
+          "floor_attempts": 3,
+          "floor_passes": 2,
+          "medium_smoke_passes": 1
+        },
+        "trajectory_audit": "Expanded on 2026-07-07 with engagement records, segment policies, renewal plan items, and a third owner-queue screen. The first low floor failed fairly by miscomputing owners-with-escalations. The bridge low floor failed fairly after implementing the broad three-screen feature and passing its own visible tests: it computed risk_reasons as priority-only instead of all applicable reason codes on visible and hidden fixtures. Extra High n=1 passed with a generalized selector/screen implementation and hidden fixture success. No hardcoding or verifier unfairness found."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "current_n": 1,
+        "passes": 1,
+        "pass_threshold": 0.75,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+          "note": "N=1 Extra High probe after scope expansion; full n=8 admission gate is not complete."
+        }
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 2,
+        "attempts": 2,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-floor-n1/floor-gpt54mini-low-rollouts.json",
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-bridge-floor-n1/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Bridge complete for the provisional candidate lane. Full n=8 Extra High admission gate and an independent alternate solution remain pending."
+      },
+      "next_action": "keep_provisional_large_pending_full_extra_high_gate_and_independent_alt_solution"
+    },
+    {
+      "slot": "CL-6",
+      "task_id": "customer-health-dashboard-screen",
+      "category": "code",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L1",
+        "L2",
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 0,
+        "provisional_floor_size": "large",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-floor-n1/floor-gpt54mini-low-rollouts.json",
+        "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-floor-n1/pier-result.json",
+        "failed_trajectory_audit": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-floor-n1/failed-trajectory-audit.json",
+        "reference_replay": {
+          "status": "passed",
+          "image": "sha256:448bd3124f8a65bb0675d31c3c772d17fbf1996f3de4070277ddedc81a00ef6b",
+          "note": "The recovery-plan route and JSON export expansion reference replay passed before spending model calibration."
+        },
+        "superseded_pre_expansion_evidence": [
+          {
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-expanded-floor-n1-r2/floor-gpt54mini-low-rollouts.json",
+            "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-expanded-floor-n1-r2/pier-result.json",
+            "status": "superseded_by_recovery_export_scope",
+            "attempts": 1,
+            "passes": 1,
+            "note": "The prior three-route expanded task saturated the low floor after verifier repair, so that evidence does not calibrate the new four-route plus export contract."
+          },
+          {
+            "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+            "status": "pre_recovery_export_scope",
+            "attempts": 1,
+            "passes": 1,
+            "note": "Historical Extra High n=1 evidence applies only to the smaller pre-recovery/export task contract."
+          }
+        ],
+        "replacement_for": {
+          "task_id": "repo-observability-coverage-audit",
+          "reason": "Too easy for artifact-large after route-scoped verifier repair; repaired low floor passed 1/1 with a generalized hidden-fixture solution.",
+          "latest_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-floor-n1-r2/floor-gpt54mini-low-rollouts.json",
+          "latest_source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repo-observability-floor-n1-r2/pier-result.json",
+          "original_replacement_for": {
+            "task_id": "sdk-migration-readiness-package",
+            "reason": "Too easy for artifact-large after two prompt repairs; repaired low floor passed 1/1 with a generalized hidden-fixture solution.",
+            "latest_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-sdk-migration-readiness-floor-n1-r3/floor-gpt54mini-low-rollouts.json",
+            "latest_source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-sdk-migration-readiness-floor-n1-r3/pier-result.json",
+            "original_replacement_for": {
+              "task_id": "developer-portal-api-index",
+              "reason": "Too easy for artifact-large after redirect-service prompt repair; repaired low floor passed 1/1 with a generalized hidden-fixture solution.",
+              "latest_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-developer-portal-floor-n1-r2/floor-gpt54mini-low-rollouts.json",
+              "latest_source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-developer-portal-floor-n1-r2/pier-result.json",
+              "original_replacement_for": {
+                "task_id": "billing-revenue-rollup",
+                "reason": "Too easy for artifact-large after two expansions; latest low floor passed 1/1 with a generalized hidden-fixture solution.",
+                "latest_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-billing-revenue-contract-cash-floor-n1/floor-gpt54mini-low-rollouts.json",
+                "latest_source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-billing-revenue-contract-cash-floor-n1/pier-result.json"
+              }
+            }
+          }
+        },
+        "trajectory_audit": "Low floor failed fairly after implementing the broad feature and passing its own tests: the verifier caught a documented recovery-stage priority miss on engagement_restart, plus export mismatches. Official solution replay passed after the export projection verifier repair. No hardcoding or verifier gaming was found in the floor trajectory."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "current_n": 1,
+        "passes": 1,
+        "pass_threshold": 0.75,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-xhigh-n1-r2/ceiling-gpt55-xhigh-rollouts.json",
+          "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-xhigh-n1-r2/pier-result.json",
+          "trajectory_audit": "Valid pass after verifier repair. The Extra High agent inspected the repo and fixtures, added shared selector/export logic, four screen modules, route/nav/CLI integration, and regression tests; visible smoke checks and hidden verifier passed. No hardcoding signal found. Medium rows are smoke-only and are not ceiling evidence."
+        },
+        "superseded_probe": {
+          "status": "superseded_by_export_projection_verifier_repair",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+          "note": "The first Extra High failure exposed a verifier mismatch: exported dashboard rows were required to include internal model fields not named by the JSON export contract. The verifier and reference solution now project export rows to the matching HTML contract fields plus account_id."
+        }
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 1,
+        "attempts": 1,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-floor-n1/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Low-floor bridge failed fairly under the repaired contract. Full n=8 Extra High gate remains pending."
+      },
+      "next_action": "keep_provisional_large_pending_full_extra_high_gate_and_independent_alt_solution"
+    },
+    {
+      "slot": "AL-4",
+      "task_id": "vendor-risk-evidence-package",
+      "category": "artifact",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L7",
+        "L5",
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 0,
+        "provisional_floor_size": "large_signal",
+        "reference_replay": {
+          "status": "passed",
+          "image": "sha256:2bc11b01d1df759285595fc9486d37e6b0fe25c416bb36f82b7b9fceb63994cb",
+          "note": "Fresh vendor-risk evidence package reference replay passed before model calibration."
+        },
+        "replacement_for": {
+          "task_id": "ledger-schema-upgrade",
+          "reason": "Too easy for artifact-large after expansion and contract repair; low floor passed validly with a generalized hidden-fixture solution.",
+          "latest_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-ledger-schema-expanded-contractfix-floor-n1/floor-gpt54mini-low-rollouts.json"
+        },
+        "trajectory_audit": "Low-floor gpt-5.4-mini[low] failed fairly after building a general vendor-risk script: it treated integration path presence as source evidence and missed the documented requirement that source evidence files contain the exact vendor id in file text, failing visible chatly and hidden carebot production_source_reference checks. The trajectory read visible inputs and source files, generated deterministic outputs, and showed no hidden-test, verifier, reward, solution, /tmp/shallowswe-pier, hardcoding, or gaming signal.",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-vendor-risk-floor-n1/floor-gpt54mini-low-rollouts.json",
+        "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-vendor-risk-floor-n1/pier-result.json"
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "current_n": 1,
+        "passes": 1,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-vendor-risk-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+          "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-vendor-risk-xhigh-n1/pier-result.json",
+          "trajectory_audit": "Extra High passed visible and hidden verification with a general builder, py_compile, schema/header checks, JSON parsing, and deterministic rerun hash checks. No hidden-test, verifier, reward, solution, /tmp/shallowswe-pier, hardcoding, or gaming signal found. Medium rows are smoke-only and are not ceiling evidence.",
+          "note": "N=1 Extra High probe passed after a fair low-floor failure. Full n=8 admission gate is not complete."
+        }
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 1,
+        "attempts": 1,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-vendor-risk-floor-n1/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Bridge complete for the provisional candidate lane. The low floor failed fairly on source-evidence text semantics while Extra High n=1 passed. Full n=8 Extra High admission gate remains pending."
+      },
+      "next_action": "keep_provisional_artifact_large_pending_full_extra_high_gate"
+    },
+    {
+      "slot": "WL-3",
+      "task_id": "config-key-rollover",
+      "category": "workflow",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "too_easy_duplicate",
+      "difficulty_levers": [
+        "L2",
+        "L3"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 1,
+        "provisional_floor_size": "small",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repaired-config-incident-packaged-xhigh-n1/codex-subscription-sizing-report.json",
+        "previous_floor_evidence": {
+          "source_report": "docs/codex-subscription-calibration-2026-07-06.md",
+          "floor_attempts": 3,
+          "floor_passes": 2,
+          "medium_smoke_passes": 1
+        },
+        "trajectory_audit": "Packaging and fixture scope were repaired, then Extra High n=1 passed validly with a generalized config/planner/fixture/docs migration. Low floor n=1 also passed in 5 steps with a generalized solution, so the task is too easy for the large tranche after repair."
+      },
+      "formal_ceiling": {
+        "status": "not_run",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repaired-config-incident-packaged-xhigh-n1/codex-subscription-sizing-report.json",
+          "note": "N=1 repaired Extra High probe passed, but low floor also passed; full n=8 gate is not worth spending unless scope is expanded."
+        }
+      },
+      "bridge_validation": {
+        "status": "not_started",
+        "harness": "pier/mini-swe-agent one-shot",
+        "target_n": 2
+      },
+      "next_action": "reshape_or_archive_large_hypothesis"
+    },
+    {
+      "slot": "WM-3",
+      "task_id": "ticket-update-dont-duplicate",
+      "category": "workflow",
+      "size_hypothesis": "medium",
+      "authoring_status": "authored",
+      "funnel_bucket": "too_easy_duplicate",
+      "difficulty_levers": [
+        "L5"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 1,
+        "provisional_floor_size": "small_after_clarification",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-ticket-update-clarified-floor-n1/floor-gpt54mini-low-rollouts.json",
+        "previous_floor_evidence": {
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/codex-subscription-sizing-report.json",
+          "floor_attempts": 1,
+          "floor_passes": 0,
+          "prior_2026_07_06_floor_attempts": 3,
+          "prior_2026_07_06_floor_passes": 0,
+          "note": "Prior failures were discounted for final disposition because the instruction named the visible fixture id before clarification."
+        },
+        "trajectory_audit": "After tightening the instruction to remove the visible fixture ticket id, the low floor passed validly with a generic matching/update script and hidden verifier success. No hidden-test, verifier, reward, solution, /tmp/shallowswe-pier, hardcoding, or gaming signal found. Too easy for medium after clarification.",
+        "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-ticket-update-clarified-floor-n1/pier-result.json"
+      },
+      "formal_ceiling": {
+        "status": "not_run",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "note": "Not run after clarification because the low floor passed validly. Historical Extra High evidence applies only to the pre-clarification prompt."
+      },
+      "bridge_validation": {
+        "status": "not_started",
+        "harness": "pier/mini-swe-agent one-shot",
+        "target_n": 2
+      },
+      "next_action": "reshape_or_archive_after_clarified_floor_success"
+    },
+    {
+      "slot": "WL-4",
+      "task_id": "incident-comms-pipeline",
+      "category": "workflow",
+      "size_hypothesis": "large",
+      "authoring_status": "authored",
+      "funnel_bucket": "keep_large",
+      "difficulty_levers": [
+        "L5",
+        "L6",
+        "L4"
+      ],
+      "codex_triage": {
+        "status": "complete",
+        "floor_model_config": "openai/gpt-5.4-mini[low]",
+        "floor_attempts": 1,
+        "floor_passes": 0,
+        "provisional_floor_size": "large_signal",
+        "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-incident-comms-replayfix-visiblelog-floor-n1/floor-gpt54mini-low-rollouts.json",
+        "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-incident-comms-replayfix-visiblelog-floor-n1/pier-result.json",
+        "replacement_for": {
+          "task_id": "deployment-approval-reconcile",
+          "reason": "The expanded deployment/change-request workflow passed the low floor 1/1 with a generalized hidden-fixture solution, so it is too easy for workflow-large as written.",
+          "latest_source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-deployment-approval-change-request-floor-n1/floor-gpt54mini-low-rollouts.json"
+        },
+        "trajectory_audit": "Low-floor gpt-5.4-mini[low] failed fairly after visible replay/API-call-log contract repair: it passed visible tests but skipped first-run component transitions and notified an unchanged component on hidden checks. The trajectory showed no hardcoding, hidden-verifier access, reward access, solution access, or /tmp/shallowswe-pier access."
+      },
+      "formal_ceiling": {
+        "status": "complete",
+        "model_config": "openai/gpt-5.5[extra_high]",
+        "target_n": 8,
+        "pass_threshold": 0.75,
+        "current_n": 1,
+        "passes": 1,
+        "low_spend_probe": {
+          "status": "complete",
+          "model_config": "openai/gpt-5.5[extra_high]",
+          "attempts": 1,
+          "passes": 1,
+          "pass_rate": 1.0,
+          "source_report": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-incident-comms-replayfix-visiblelog-xhigh-n1-r2/ceiling-gpt55-xhigh-rollouts.json",
+          "source_pier_result": "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-incident-comms-replayfix-visiblelog-xhigh-n1-r2/pier-result.json",
+          "note": "After increasing the agent timeout to 1200s, the N=1 Extra High retry passed visible and hidden verifier checks. Full n=8 admission gate is not complete."
+        },
+        "trajectory_audit": "Extra High retry passed with a generalized incident communications reconciler. The agent read visible source, fixtures, and visible tests, ran py_compile, visible unittest discovery, and manual replay checks. It did not access hidden tests, verifier internals, reward files, solution files, or /tmp/shallowswe-pier paths; hidden verifier passed 3/3."
+      },
+      "bridge_validation": {
+        "status": "complete",
+        "harness": "pier/codex-subscription gpt-5.4-mini[low]",
+        "target_n": 1,
+        "attempts": 1,
+        "passes": 0,
+        "source_reports": [
+          "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-incident-comms-replayfix-visiblelog-floor-n1/floor-gpt54mini-low-rollouts.json"
+        ],
+        "note": "Bridge complete for the provisional candidate lane. The low floor failed fairly and the Extra High retry passed after timeout policy was raised to 1200s. Full n=8 Extra High gate remains pending."
+      },
+      "next_action": "keep_provisional_workflow_large_pending_full_extra_high_gate"
+    }
+  ]
+}

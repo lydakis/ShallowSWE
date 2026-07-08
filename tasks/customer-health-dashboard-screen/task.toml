@@ -2,7 +2,7 @@ schema_version = "1.2"
 
 [task]
 name = "shallowswe/customer-health-dashboard-screen"
-description = "Add a customer-health dashboard screen to a multi-module static web app, including route wiring, selectors, UI rendering, nav, and regression coverage."
+description = "Add a customer-health command center to a multi-module static web app, including four routes, shared selectors, UI rendering, nav, rollups, JSON export, and regression coverage."
 authors = [{ name = "George Lydakis" }]
 keywords = ["shallowswe", "code", "large", "python", "web-app"]
 
@@ -11,16 +11,16 @@ category = "code"
 size = "large"
 language = "python"
 shape = "repo-scale-web-feature-screen"
-subtype = "customer-health-dashboard"
+subtype = "customer-health-command-center"
 family = "code_maintenance"
 maintenance_type = "adaptive"
 domain = "customer-success"
-source_pattern = "implement a new dashboard screen across routing, navigation, selectors, rendering, and tests in a broad multi-module static web app"
+source_pattern = "implement a multi-route customer-health feature across routing, navigation, selectors, rendering, hidden data joins, rollups, JSON export, and tests in a broad multi-module static web app"
 contamination_notes = "original generated local fixture; generic customer-health dashboard pattern only"
 repo_origin = "generated_original_repo"
 requires_test_authoring = true
-expected_engineer_minutes = 150
-expected_steps = 32
+expected_engineer_minutes = 180
+expected_steps = 52
 calibration_status = "candidate_probe"
 
 [verifier]
@@ -42,3 +42,96 @@ mcp_servers = []
 [verifier.env]
 
 [solution.env]
+
+[calibration.codex_subscription_2026_07_06]
+status = "triaged_medium_smoke_only"
+assigned_size = "medium"
+band_confidence = "provisional_n3"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+failed_trajectory_count = 2
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 1
+medium_smoke_passes = 0
+medium_smoke_pass_rate = 0.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "high"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 3
+floor_passes = 2
+floor_pass_rate = 0.6666666666666666
+source_report = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/codex-subscription-sizing-report.json"
+source_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/failed-trajectory-audit.json"
+
+[calibration.codex_subscription_2026_07_07_bridge]
+status = "valid_success_demotes_large_hypothesis"
+assigned_size = "medium"
+band_confidence = "provisional_current_floor_n2_prior_n3"
+task_contract_review = "legitimate_model_success"
+contract_issue = false
+trajectory_audit = "Bridge low-floor run passed legitimately: the agent implemented route/nav/selector/screen/test coverage and the verifier exercised visible plus two generated hidden fixture sets. No hardcoding or verifier gaming was found. Combined current post-correction floor evidence is 1/2, with prior floor evidence 2/3, so this is not accepted as a large task without scope expansion."
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_note = "Historical smoke only; not the formal ceiling."
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 1
+ceiling_passes = 1
+ceiling_pass_rate = 1.0
+ceiling_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 2
+floor_passes = 1
+floor_pass_rate = 0.5
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/floor-gpt54mini-low-rollouts.json"
+bridge_source_report = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-bridge-floor-n1/pier-result.json"
+bridge_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-bridge-floor-n1/floor-gpt54mini-low-rollouts.json"
+
+[calibration.codex_subscription_2026_07_07_expanded]
+status = "valid_success_demotes_large_hypothesis"
+assigned_size = "medium"
+band_confidence = "provisional_expanded_floor_n1"
+task_contract_review = "initial_metric_parser_unfair_then_repaired"
+contract_issue = true
+trajectory_audit = "Expanded repaired low-floor run passed legitimately: the agent implemented a shared selector, three screen modules, route/nav wiring, tests, visible render checks, and hidden fixture-compatible behavior. No hardcoding or verifier gaming was found. Because gpt-5.4-mini[low] passed the repaired expanded task 1/1, this is too easy/borderline for the large lane."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 1
+floor_pass_rate = 1.0
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-expanded-floor-n1-r2/floor-gpt54mini-low-rollouts.json"
+floor_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-expanded-floor-n1-r2/pier-result.json"
+pre_repair_floor_job = "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-customer-health-expanded-floor-n1"
+pre_repair_floor_verdict = "unfair_metric_label_parser"
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+ceiling_note = "Not run after expansion because the repaired low-floor attempt passed. Historical Extra High n=1 evidence applies only to the pre-expansion task contract."
+
+[calibration.codex_subscription_2026_07_07_recovery_export]
+status = "calibrated_provisional_large_pending_full_extra_high_gate"
+assigned_size = "large"
+band_confidence = "provisional_floor_n1_ceiling_n1"
+task_contract_review = "valid_after_export_projection_repair"
+contract_issue = true
+trajectory_audit = "Low-floor run failed fairly: the agent implemented the broad feature and passed its own tests but missed the documented engagement_restart recovery-stage priority and had export mismatches. The first Extra High run exposed an invalid verifier expectation: the verifier required exported dashboard rows to include internal fields not named by the JSON export contract. After repairing the verifier and reference solution to project rows to the matching HTML contract fields plus account_id, Extra High n=1 passed validly with shared selector/export logic, four screens, route/nav/CLI integration, regression tests, visible smoke checks, and hidden fixture success. No hardcoding or verifier gaming was found. Do not use gpt-5.5[medium] as ceiling evidence."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 0
+floor_pass_rate = 0.0
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-floor-n1/floor-gpt54mini-low-rollouts.json"
+floor_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-floor-n1/pier-result.json"
+floor_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-floor-n1/failed-trajectory-audit.json"
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 1
+ceiling_passes = 1
+ceiling_pass_rate = 1.0
+ceiling_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-xhigh-n1-r2/ceiling-gpt55-xhigh-rollouts.json"
+ceiling_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-xhigh-n1-r2/pier-result.json"
+ceiling_note = "Formal ceiling is Extra High only. Medium rows, if any are ever run, are smoke-only and cannot accept this task. Full n=8 Extra High gate remains pending."
+superseded_ceiling_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+superseded_ceiling_verdict = "invalid_export_projection_verifier"
+reference_replay_status = "passed"
+reference_replay_image = "sha256:448bd3124f8a65bb0675d31c3c772d17fbf1996f3de4070277ddedc81a00ef6b"
+independent_alt_solution_status = "pending_stale_solution_alt_after_recovery_export_expansion"

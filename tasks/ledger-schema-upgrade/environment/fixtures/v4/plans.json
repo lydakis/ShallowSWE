@@ -1,0 +1,16 @@
+[
+  {
+    "plan_id": "basic",
+    "currency": "USD",
+    "unit_price_cents": 100,
+    "tax_rate_basis_points": 500,
+    "recognition_rule": "event_month"
+  },
+  {
+    "plan_id": "pro",
+    "currency": "EUR",
+    "unit_price_cents": 250,
+    "tax_rate_basis_points": 800,
+    "recognition_rule": "event_month"
+  }
+]

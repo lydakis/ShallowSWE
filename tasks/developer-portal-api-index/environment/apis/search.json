@@ -1,0 +1,18 @@
+{
+  "info": {"service_id": "search", "version": "2026-05-20"},
+  "paths": {
+    "/v1/search": {
+      "get": {
+        "operationId": "runSearch",
+        "visibility": "public",
+        "flags": ["rate-limited"]
+      }
+    },
+    "/v1/search/indexes": {
+      "post": {
+        "operationId": "createSearchIndex",
+        "visibility": "internal"
+      }
+    }
+  }
+}

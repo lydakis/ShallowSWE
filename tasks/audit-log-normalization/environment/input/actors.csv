@@ -1,0 +1,5 @@
+actor_id,name,email,aliases
+u_ada,Ada Lovelace,ada@example.com,Ada;A. Lovelace
+u_grace,Grace Hopper,grace@example.com,Grace;g.hopper
+u_linus,Linus Torvalds,linus@example.com,Linus
+u_margaret,Margaret Hamilton,margaret@example.com,M. Hamilton;Margaret

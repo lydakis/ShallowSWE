@@ -1,0 +1,71 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/sdk-migration-readiness-package"
+description = "Build a multi-source SDK migration readiness package from a synthetic service monorepo, including code scanning, CI, incidents, exceptions, waves, advisories, team rollups, and markdown board output."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "artifact", "large", "python", "repository-analysis"]
+
+[metadata]
+category = "artifact"
+size = "large"
+language = "python"
+shape = "repository-governance-evidence-package"
+subtype = "sdk-migration-readiness"
+family = "artifact_generation"
+maintenance_type = "adaptive"
+domain = "platform-engineering"
+source_pattern = "build a deterministic governance evidence package by joining repository catalogs, manifests, code scans, CI logs, incidents, exceptions, waves, and advisories"
+contamination_notes = "generated original synthetic repository; generic SDK migration readiness pattern only"
+repo_origin = "generated_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 210
+expected_steps = 46
+calibration_status = "candidate_probe"
+
+[verifier]
+timeout_sec = 240.0
+
+[agent]
+timeout_sec = 1200.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]
+
+[calibration.codex_subscription_2026_07_07]
+status = "valid_success_demotes_large_hypothesis"
+assigned_size = "medium"
+band_confidence = "provisional_repaired_floor_n1"
+task_contract_review = "two_prompt_repairs_then_legitimate_success"
+contract_issue = true
+trajectory_audit = "After prompt repairs for ready-service JSON actions and distinct wave counting, the low floor passed 1/1 with a generalized repository-readiness builder. The agent inspected catalog, dependency, config, source, CI, incident, exception, wave, and advisory inputs, implemented the required outputs, fixed visible-run bugs, and passed hidden fixtures. No hardcoding or verifier gaming was found. Because gpt-5.4-mini[low] passed the repaired task, this is too easy/borderline for the large lane."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 1
+floor_pass_rate = 1.0
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-sdk-migration-readiness-floor-n1-r3/floor-gpt54mini-low-rollouts.json"
+floor_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-sdk-migration-readiness-floor-n1-r3/pier-result.json"
+pre_repair_floor_jobs = [
+  "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-sdk-migration-readiness-floor-n1",
+  "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-sdk-migration-readiness-floor-n1-r2",
+]
+pre_repair_floor_verdicts = [
+  "unfair_ready_actions_prompt_gap",
+  "unfair_summary_waves_prompt_gap",
+]
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+ceiling_note = "Not run because the repaired low-floor attempt passed."

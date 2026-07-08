@@ -123,7 +123,11 @@ class CalibrationProtocolTests(unittest.TestCase):
     def test_ceiling_panel_uses_v2_one_shot_gate(self) -> None:
         panel = json.loads((REPO_ROOT / "panels" / "shallowswe-ceiling-v0.1.json").read_text())
         rule = panel["ceiling_policy"]["admission_rule"]
+        rows = {row["id"]: row for row in panel["rows"]}
 
+        self.assertEqual(panel["ceiling_policy"]["primary_row"], "ceiling_gpt_5_5_xhigh")
+        self.assertEqual(rows["ceiling_gpt_5_5_xhigh"]["reasoning_effort"], "xhigh")
+        self.assertNotIn("ceiling_gpt_5_5_medium", rows)
         self.assertIn("75%", rule)
         self.assertIn("12/16 accepts", rule)
         self.assertIn("11/16 investigates", rule)
@@ -243,10 +247,20 @@ class TaskAuditMetadataTests(unittest.TestCase):
 
                 ceiling = calibration["ceiling"]
                 self.assertEqual(ceiling["panel"], "shallowswe-ceiling-v0.1")
+                self.assertEqual(ceiling["primary_model_config"], "openai/gpt-5.5[extra_high]")
                 self.assertEqual(ceiling["one_shot_target_n"], 16)
-                self.assertEqual(ceiling["one_shot_current_n"], 1)
-                self.assertIn(ceiling["one_shot_passes"], {0, 1})
-                self.assertEqual(ceiling["decision"], "needs_more_rollouts")
+                self.assertGreaterEqual(ceiling["one_shot_current_n"], 0)
+                self.assertLessEqual(ceiling["one_shot_current_n"], 16)
+                self.assertGreaterEqual(ceiling["one_shot_passes"], 0)
+                self.assertLessEqual(ceiling["one_shot_passes"], ceiling["one_shot_current_n"])
+                self.assertNotEqual(ceiling["decision"], "needs_more_rollouts")
+                if "medium_smoke_model_config" in ceiling:
+                    self.assertEqual(
+                        ceiling["medium_smoke_model_config"],
+                        "openai/gpt-5.5[medium]",
+                    )
+                    self.assertEqual(ceiling["medium_smoke_current_n"], 1)
+                    self.assertIn(ceiling["medium_smoke_passes"], {0, 1})
 
                 floor = calibration["floor"]
                 floor_evidence = floor_evidence_by_task[task_id]

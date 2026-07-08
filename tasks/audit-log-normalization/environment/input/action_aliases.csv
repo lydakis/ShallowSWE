@@ -1,0 +1,8 @@
+raw,canonical
+User Login,user_login
+LOGIN,user_login
+PASSWORD RESET,password_reset
+Export CSV,export_csv
+API Token Created,api_token_created
+role-change,role_change
+MFA Enrolled,mfa_enrolled

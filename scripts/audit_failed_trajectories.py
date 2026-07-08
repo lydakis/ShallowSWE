@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 from collections import defaultdict
+from hashlib import sha256
 import json
 from pathlib import Path
 import subprocess
@@ -11,6 +12,7 @@ from uuid import uuid4
 
 
 SCHEMA_VERSION = "shallowswe.failed_trajectory_audit.v0.1"
+CACHE_SCHEMA_VERSION = "shallowswe.failed_trajectory_audit_cache.v0.1"
 
 
 def main() -> int:
@@ -18,17 +20,26 @@ def main() -> int:
     results_dir = args.results_dir.resolve()
     tasks_root = args.tasks_root.resolve()
     progress = json.loads((results_dir / "progress.json").read_text())
+    cache_path = args.cache_path.resolve() if args.cache_path else results_dir / "failed-trajectory-audit-cache.json"
+    cache = load_cache(cache_path)
 
     failed_trajectories = collect_failed_trajectories(progress)
     failed_task_ids = sorted({row["task_id"] for row in failed_trajectories})
-    task_audits = {
-        task_id: audit_task(tasks_root / task_id, args.solution_timeout_sec)
-        for task_id in failed_task_ids
-    }
+    task_audits = {}
+    for task_id in failed_task_ids:
+        task_audits[task_id] = audit_task_cached(
+            task_id=task_id,
+            task_dir=tasks_root / task_id,
+            timeout_sec=args.solution_timeout_sec,
+            cache=cache,
+            refresh_cache=args.refresh_cache,
+        )
+    write_json(cache_path, cache)
 
     report = {
         "schema_version": SCHEMA_VERSION,
         "results_dir": str(results_dir),
+        "cache_path": str(cache_path),
         "failed_trajectory_count": len(failed_trajectories),
         "failed_task_count": len(failed_task_ids),
         "failed_trajectories": failed_trajectories,
@@ -49,6 +60,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit failed Pier trajectories and task verifiers.")
     parser.add_argument("results_dir", type=Path)
     parser.add_argument("--tasks-root", type=Path, default=Path("tasks"))
+    parser.add_argument("--cache-path", type=Path)
+    parser.add_argument("--refresh-cache", action="store_true")
     parser.add_argument("--solution-timeout-sec", type=int, default=180)
     return parser.parse_args()
 
@@ -56,11 +69,10 @@ def parse_args() -> argparse.Namespace:
 def collect_failed_trajectories(progress: dict[str, Any]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for stage_name, stage in sorted(progress.get("stages", {}).items()):
-        job_dir = Path(stage.get("job_dir", ""))
         for row in stage.get("completed_tasks", []):
             if row.get("passed") or row.get("reward") != 0.0:
                 continue
-            trial_dir = job_dir / str(row["trial_name"])
+            trial_dir = resolve_trial_dir(stage, row)
             result = read_json(trial_dir / "result.json")
             verifier_stdout = read_text(trial_dir / "verifier" / "test-stdout.txt")
             reward_text = read_text(trial_dir / "verifier" / "reward.txt").strip()
@@ -81,6 +93,24 @@ def collect_failed_trajectories(progress: dict[str, Any]) -> list[dict[str, Any]
                 }
             )
     return rows
+
+
+def resolve_trial_dir(stage: dict[str, Any], row: dict[str, Any]) -> Path:
+    trial_name = str(row["trial_name"])
+    if row.get("job_dir"):
+        return Path(str(row["job_dir"])) / trial_name
+    if stage.get("job_dir"):
+        return Path(str(stage["job_dir"])) / trial_name
+
+    for raw_job_dir in stage.get("job_dirs", []):
+        trial_dir = Path(str(raw_job_dir)) / trial_name
+        if trial_dir.exists():
+            return trial_dir
+
+    job_dirs = stage.get("job_dirs", [])
+    if job_dirs:
+        return Path(str(job_dirs[0])) / trial_name
+    return Path(trial_name)
 
 
 def audit_task(task_dir: Path, timeout_sec: int) -> dict[str, Any]:
@@ -105,6 +135,62 @@ def audit_task(task_dir: Path, timeout_sec: int) -> dict[str, Any]:
         "official_solution_passed": any_solution_passed,
         "verdict": "verifier_sanity_passed" if any_solution_passed else "needs_human_review",
     }
+
+
+def audit_task_cached(
+    *,
+    task_id: str,
+    task_dir: Path,
+    timeout_sec: int,
+    cache: dict[str, Any],
+    refresh_cache: bool,
+) -> dict[str, Any]:
+    fingerprint = task_fingerprint(task_dir)
+    cached = cache.setdefault("tasks", {}).get(task_id)
+    if (
+        not refresh_cache
+        and isinstance(cached, dict)
+        and cached.get("fingerprint") == fingerprint
+        and isinstance(cached.get("audit"), dict)
+    ):
+        audit = dict(cached["audit"])
+        audit["cache_hit"] = True
+        audit["fingerprint"] = fingerprint
+        return audit
+
+    audit = audit_task(task_dir, timeout_sec)
+    cache["tasks"][task_id] = {
+        "fingerprint": fingerprint,
+        "audit": audit,
+    }
+    audit = dict(audit)
+    audit["cache_hit"] = False
+    audit["fingerprint"] = fingerprint
+    return audit
+
+
+def task_fingerprint(task_dir: Path) -> str:
+    hasher = sha256()
+    paths: list[Path] = []
+    for rel in ("instruction.md", "task.toml"):
+        path = task_dir / rel
+        if path.exists():
+            paths.append(path)
+    for dirname in ("tests", "environment"):
+        root = task_dir / dirname
+        if root.exists():
+            paths.extend(path for path in root.rglob("*") if path.is_file())
+    for root in sorted(task_dir.glob("solution*")):
+        if root.is_dir():
+            paths.extend(path for path in root.rglob("*") if path.is_file())
+
+    for path in sorted(paths, key=lambda item: item.relative_to(task_dir).as_posix()):
+        rel = path.relative_to(task_dir).as_posix()
+        hasher.update(rel.encode())
+        hasher.update(b"\0")
+        hasher.update(path.read_bytes())
+        hasher.update(b"\0")
+    return hasher.hexdigest()
 
 
 def build_task_image(task_dir: Path, timeout_sec: int) -> str:
@@ -288,6 +374,21 @@ def read_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text())
+
+
+def load_cache(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {"schema_version": CACHE_SCHEMA_VERSION, "tasks": {}}
+    cache = json.loads(path.read_text())
+    if cache.get("schema_version") != CACHE_SCHEMA_VERSION:
+        return {"schema_version": CACHE_SCHEMA_VERSION, "tasks": {}}
+    if not isinstance(cache.get("tasks"), dict):
+        cache["tasks"] = {}
+    return cache
+
+
+def write_json(path: Path, value: Any) -> None:
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
 
 
 def read_text(path: Path) -> str:

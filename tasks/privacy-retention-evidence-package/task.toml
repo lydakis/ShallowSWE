@@ -1,0 +1,67 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/privacy-retention-evidence-package"
+description = "Build a privacy data-retention evidence package from a synthetic multi-service repository by reconciling dataset catalogs, policy limits, purge/export jobs, source annotations, legal holds, downstream propagation, exemptions, incidents, owner rollups, and remediation planning."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "artifact", "large", "python", "privacy", "repository-analysis"]
+
+[metadata]
+category = "artifact"
+size = "large"
+language = "python"
+shape = "repository-retention-evidence-package"
+subtype = "privacy-data-retention-audit"
+family = "artifact_generation"
+maintenance_type = "adaptive"
+domain = "privacy-engineering"
+source_pattern = "build a deterministic privacy retention evidence package by joining dataset catalogs, service ownership, retention policies, source-code dataset annotations, purge and export jobs, legal holds, exemptions, incidents, downstream propagation, owner gaps, and remediation plans"
+contamination_notes = "generated original synthetic repository; generic privacy retention evidence pattern only"
+repo_origin = "generated_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 300
+expected_steps = 80
+calibration_status = "candidate_probe"
+
+[verifier]
+timeout_sec = 240.0
+
+[agent]
+timeout_sec = 1200.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]
+
+[calibration.codex_subscription_2026_07_07_fresh_retention]
+status = "calibrated_provisional_large_n1"
+assigned_size = "large"
+band_confidence = "provisional_floor_n1_ceiling_n1"
+task_contract_review = "fair_floor_failure_and_valid_extra_high_success"
+contract_issue = false
+trajectory_audit = "Fresh artifact-large candidate replacing the saturated AL-1 ledger-restatement slot. Reference solution replay passed visible and hidden verifier tests on image sha256:c9190c32546c8b67d50b39a5ef2699d87618ca0f9e82db217c2e0e97ea9c77bb. Low-floor gpt-5.4-mini[low] failed fairly after building a general audit script: visible and hidden schema checks passed, but the agent emitted the internal legal_hold action code instead of the documented 'review active legal hold' action label. The trajectory read visible repository inputs and source files, wrote scripts/build_retention_audit.py, generated deterministic outputs, and showed no hidden-test, verifier, reward, solution, /tmp/shallowswe-pier, hardcoding, or gaming signal. Extra High passed visible and hidden verification with a general builder, py_compile, schema/header assertions, and deterministic rerun hash checks. Medium rows are smoke-only and are not ceiling evidence."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 0
+floor_pass_rate = 0.0
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-privacy-retention-floor-n1/floor-gpt54mini-low-rollouts.json"
+floor_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-privacy-retention-floor-n1/pier-result.json"
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 1
+ceiling_passes = 1
+ceiling_pass_rate = 1.0
+ceiling_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-privacy-retention-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+ceiling_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-privacy-retention-xhigh-n1/pier-result.json"
+ceiling_note = "N=1 Extra High passed; full n=8 admission gate remains pending. Medium rows are smoke-only and cannot accept this task."
+reference_replay_status = "passed"
+reference_replay_image = "sha256:c9190c32546c8b67d50b39a5ef2699d87618ca0f9e82db217c2e0e97ea9c77bb"

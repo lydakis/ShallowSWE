@@ -1,0 +1,62 @@
+[
+  {
+    "commit": "a1b2c3d",
+    "project": "web",
+    "suite": "unit",
+    "branch": "main",
+    "owner": "frontend",
+    "passed": 120,
+    "failed": [],
+    "flaky": [],
+    "blocking": true,
+    "environments": ["staging", "prod"]
+  },
+  {
+    "commit": "a1b2c3d",
+    "project": "web",
+    "suite": "e2e",
+    "branch": "main",
+    "owner": "frontend",
+    "passed": 31,
+    "failed": ["checkout.spec.ts", "coupon.spec.ts"],
+    "flaky": [],
+    "blocking": true,
+    "environments": ["staging", "prod"]
+  },
+  {
+    "commit": "d4e5f6a",
+    "project": "api",
+    "suite": "unit",
+    "branch": "release/2026-08",
+    "owner": "platform",
+    "passed": 88,
+    "failed": [],
+    "flaky": ["retry_test.py"],
+    "blocking": true,
+    "environments": ["staging"]
+  },
+  {
+    "commit": "d4e5f6a",
+    "project": "api",
+    "suite": "integration",
+    "branch": "release/2026-08",
+    "owner": "platform",
+    "passed": 42,
+    "failed": [],
+    "flaky": [],
+    "blocking": true,
+    "environments": ["staging", "prod"]
+  },
+  {
+    "commit": "f7a8b9c",
+    "project": "worker",
+    "suite": "lint",
+    "branch": "feature/queue",
+    "owner": "ops",
+    "passed": 14,
+    "failed": [],
+    "flaky": [],
+    "blocking": false,
+    "environments": ["staging"]
+  }
+]

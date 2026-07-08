@@ -158,9 +158,12 @@ To size the current local task set with the subscription path, run:
 uv run python scripts/run_codex_subscription_sizing.py --floor-attempts 3 --concurrency 1
 ```
 
-That runner executes `gpt-5.5` medium across all local tasks, reruns medium failures at high, reruns
-remaining failures at xhigh, then runs a `gpt-5.4-mini` low floor probe and writes a combined report
-under `results/shallowswe-codex-subscription-sizing-<stamp>/`.
+That runner executes the formal `gpt-5.5[extra_high]` ceiling probe across all included local tasks,
+then runs a `gpt-5.4-mini[low]` floor probe and writes a combined report under
+`results/shallowswe-codex-subscription-sizing-<stamp>/`.
+
+Use `--ceiling-effort medium` only for a low-spend smoke pass. Medium smoke rows do not satisfy the
+formal ceiling gate.
 
 If a run was started before report semantics changed, regenerate the report without rerunning Pier:
 
@@ -169,8 +172,8 @@ uv run python scripts/run_codex_subscription_sizing.py \
   --report-only results/shallowswe-codex-subscription-sizing-<stamp>
 ```
 
-The regenerated report treats `gpt-5.5[medium]` as the only ceiling calibration signal. `high` and
-`xhigh` are diagnostic rescue runs for medium failures only.
+The regenerated report treats only `gpt-5.5[extra_high]` as the formal ceiling calibration signal.
+Medium or High rows remain smoke evidence only, even if an older run labeled them as ceiling rows.
 
 To refresh live progress from existing Pier job directories:
 

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
+from collections import Counter
 import copy
 import json
 import subprocess
@@ -35,6 +36,13 @@ def approvals(plan: dict[str, Any]) -> set[tuple[str, str, str]]:
     }
 
 
+def change_requests(plan: dict[str, Any]) -> dict[tuple[str, str, str], dict[str, str]]:
+    return {
+        (item["service"], item["target_version"], item["ring"]): item
+        for item in plan.get("change_requests", [])
+    }
+
+
 def frozen(plan: dict[str, Any], service: str, ring: str) -> bool:
     now = plan["now"]
     for window in plan.get("freeze_windows", []):
@@ -47,13 +55,53 @@ def history_has(service_state: dict[str, Any], record: dict[str, str]) -> bool:
     return record in service_state.get("history", [])
 
 
-def expected(state: dict[str, Any], plan: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, str]]]:
+def notify(output: dict[str, Any], plan: dict[str, Any], item: dict[str, str]) -> None:
+    if item["action"] not in {"deploy", "blocked"}:
+        return
+    owner = plan.get("service_owners", {}).get(item["service"], "unassigned")
+    key = f"{item['service']}:{item['ring']}:{item['action']}:{item['detail']}"
+    notification = {
+        "key": key,
+        "service": item["service"],
+        "ring": item["ring"],
+        "owner": owner,
+        "kind": item["action"],
+        "detail": item["detail"],
+    }
+    notifications = output.setdefault("notifications", [])
+    if not any(existing.get("key") == key for existing in notifications):
+        notifications.append(notification)
+
+
+def summary(plan: dict[str, Any], audit: list[dict[str, str]]) -> dict[str, Any]:
+    counts = Counter(item["action"] for item in audit)
+    blocked_services = sorted({item["service"] for item in audit if item["action"] == "blocked"})
+    owners = plan.get("service_owners", {})
+    return {
+        "generated_at": plan["now"],
+        "deployments_attempted": len(plan.get("deployments", [])),
+        "deployed": counts["deploy"],
+        "already_current": counts["already_current"],
+        "blocked": counts["blocked"],
+        "noop": counts["noop"],
+        "changed_services": sorted({item["service"] for item in audit if item["action"] == "deploy"}),
+        "blocked_services": blocked_services,
+        "owners_to_page": sorted({owners.get(service, "unassigned") for service in blocked_services}),
+    }
+
+
+def expected(
+    state: dict[str, Any],
+    plan: dict[str, Any],
+) -> tuple[dict[str, Any], list[dict[str, str]], dict[str, Any]]:
     output = copy.deepcopy(state)
     output.setdefault("services", {})
     output.setdefault("call_log", [])
+    output.setdefault("notifications", [])
     audit: list[dict[str, str]] = []
     check_results = checks(plan)
     approved = approvals(plan)
+    requests = change_requests(plan)
 
     for deployment in plan.get("deployments", []):
         service = deployment["service"]
@@ -76,7 +124,13 @@ def expected(state: dict[str, Any], plan: dict[str, Any]) -> tuple[dict[str, Any
                 reason = "freeze_window"
             elif ring in deployment.get("approval_required_for", []) and (service, target, ring) not in approved:
                 reason = "missing_approval"
-            else:
+            elif ring in deployment.get("change_request_required_for", []):
+                request = requests.get((service, target, ring))
+                if request is None:
+                    reason = "missing_change_request"
+                elif request.get("status") != "approved":
+                    reason = f"rejected_change_request:{request['request_id']}"
+            if reason is None:
                 for check in deployment.get("required_checks", {}).get(ring, []):
                     result = check_results.get((service, target, ring, check))
                     if result is None:
@@ -90,7 +144,9 @@ def expected(state: dict[str, Any], plan: dict[str, Any]) -> tuple[dict[str, Any
                 if not history_has(service_state, record):
                     service_state.setdefault("history", []).append(record)
                     output["call_log"].append({"action": "blocked", "service": service, "ring": ring, "detail": {"reason": reason}})
-                audit.append(row("blocked", service, ring, reason))
+                item = row("blocked", service, ring, reason)
+                audit.append(item)
+                notify(output, plan, item)
                 saw_row = True
                 break
 
@@ -99,18 +155,25 @@ def expected(state: dict[str, Any], plan: dict[str, Any]) -> tuple[dict[str, Any
             if not history_has(service_state, record):
                 service_state.setdefault("history", []).append(record)
                 output["call_log"].append({"action": "deploy", "service": service, "ring": ring, "detail": {"version": target}})
-            audit.append(row("deploy", service, ring, target))
+            item = row("deploy", service, ring, target)
+            audit.append(item)
+            notify(output, plan, item)
             saw_row = True
         if not saw_row:
             audit.append(row("noop", service, "*", "no changes"))
-    return output, audit
+    return output, audit, summary(plan, audit)
 
 
-def run_cli(root: Path, state: dict[str, Any], plan: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, str]]]:
+def run_cli(
+    root: Path,
+    state: dict[str, Any],
+    plan: dict[str, Any],
+) -> tuple[dict[str, Any], list[dict[str, str]], dict[str, Any]]:
     state_path = root / "state.json"
     plan_path = root / "plan.json"
     output_path = root / "output.json"
     audit_path = root / "audit.jsonl"
+    summary_path = root / "summary.json"
     state_path.write_text(json.dumps(state, indent=2))
     plan_path.write_text(json.dumps(plan, indent=2))
     subprocess.run(
@@ -126,10 +189,16 @@ def run_cli(root: Path, state: dict[str, Any], plan: dict[str, Any]) -> tuple[di
             str(output_path),
             "--audit-log",
             str(audit_path),
+            "--summary-report",
+            str(summary_path),
         ],
         check=True,
     )
-    return json.loads(output_path.read_text()), [json.loads(line) for line in audit_path.read_text().splitlines()]
+    return (
+        json.loads(output_path.read_text()),
+        [json.loads(line) for line in audit_path.read_text().splitlines()],
+        json.loads(summary_path.read_text()),
+    )
 
 
 def visible_state() -> dict[str, Any]:
@@ -157,6 +226,16 @@ def hidden_state() -> dict[str, Any]:
             },
         },
         "call_log": [{"action": "deploy", "service": "legacy", "ring": "prod", "detail": {"version": "0.1.0"}}],
+        "notifications": [
+            {
+                "key": "legacy:prod:deploy:0.1.0",
+                "service": "legacy",
+                "ring": "prod",
+                "owner": "legacy-team",
+                "kind": "deploy",
+                "detail": "0.1.0",
+            }
+        ],
     }
 
 
@@ -182,17 +261,38 @@ def hidden_plan() -> dict[str, Any]:
                 "rings": ["prod"],
                 "required_checks": {"prod": ["smoke", "payments"]},
                 "approval_required_for": ["prod"],
+                "change_request_required_for": ["prod"],
+            },
+            {
+                "service": "reports",
+                "target_version": "1.3.0",
+                "rings": ["prod"],
+                "required_checks": {"prod": ["smoke"]},
+                "approval_required_for": ["prod"],
+                "change_request_required_for": ["prod"],
             },
         ],
+        "service_owners": {
+            "search": "team-search",
+            "billing": "team-billing",
+            "reports": "team-reports",
+        },
         "approvals": [
             {"service": "search", "target_version": "4.1.0", "ring": "prod", "approved": True},
             {"service": "billing", "target_version": "7.1.0", "ring": "prod", "approved": True},
+            {"service": "reports", "target_version": "1.3.0", "ring": "prod", "approved": True},
+        ],
+        "change_requests": [
+            {"request_id": "CR-SEARCH", "service": "search", "target_version": "4.1.0", "ring": "prod", "status": "approved"},
+            {"request_id": "CR-BILLING", "service": "billing", "target_version": "7.1.0", "ring": "prod", "status": "approved"},
+            {"request_id": "CR-REPORTS", "service": "reports", "target_version": "1.3.0", "ring": "prod", "status": "rejected"},
         ],
         "checks": [
             {"service": "search", "target_version": "4.1.0", "ring": "canary", "check": "smoke", "result": "pass"},
             {"service": "search", "target_version": "4.1.0", "ring": "internal", "check": "smoke", "result": "pass"},
             {"service": "search", "target_version": "4.1.0", "ring": "internal", "check": "error-rate", "result": "fail"},
             {"service": "billing", "target_version": "7.1.0", "ring": "prod", "check": "smoke", "result": "pass"},
+            {"service": "reports", "target_version": "1.3.0", "ring": "prod", "check": "smoke", "result": "pass"},
         ],
         "freeze_windows": [
             {"service": "billing", "ring": "prod", "start": "2026-08-11T03:00:00Z", "end": "2026-08-11T04:00:00Z"}
@@ -204,14 +304,17 @@ class DeploymentApprovalReconcileTests(unittest.TestCase):
     def assert_run(self, state: dict[str, Any], plan: dict[str, Any]) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            output, audit = run_cli(root, state, plan)
-        expected_state, expected_audit = expected(state, plan)
+            output, audit, actual_summary = run_cli(root, state, plan)
+        expected_state, expected_audit, expected_summary = expected(state, plan)
         self.assertEqual(output, expected_state)
         self.assertEqual(audit, expected_audit)
+        self.assertEqual(actual_summary, expected_summary)
         for item in audit:
             self.assertEqual(set(item), {"action", "service", "ring", "detail"})
             self.assertIn(item["action"], {"deploy", "already_current", "blocked", "noop"})
             self.assertTrue(item["detail"])
+        for item in output["notifications"]:
+            self.assertEqual(set(item), {"key", "service", "ring", "owner", "kind", "detail"})
 
     def test_visible_respects_checks_approval_freeze_and_ordering(self) -> None:
         self.assert_run(visible_state(), visible_plan())
@@ -224,17 +327,20 @@ class DeploymentApprovalReconcileTests(unittest.TestCase):
         plan = visible_plan()
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            once, _audit = run_cli(root, state, plan)
-            twice, second_audit = run_cli(root, once, plan)
-        expected_twice, expected_second = expected(once, plan)
+            once, _audit, _summary = run_cli(root, state, plan)
+            twice, second_audit, second_summary = run_cli(root, once, plan)
+        expected_twice, expected_second, expected_summary = expected(once, plan)
         self.assertEqual(twice, expected_twice)
         self.assertEqual(second_audit, expected_second)
+        self.assertEqual(second_summary, expected_summary)
         for service in twice["services"].values():
             seen = set()
             for record in service.get("history", []):
                 encoded = json.dumps(record, sort_keys=True)
                 self.assertNotIn(encoded, seen)
                 seen.add(encoded)
+        notification_keys = [item["key"] for item in twice["notifications"]]
+        self.assertEqual(len(notification_keys), len(set(notification_keys)))
 
 
 if __name__ == "__main__":

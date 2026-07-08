@@ -2,7 +2,7 @@
   "schema_version": "shallowswe.panel.v0.1",
   "name": "shallowswe-ceiling-v0.1",
   "status": "calibration",
-  "description": "Pinned-ceiling panel for ShallowSWE task admission. The primary row is the admission gate. The audit row is an optional independent diagnostic for primary-ceiling failures only; it is never a fallback, cascade, or scored substitute.",
+  "description": "Pinned-ceiling panel for ShallowSWE task admission. The primary row is the admission gate. Smoke rows are optional independent diagnostics only; they are never fallbacks, cascades, ceiling evidence, or scored substitutes.",
   "defaults": {
     "harness": "mini-swe-agent",
     "inference_gateway": "openrouter",
@@ -11,27 +11,27 @@
     }
   },
   "ceiling_policy": {
-    "primary_row": "ceiling_gpt_5_5_medium",
-    "audit_row": "ceiling_audit_claude_opus_4_8_medium",
+    "primary_row": "ceiling_gpt_5_5_xhigh",
+    "smoke_audit_row": "smoke_audit_claude_opus_4_8_medium",
     "smoke_rule": "Run N=1 across all 36 tasks before high-N floor calibration to catch prompt, verifier, and task-scope ambiguity.",
-    "admission_rule": "On the frozen task set, the primary ceiling must clear the pre-registered 75% one-shot gate. At N=16, 12/16 accepts, 11/16 investigates, and <=10/16 fixes or evicts. If investigating a primary-ceiling failure, run the audit row as a separate one-shot diagnostic. It never inherits state, never continues the primary run, and never counts as a fallback success."
+    "admission_rule": "On the frozen task set, the primary Extra High ceiling must clear the pre-registered 75% one-shot gate. At N=16, 12/16 accepts, 11/16 investigates, and <=10/16 fixes or evicts. If investigating a primary-ceiling failure, run the smoke audit row as a separate one-shot diagnostic. It never inherits state, never continues the primary run, never counts as a fallback success, and never satisfies the formal ceiling gate."
   },
   "rows": [
     {
-      "id": "ceiling_gpt_5_5_medium",
+      "id": "ceiling_gpt_5_5_xhigh",
       "model": "gpt-5-5",
       "openrouter_model": "openai/gpt-5.5",
       "upstream_provider": "openai",
-      "reasoning_effort": "medium",
+      "reasoning_effort": "xhigh",
       "anchor_role": "primary_ceiling"
     },
     {
-      "id": "ceiling_audit_claude_opus_4_8_medium",
+      "id": "smoke_audit_claude_opus_4_8_medium",
       "model": "claude-opus-4-8",
       "openrouter_model": "anthropic/claude-opus-4.8",
       "upstream_provider": "anthropic",
       "reasoning_effort": "medium",
-      "anchor_role": "independent_ceiling_audit"
+      "anchor_role": "independent_smoke_audit"
     }
   ]
 }

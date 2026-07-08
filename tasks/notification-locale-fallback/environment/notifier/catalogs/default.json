@@ -1,0 +1,5 @@
+{
+  "footer": "Thanks for using LedgerKit.",
+  "invoice_ready": "Hi {name}, invoice {invoice_id} is ready.",
+  "welcome": "Welcome, {name}!"
+}

@@ -24,12 +24,18 @@
     },
     "c5": {
       "unit": "passed",
-      "integration": "failed"
+      "integration": "failed",
+      "deploy-canary": "pending",
+      "prod-freeze": "failed"
     },
     "c6": {
       "unit": "passed",
       "integration": "passed",
-      "smoke": "passed"
+      "smoke": "passed",
+      "deploy-canary": "passed",
+      "smoke-canary": "passed",
+      "prod-freeze": "passed",
+      "pager-coverage": "passed"
     }
   },
   "changelog": {
@@ -44,5 +50,7 @@
       "- Ship previous release."
     ]
   },
+  "release_manifests": {},
+  "promotion_records": {},
   "call_log": []
 }

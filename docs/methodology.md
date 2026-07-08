@@ -161,11 +161,21 @@ The mixed chart, DeepSWE pass rate vs ShallowSWE CPSC, is still useful as capabi
 
 The calibration protocol is defined in `docs/calibration-protocol.md`.
 
+The next v1 milestone is task-suite calibration, not broader scoring. New leaderboard runs should
+wait until the suite has enough calibrated medium and large pressure. The intended artifact before
+v1 scoring is a task calibration report that explains how candidate tasks were authored, screened,
+bridged through the scoring harness, admitted or rejected, and assigned size labels.
+
 Each snapshot has two pre-registered calibration panels. The `ceiling_panel` contains frontier
 `model_config`s used only to decide whether a candidate task is admissible for the snapshot. The
 `floor_probe_panel` contains cheaper or lower-effort `model_config`s used to assign task size. The
 calibration panels freeze before suite authoring and task admission. The broader published
 leaderboard panel may freeze later, before the full repair-loop run.
+
+Codex subscription runs can be used for candidate triage and task debugging, but they are not final
+published calibration evidence unless they use the same scaffold, prompt, verifier loop, and
+versioned `model_config` as scoring. Candidates that survive Codex-assisted triage need bridge
+validation in the actual Pier/mini-swe scoring harness before their calibrated label is official.
 
 The floor is empirical on ShallowSWE tasks. Do not use DeepSWE rank or a price sheet as the floor.
 Run a floor-selection sweep across several cheap candidate pairs, then choose the primary
@@ -196,6 +206,16 @@ may be shown in the UI, but they are separate from the headline snapshot. Direct
 gateway prices are separate entries. Before public launch, price sheets must expose normalized
 fields for provider, model, resolved model, currency, effective date, input/output/reasoning/cache
 read/cache write rates per million tokens, source URL, and notes.
+
+## Analysis Playbooks
+
+Cross-run analyses are documented in dated docs and backed by reusable scripts so they can be
+rerun against any results file. Current playbooks:
+
+- Price/efficiency clustering, bootstrap CIs on CPSC, and the open-weight repricing
+  counterfactual: `scripts/analyze_price_efficiency_clusters.py`, first documented in
+  `docs/price-efficiency-clustering-2026-07-07.md`. Also serves as the sanity check that
+  gateway-reported cost reconciles with price-sheet reconstruction.
 
 ## Transcript Redaction
 

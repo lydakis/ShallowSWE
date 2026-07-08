@@ -11,15 +11,78 @@ Repair-loop runs define final CPSC.
 Measured repair-loop cost defines single-model reliability-cost crossovers.
 ```
 
+## V1 Task Funnel
+
+The next v1 phase is task calibration, not broader leaderboard scoring. The v0.2 repair-loop
+preview proved the basic cost-per-success thesis, but another large scoring run over the same
+mostly-easy distribution would mostly buy tighter error bars on a known shape. Before spending on a
+larger scoring panel, ShallowSWE should admit and size tasks through a task funnel.
+
+The operating sequence is:
+
+```text
+1. Author candidate tasks, skewed toward medium/large hypotheses.
+2. Run cheap one-shot triage to find obvious smalls, duplicates, broken prompts, and brittle
+   verifiers.
+3. Run a practical frontier screen to find candidates that are likely ceiling-solvable.
+4. Run the formal ceiling gate only on serious survivors.
+5. Run bridge validation in the actual scoring harness before accepting labels.
+6. Freeze the v1 task suite and scoring panel.
+7. Seek or allocate funding/credits for N=10 repair-loop scoring.
+8. Run broad scoring only after task distribution is fixed.
+```
+
+Codex subscription capacity may be used to accelerate authoring and triage, but it is not
+publishable calibration ground truth unless it is the same scaffold, prompt, verifier loop, and
+versioned `model_config` used by the scoring run. Any candidate accepted through Codex-assisted
+triage needs a bridge check in the real Pier/mini-swe scoring harness before its calibrated label is
+treated as official.
+
+For this v1 tranche, the formal ceiling is `openai/gpt-5.5[extra_high]`. `openai/gpt-5.5[medium]`
+may be used only as a cheap smoke screen to expose ambiguity, packaging bugs, or obviously broken
+verifiers. A Medium pass is not ceiling evidence, and a Medium failure is not an admission failure
+until the task has been reviewed and, if still viable, tested against the Extra High ceiling.
+
+The immediate authoring target is one medium/large-heavy tranche of 12-20 new candidates. If the
+funnel works, scale toward a larger candidate pool. The final v1 target remains 36 calibrated tasks,
+but the accepted pool should be larger than 36 before final selection so easy, duplicated, too-hard,
+or ambiguous tasks can be discarded without weakening the matrix.
+
+Each candidate ends in exactly one task-funnel bucket:
+
+| Bucket | Meaning | Action |
+| --- | --- | --- |
+| Keep small | Floor passes often enough to be a control or high-volume routine task | Keep only enough to fill small cells |
+| Keep medium | Floor one-shot behavior lands in the medium band and ceiling is strong | High-value candidate |
+| Keep large | Floor one-shot behavior lands in the large band, repair loops should matter, and ceiling is strong | Highest-value candidate |
+| Too easy / duplicate | Models first-submit it too often or it adds little new work shape | Archive or keep as smoke-only |
+| Bad task | Ceiling struggles, verifier is brittle, prompt is ambiguous, or difficulty is artificial | Fix or discard |
+
+The next public scientific artifact should be the v1 task calibration report: how candidate routine
+SWE tasks were filtered into the calibrated suite by frontier ceiling probes, cheap-floor probes,
+bridge-harness validation, and verifier review. A new leaderboard should follow that report, not
+precede it.
+
+Use the machine-readable task-funnel ledger to keep this phase auditable:
+
+```text
+uv run shallowswe task-funnel configs/shallowswe-v1-task-funnel-tranche-1.json
+```
+
+The ledger may track planned tasks that do not exist yet, authored probes, provisional Codex
+subscription triage, formal ceiling status, and bridge-validation status. A task is not an official
+calibrated label until the ledger shows it survived the required formal ceiling and bridge checks.
+
 ## Core Rule
 
 Difficulty is expressed in two layers: one-shot first-submit behavior is the acceptance and
 calibration signal, and bounded repair-loop behavior is the final scoring signal.
 
-- **Pinned ceiling**: the reference frontier `(model, effort)` pair at default publish effort must
-  pass accepted tasks in one-shot mode at a high but not saturated rate. One-shot is the task
-  acceptance gate because repair loops can converge and hide task-difficulty differences.
-  Operationally, pre-register a ceiling one-shot threshold for the snapshot. `>=75%` is the v1
+- **Pinned ceiling**: the pre-registered frontier `model_config` used to decide whether a task is
+  within reach of current frontier agents. The formal ceiling may use a higher reasoning effort
+  than the default scoring panel because it is an admission judge, not a leaderboard row. One-shot
+  is the task acceptance gate because repair loops can converge and hide task-difficulty
+  differences. Operationally, pre-register a ceiling one-shot threshold for the snapshot. `>=75%` is the v1
   candidate threshold. At `N=16`, that means `12/16` accepts, `11/16` investigates, and `<=10/16`
   fixes or evicts.
 - **Dialed floor**: small, medium, and large are assigned by first-submit floor behavior plus
@@ -55,11 +118,18 @@ Each snapshot has two pre-registered calibration panels:
 The ceiling and floor-probe panels are frozen before suite authoring and task admission. The
 broader published leaderboard panel may be frozen later, before the full published repair-loop run.
 
-The ceiling panel is evaluated at default publish effort. If high effort is required to clear the
-one-shot ceiling gate, the task is not shallow enough for the default snapshot. A candidate task is
-admitted if at least one `ceiling_panel` config clears the pre-registered one-shot gate and verifier
-review finds no task flaw. For v1, that gate is `>=75%` over `N=16`, or at least `12/16` successful
-one-shot runs.
+The ceiling panel is evaluated as an admission instrument, not as a scored economic configuration.
+Use cheap and practical frontier screens for triage, then spend the formal ceiling only on serious
+survivors. If the formal ceiling cannot clear the gate, the task is too hard for the snapshot or has
+a prompt/verifier flaw. If a practical medium/high screen fails but the formal ceiling passes, the
+task may still be a good medium or large candidate. A candidate task is admitted if at least one
+`ceiling_panel` config clears the pre-registered one-shot gate and verifier review finds no task
+flaw. For v1, that gate is `>=75%` over `N=16`, or at least `12/16` successful one-shot runs.
+
+The exact ceiling is a frozen `model_config`, not a marketing label. If the chosen frontier model is
+selected through Codex or another subscription surface, record the actual backend, effort setting,
+sampling config, scaffold, and date. If the scoring run uses API/OpenRouter/Pier instead, bridge
+accepted tasks through that same scoring harness before treating Codex-derived labels as official.
 
 The primary floor-probe configuration is chosen by measurement, not by price. Secondary floor-probe
 configs are recorded for sensitivity analysis and trigger manual review if they disagree with the

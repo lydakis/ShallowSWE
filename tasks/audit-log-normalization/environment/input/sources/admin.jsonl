@@ -1,0 +1,5 @@
+{"timestamp":"2026-07-04T10:02:00Z","actor":"ada@example.com","action":"LOGIN","result":"ok","event_id":"evt-003"}
+{"timestamp":"2026-07-04T10:04:00Z","actor":"margaret@example.com","action":"role-change","result":"OK","event_id":"evt-005"}
+{"timestamp":"2026-07-04T10:06:00Z","actor":"unknown@example.com","action":"LOGIN","result":"ok","event_id":"evt-006"}
+{"timestamp":"2026-07-04T10:07:00Z","actor":"Grace","action":"missing-action","result":"ok","event_id":"evt-007"}
+not-json

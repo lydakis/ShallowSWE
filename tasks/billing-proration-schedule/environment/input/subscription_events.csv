@@ -1,0 +1,6 @@
+account_id,event_id,event_date,period_start,period_end,old_plan,new_plan,old_monthly_cents,new_monthly_cents
+acct-1,e-100,2026-07-11,2026-07-01,2026-08-01,basic,pro,10000,20000
+acct-2,e-200,2026-02-16,2026-02-01,2026-03-01,enterprise,team,30000,12000
+acct-3,e-300,2026-04-20,2026-04-01,2026-05-01,pro,cancelled,15000,15000
+acct-4,e-400,2026-05-31,2026-05-01,2026-06-01,starter,basic,5000,8000
+acct-5,e-500,2026-08-15,2026-08-01,2026-09-01,basic,basic,10000,10000

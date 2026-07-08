@@ -19,7 +19,7 @@
       "purpose": "Pinned-ceiling task admission gate.",
       "panel": "panels/shallowswe-ceiling-v0.1.json",
       "row_ids": [
-        "ceiling_gpt_5_5_medium"
+        "ceiling_gpt_5_5_xhigh"
       ],
       "target_rollouts_per_task": 16,
       "task_manifest_calibration_section": "ceiling",
@@ -41,8 +41,8 @@
         "requires_explicit_approval_if_over_budget": true
       },
       "expected_outputs": [
-        "results/shallowswe-ceiling-primary-gpt55-medium-n16-<date>/rollouts.json",
-        "results/shallowswe-ceiling-primary-gpt55-medium-n16-<date>/ceiling-gate.json"
+        "results/shallowswe-ceiling-primary-gpt55-xhigh-n16-<date>/rollouts.json",
+        "results/shallowswe-ceiling-primary-gpt55-xhigh-n16-<date>/ceiling-gate.json"
       ]
     },
     {

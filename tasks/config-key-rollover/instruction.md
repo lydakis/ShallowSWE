@@ -14,6 +14,10 @@ Visibility semantics:
 The old `DISPATCH_INCLUDE_CLOSED=1` key must keep working as a compatibility alias for `all`
 when `DISPATCH_VISIBILITY` is absent. If both keys are present, `DISPATCH_VISIBILITY` wins.
 
-Update the runtime config path, CLI help, env fixtures, and README to use the new key. Keep the
-existing command/module name and the one-order-id-per-line output format stable. Existing
+Update the runtime config path, CLI help, env fixtures, and README to use the new key. Every
+committed `.env*` fixture file in the repo must use `DISPATCH_VISIBILITY` and must not contain
+`DISPATCH_INCLUDE_CLOSED`; in the seed repo those fixtures are `.env.nightly`, `.env.legacy`,
+`.env.preview`, and `.env.backfill`.
+
+Keep the existing command/module name and the one-order-id-per-line output format stable. Existing
 `DISPATCH_REGION` and `DISPATCH_ACCOUNT` filters should keep working.

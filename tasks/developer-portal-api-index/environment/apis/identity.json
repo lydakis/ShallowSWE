@@ -1,0 +1,26 @@
+{
+  "info": {"service_id": "identity", "version": "2026-06-15"},
+  "paths": {
+    "/v1/users": {
+      "get": {
+        "operationId": "listUsers",
+        "visibility": "internal",
+        "flags": ["admin"]
+      }
+    },
+    "/v1/sessions": {
+      "post": {
+        "operationId": "createSession",
+        "visibility": "public"
+      }
+    },
+    "/v1/password-resets": {
+      "post": {
+        "operationId": "createPasswordReset",
+        "visibility": "partner",
+        "deprecated": true,
+        "sunset": "2026-12-31"
+      }
+    }
+  }
+}

@@ -32,14 +32,19 @@ notes = "Local verifier and alternate-solution evidence are complete; high-N cei
 
 [calibration.ceiling]
 panel = "shallowswe-ceiling-v0.1"
-primary_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_current_n = 1
+medium_smoke_passes = 1
+medium_smoke_pass_rate = 1.0
+medium_smoke_source_rollouts = "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+primary_model_config = "openai/gpt-5.5[extra_high]"
 one_shot_target_n = 16
-one_shot_current_n = 1
-one_shot_passes = 1
-one_shot_pass_rate = 1.0
+one_shot_current_n = 0
+one_shot_passes = 0
+one_shot_pass_rate = 0.0
 gate_pass_threshold = 0.75
-decision = "needs_more_rollouts"
-source_rollouts = "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+decision = "pending_extra_high_ceiling"
+source_rollouts = "pending_extra_high_ceiling"
 
 [calibration.floor]
 panel = "shallowswe-calibration-v0.1"
@@ -72,3 +77,26 @@ mcp_servers = []
 [verifier.env]
 
 [solution.env]
+
+[calibration.codex_subscription_2026_07_06]
+status = "triaged_medium_smoke_only"
+assigned_size = "medium"
+band_confidence = "provisional_n3"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+failed_trajectory_count = 1
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 1
+medium_smoke_passes = 1
+medium_smoke_pass_rate = 1.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "none"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 3
+floor_passes = 2
+floor_pass_rate = 0.6666666666666666
+source_report = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/codex-subscription-sizing-report.json"
+source_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/failed-trajectory-audit.json"

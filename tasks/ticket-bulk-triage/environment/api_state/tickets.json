@@ -1,0 +1,16 @@
+[
+  {"id": "T-100", "title": "Auth outage", "severity": "critical", "type": "bug", "product_area": "auth", "priority": "P2", "owner": "platform", "labels": []},
+  {"id": "T-101", "title": "Checkout timeout", "severity": "high", "type": "bug", "product_area": "checkout", "priority": "P2", "owner": "platform", "labels": ["payments"]},
+  {"id": "T-102", "title": "Docs typo", "severity": "low", "type": "docs", "product_area": "docs", "priority": "P3", "owner": "support", "labels": ["triaged"]},
+  {"id": "T-103", "title": "Invoice copy", "severity": "medium", "type": "bug", "product_area": "billing", "priority": "P1", "owner": "payments", "labels": ["triaged"]},
+  {"id": "T-104", "title": "Worker warning", "severity": "medium", "type": "bug", "product_area": "platform", "priority": "P2", "owner": "platform", "labels": ["triaged"]},
+  {"id": "T-105", "title": "Guide screenshot stale", "severity": "low", "type": "docs", "product_area": "docs", "priority": "P2", "owner": "platform", "labels": []},
+  {"id": "T-106", "title": "Search index lag", "severity": "high", "type": "bug", "product_area": "search", "priority": "P1", "owner": "platform", "labels": ["triaged"]},
+  {"id": "T-107", "title": "Card retry loop", "severity": "medium", "type": "bug", "product_area": "checkout", "priority": "P3", "owner": "support", "labels": []},
+  {"id": "T-108", "title": "Receipt wording", "severity": "low", "type": "bug", "product_area": "billing", "priority": "P2", "owner": "payments", "labels": ["billing"]},
+  {"id": "T-109", "title": "Token exposure report", "severity": "high", "type": "bug", "product_area": "auth", "priority": "P1", "owner": "platform", "labels": ["security"]},
+  {"id": "T-110", "title": "API docs missing enum", "severity": "medium", "type": "docs", "product_area": "docs", "priority": "P2", "owner": "support", "labels": []},
+  {"id": "T-111", "title": "Coupon banner broken", "severity": "low", "type": "bug", "product_area": "checkout", "priority": "P3", "owner": "payments", "labels": []},
+  {"id": "T-112", "title": "Release note typo", "severity": "low", "type": "docs", "product_area": "docs", "priority": "P3", "owner": "support", "labels": ["docs", "triaged"]},
+  {"id": "T-113", "title": "Queue dashboard slow", "severity": "medium", "type": "bug", "product_area": "platform", "priority": "P2", "owner": "platform", "labels": ["triaged"]}
+]

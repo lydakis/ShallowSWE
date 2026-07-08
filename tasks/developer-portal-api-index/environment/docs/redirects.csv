@@ -1,0 +1,4 @@
+source,target,reason
+/docs/payments,/docs/billing-api,renamed
+/docs/old-search,/docs/search-api,renamed
+/docs/charge-api,/docs/legacy-billing,deprecated

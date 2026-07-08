@@ -1,0 +1,50 @@
+[
+  {
+    "account_id": "acct-100",
+    "due_date": "2026-07-04",
+    "kind": "exec_alignment",
+    "owner": "Mina Patel",
+    "status": "open",
+    "task_id": "plan-100-a"
+  },
+  {
+    "account_id": "acct-100",
+    "due_date": "2026-07-10",
+    "kind": "usage_plan",
+    "owner": "Mina Patel",
+    "status": "open",
+    "task_id": "plan-100-b"
+  },
+  {
+    "account_id": "acct-200",
+    "due_date": "2026-07-05",
+    "kind": "pricing_review",
+    "owner": "Owen Park",
+    "status": "open",
+    "task_id": "plan-200-a"
+  },
+  {
+    "account_id": "acct-300",
+    "due_date": "2026-07-01",
+    "kind": "contract_restore",
+    "owner": "Iris Chen",
+    "status": "blocked",
+    "task_id": "plan-300-a"
+  },
+  {
+    "account_id": "acct-400",
+    "due_date": "2026-07-04",
+    "kind": "pilot_review",
+    "owner": "Mina Patel",
+    "status": "done",
+    "task_id": "plan-400-a"
+  },
+  {
+    "account_id": "acct-400",
+    "due_date": "2026-07-09",
+    "kind": "champion_followup",
+    "owner": "Mina Patel",
+    "status": "open",
+    "task_id": "plan-400-b"
+  }
+]

@@ -1,4 +1,8 @@
-correction_id,target_entry_id,restated_amount_cents,reason,applied_at
-corr-001,jan-002,4500,usage_reprice,2026-03-01T12:00:00Z
-corr-002,feb-001,9000,late_upgrade,2026-03-03T12:00:00Z
-corr-003,missing-001,1200,unknown_entry,2026-03-04T12:00:00Z
+correction_id,target_entry_id,restated_amount_cents,new_account_id,new_posted_at,reason,applied_at,requires_approval
+corr-001,jan-002,4500,,,usage_reprice,2026-03-01T12:00:00Z,false
+corr-002,feb-001,9000,,,late_upgrade,2026-03-03T12:00:00Z,false
+corr-003,missing-001,1200,,,unknown_entry,2026-03-04T12:00:00Z,false
+corr-004,jan-001,,acct-c,2026-03-15T08:00:00Z,entity_reclass,2026-03-05T12:00:00Z,true
+corr-005,feb-002,-5000,,,large_credit_adjust,2026-03-06T12:00:00Z,false
+corr-006,jan-002,4500,,,duplicate_noop,2026-03-07T12:00:00Z,false
+corr-007,jan-002,,acct-b,2026-04-01T00:00:00Z,locked_period_move,2026-03-08T12:00:00Z,false

@@ -1,0 +1,2 @@
+adjustment_id,account_id,currency,amount_cents,reason,effective_at
+demo_a1,acct_demo_a,USD,-25,manual,2026-01-05T00:00:00Z

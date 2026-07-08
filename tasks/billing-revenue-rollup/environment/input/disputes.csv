@@ -1,3 +1,5 @@
-dispute_id,invoice_id,amount,status
-DP-1,INV-2,10,open
-DP-2,INV-1,5,won
+dispute_id,invoice_id,currency,amount,status,opened_at
+DP-1,INV-2,USD,10.00,open,2026-01-15
+DP-2,INV-1,USD,5.00,won,2026-01-20
+DP-3,INV-5,EUR,30.00,open,2026-03-10
+DP-4,INV-9,USD,10.00,open,2026-03-11

@@ -1,0 +1,18 @@
+[
+  {
+    "project": "web",
+    "environment": "staging",
+    "commit": "a1b2c3d",
+    "state": "ready",
+    "blockers": [],
+    "updated_at": "2026-08-10T00:00:00Z"
+  },
+  {
+    "project": "legacy",
+    "environment": "prod",
+    "commit": "z9z9z9z",
+    "state": "ready",
+    "blockers": [],
+    "updated_at": "2026-08-01T00:00:00Z"
+  }
+]

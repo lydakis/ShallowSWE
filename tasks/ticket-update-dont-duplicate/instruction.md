@@ -1,12 +1,15 @@
 # Update Existing Ticket Without Duplicate
 
-A matching checkout bug ticket already exists. Update it with the new report details and do not create a duplicate ticket.
+A matching checkout bug ticket already exists in the local ticket state. Find the matching open
+ticket from the ticket data and the new report, update that ticket with the new report details, and
+do not create a duplicate ticket. Do not assume a fixed ticket id.
 
 ## Acceptance Criteria
 
 - Implement the operation in `scripts/apply_task.py`; the verifier reruns it on fresh local state.
 - Ticket count stays at one.
-- Existing ticket `T-101` gets priority `P0` and a new comment.
+- The matching existing checkout ticket for saved-card coupon purchase failures gets priority `P0`
+  and a new comment.
 - Call log records update, not create.
 - Do not create any new ticket records.
 - Add one non-empty comment to the matching existing ticket that summarizes the new report.

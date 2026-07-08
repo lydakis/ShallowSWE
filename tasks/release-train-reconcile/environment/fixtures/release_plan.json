@@ -16,5 +16,19 @@
     }
   ],
   "blocked_commits": ["c6"],
-  "changelog_heading": "## v2.7.0 - 2026-07-05"
+  "changelog_heading": "## v2.7.0 - 2026-07-05",
+  "promotion_rings": [
+    {
+      "ring": "canary",
+      "required_checks": ["deploy-canary", "smoke-canary"],
+      "approvers": ["release-manager"],
+      "manifest_note": "Canary ready after smoke."
+    },
+    {
+      "ring": "production",
+      "required_checks": ["prod-freeze", "pager-coverage"],
+      "approvers": ["release-manager", "sre-lead"],
+      "manifest_note": "Production ready with pager coverage."
+    }
+  ]
 }

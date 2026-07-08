@@ -1,0 +1,7 @@
+[
+  {"id": "n-1", "locale": "default", "template": "welcome", "vars": {"name": "Ada"}},
+  {"id": "n-2", "locale": "de-AT", "template": "welcome", "vars": {"name": "Bert"}},
+  {"id": "n-3", "locale": "de-AT", "template": "invoice_ready", "vars": {"name": "Clara", "invoice_id": "INV-9"}},
+  {"id": "n-4", "locale": "fr-CA", "template": "invoice_ready", "vars": {"name": "Dana & Co", "invoice_id": "<INV-10>"}},
+  {"id": "n-5", "locale": "de-AT", "template": "footer", "vars": {}}
+]

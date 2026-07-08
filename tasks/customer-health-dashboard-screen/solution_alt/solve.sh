@@ -1,76 +1,147 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+mkdir -p workspace_app/selectors workspace_app/screens tests
+
 cat > workspace_app/selectors/customer_health.py <<'PY'
 from __future__ import annotations
 
-from collections import Counter
+from collections import defaultdict
 from datetime import date
 from pathlib import Path
 
 from workspace_app.data import load_json
 
 
-IMPORTANT_SEVERITIES = {"major", "critical"}
+RISK_ORDER = {"high": 0, "medium": 1, "low": 2}
 
 
-def _index(rows: list[dict[str, object]], key: str) -> dict[str, dict[str, object]]:
-    return {str(row[key]): row for row in rows}
+def _risk_band(score: int) -> str:
+    if score >= 70:
+        return "high"
+    if score >= 40:
+        return "medium"
+    return "low"
 
 
-def _band(score: int) -> str:
-    return "high" if score >= 70 else "medium" if score >= 40 else "low"
+def _latest_engagement(rows: list[dict[str, object]]) -> dict[str, dict[str, object]]:
+    latest: dict[str, dict[str, object]] = {}
+    for row in rows:
+        account_id = str(row["account_id"])
+        if account_id not in latest or str(row["last_touch_at"]) > str(latest[account_id]["last_touch_at"]):
+            latest[account_id] = row
+    return latest
 
 
-def _recommend(incidents: int, days: int, band: str, open_tickets: int, usage_delta: int) -> str:
-    if incidents > 0:
+def _engagement_gap(
+    report_date: date,
+    engagement: dict[str, object] | None,
+) -> str:
+    if engagement is None:
+        return "yes"
+    last_touch = date.fromisoformat(str(engagement["last_touch_at"]))
+    next_touch = date.fromisoformat(str(engagement["next_touch_at"]))
+    return "yes" if (report_date - last_touch).days > 45 or next_touch < report_date else "no"
+
+
+def _action(
+    *,
+    contract_active: bool,
+    incident_count: int,
+    overdue_playbooks: int,
+    days: int,
+    risk_band: str,
+    open_tickets: int,
+    engagement_gap: str,
+    usage_down: bool,
+) -> str:
+    if not contract_active:
+        return "Restore contract"
+    if incident_count:
         return "Escalate incident response"
-    if days <= 30 and band == "high":
+    if overdue_playbooks:
+        return "Clear customer plan blockers"
+    if days <= 30 and risk_band == "high":
         return "Schedule renewal save plan"
     if open_tickets >= 4:
         return "Clear support queue"
-    if usage_delta < 0:
+    if engagement_gap == "yes":
+        return "Re-engage account owner"
+    if usage_down:
         return "Review adoption drop"
     return "Monitor"
 
 
-def customer_health_rows(data_dir: str | Path) -> tuple[list[dict[str, object]], dict[str, int]]:
+def customer_health_model(data_dir: str | Path) -> dict[str, object]:
     accounts = load_json(data_dir, "accounts.json")
     tickets = load_json(data_dir, "tickets.json")
     incidents = load_json(data_dir, "incidents.json")
-    usage_by_account = _index(load_json(data_dir, "usage.json"), "account_id")
+    usage = {str(row["account_id"]): row for row in load_json(data_dir, "usage.json")}
     renewal_doc = load_json(data_dir, "renewals.json")
-    report_date = date.fromisoformat(renewal_doc["report_date"])
-    renewals = _index(renewal_doc["renewals"], "account_id")
+    report_date = date.fromisoformat(str(renewal_doc["report_date"]))
+    renewals = {str(row["account_id"]): row for row in renewal_doc["renewals"]}
+    contracts = {
+        str(row["account_id"]): row for row in load_json(data_dir, "contracts.json")["contracts"]
+    }
+    engagements = _latest_engagement(load_json(data_dir, "engagements.json"))
+    playbooks = load_json(data_dir, "playbooks.json")
 
-    open_ticket_counts = Counter(
-        str(ticket["account_id"]) for ticket in tickets if ticket.get("status") == "open"
-    )
-    open_incident_counts = Counter(
-        str(incident["account_id"])
-        for incident in incidents
-        if incident.get("status") == "open" and incident.get("severity") in IMPORTANT_SEVERITIES
-    )
+    open_tickets: dict[str, int] = defaultdict(int)
+    for ticket in tickets:
+        if ticket.get("status") == "open":
+            open_tickets[str(ticket["account_id"])] += 1
+
+    open_incidents: dict[str, int] = defaultdict(int)
+    for incident in incidents:
+        if incident.get("status") == "open" and incident.get("severity") in {"major", "critical"}:
+            open_incidents[str(incident["account_id"])] += 1
+
+    open_playbooks: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for playbook in playbooks:
+        if playbook.get("status") != "done":
+            open_playbooks[str(playbook["account_id"])].append(playbook)
 
     rows: list[dict[str, object]] = []
     for account in accounts:
         account_id = str(account["account_id"])
-        usage = usage_by_account[account_id]
-        previous = int(usage["previous_period_events"])
-        current = int(usage["current_period_events"])
-        usage_delta = current - previous
-        days = (date.fromisoformat(renewals[account_id]["renewal_date"]) - report_date).days
-        ticket_count = open_ticket_counts[account_id]
-        incident_count = open_incident_counts[account_id]
-        score = (
-            (40 if days <= 30 else 0)
-            + (25 if incident_count else 0)
-            + min(30, ticket_count * 6)
-            + (20 if usage_delta < 0 else 0)
-            - (10 if account["plan"] == "enterprise" and usage_delta > 0 else 0)
+        usage_row = usage[account_id]
+        previous = int(usage_row["previous_period_events"])
+        current = int(usage_row["current_period_events"])
+        usage_down = current < previous
+        usage_up = current > previous
+        days = (
+            date.fromisoformat(str(renewals[account_id]["renewal_date"])) - report_date
+        ).days
+        ticket_count = open_tickets[account_id]
+        incident_count = open_incidents[account_id]
+        contract = contracts[account_id]
+        contract_status = str(contract["status"])
+        contract_active = contract_status in {"active", "trialing"}
+        account_playbooks = open_playbooks[account_id]
+        overdue_count = sum(
+            1 for playbook in account_playbooks if str(playbook["due_date"]) <= str(renewal_doc["report_date"])
         )
+        next_due = min((str(playbook["due_date"]) for playbook in account_playbooks), default="")
+        gap = _engagement_gap(report_date, engagements.get(account_id))
+
+        score = 0
+        if days <= 30:
+            score += 40
+        if incident_count:
+            score += 25
+        score += min(30, ticket_count * 6)
+        if usage_down:
+            score += 20
+        if account.get("plan") == "enterprise" and usage_up:
+            score -= 10
+        if not contract_active:
+            score += 35
+        if overdue_count:
+            score += 20
+        if gap == "yes":
+            score += 15
         score = max(0, min(100, score))
-        band = _band(score)
+        risk_band = _risk_band(score)
         rows.append(
             {
                 "account_id": account_id,
@@ -78,27 +149,133 @@ def customer_health_rows(data_dir: str | Path) -> tuple[list[dict[str, object]],
                 "owner": account["owner"],
                 "plan": account["plan"],
                 "risk_score": score,
-                "risk_band": band,
+                "risk_band": risk_band,
                 "open_ticket_count": ticket_count,
                 "open_incident_count": incident_count,
                 "days_until_renewal": days,
-                "recommended_action": _recommend(
-                    incident_count,
-                    days,
-                    band,
-                    ticket_count,
-                    usage_delta,
+                "arr": int(contract["arr"]),
+                "contract_status": contract_status,
+                "engagement_gap": gap,
+                "open_playbooks": len(account_playbooks),
+                "overdue_playbooks": overdue_count,
+                "next_playbook_due": next_due,
+                "recommended_action": _action(
+                    contract_active=contract_active,
+                    incident_count=incident_count,
+                    overdue_playbooks=overdue_count,
+                    days=days,
+                    risk_band=risk_band,
+                    open_tickets=ticket_count,
+                    engagement_gap=gap,
+                    usage_down=usage_down,
                 ),
             }
         )
-    rows.sort(key=lambda row: (-row["risk_score"], row["days_until_renewal"], row["name"]))
-    metrics = {
+
+    rows.sort(key=lambda row: (-int(row["risk_score"]), int(row["days_until_renewal"]), str(row["name"])))
+    dashboard_metrics = {
         "accounts": len(rows),
-        "high-risk": sum(1 for row in rows if row["risk_band"] == "high"),
-        "open-tickets": sum(row["open_ticket_count"] for row in rows),
-        "renewals-30d": sum(1 for row in rows if 0 <= row["days_until_renewal"] <= 30),
+        "high-risk": sum(row["risk_band"] == "high" for row in rows),
+        "open-tickets": sum(int(row["open_ticket_count"]) for row in rows),
+        "renewals-30d": sum(0 <= int(row["days_until_renewal"]) <= 30 for row in rows),
     }
-    return rows, metrics
+
+    action_rows = [
+        {
+            "account_id": row["account_id"],
+            "account": row["name"],
+            "owner": row["owner"],
+            "risk_band": row["risk_band"],
+            "recommended_action": row["recommended_action"],
+            "next_playbook_due": row["next_playbook_due"],
+            "overdue_playbooks": row["overdue_playbooks"],
+            "open_playbooks": row["open_playbooks"],
+            "arr": row["arr"],
+            "engagement_gap": row["engagement_gap"],
+        }
+        for row in rows
+        if row["recommended_action"] != "Monitor" or int(row["open_playbooks"]) > 0
+    ]
+    action_rows.sort(
+        key=lambda row: (
+            RISK_ORDER[str(row["risk_band"])],
+            -int(row["overdue_playbooks"]),
+            str(row["next_playbook_due"]) == "",
+            str(row["next_playbook_due"]),
+            str(row["account"]),
+        )
+    )
+    action_metrics = {
+        "actions": len(action_rows),
+        "overdue-playbooks": sum(int(row["overdue_playbooks"]) for row in action_rows),
+        "engagement-gaps": sum(row["engagement_gap"] == "yes" for row in action_rows),
+        "arr-at-risk": sum(int(row["arr"]) for row in action_rows if row["risk_band"] != "low"),
+    }
+
+    owner_map: dict[str, dict[str, object]] = {}
+    for row in rows:
+        owner = str(row["owner"])
+        bucket = owner_map.setdefault(
+            owner,
+            {
+                "owner": owner,
+                "accounts": 0,
+                "high_risk_accounts": 0,
+                "open_tickets": 0,
+                "open_incidents": 0,
+                "overdue_playbooks": 0,
+                "engagement_gaps": 0,
+                "arr_at_risk": 0,
+                "next_playbook_due": "",
+                "escalation_needed": "no",
+            },
+        )
+        bucket["accounts"] = int(bucket["accounts"]) + 1
+        bucket["high_risk_accounts"] = int(bucket["high_risk_accounts"]) + (
+            1 if row["risk_band"] == "high" else 0
+        )
+        bucket["open_tickets"] = int(bucket["open_tickets"]) + int(row["open_ticket_count"])
+        bucket["open_incidents"] = int(bucket["open_incidents"]) + int(row["open_incident_count"])
+        bucket["overdue_playbooks"] = int(bucket["overdue_playbooks"]) + int(row["overdue_playbooks"])
+        bucket["engagement_gaps"] = int(bucket["engagement_gaps"]) + (
+            1 if row["engagement_gap"] == "yes" else 0
+        )
+        if row["risk_band"] != "low":
+            bucket["arr_at_risk"] = int(bucket["arr_at_risk"]) + int(row["arr"])
+        due = str(row["next_playbook_due"])
+        if due and (not bucket["next_playbook_due"] or due < str(bucket["next_playbook_due"])):
+            bucket["next_playbook_due"] = due
+
+    owner_rows = list(owner_map.values())
+    for row in owner_rows:
+        if (
+            int(row["high_risk_accounts"]) >= 1
+            or int(row["overdue_playbooks"]) >= 2
+            or int(row["open_incidents"]) >= 1
+        ):
+            row["escalation_needed"] = "yes"
+    owner_rows.sort(
+        key=lambda row: (
+            0 if row["escalation_needed"] == "yes" else 1,
+            -int(row["arr_at_risk"]),
+            str(row["owner"]),
+        )
+    )
+    owner_metrics = {
+        "owners": len(owner_rows),
+        "owners-with-escalations": sum(row["escalation_needed"] == "yes" for row in owner_rows),
+        "overdue-playbooks": sum(int(row["overdue_playbooks"]) for row in owner_rows),
+        "arr-at-risk": sum(int(row["arr_at_risk"]) for row in owner_rows),
+    }
+
+    return {
+        "dashboard_rows": rows,
+        "dashboard_metrics": dashboard_metrics,
+        "action_rows": action_rows,
+        "action_metrics": action_metrics,
+        "owner_rows": owner_rows,
+        "owner_metrics": owner_metrics,
+    }
 PY
 
 cat > workspace_app/screens/customer_health.py <<'PY'
@@ -108,68 +285,191 @@ from html import escape
 from pathlib import Path
 
 from workspace_app.layout import render_layout
-from workspace_app.selectors.customer_health import customer_health_rows
+from workspace_app.selectors.customer_health import customer_health_model
 
 
 COLUMNS = [
-    "name",
-    "owner",
-    "plan",
-    "risk_score",
-    "risk_band",
-    "open_ticket_count",
-    "open_incident_count",
-    "days_until_renewal",
-    "recommended_action",
+    ("name", "Account"),
+    ("owner", "Owner"),
+    ("plan", "Plan"),
+    ("risk_score", "Risk Score"),
+    ("risk_band", "Risk Band"),
+    ("open_ticket_count", "Open Tickets"),
+    ("open_incident_count", "Open Incidents"),
+    ("days_until_renewal", "Renewal Days"),
+    ("arr", "ARR"),
+    ("contract_status", "Contract"),
+    ("engagement_gap", "Engagement Gap"),
+    ("open_playbooks", "Open Playbooks"),
+    ("overdue_playbooks", "Overdue Playbooks"),
+    ("next_playbook_due", "Next Playbook Due"),
+    ("recommended_action", "Recommended Action"),
 ]
 
 
-def _metric(name: str, value: object) -> str:
-    return '<div class="metric" data-metric="%s">%s</div>' % (escape(name), escape(str(value)))
+def _metric(key: str, value: object) -> str:
+    return '<section data-metric="%s">%s</section>' % (escape(key), escape(str(value)))
 
 
-def _row(row: dict[str, object]) -> str:
-    cells = "".join(
-        '<td data-field="%s">%s</td>' % (escape(column), escape(str(row[column])))
-        for column in COLUMNS
+def _table(rows: list[dict[str, object]]) -> str:
+    headers = "".join("<th>%s</th>" % escape(label) for _, label in COLUMNS)
+    body = []
+    for row in rows:
+        cells = "".join(
+            '<td data-field="%s">%s</td>' % (escape(field), escape(str(row[field])))
+            for field, _ in COLUMNS
+        )
+        body.append('<tr data-account-id="%s">%s</tr>' % (escape(str(row["account_id"])), cells))
+    return '<table data-table="customer-health-risks"><thead><tr>%s</tr></thead><tbody>%s</tbody></table>' % (
+        headers,
+        "".join(body),
     )
-    return '<tr data-account-id="%s">%s</tr>' % (escape(str(row["account_id"])), cells)
 
 
 def render(data_dir: Path) -> str:
-    rows, metrics = customer_health_rows(data_dir)
-    metric_html = "".join(_metric(key, metrics[key]) for key in ["accounts", "high-risk", "open-tickets", "renewals-30d"])
-    headers = "".join("<th>%s</th>" % escape(column.replace("_", " ").title()) for column in COLUMNS)
-    table = '<table data-table="customer-health-risks"><thead><tr>%s</tr></thead><tbody>%s</tbody></table>' % (
-        headers,
-        "".join(_row(row) for row in rows),
-    )
-    body = '<h1>Customer Health</h1><section class="health-metrics">%s</section>%s' % (metric_html, table)
+    model = customer_health_model(data_dir)
+    metrics = model["dashboard_metrics"]
+    rows = model["dashboard_rows"]
+    cards = "".join(_metric(key, metrics[key]) for key in ["accounts", "high-risk", "open-tickets", "renewals-30d"])
+    body = '<h1>Customer Health</h1><section class="metric-grid">%s</section>%s' % (cards, _table(rows))
     return render_layout("Customer Health", "/customer-health", body, data_screen="customer-health")
+PY
+
+cat > workspace_app/screens/customer_health_actions.py <<'PY'
+from __future__ import annotations
+
+from html import escape
+from pathlib import Path
+
+from workspace_app.layout import render_layout
+from workspace_app.selectors.customer_health import customer_health_model
+
+
+COLUMNS = [
+    ("account", "Account"),
+    ("owner", "Owner"),
+    ("risk_band", "Risk Band"),
+    ("recommended_action", "Recommended Action"),
+    ("next_playbook_due", "Next Playbook Due"),
+    ("overdue_playbooks", "Overdue Playbooks"),
+    ("open_playbooks", "Open Playbooks"),
+    ("arr", "ARR"),
+    ("engagement_gap", "Engagement Gap"),
+]
+
+
+def _metric(key: str, value: object) -> str:
+    return '<section data-metric="%s">%s</section>' % (escape(key), escape(str(value)))
+
+
+def _table(rows: list[dict[str, object]]) -> str:
+    headers = "".join("<th>%s</th>" % escape(label) for _, label in COLUMNS)
+    body = []
+    for row in rows:
+        cells = "".join(
+            '<td data-field="%s">%s</td>' % (escape(field), escape(str(row[field])))
+            for field, _ in COLUMNS
+        )
+        body.append('<tr data-account-id="%s">%s</tr>' % (escape(str(row["account_id"])), cells))
+    return '<table data-table="customer-health-actions"><thead><tr>%s</tr></thead><tbody>%s</tbody></table>' % (
+        headers,
+        "".join(body),
+    )
+
+
+def render(data_dir: Path) -> str:
+    model = customer_health_model(data_dir)
+    metrics = model["action_metrics"]
+    rows = model["action_rows"]
+    cards = "".join(_metric(key, metrics[key]) for key in ["actions", "overdue-playbooks", "engagement-gaps", "arr-at-risk"])
+    body = '<h1>Customer Health Actions</h1><section class="metric-grid">%s</section>%s' % (cards, _table(rows))
+    return render_layout("Customer Health Actions", "/customer-health/actions", body, data_screen="customer-health-actions")
+PY
+
+cat > workspace_app/screens/customer_health_owner_queue.py <<'PY'
+from __future__ import annotations
+
+from html import escape
+from pathlib import Path
+
+from workspace_app.layout import render_layout
+from workspace_app.selectors.customer_health import customer_health_model
+
+
+COLUMNS = [
+    ("owner", "Owner"),
+    ("accounts", "Accounts"),
+    ("high_risk_accounts", "High Risk Accounts"),
+    ("open_tickets", "Open Tickets"),
+    ("open_incidents", "Open Incidents"),
+    ("overdue_playbooks", "Overdue Playbooks"),
+    ("engagement_gaps", "Engagement Gaps"),
+    ("arr_at_risk", "ARR At Risk"),
+    ("next_playbook_due", "Next Playbook Due"),
+    ("escalation_needed", "Escalation Needed"),
+]
+
+
+def _metric(key: str, value: object) -> str:
+    return '<section data-metric="%s">%s</section>' % (escape(key), escape(str(value)))
+
+
+def _table(rows: list[dict[str, object]]) -> str:
+    headers = "".join("<th>%s</th>" % escape(label) for _, label in COLUMNS)
+    body = []
+    for row in rows:
+        cells = "".join(
+            '<td data-field="%s">%s</td>' % (escape(field), escape(str(row[field])))
+            for field, _ in COLUMNS
+        )
+        body.append('<tr data-owner="%s">%s</tr>' % (escape(str(row["owner"])), cells))
+    return '<table data-table="customer-health-owner-queue"><thead><tr>%s</tr></thead><tbody>%s</tbody></table>' % (
+        headers,
+        "".join(body),
+    )
+
+
+def render(data_dir: Path) -> str:
+    model = customer_health_model(data_dir)
+    metrics = model["owner_metrics"]
+    rows = model["owner_rows"]
+    cards = "".join(_metric(key, metrics[key]) for key in ["owners", "owners-with-escalations", "overdue-playbooks", "arr-at-risk"])
+    body = '<h1>Customer Health Owner Queue</h1><section class="metric-grid">%s</section>%s' % (cards, _table(rows))
+    return render_layout("Customer Health Owner Queue", "/customer-health/owner-queue", body, data_screen="customer-health-owner-queue")
 PY
 
 python - <<'PY'
 from pathlib import Path
 
-routing = Path("workspace_app/routing.py")
-source = routing.read_text()
-if "customer_health" not in source:
-    source = source.replace(
-        "from .screens import accounts, billing, home, reports, support",
-        "from .screens import accounts, billing, customer_health, home, reports, support",
-    )
-if '"/customer-health"' not in source:
-    source = source.replace('    "/reports": reports.render,\n}', '    "/reports": reports.render,\n    "/customer-health": customer_health.render,\n}')
-routing.write_text(source)
+routes = Path("workspace_app/routing.py")
+text = routes.read_text()
+import_line = "from .screens import "
+for line in text.splitlines():
+    if line.startswith(import_line):
+        names = [part.strip() for part in line[len(import_line):].split(",")]
+        for name in ["customer_health", "customer_health_actions", "customer_health_owner_queue"]:
+            if name not in names:
+                names.append(name)
+        text = text.replace(line, import_line + ", ".join(sorted(names)))
+        break
+route_map = {
+    '"/customer-health"': "customer_health.render",
+    '"/customer-health/actions"': "customer_health_actions.render",
+    '"/customer-health/owner-queue"': "customer_health_owner_queue.render",
+}
+for route, renderer in route_map.items():
+    if route not in text:
+        text = text.replace("}\n\n\ndef route_names", f'    {route}: {renderer},\n}}\n\n\ndef route_names')
+routes.write_text(text)
 
 nav = Path("workspace_app/nav.py")
-source = nav.read_text()
-if "/customer-health" not in source:
-    source = source.replace(
-        ']\n',
+text = nav.read_text()
+if 'href": "/customer-health"' not in text:
+    text = text.replace(
+        "]\n",
         '    {"label": "Customer Health", "href": "/customer-health"},\n]\n',
     )
-nav.write_text(source)
+nav.write_text(text)
 PY
 
 cat > tests/test_customer_health.py <<'PY'
@@ -182,8 +482,8 @@ import tempfile
 import unittest
 
 
-class CustomerHealthScreenTests(unittest.TestCase):
-    def test_route_contract_and_visible_customer_values(self) -> None:
+class CustomerHealthRoutesTest(unittest.TestCase):
+    def render(self, route: str) -> str:
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "out.html"
             subprocess.run(
@@ -192,7 +492,7 @@ class CustomerHealthScreenTests(unittest.TestCase):
                     "-m",
                     "workspace_app.cli",
                     "--route",
-                    "/customer-health",
+                    route,
                     "--data-dir",
                     "/app/fixtures/visible",
                     "--output",
@@ -200,12 +500,20 @@ class CustomerHealthScreenTests(unittest.TestCase):
                 ],
                 check=True,
             )
-            html = output.read_text()
-        self.assertIn('<main data-screen="customer-health">', html)
-        self.assertIn("<h1>Customer Health</h1>", html)
-        self.assertIn('data-table="customer-health-risks"', html)
-        self.assertIn('data-account-id="acct-200"', html)
-        self.assertIn("Clear support queue", html)
+            return output.read_text()
+
+    def test_customer_health_routes_render(self) -> None:
+        expected = {
+            "/customer-health": ('data-screen="customer-health"', 'data-table="customer-health-risks"'),
+            "/customer-health/actions": ('data-screen="customer-health-actions"', 'data-table="customer-health-actions"'),
+            "/customer-health/owner-queue": ('data-screen="customer-health-owner-queue"', 'data-table="customer-health-owner-queue"'),
+        }
+        for route, needles in expected.items():
+            with self.subTest(route=route):
+                html = self.render(route)
+                self.assertIn('href="/customer-health"', html)
+                for needle in needles:
+                    self.assertIn(needle, html)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ schema_version = "1.2"
 
 [task]
 name = "shallowswe/billing-revenue-rollup"
-description = "Build revenue rollups from invoices, credits, disputes, and plans."
+description = "Build a revenue close package from invoices, credits, disputes, contracts, payments, accounts, and FX rates."
 authors = [{ name = "George Lydakis" }]
 keywords = ["shallowswe", "artifact", "large", "python"]
 
@@ -10,16 +10,16 @@ keywords = ["shallowswe", "artifact", "large", "python"]
 category = "artifact"
 size = "large"
 language = "python"
-shape = "ledger-or-reconciliation-package"
-subtype = "revenue-adjustment-rollup"
+shape = "multi-control-revenue-close-package"
+subtype = "revenue-cash-contract-close"
 family = "artifact_generation"
 maintenance_type = "adaptive"
 domain = "data"
-source_pattern = "billing reports need multi-source revenue and adjustment rollups"
+source_pattern = "billing close workflows need multi-source revenue allocation, cash application, contract variance, exposure, audit, and reject reports"
 repo_origin = "small_original_repo"
 requires_test_authoring = false
-expected_engineer_minutes = 70
-expected_steps = 12
+expected_engineer_minutes = 135
+expected_steps = 30
 calibration_status = "candidate"
 weakest_model_pass_rate = 0.0
 weakest_model_rollouts = 1
@@ -32,14 +32,19 @@ notes = "Local verifier and alternate-solution evidence are complete; high-N cei
 
 [calibration.ceiling]
 panel = "shallowswe-ceiling-v0.1"
-primary_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_current_n = 1
+medium_smoke_passes = 0
+medium_smoke_pass_rate = 0.0
+medium_smoke_source_rollouts = "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+primary_model_config = "openai/gpt-5.5[extra_high]"
 one_shot_target_n = 16
-one_shot_current_n = 1
+one_shot_current_n = 0
 one_shot_passes = 0
 one_shot_pass_rate = 0.0
 gate_pass_threshold = 0.75
-decision = "needs_more_rollouts"
-source_rollouts = "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+decision = "pending_extra_high_ceiling"
+source_rollouts = "pending_extra_high_ceiling"
 
 [calibration.floor]
 panel = "shallowswe-calibration-v0.1"
@@ -72,3 +77,96 @@ mcp_servers = []
 [verifier.env]
 
 [solution.env]
+
+[calibration.codex_subscription_2026_07_06]
+status = "triaged_medium_smoke_only"
+assigned_size = "medium"
+band_confidence = "provisional_n3"
+task_contract_review = "borderline_prompt_issue"
+contract_issue = true
+failed_trajectory_count = 1
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 1
+medium_smoke_passes = 1
+medium_smoke_pass_rate = 1.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "none"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 3
+floor_passes = 2
+floor_pass_rate = 0.6666666666666666
+source_report = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/codex-subscription-sizing-report.json"
+source_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/failed-trajectory-audit.json"
+
+[calibration.codex_subscription_2026_07_06_contract_fixes]
+status = "triaged_medium_smoke_only"
+assigned_size = "medium"
+band_confidence = "provisional_n3"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+failed_trajectory_count = 1
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 1
+medium_smoke_passes = 1
+medium_smoke_pass_rate = 1.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "none"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 3
+floor_passes = 2
+floor_pass_rate = 0.6666666666666666
+source_report = "results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes/codex-subscription-sizing-report.json"
+source_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes/failed-trajectory-audit.json"
+
+[calibration.codex_subscription_2026_07_07_expanded]
+status = "superseded_by_contract_cash_expansion"
+assigned_size = "not_large"
+band_confidence = "n1_floor_pass"
+task_contract_review = "legitimate_success"
+contract_issue = false
+failed_trajectory_count = 0
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 0
+medium_smoke_passes = 0
+medium_smoke_pass_rate = 0.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "none"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 1
+floor_pass_rate = 1.0
+source_floor_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-billing-revenue-expanded-floor-n1/floor-gpt54mini-low-rollouts.json"
+trajectory_audit = "Expanded task adds accounts, FX rates, monthly allocation, account exposure, adjustments, rejects, and hidden fixture checks. Low floor n=1 passed with a generalized implementation and hidden fixture success, so this remains too easy for the large lane."
+superseded_by = "codex_subscription_2026_07_07_contract_cash_expansion"
+
+[calibration.codex_subscription_2026_07_07_contract_cash_expansion]
+status = "too_easy_for_large_after_contract_cash_expansion"
+assigned_size = "not_large"
+band_confidence = "n1_floor_pass"
+task_contract_review = "legitimate_floor_success"
+contract_issue = false
+failed_trajectory_count = 0
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_note = "Historical smoke only; not the formal ceiling."
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 1
+floor_pass_rate = 1.0
+source_floor_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-billing-revenue-contract-cash-floor-n1/floor-gpt54mini-low-rollouts.json"
+source_floor_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-billing-revenue-contract-cash-floor-n1/pier-result.json"
+local_solution_passes = 2
+local_solution_note = "solution and solution_alt both pass the expanded verifier, but solution_alt is currently a mechanical copy and should be diversified before official admission."
+trajectory_audit = "Expanded with contracts, settled payments, cash_application.csv, contract_variance.csv, and close_audit.json cross-output control totals. Low floor n=1 passed with a generalized script over visible and hidden fixtures. No hardcoding or verifier unfairness found. Do not accept as large or spend Extra High on this version without material reshaping."

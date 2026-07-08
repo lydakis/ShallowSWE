@@ -1,0 +1,5 @@
+account_id,entity_id,owner_team,currency,materiality_cents
+acct-a,ent-na,finance,USD,1000
+acct-b,ent-na,finance,USD,800
+acct-c,ent-eu,success,EUR,500
+acct-d,ent-eu,success,EUR,2000

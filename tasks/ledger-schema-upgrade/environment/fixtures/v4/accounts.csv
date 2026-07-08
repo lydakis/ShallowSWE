@@ -1,0 +1,4 @@
+account_id,status,plan_id,region,segment
+acct_demo_a,active,basic,na,smb
+acct_demo_b,active,pro,eu,enterprise
+acct_demo_c,suspended,basic,na,smb

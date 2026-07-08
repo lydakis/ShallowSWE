@@ -2,7 +2,7 @@ schema_version = "1.2"
 
 [task]
 name = "shallowswe/ledger-restatement-audit"
-description = "Apply late ledger corrections into restated monthly rollups with an ordered audit trail."
+description = "Apply late ledger corrections into a multi-entity restatement evidence package with ordered audit, owner impact, period controls, approvals, and deterministic rollups."
 authors = [{ name = "George Lydakis" }]
 keywords = ["shallowswe", "artifact", "large", "python", "ledger"]
 
@@ -10,17 +10,17 @@ keywords = ["shallowswe", "artifact", "large", "python", "ledger"]
 category = "artifact"
 size = "large"
 language = "python"
-shape = "restatement-audit-package"
-subtype = "late-ledger-corrections"
+shape = "multi-entity-restatement-evidence-package"
+subtype = "late-ledger-corrections-with-controls"
 family = "data_transform"
 maintenance_type = "adaptive"
 domain = "data_pipeline"
-source_pattern = "apply late-arriving ledger corrections idempotently into restated outputs plus audit trail"
+source_pattern = "apply late-arriving ledger corrections idempotently across accounts, entities, currencies, period close state, approvals, account/period moves, restated rollups, owner impact, and audit trail"
 contamination_notes = "abstract source pattern only; no issue text, patch, tests, filenames, or domain data copied"
 repo_origin = "small_original_repo"
 requires_test_authoring = false
-expected_engineer_minutes = 75
-expected_steps = 16
+expected_engineer_minutes = 240
+expected_steps = 62
 calibration_status = "candidate_probe"
 weakest_model_pass_rate = 0.0
 weakest_model_rollouts = 0
@@ -33,14 +33,19 @@ notes = "AL-1 refill candidate from docs/medium-large-refill-candidate-cards.md;
 
 [calibration.ceiling]
 panel = "shallowswe-ceiling-v0.1"
-primary_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_current_n = 0
+medium_smoke_passes = 0
+medium_smoke_pass_rate = 0.0
+medium_smoke_source_rollouts = ""
+primary_model_config = "openai/gpt-5.5[extra_high]"
 one_shot_target_n = 16
 one_shot_current_n = 0
 one_shot_passes = 0
 one_shot_pass_rate = 0.0
 gate_pass_threshold = 0.75
-decision = "not_run"
-source_rollouts = ""
+decision = "pending_extra_high_ceiling"
+source_rollouts = "pending_extra_high_ceiling"
 
 [calibration.floor]
 panel = "shallowswe-calibration-v0.1"
@@ -73,3 +78,47 @@ mcp_servers = []
 [verifier.env]
 
 [solution.env]
+
+[calibration.codex_subscription_2026_07_06]
+status = "triaged_medium_smoke_only"
+assigned_size = "small"
+band_confidence = "provisional_n3"
+task_contract_review = "no_failed_trajectory"
+contract_issue = false
+failed_trajectory_count = 0
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 1
+medium_smoke_passes = 1
+medium_smoke_pass_rate = 1.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "none"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 3
+floor_passes = 3
+floor_pass_rate = 1.0
+source_report = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/codex-subscription-sizing-report.json"
+source_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/failed-trajectory-audit.json"
+
+[calibration.codex_subscription_2026_07_07_expanded_controls]
+status = "too_easy_after_expanded_low_floor_success"
+assigned_size = "small_after_floor_success"
+band_confidence = "provisional_repaired_floor_n1"
+task_contract_review = "reference_replay_and_valid_low_floor_success"
+contract_issue = false
+trajectory_audit = "Expanded after prior floor saturation by adding accounts, entity/currency ownership, period close state, approval gates, materiality checks, amount/account/period corrections, owner_impact.csv, expanded correction_audit.csv, and broader summary counters. Reference solution replay passed visible and hidden verifier tests on image sha256:873400061602f75d0dd30629dc414aaf1513c769c7263dc08e20bf874d86b744. The low-floor agent passed visible and hidden verification with a general stateful correction engine after reading only visible repo files, visible input, and the visible environment smoke test. Command audit found no test.sh, verifier, hidden, reward, solution, /tmp/shallowswe-pier, or hardcoding/gaming signal. Because gpt-5.4-mini[low] passed, this expanded contract is still too easy for artifact-large and should not receive Extra High spend without material redesign."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 1
+floor_pass_rate = 1.0
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-ledger-restatement-controls-floor-n1/floor-gpt54mini-low-rollouts.json"
+floor_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-ledger-restatement-controls-floor-n1/pier-result.json"
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+ceiling_note = "Not run because the expanded low floor passed validly. Medium rows are smoke-only and cannot accept this task."
+reference_replay_status = "passed"
+reference_replay_image = "sha256:873400061602f75d0dd30629dc414aaf1513c769c7263dc08e20bf874d86b744"

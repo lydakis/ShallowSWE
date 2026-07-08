@@ -15,6 +15,8 @@ from typing import Any
 AGENT_IMPORT_PATH = "shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent"
 CODEX_VERSION = "0.142.0"
 SCHEMA_VERSION = "shallowswe.codex_subscription_sizing.v0.2"
+CODEX_EFFORTS = ("medium", "high", "xhigh")
+FORMAL_CEILING_EFFORT = "xhigh"
 
 
 def main() -> int:
@@ -43,12 +45,17 @@ def main() -> int:
 
     env = codex_subscription_env()
     task_metadata = load_task_metadata(tasks_root, log_path, env)
+    if args.include_task_name:
+        task_metadata = filter_task_metadata(task_metadata, args.include_task_name)
     all_task_ids = [row["task_id"] for row in task_metadata]
+    if args.excluded_retries < 0:
+        raise SystemExit("--excluded-retries must be non-negative")
 
     status: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "stamp": stamp,
         "task_count": len(all_task_ids),
+        "task_ids": all_task_ids,
         "jobs_dir": str(jobs_dir),
         "results_dir": str(results_dir),
         "stages": {},
@@ -56,40 +63,64 @@ def main() -> int:
     write_json(results_dir / "status.json", status)
 
     ceiling_rows_by_effort: dict[str, list[dict[str, Any]]] = {}
-    remaining = all_task_ids
-    for effort in ("medium", "high", "xhigh"):
-        if not remaining:
-            status["stages"][f"ceiling_{effort}"] = {"status": "skipped", "task_count": 0}
-            write_json(results_dir / "status.json", status)
-            continue
-
-        job_name = f"shallowswe_codex_sub_sizing_{stamp}_ceiling_gpt55_{effort}_n1"
-        run_pier_job(
-            tasks_root=tasks_root,
-            jobs_dir=jobs_dir,
-            job_name=job_name,
-            model="openai/gpt-5.5",
-            reasoning_effort=effort,
-            attempts=1,
-            task_ids=remaining,
-            log_path=log_path,
-            env=env,
-            concurrency=args.concurrency,
-        )
-        rollouts_path = results_dir / f"ceiling-gpt55-{effort}-rollouts.json"
-        export_pier_job(jobs_dir / job_name, tasks_root, rollouts_path, log_path, env)
-        rows = load_rows(rollouts_path)
-        ceiling_rows_by_effort[effort] = rows
-        remaining = failed_task_ids(rows)
-
-        status["stages"][f"ceiling_{effort}"] = {
-            "status": "complete",
-            "job_name": job_name,
-            "rollouts": str(rollouts_path),
-            "task_count": len({row["task_id"] for row in rows}),
-            "failed_task_count": len(remaining),
+    rows, ceiling_stage_run = run_ceiling_effort(
+        effort=args.ceiling_effort,
+        stamp=stamp,
+        results_dir=results_dir,
+        tasks_root=tasks_root,
+        jobs_dir=jobs_dir,
+        task_ids=all_task_ids,
+        log_path=log_path,
+        env=env,
+        concurrency=args.concurrency,
+        excluded_retries=args.excluded_retries,
+        attempts=args.ceiling_attempts,
+    )
+    ceiling_rows_by_effort[args.ceiling_effort] = rows
+    ceiling_failures = failed_task_ids(rows)
+    tasks_without_scored_attempt = task_ids_without_scored_rows(rows, ceiling_stage_run["task_ids"])
+    if args.ceiling_effort == FORMAL_CEILING_EFFORT:
+        status["formal_ceiling"] = {
+            "model": "openai/gpt-5.5",
+            "reasoning_effort": FORMAL_CEILING_EFFORT,
+            "model_config": model_config("openai/gpt-5.5", FORMAL_CEILING_EFFORT),
+            "attempts_per_task": args.ceiling_attempts,
+            "role": "formal ceiling probe",
         }
-        write_json(results_dir / "status.json", status)
+    else:
+        status["formal_ceiling"] = {
+            "model": "openai/gpt-5.5",
+            "reasoning_effort": FORMAL_CEILING_EFFORT,
+            "model_config": model_config("openai/gpt-5.5", FORMAL_CEILING_EFFORT),
+            "attempts_per_task": args.ceiling_attempts,
+            "role": "formal ceiling probe",
+            "status": "not_run",
+            "note": (
+                f"gpt-5.5[{args.ceiling_effort}] was run as smoke only; "
+                "formal admission still requires Extra High."
+            ),
+        }
+        status["practical_smoke"] = {
+            "model": "openai/gpt-5.5",
+            "reasoning_effort": args.ceiling_effort,
+            "model_config": model_config("openai/gpt-5.5", args.ceiling_effort),
+            "attempts_per_task": args.ceiling_attempts,
+            "role": "diagnostic smoke probe",
+        }
+    status["stages"][f"ceiling_{args.ceiling_effort}"] = {
+        "status": "complete",
+        "job_name": ceiling_stage_run["job_names"][0] if ceiling_stage_run["job_names"] else None,
+        "job_names": ceiling_stage_run["job_names"],
+        "rollouts": str(ceiling_stage_run["combined_rollouts_path"]),
+        "rollout_paths": ceiling_stage_run["rollout_paths"],
+        "task_count": len({row["task_id"] for row in rows}),
+        "scored_task_count": len(scored_task_ids(rows)),
+        "failed_task_count": len(ceiling_failures),
+        "attempts_per_task": args.ceiling_attempts,
+        "tasks_without_scored_attempt": tasks_without_scored_attempt,
+        "excluded_retry_count": ceiling_stage_run["excluded_retry_count"],
+    }
+    write_json(results_dir / "status.json", status)
 
     floor_job_name = f"shallowswe_codex_sub_sizing_{stamp}_floor_gpt54mini_low_n{args.floor_attempts}"
     run_pier_job(
@@ -136,7 +167,30 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--results-root", default="results")
     parser.add_argument("--stamp")
     parser.add_argument("--floor-attempts", type=int, default=3)
+    parser.add_argument(
+        "--ceiling-effort",
+        choices=CODEX_EFFORTS,
+        default=FORMAL_CEILING_EFFORT,
+        help=(
+            "Reasoning effort for the gpt-5.5 probe. Only xhigh, recorded as "
+            "openai/gpt-5.5[extra_high], is formal ceiling evidence; medium/high "
+            "are diagnostic smoke rows."
+        ),
+    )
+    parser.add_argument("--ceiling-attempts", type=int, default=1)
     parser.add_argument("--concurrency", type=int, default=1)
+    parser.add_argument(
+        "--include-task-name",
+        action="append",
+        default=[],
+        help="Restrict the sizing run to one task ID. Repeat for multiple tasks.",
+    )
+    parser.add_argument(
+        "--excluded-retries",
+        type=int,
+        default=1,
+        help="same-effort retries for tasks whose exported rows are all excluded",
+    )
     parser.add_argument(
         "--report-only",
         type=Path,
@@ -162,6 +216,22 @@ def codex_subscription_env() -> dict[str, str]:
     if auth.get("auth_mode") != "chatgpt":
         raise SystemExit(f"Codex auth_mode must be chatgpt, got {auth.get('auth_mode')!r}")
     return env
+
+
+def filter_task_metadata(
+    task_metadata: list[dict[str, Any]],
+    include_task_names: list[str],
+) -> list[dict[str, Any]]:
+    requested_task_ids = sorted(set(include_task_names))
+    known_task_ids = {row["task_id"] for row in task_metadata}
+    unknown_task_ids = sorted(set(requested_task_ids) - known_task_ids)
+    if unknown_task_ids:
+        raise SystemExit(f"Unknown task IDs requested: {', '.join(unknown_task_ids)}")
+    return [
+        row
+        for row in task_metadata
+        if row["task_id"] in requested_task_ids
+    ]
 
 
 def load_task_metadata(
@@ -237,6 +307,70 @@ def run_pier_job(
         subprocess.run(cmd, env=env, stdout=log, stderr=subprocess.STDOUT, text=True, check=True)
 
 
+def run_ceiling_effort(
+    *,
+    effort: str,
+    stamp: str,
+    results_dir: Path,
+    tasks_root: Path,
+    jobs_dir: Path,
+    task_ids: list[str],
+    log_path: Path,
+    env: dict[str, str],
+    concurrency: int,
+    excluded_retries: int,
+    attempts: int,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    combined_rows: list[dict[str, Any]] = []
+    pending_task_ids = list(task_ids)
+    job_names: list[str] = []
+    rollout_paths: list[str] = []
+
+    for retry_index in range(excluded_retries + 1):
+        if not pending_task_ids:
+            break
+
+        retry_suffix = "" if retry_index == 0 else f"_retry{retry_index}"
+        file_suffix = "" if retry_index == 0 else f"-retry{retry_index}"
+        job_name = (
+            f"shallowswe_codex_sub_sizing_{stamp}_ceiling_gpt55_{effort}_n{attempts}"
+            f"{retry_suffix}"
+        )
+        rollouts_path = results_dir / f"ceiling-gpt55-{effort}{file_suffix}-rollouts.json"
+        run_pier_job(
+            tasks_root=tasks_root,
+            jobs_dir=jobs_dir,
+            job_name=job_name,
+            model="openai/gpt-5.5",
+            reasoning_effort=effort,
+            attempts=attempts,
+            task_ids=pending_task_ids,
+            log_path=log_path,
+            env=env,
+            concurrency=concurrency,
+        )
+        export_pier_job(jobs_dir / job_name, tasks_root, rollouts_path, log_path, env)
+        rows = load_rows(rollouts_path)
+        combined_rows.extend(rows)
+        job_names.append(job_name)
+        rollout_paths.append(str(rollouts_path))
+        pending_task_ids = task_ids_without_scored_rows(rows, pending_task_ids)
+
+    combined_rollouts_path = results_dir / f"ceiling-gpt55-{effort}-rollouts.json"
+    if len(rollout_paths) > 1:
+        write_json(combined_rollouts_path, combined_rows)
+    return (
+        combined_rows,
+        {
+            "task_ids": list(task_ids),
+            "job_names": job_names,
+            "rollout_paths": rollout_paths,
+            "combined_rollouts_path": combined_rollouts_path,
+            "excluded_retry_count": max(0, len(job_names) - 1),
+        },
+    )
+
+
 def export_pier_job(
     job_dir: Path,
     tasks_root: Path,
@@ -256,14 +390,42 @@ def load_rows(path: Path) -> list[dict[str, Any]]:
 
 
 def failed_task_ids(rows: list[dict[str, Any]]) -> list[str]:
+    return scored_failed_task_ids(rows)
+
+
+def scored_failed_task_ids(rows: list[dict[str, Any]]) -> list[str]:
     by_task: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
+        if not is_scored_row(row):
+            continue
         by_task[row["task_id"]].append(row)
     return sorted(
         task_id
         for task_id, task_rows in by_task.items()
         if not any(bool(row.get("passed")) for row in task_rows)
     )
+
+
+def task_ids_without_scored_rows(
+    rows: list[dict[str, Any]],
+    task_ids: list[str],
+) -> list[str]:
+    by_task: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        by_task[row["task_id"]].append(row)
+    return [
+        task_id
+        for task_id in task_ids
+        if not any(is_scored_row(row) for row in by_task.get(task_id, []))
+    ]
+
+
+def scored_task_ids(rows: list[dict[str, Any]]) -> list[str]:
+    return sorted({row["task_id"] for row in rows if is_scored_row(row)})
+
+
+def is_scored_row(row: dict[str, Any]) -> bool:
+    return row.get("status", "scored") != "excluded"
 
 
 def build_report(
@@ -273,32 +435,20 @@ def build_report(
     floor_rows: list[dict[str, Any]],
     status: dict[str, Any],
 ) -> dict[str, Any]:
+    formal_effort = formal_ceiling_effort(status, ceiling_rows_by_effort)
+    formal_by_task = group_by_task(ceiling_rows_by_effort.get(formal_effort, []))
     medium_by_task = group_by_task(ceiling_rows_by_effort.get("medium", []))
-    diagnostic_by_effort = {
-        effort: group_by_task(ceiling_rows_by_effort.get(effort, []))
-        for effort in ("high", "xhigh")
-    }
     floor_by_task = group_by_task(floor_rows)
     tasks = []
     for meta in task_metadata:
         task_id = meta["task_id"]
-        medium_summary = rollout_summary(medium_by_task.get(task_id, []))
-        diagnostic_summaries = {
-            effort: rollout_summary(diagnostic_by_effort[effort].get(task_id, []))
-            for effort in ("high", "xhigh")
-        }
-        diagnostic_rescue_effort = next(
-            (
-                effort
-                for effort in ("high", "xhigh")
-                if diagnostic_summaries[effort]["passed"]
-            ),
-            None,
-        )
+        formal_summary = rollout_summary(formal_by_task.get(task_id, []))
+        medium_smoke = rollout_summary(medium_by_task.get(task_id, []))
 
         floor_task_rows = floor_by_task.get(task_id, [])
-        floor_passes = sum(1 for row in floor_task_rows if row.get("passed"))
-        floor_attempts = len(floor_task_rows)
+        scored_floor_task_rows = [row for row in floor_task_rows if is_scored_row(row)]
+        floor_passes = sum(1 for row in scored_floor_task_rows if row.get("passed"))
+        floor_attempts = len(scored_floor_task_rows)
         floor_pass_rate = floor_passes / floor_attempts if floor_attempts else None
         tasks.append(
             {
@@ -306,12 +456,13 @@ def build_report(
                 "category": meta["category"],
                 "metadata_size": meta["size"],
                 "calibration_status": meta["calibration_status"],
-                "codex_5_5_medium_ceiling": medium_summary,
-                "codex_5_5_diagnostics": diagnostic_summaries,
-                "codex_5_5_diagnostic_rescue_effort": diagnostic_rescue_effort,
+                "codex_5_5_formal_ceiling_effort": formal_effort,
+                "codex_5_5_formal_ceiling": formal_summary,
+                "codex_5_5_medium_smoke": medium_smoke,
                 "codex_5_4_mini_low_attempts": floor_attempts,
                 "codex_5_4_mini_low_passes": floor_passes,
                 "codex_5_4_mini_low_pass_rate": floor_pass_rate,
+                "codex_5_4_mini_low_excluded": len(floor_task_rows) - floor_attempts,
                 "provisional_floor_size": provisional_floor_size(floor_pass_rate),
             }
         )
@@ -319,20 +470,19 @@ def build_report(
     return {
         "schema_version": SCHEMA_VERSION,
         "status": status,
-        "fixed_ceiling": {
+        "formal_ceiling": {
+            "model": "openai/gpt-5.5",
+            "reasoning_effort": formal_effort,
+            "model_config": model_config("openai/gpt-5.5", formal_effort),
+            "role": "formal ceiling probe",
+            "rule": "Only the configured formal ceiling effort counts as ceiling evidence.",
+        },
+        "practical_smoke": {
             "model": "openai/gpt-5.5",
             "reasoning_effort": "medium",
-            "role": "fixed ceiling calibration point",
-            "rule": (
-                "Only gpt-5.5 medium counts as the ceiling signal. High and xhigh "
-                "runs are diagnostics for medium failures, not alternate ceilings."
-            ),
-        },
-        "diagnostic_effort_ladder": {
-            "model": "openai/gpt-5.5",
-            "efforts": ["high", "xhigh"],
-            "role": "diagnostic rescue signal only",
-            "rule": "Run high only for medium failures and xhigh only for high failures.",
+            "model_config": model_config("openai/gpt-5.5", "medium"),
+            "role": "optional low-spend smoke signal only",
+            "rule": "Medium smoke rows do not satisfy the formal ceiling gate.",
         },
         "floor_probe": {
             "model": "openai/gpt-5.4-mini",
@@ -342,6 +492,27 @@ def build_report(
         },
         "tasks": tasks,
     }
+
+
+def infer_formal_effort() -> str:
+    return FORMAL_CEILING_EFFORT
+
+
+def formal_ceiling_effort(
+    status: dict[str, Any],
+    ceiling_rows_by_effort: dict[str, list[dict[str, Any]]],
+) -> str:
+    configured = str((status.get("formal_ceiling") or {}).get("reasoning_effort") or "")
+    if configured == FORMAL_CEILING_EFFORT:
+        return configured
+    if configured:
+        return FORMAL_CEILING_EFFORT
+    return infer_formal_effort()
+
+
+def model_config(model: str, effort: str) -> str:
+    display_effort = "extra_high" if effort == "xhigh" else effort
+    return f"{model}[{display_effort}]"
 
 
 def regenerate_report(*, results_dir: Path, tasks_root: Path) -> None:
@@ -356,6 +527,15 @@ def regenerate_report(*, results_dir: Path, tasks_root: Path) -> None:
         for effort in ("medium", "high", "xhigh")
     }
     floor_rows = load_optional_rows(results_dir / "floor-gpt54mini-low-rollouts.json")
+    report_task_ids = status.get("task_ids") or sorted(
+        {
+            row["task_id"]
+            for rows in [*ceiling_rows_by_effort.values(), floor_rows]
+            for row in rows
+        }
+    )
+    if report_task_ids:
+        task_metadata = filter_task_metadata(task_metadata, list(report_task_ids))
     report = build_report(
         task_metadata=task_metadata,
         ceiling_rows_by_effort=ceiling_rows_by_effort,
@@ -379,26 +559,102 @@ def write_progress(*, results_dir: Path) -> None:
     status = json.loads(status_path.read_text())
     stamp = status["stamp"]
     jobs_dir = Path(status["jobs_dir"])
+    formal_effort = formal_ceiling_effort(status, {})
+    stages = {
+        f"formal_ceiling_gpt55_{formal_effort}": stage_progress(
+            status=status,
+            stage_key=f"ceiling_{formal_effort}",
+            fallback_job_names=[
+                f"shallowswe_codex_sub_sizing_{stamp}_ceiling_gpt55_{formal_effort}_n1"
+            ],
+            jobs_dir=jobs_dir,
+        ),
+        "floor_gpt54mini_low": stage_progress(
+            status=status,
+            stage_key="floor_gpt54mini_low",
+            fallback_job_names=[f"shallowswe_codex_sub_sizing_{stamp}_floor_gpt54mini_low_n3"],
+            jobs_dir=jobs_dir,
+        ),
+    }
+    for smoke_effort in ("medium", "high"):
+        if f"ceiling_{smoke_effort}" not in status.get("stages", {}):
+            continue
+        stages[f"practical_smoke_gpt55_{smoke_effort}"] = stage_progress(
+            status=status,
+            stage_key=f"ceiling_{smoke_effort}",
+            fallback_job_names=[
+                f"shallowswe_codex_sub_sizing_{stamp}_ceiling_gpt55_{smoke_effort}_n1"
+            ],
+            jobs_dir=jobs_dir,
+        )
+
     progress = {
         "schema_version": "shallowswe.codex_subscription_progress.v0.2",
         "results_dir": str(results_dir),
         "task_count": status["task_count"],
-        "stages": {
-            "fixed_ceiling_gpt55_medium": pier_job_progress(
-                jobs_dir / f"shallowswe_codex_sub_sizing_{stamp}_ceiling_gpt55_medium_n1"
-            ),
-            "diagnostic_gpt55_high": pier_job_progress(
-                jobs_dir / f"shallowswe_codex_sub_sizing_{stamp}_ceiling_gpt55_high_n1"
-            ),
-            "diagnostic_gpt55_xhigh": pier_job_progress(
-                jobs_dir / f"shallowswe_codex_sub_sizing_{stamp}_ceiling_gpt55_xhigh_n1"
-            ),
-            "floor_gpt54mini_low": pier_job_progress(
-                jobs_dir / f"shallowswe_codex_sub_sizing_{stamp}_floor_gpt54mini_low_n3"
-            ),
-        },
+        "stages": stages,
     }
     write_json(results_dir / "progress.json", progress)
+
+
+def stage_progress(
+    *,
+    status: dict[str, Any],
+    stage_key: str,
+    fallback_job_names: list[str],
+    jobs_dir: Path,
+) -> dict[str, Any]:
+    stage = status.get("stages", {}).get(stage_key, {})
+    job_names = stage.get("job_names")
+    if not job_names and stage.get("job_name"):
+        job_names = [stage["job_name"]]
+    if not job_names:
+        job_names = fallback_job_names
+    return pier_jobs_progress([jobs_dir / job_name for job_name in job_names])
+
+
+def pier_jobs_progress(job_dirs: list[Path]) -> dict[str, Any]:
+    job_progresses = [(job_dir, pier_job_progress(job_dir)) for job_dir in job_dirs]
+    existing = [
+        (job_dir, progress)
+        for job_dir, progress in job_progresses
+        if progress["status"] != "not_started"
+    ]
+    not_started_job_dirs = [
+        str(job_dir)
+        for job_dir, progress in job_progresses
+        if progress["status"] == "not_started"
+    ]
+    if not existing:
+        return {"status": "not_started"}
+    if len(existing) == 1 and not not_started_job_dirs:
+        progress = dict(existing[0][1])
+        if "job_dir" in progress:
+            progress["job_dirs"] = [progress["job_dir"]]
+        return progress
+
+    completed_tasks = [
+        row for _, progress in existing for row in progress.get("completed_tasks", [])
+    ]
+    active_or_pending = [
+        name
+        for _, progress in existing
+        for name in progress.get("active_or_pending_trial_dirs", [])
+    ]
+    return {
+        "status": "running" if active_or_pending or not_started_job_dirs else "complete",
+        "job_dirs": [
+            progress["job_dir"] for _, progress in existing if "job_dir" in progress
+        ],
+        "not_started_job_dirs": not_started_job_dirs,
+        "trial_dirs": sum(int(progress.get("trial_dirs", 0)) for _, progress in existing),
+        "completed": sum(int(progress.get("completed", 0)) for _, progress in existing),
+        "passes": sum(int(progress.get("passes", 0)) for _, progress in existing),
+        "failures": sum(int(progress.get("failures", 0)) for _, progress in existing),
+        "exceptions": sum(int(progress.get("exceptions", 0)) for _, progress in existing),
+        "active_or_pending_trial_dirs": active_or_pending,
+        "completed_tasks": completed_tasks,
+    }
 
 
 def pier_job_progress(job_dir: Path) -> dict[str, Any]:
@@ -414,6 +670,7 @@ def pier_job_progress(job_dir: Path) -> dict[str, Any]:
             {
                 "task_id": data.get("task_name", "").split("/")[-1],
                 "trial_name": data.get("trial_name"),
+                "job_dir": str(job_dir),
                 "passed": reward == 1.0,
                 "reward": reward,
                 "exception_type": exception.get("exception_type"),
@@ -439,15 +696,19 @@ def pier_job_progress(job_dir: Path) -> dict[str, Any]:
 
 
 def rollout_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    attempts = len(rows)
-    passes = sum(1 for row in rows if row.get("passed"))
-    exception_count = sum(1 for row in rows if row.get("exclusion_reason"))
+    scored_rows = [row for row in rows if is_scored_row(row)]
+    attempts = len(scored_rows)
+    passes = sum(1 for row in scored_rows if row.get("passed"))
+    excluded = len(rows) - attempts
     return {
+        "total_rows": len(rows),
         "attempts": attempts,
         "passes": passes,
         "pass_rate": passes / attempts if attempts else None,
         "passed": passes > 0,
-        "exceptions": exception_count,
+        "scored_failure": attempts > 0 and passes == 0,
+        "excluded": excluded,
+        "exceptions": excluded,
     }
 
 
@@ -487,34 +748,32 @@ def write_json(path: Path, data: Any) -> None:
 def write_markdown_summary(path: Path, report: dict[str, Any]) -> None:
     tasks = report["tasks"]
     by_floor_size: dict[str, int] = defaultdict(int)
-    by_medium_ceiling: dict[str, int] = defaultdict(int)
-    by_diagnostic_rescue: dict[str, int] = defaultdict(int)
+    by_formal_ceiling: dict[str, int] = defaultdict(int)
     for task in tasks:
         by_floor_size[str(task["provisional_floor_size"])] += 1
-        medium_status = "pass" if task["codex_5_5_medium_ceiling"]["passed"] else "fail"
-        if not task["codex_5_5_medium_ceiling"]["attempts"]:
-            medium_status = "pending"
-        by_medium_ceiling[medium_status] += 1
-        by_diagnostic_rescue[str(task["codex_5_5_diagnostic_rescue_effort"])] += 1
+        ceiling_summary = task["codex_5_5_formal_ceiling"]
+        ceiling_status = "pass" if ceiling_summary["passed"] else "fail"
+        if not ceiling_summary["attempts"]:
+            ceiling_status = (
+                "excluded" if ceiling_summary["excluded"] else "pending"
+            )
+        by_formal_ceiling[ceiling_status] += 1
+
+    formal = report["formal_ceiling"]
 
     lines = [
         "# Codex Subscription Sizing",
         "",
         f"Tasks: {len(tasks)}",
         "",
-        "## Fixed Ceiling",
+        "## Formal Ceiling",
         "",
-        "- Model config: `openai/gpt-5.5[medium]`",
-        f"- Passed: {by_medium_ceiling.get('pass', 0)}",
-        f"- Failed: {by_medium_ceiling.get('fail', 0)}",
-        f"- Pending: {by_medium_ceiling.get('pending', 0)}",
-        "",
-        "## Diagnostic Effort Ladder",
-        "",
-        "- High/xhigh are diagnostic rescue runs for medium failures only.",
-        f"- Rescued by `high`: {by_diagnostic_rescue.get('high', 0)}",
-        f"- Rescued by `xhigh`: {by_diagnostic_rescue.get('xhigh', 0)}",
-        f"- Not rescued or not run: {by_diagnostic_rescue.get('None', 0)}",
+        f"- Model config: `{formal['model_config']}`",
+        "- Medium smoke rows, when present, are not formal ceiling evidence.",
+        f"- Passed: {by_formal_ceiling.get('pass', 0)}",
+        f"- Failed: {by_formal_ceiling.get('fail', 0)}",
+        f"- Excluded: {by_formal_ceiling.get('excluded', 0)}",
+        f"- Pending: {by_formal_ceiling.get('pending', 0)}",
         "",
         "## Provisional Floor Sizes",
         "",
@@ -525,19 +784,20 @@ def write_markdown_summary(path: Path, report: dict[str, Any]) -> None:
         "",
         "## Tasks",
         "",
-        "| Task | Metadata | Floor Probe | 5.5 Medium Ceiling | Diagnostic Rescue |",
+        "| Task | Metadata | Floor Probe | Formal Ceiling | Medium Smoke |",
         "| --- | --- | --- | --- | --- |",
     ]
     for task in tasks:
         floor = floor_cell(task)
-        ceiling = ceiling_cell(task["codex_5_5_medium_ceiling"])
+        ceiling = ceiling_cell(task["codex_5_5_formal_ceiling"])
+        medium_smoke = ceiling_cell(task["codex_5_5_medium_smoke"])
         lines.append(
             "| "
             f"`{task['task_id']}` | "
             f"{task['metadata_size']} | "
             f"{floor} | "
             f"{ceiling} | "
-            f"{task['codex_5_5_diagnostic_rescue_effort']} |"
+            f"{medium_smoke} |"
         )
     path.write_text("\n".join(lines) + "\n")
 
@@ -545,6 +805,8 @@ def write_markdown_summary(path: Path, report: dict[str, Any]) -> None:
 def floor_cell(task: dict[str, Any]) -> str:
     attempts = task["codex_5_4_mini_low_attempts"]
     if attempts == 0:
+        if task.get("codex_5_4_mini_low_excluded"):
+            return f"excluded ({task['codex_5_4_mini_low_excluded']})"
         return "pending"
     return (
         f"{task['provisional_floor_size']} "
@@ -555,6 +817,8 @@ def floor_cell(task: dict[str, Any]) -> str:
 def ceiling_cell(summary: dict[str, Any]) -> str:
     attempts = summary["attempts"]
     if attempts == 0:
+        if summary.get("excluded"):
+            return f"excluded ({summary['excluded']})"
         return "pending"
     return f"{summary['passes']}/{attempts}"
 

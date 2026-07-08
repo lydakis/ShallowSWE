@@ -1,0 +1,4 @@
+team,manager,slack,email
+platform-auth,Imani Rao,@auth-platform,auth-platform@example.test
+platform-billing,Lena Ortiz,@billing-platform,billing-platform@example.test
+platform-search,Theo Kim,@search-platform,search-platform@example.test

@@ -1,0 +1,34 @@
+[
+  {
+    "account_id": "acct-100",
+    "blockers": "incident follow-up",
+    "due_date": "2026-07-04",
+    "owner": "Maya Stone",
+    "playbook": "renewal-save",
+    "status": "open"
+  },
+  {
+    "account_id": "acct-200",
+    "blockers": "",
+    "due_date": "2026-07-10",
+    "owner": "Owen Park",
+    "playbook": "adoption-recovery",
+    "status": "open"
+  },
+  {
+    "account_id": "acct-300",
+    "blockers": "",
+    "due_date": "2026-07-01",
+    "owner": "Iris Chen",
+    "playbook": "exec-check",
+    "status": "done"
+  },
+  {
+    "account_id": "acct-400",
+    "blockers": "contract inactive",
+    "due_date": "2026-07-02",
+    "owner": "Noah Reed",
+    "playbook": "contract-restore",
+    "status": "open"
+  }
+]

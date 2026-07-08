@@ -93,10 +93,12 @@ Each snapshot has two pre-registered calibration panels:
 The ceiling and floor-probe panels are frozen before suite authoring and task admission. The
 broader published leaderboard panel may be frozen later, before the full published repair-loop run.
 
-For v1, the primary ceiling row is `ceiling_gpt_5_5_medium` in
-`panels/shallowswe-ceiling-v0.1.json`. A candidate task is admitted if at least one pre-registered
-`ceiling_panel` config achieves `>=75%` one-shot success over `N=16` attempts and verifier review
-finds no task flaw. For v1, that means at least `12/16` successful one-shot runs.
+For v1, the primary ceiling row is `ceiling_gpt_5_5_xhigh` in
+`panels/shallowswe-ceiling-v0.1.json`, reported as `openai/gpt-5.5[extra_high]`. Medium-effort
+rows are smoke evidence only and do not satisfy admission. A candidate task is admitted if at
+least one pre-registered `ceiling_panel` config achieves `>=75%` one-shot success over `N=16`
+attempts and verifier review finds no task flaw. For v1, that means at least `12/16` successful
+one-shot runs.
 
 Size is assigned from the primary floor-probe configuration selected from
 `panels/shallowswe-calibration-v0.1.json`. Secondary floor-probe configs are recorded for

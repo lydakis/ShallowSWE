@@ -1,2 +1,4 @@
-credit_id,invoice_id,amount
-CR-1,INV-3,20
+credit_id,invoice_id,currency,amount,issued_at,reason
+CR-1,INV-3,USD,20.00,2026-02-20,service_credit
+CR-2,INV-5,EUR,10.00,2026-03-05,discount
+CR-3,INV-4,USD,50.00,2026-02-15,void_credit

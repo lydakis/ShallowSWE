@@ -1,0 +1,30 @@
+[
+  {
+    "service_id": "billing",
+    "name": "Billing API",
+    "owner_team": "platform-billing",
+    "tier": "gold",
+    "doc_slug": "billing-api"
+  },
+  {
+    "service_id": "identity",
+    "name": "Identity API",
+    "owner_team": "platform-auth",
+    "tier": "platinum",
+    "doc_slug": "identity-api"
+  },
+  {
+    "service_id": "search",
+    "name": "Search API",
+    "owner_team": "platform-search",
+    "tier": "silver",
+    "doc_slug": "search-api"
+  },
+  {
+    "service_id": "webhooks",
+    "name": "Webhook Delivery",
+    "owner_team": "platform-billing",
+    "tier": "gold",
+    "doc_slug": "webhooks"
+  }
+]

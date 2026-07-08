@@ -1,5 +1,7 @@
-invoice_id,account_id,plan,amount,status
-INV-1,A-1,pro,120,paid
-INV-2,A-2,basic,40,paid
-INV-3,A-3,pro,120,paid
-INV-4,A-4,enterprise,500,void
+invoice_id,account_id,plan,currency,amount,status,invoice_date,service_start,service_end
+INV-1,A-1,pro,USD,120.00,paid,2026-01-05,2026-01-01,2026-01-31
+INV-2,A-2,basic,USD,40.00,paid,2026-01-10,2026-01-01,2026-01-31
+INV-3,A-3,pro,USD,120.00,paid,2026-02-01,2026-02-01,2026-02-28
+INV-4,A-4,enterprise,USD,500.00,void,2026-02-10,2026-02-01,2026-02-28
+INV-5,A-1,pro,EUR,220.00,paid,2026-02-15,2026-02-15,2026-03-16
+INV-6,A-5,basic,GBP,80.00,paid,2026-03-01,2026-03-01,2026-03-31

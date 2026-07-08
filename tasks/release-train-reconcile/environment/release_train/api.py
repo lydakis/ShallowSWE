@@ -13,6 +13,8 @@ class LocalReleaseApi:
         self.state.setdefault("tags", {})
         self.state.setdefault("status_checks", {})
         self.state.setdefault("changelog", {})
+        self.state.setdefault("release_manifests", {})
+        self.state.setdefault("promotion_records", {})
         self.state.setdefault("call_log", [])
 
     @classmethod
@@ -46,6 +48,16 @@ class LocalReleaseApi:
             current.insert(insert_at, line)
             insert_at += 1
         self._log("update_changelog", branch, {"heading": heading, "lines": list(lines)})
+
+    def write_release_manifest(self, tag: str, manifest: dict[str, Any]) -> None:
+        self.state["release_manifests"][tag] = copy.deepcopy(manifest)
+        self._log("write_manifest", tag, copy.deepcopy(manifest))
+
+    def record_promotion(self, tag: str, record: dict[str, Any]) -> None:
+        records = self.state["promotion_records"].setdefault(tag, [])
+        records[:] = [item for item in records if item.get("ring") != record.get("ring")]
+        records.append(copy.deepcopy(record))
+        self._log("record_promotion", tag, copy.deepcopy(record))
 
     def create_tag(self, tag: str, target: str) -> None:
         self.state["tags"][tag] = target

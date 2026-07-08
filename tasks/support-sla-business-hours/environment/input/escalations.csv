@@ -1,0 +1,4 @@
+ticket_id,escalation_level,opened_at,closed_at,owner
+T-100,exec,2026-07-06T09:45:00-04:00,2026-07-06T10:20:00-04:00,mira
+T-300,manager,2026-07-06T14:00:00-04:00,,raj
+T-400,lead,2026-07-07T09:30:00-04:00,2026-07-07T10:30:00-04:00,sofia

@@ -2,7 +2,7 @@ schema_version = "1.2"
 
 [task]
 name = "shallowswe/deployment-approval-reconcile"
-description = "Reconcile a deployment plan through ring order, health checks, approvals, freezes, and deterministic audit output."
+description = "Reconcile a deployment plan through ring order, health checks, approvals, change requests, freezes, notifications, deterministic audit output, and a summary report."
 authors = [{ name = "George Lydakis" }]
 keywords = ["shallowswe", "workflow", "large", "python", "deployment"]
 
@@ -15,12 +15,12 @@ subtype = "ringed-deploy-plan"
 family = "local_api_operation"
 maintenance_type = "adaptive"
 domain = "deployment-operations"
-source_pattern = "ordered deployment reconciliation with approvals, health gates, freezes, blocks, and idempotent audit output"
+source_pattern = "ordered deployment reconciliation with approvals, health gates, change requests, freezes, owner notifications, summary reporting, blocks, and idempotent audit output"
 contamination_notes = "original local fixture; abstract deployment-operations pattern only"
 repo_origin = "small_original_repo"
 requires_test_authoring = false
-expected_engineer_minutes = 90
-expected_steps = 20
+expected_engineer_minutes = 130
+expected_steps = 32
 calibration_status = "candidate_probe"
 
 [verifier]
@@ -42,3 +42,47 @@ mcp_servers = []
 [verifier.env]
 
 [solution.env]
+
+[calibration.codex_subscription_2026_07_06]
+status = "triaged_medium_smoke_only"
+assigned_size = "small"
+band_confidence = "provisional_n3"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+failed_trajectory_count = 1
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 1
+medium_smoke_passes = 0
+medium_smoke_pass_rate = 0.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "high"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 3
+floor_passes = 3
+floor_pass_rate = 1.0
+source_report = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/codex-subscription-sizing-report.json"
+source_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/failed-trajectory-audit.json"
+
+[calibration.codex_subscription_2026_07_07_change_request_summary]
+status = "too_easy_after_valid_low_floor_pass"
+assigned_size = "small"
+band_confidence = "provisional_floor_n1_after_material_scope_expansion"
+task_contract_review = "valid_low_floor_success"
+contract_issue = false
+trajectory_audit = "Low-floor gpt-5.4-mini[low] passed 1/1 validly after the change-request/notification/summary expansion. The agent read the visible package, implemented generic ring ordering, freeze/approval/change-request/check gates, notification keys, summary output, and replay idempotency. Hidden verifier covered failed-check/freeze priority, rejected change request, unrelated state preservation, and replay no-duplicate behavior; reward was 1.0. No hidden-verifier access, hardcoding, or gaming signal found. Because the low floor passed, do not spend Extra High on this version; reshape or archive before large retriage. Medium rows are smoke-only and cannot accept this task."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 1
+floor_pass_rate = 1.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+ceiling_note = "Formal ceiling is Extra High only, but it was intentionally not run because the low floor passed validly. Medium rows, if ever run, are smoke-only and cannot accept this task."
+reference_replay_status = "passed"
+reference_replay_image = "sha256:564b8fe58db3a85808c959306bc80904d211e826938cfa2c9705e256d0a984ad"
+source_rollouts_floor = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-deployment-approval-change-request-floor-n1/floor-gpt54mini-low-rollouts.json"
+source_pier_result_floor = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-deployment-approval-change-request-floor-n1/pier-result.json"

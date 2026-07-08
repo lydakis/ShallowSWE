@@ -10,6 +10,7 @@ def test_cli_writes_state_and_audit() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         output = Path(tmp) / "output.json"
         audit = Path(tmp) / "audit.jsonl"
+        summary = Path(tmp) / "summary.json"
         subprocess.run(
             [
                 sys.executable,
@@ -23,8 +24,11 @@ def test_cli_writes_state_and_audit() -> None:
                 str(output),
                 "--audit-log",
                 str(audit),
+                "--summary-report",
+                str(summary),
             ],
             check=True,
         )
         assert output.exists()
         assert audit.exists()
+        assert summary.exists()

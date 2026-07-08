@@ -1,0 +1,2 @@
+credit_id,account_id,currency,amount_cents,issued_at,reason
+demo_c1,acct_demo_a,USD,50,2026-01-06T00:00:00Z,promo

@@ -32,14 +32,19 @@ notes = "Local verifier and alternate-solution evidence are complete; high-N cei
 
 [calibration.ceiling]
 panel = "shallowswe-ceiling-v0.1"
-primary_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_current_n = 1
+medium_smoke_passes = 0
+medium_smoke_pass_rate = 0.0
+medium_smoke_source_rollouts = "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+primary_model_config = "openai/gpt-5.5[extra_high]"
 one_shot_target_n = 16
-one_shot_current_n = 1
+one_shot_current_n = 0
 one_shot_passes = 0
 one_shot_pass_rate = 0.0
 gate_pass_threshold = 0.75
-decision = "needs_more_rollouts"
-source_rollouts = "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json"
+decision = "pending_extra_high_ceiling"
+source_rollouts = "pending_extra_high_ceiling"
 
 [calibration.floor]
 panel = "shallowswe-calibration-v0.1"
@@ -72,3 +77,47 @@ mcp_servers = []
 [verifier.env]
 
 [solution.env]
+
+[calibration.codex_subscription_2026_07_06]
+status = "triaged_medium_smoke_only"
+assigned_size = "large"
+band_confidence = "provisional_n3"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+failed_trajectory_count = 3
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 1
+medium_smoke_passes = 1
+medium_smoke_pass_rate = 1.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "none"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 3
+floor_passes = 0
+floor_pass_rate = 0.0
+source_report = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/codex-subscription-sizing-report.json"
+source_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/failed-trajectory-audit.json"
+
+[calibration.codex_subscription_2026_07_07_clarified_prompt]
+status = "too_easy_after_clarified_low_floor_success"
+assigned_size = "small_after_floor_success"
+band_confidence = "low_floor_pass_after_prompt_clarification"
+task_contract_review = "visible_ticket_id_prompt_ambiguity_repaired"
+contract_issue = true
+trajectory_audit = "The instruction was tightened to remove the visible fixture ticket id and require finding the matching open ticket by local state/report semantics. Reference solution replay passed visible and hidden verifier checks on image sha256:984ab1fa20071088e598bb0495bc1f82bd0d0e6e000cff5a41d4d00a3e6829ae. The clarified low-floor gpt-5.4-mini[low] probe passed validly with a generic matching/update script, hidden verifier success, and no hidden-test, verifier, reward, solution, /tmp/shallowswe-pier, hardcoding, or gaming signal. Do not spend Extra High or count this as a medium keep after clarification."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 1
+floor_pass_rate = 1.0
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-ticket-update-clarified-floor-n1/floor-gpt54mini-low-rollouts.json"
+floor_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-ticket-update-clarified-floor-n1/pier-result.json"
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+ceiling_note = "Not run after clarification because the low floor passed validly. Historical Extra High evidence applies only to the pre-clarification prompt. Medium rows are smoke-only and cannot accept this task."
+reference_replay_status = "passed"
+reference_replay_image = "sha256:984ab1fa20071088e598bb0495bc1f82bd0d0e6e000cff5a41d4d00a3e6829ae"

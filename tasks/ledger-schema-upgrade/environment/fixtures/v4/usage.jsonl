@@ -1,0 +1,4 @@
+{"version":1,"usage_id":"demo_u1","account_id":"acct_demo_a","units":2,"occurred_at":"2026-01-02T00:00:00Z"}
+{"version":2,"usage_id":"demo_u2","account_id":"acct_demo_b","plan_id":"pro","units":2,"occurred_at":"2026-01-03T00:00:00Z","source":"api","discount_code":"DISC10"}
+{"version":3,"usage_id":"demo_u3","account_id":"acct_demo_b","quantity":1,"occurred_at":"2026-01-12T00:00:00Z","source":"meter","idempotency_key":"demo_key_3"}
+{"version":1,"usage_id":"demo_reject_suspended","account_id":"acct_demo_c","units":1,"occurred_at":"2026-01-04T00:00:00Z"}

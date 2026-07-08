@@ -1,0 +1,4 @@
+contract_id,account_id,currency,committed_amount,contract_start,contract_end
+CT-1,A-1,USD,420.00,2026-01-01,2026-12-31
+CT-2,A-2,USD,50.00,2026-01-01,2026-12-31
+CT-3,A-4,USD,500.00,2026-01-01,2026-12-31

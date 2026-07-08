@@ -2,7 +2,7 @@ schema_version = "1.2"
 
 [task]
 name = "shallowswe/renewal-risk-admin-screen"
-description = "Add a renewal-risk admin area with risk and concession review screens to a broad static operations app."
+description = "Add a renewal-risk admin area with risk, concession, and owner-queue screens to a broad static operations app."
 authors = [{ name = "George Lydakis" }]
 keywords = ["shallowswe", "code", "large", "python", "web"]
 
@@ -15,12 +15,12 @@ subtype = "renewal-risk-admin"
 family = "local_web_app_feature"
 maintenance_type = "adaptive"
 domain = "revenue-operations"
-source_pattern = "new multi-route admin screen integrated into existing static web app with selectors, routing, nav, regression tests, visible and hidden fixture contracts"
+source_pattern = "new multi-route admin area integrated into existing static web app with selectors, routing, nav, regression tests, cross-source owner queue, visible and hidden fixture contracts"
 contamination_notes = "original local fixture; abstract revenue-operations pattern only"
 repo_origin = "generated_repo_scale_static_app"
 requires_test_authoring = true
-expected_engineer_minutes = 120
-expected_steps = 24
+expected_engineer_minutes = 160
+expected_steps = 34
 calibration_status = "candidate_probe"
 
 [verifier]
@@ -42,3 +42,73 @@ mcp_servers = []
 [verifier.env]
 
 [solution.env]
+
+[calibration.codex_subscription_2026_07_06]
+status = "triaged_medium_smoke_only"
+assigned_size = "medium"
+band_confidence = "provisional_n3"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+failed_trajectory_count = 1
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 1
+medium_smoke_passes = 1
+medium_smoke_pass_rate = 1.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "none"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 3
+floor_passes = 2
+floor_pass_rate = 0.6666666666666666
+source_report = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/codex-subscription-sizing-report.json"
+source_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/failed-trajectory-audit.json"
+
+[calibration.codex_subscription_2026_07_07_expanded]
+status = "strong_provisional_large"
+assigned_size = "large"
+band_confidence = "provisional_n1_floor_xhigh"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+failed_trajectory_count = 1
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 0
+medium_smoke_passes = 0
+medium_smoke_pass_rate = 0.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 1
+ceiling_passes = 1
+ceiling_pass_rate = 1.0
+diagnostic_rescue_effort = "none"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 0
+floor_pass_rate = 0.0
+source_floor_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-floor-n1/floor-gpt54mini-low-rollouts.json"
+source_ceiling_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+trajectory_audit = "Expanded task adds engagement records, segment policies, renewal plan items, and a third owner-queue route. Low floor n=1 failed fairly on owners-with-escalations aggregation despite implementing the broad feature. Extra High n=1 passed with generalized selectors/screens, visible tests, and hidden fixture verifier success. Full admission still needs bridge validation and higher-n Extra High gate."
+
+[calibration.codex_subscription_2026_07_07_bridge]
+status = "keep_large_provisional"
+assigned_size = "large"
+band_confidence = "provisional_n2_floor_n1_ceiling"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+failed_trajectory_count = 2
+alternate_solution_independent = false
+alternate_solution_note = "solution_alt was synced to the reference solution after a recursive wrapper bug; rewrite as a materially independent alternate before official admission."
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 1
+ceiling_passes = 1
+ceiling_pass_rate = 1.0
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 2
+floor_passes = 0
+floor_pass_rate = 0.0
+source_initial_floor_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-floor-n1/floor-gpt54mini-low-rollouts.json"
+source_bridge_floor_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-bridge-floor-n1/floor-gpt54mini-low-rollouts.json"
+source_bridge_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-bridge-floor-n1/pier-result.json"
+source_ceiling_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-renewal-risk-expanded-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+trajectory_audit = "Bridge low floor n=1 failed fairly after the expansion: the agent implemented the broad three-screen feature and passed its own visible unittest, but the verifier caught risk_reasons as priority-only rather than all applicable reason codes on visible and hidden fixtures. Combined with the earlier owners-with-escalations miss and the Extra High n=1 hidden-fixture pass, this is a kept provisional large screen candidate. Not official until the full Extra High gate and an independent alternate solution are complete."

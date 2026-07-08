@@ -34,11 +34,30 @@ def plan_for(text: str) -> list[str]:
 
 
 class HiddenConfigKeyRolloverTests(unittest.TestCase):
-    def test_nightly_fixture_uses_new_key(self) -> None:
-        text = Path("/app/.env.nightly").read_text()
+    def test_committed_env_fixtures_use_new_key(self) -> None:
+        expected = {
+            ".env.nightly": "DISPATCH_VISIBILITY=all",
+            ".env.legacy": "DISPATCH_VISIBILITY=all",
+            ".env.preview": "DISPATCH_VISIBILITY=all",
+            ".env.backfill": "DISPATCH_VISIBILITY=all",
+        }
+        for name, visibility_line in expected.items():
+            with self.subTest(name=name):
+                text = Path(f"/app/{name}").read_text()
+                self.assertIn(visibility_line, text)
+                self.assertNotIn("DISPATCH_INCLUDE_CLOSED", text)
 
-        self.assertIn("DISPATCH_VISIBILITY=all", text)
-        self.assertNotIn("DISPATCH_INCLUDE_CLOSED", text)
+    def test_migrated_env_fixtures_still_drive_expected_plans(self) -> None:
+        cases = {
+            ".env.nightly": ["DSP-100", "DSP-101"],
+            ".env.legacy": ["DSP-100", "DSP-101"],
+            ".env.preview": ["DSP-104"],
+            ".env.backfill": ["DSP-103"],
+        }
+        for name, expected in cases.items():
+            with self.subTest(name=name):
+                plan = plan_dispatch(load_orders(ORDERS), load_config(Path(f"/app/{name}")))
+                self.assertEqual(plan, expected)
 
     def test_default_and_explicit_active_visibility(self) -> None:
         default_plan = plan_for("DISPATCH_REGION=west\nDISPATCH_ACCOUNT=acme\n")

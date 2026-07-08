@@ -76,4 +76,8 @@ Write `retry` before the retried action succeeds. Write `dedupe` once for each d
 that is marked duplicate. Write `noop` only when the canonical ticket already matches the manifest
 and no duplicate cleanup was needed for that manifest row.
 
+For every audit row caused by a manifest row, `external_key` must be exactly that manifest row's
+original `external_key` string, including whitespace and casing. This includes `retry`, `dedupe`,
+`update`, `reopen`, `close`, `create`, and `noop` rows.
+
 The command must write both `output-state` and `audit-log`.

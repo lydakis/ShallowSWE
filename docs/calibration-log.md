@@ -474,20 +474,23 @@ passes.
 
 Ceiling timing:
 
-1. Run an N=1 ceiling smoke using `panels/shallowswe-ceiling-v0.1.json` before high-N floor
-   calibration. This is a cheap ambiguity detector, not final admission. The static estimate is
-   $19.44 for the primary GPT-5.5 medium row alone, or $37.44 if both ceiling rows are run across
-   every task.
-2. Fix or evict any task that the primary ceiling fails at N=1. If needed, run the independent
-   ceiling audit as a separate diagnostic before eviction. It is not a fallback and cannot turn the
-   primary row into a pass.
+Correction: this 2026-07-04 plan text used the Medium row as the named ceiling. The active v1
+ceiling policy now uses `openai/gpt-5.5[extra_high]`; Medium rows are retained only as smoke
+evidence.
+
+1. Run an N=1 Medium smoke pass before high-N floor calibration. This is a cheap ambiguity
+   detector, not final admission. The static estimate was $19.44 for the GPT-5.5 Medium smoke row
+   alone, or $37.44 if both Medium smoke rows were run across every task.
+2. Fix or evict any task that the smoke pass fails at N=1. If needed, run the independent audit row
+   as a separate diagnostic before eviction. It is not a fallback and cannot turn the primary row
+   into a pass.
 3. After alternate-solution evidence exists and the task set freezes, run the pinned ceiling in
    one-shot mode at the pre-registered v1 gate: 75% pass rate, so `12/16` accepts, `11/16`
    investigates, and `<=10/16` fixes or evicts.
 4. Only then treat the selected floor's high-N one-shot pass rates as final size assignments.
 5. Run bounded repair-loop scoring only after the one-shot calibrated task set is accepted.
 
-## 2026-07-04: v2 N=1 ceiling smoke
+## 2026-07-04: v2 N=1 Medium smoke
 
 Purpose: run the cheap ambiguity detector before high-N floor calibration.
 
@@ -503,14 +506,14 @@ results/shallowswe-ceiling-diagnosis-2026-07-04/ceiling-failure-triage.json
 Run shape:
 
 ```text
-primary ceiling: openai/gpt-5.5, reasoning_effort=medium
-independent ceiling audit: anthropic/claude-opus-4.8, reasoning_effort=medium
+medium smoke row: openai/gpt-5.5, reasoning_effort=medium
+independent smoke audit row: anthropic/claude-opus-4.8, reasoning_effort=medium
 agent: mini-swe-agent
 config: configs/mini-swe-agent-calibration.yaml
 environment: docker
 attempts per row: 1
-primary tasks: 36 official tasks, excluding py-normalize-username smoke
-audit tasks: 11 primary-ceiling failures only, run as fresh independent attempts
+primary smoke tasks: 36 official tasks, excluding py-normalize-username smoke
+audit tasks: 11 primary-smoke failures only, run as fresh independent attempts
 ```
 
 The audit artifact path uses the earlier `second-opinion` name, but those rows were independent
@@ -523,7 +526,7 @@ Results:
 | `openai/gpt-5.5[medium]` primary | 36 | 25 | 11 | 0 | 6.6221 |
 | `anthropic/claude-opus-4.8[medium]` independent audit | 11 | 0 | 11 | 0 | 1.2484 |
 
-One-shot ceiling gate report:
+One-shot gate diagnostic report:
 
 ```text
 results/shallowswe-ceiling-diagnosis-2026-07-04/one-shot-ceiling-gate.json
@@ -546,7 +549,7 @@ Current GPT-5.5 medium N=1 diagnostic:
 | --- | ---: | ---: | ---: | ---: | --- |
 | `openai/gpt-5.5[medium]` | 36 | 36 | 25 | 69.4% | all tasks need more rollouts |
 
-Primary ceiling by category/size:
+Primary smoke by category/size:
 
 | Category / size | Passes | Attempts |
 | --- | ---: | ---: |
@@ -598,7 +601,7 @@ This result changes the calibration priority. The N=1 floor probe showed a usefu
 gradient, and the ceiling smoke identifies where that gradient may be contaminated by ambiguity or
 task oversizing. The artifact-large cell is the clearest audit target: cheap models failed it, and
 both ceiling rows also failed all four tasks on first submit. Code tasks are the opposite: the
-primary ceiling passed all code tasks, while the cheap floor probe suggests medium and large code
+primary smoke row passed all code tasks, while the cheap floor probe suggests medium and large code
 may still be too easy.
 
 ## 2026-07-04: first alternate-solution admission proofs
@@ -1097,7 +1100,7 @@ Plan groups:
 ```text
 ceiling-admission-primary-n16:
   mode=one_shot
-  row_ids=ceiling_gpt_5_5_medium
+  row_ids=ceiling_gpt_5_5_xhigh
   target_rollouts_per_task=16
   planned_attempts=576
   budget_status=approval_required

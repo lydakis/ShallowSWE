@@ -74,6 +74,20 @@ def hidden_plan() -> dict[str, object]:
         ],
         "blocked_commits": ["h4"],
         "changelog_heading": "## v3.1.0 - 2026-07-05",
+        "promotion_rings": [
+            {
+                "ring": "canary",
+                "required_checks": ["deploy-canary"],
+                "approvers": ["release-manager"],
+                "manifest_note": "Canary ready after targeted deploy.",
+            },
+            {
+                "ring": "production",
+                "required_checks": ["prod-freeze", "pager-coverage"],
+                "approvers": ["release-manager", "incident-commander"],
+                "manifest_note": "Production ready with incident commander coverage.",
+            },
+        ],
     }
 
 
@@ -87,8 +101,19 @@ def hidden_state() -> dict[str, object]:
         "tags": {"v3.0.0": "h1"},
         "status_checks": {
             "h2": {"unit": "passed"},
-            "h3": {"unit": "pending", "security": "failed"},
-            "h4": {"unit": "passed", "security": "passed"},
+            "h3": {
+                "unit": "pending",
+                "security": "failed",
+                "deploy-canary": "passed",
+                "prod-freeze": "pending",
+            },
+            "h4": {
+                "unit": "passed",
+                "security": "passed",
+                "deploy-canary": "passed",
+                "prod-freeze": "passed",
+                "pager-coverage": "passed",
+            },
         },
         "changelog": {
             "release/3.1": [
@@ -98,8 +123,44 @@ def hidden_state() -> dict[str, object]:
             ],
             "release/3.0": ["# Release notes"],
         },
+        "release_manifests": {},
+        "promotion_records": {},
         "call_log": [],
     }
+
+
+def expected_manifest(plan: dict[str, object], target: str) -> dict[str, object]:
+    return {
+        "release_branch": plan["release_branch"],
+        "source_branch": plan["source_branch"],
+        "target": target,
+        "required_commits": [commit["sha"] for commit in plan["required_commits"]],
+        "blocked_commits": list(plan["blocked_commits"]),
+        "required_checks": list(plan["required_checks"]),
+        "promotion_rings": [ring["ring"] for ring in plan["promotion_rings"]],
+        "changelog_heading": plan["changelog_heading"],
+    }
+
+
+def expected_promotions(plan: dict[str, object], target: str) -> list[dict[str, object]]:
+    return [
+        {
+            "ring": ring["ring"],
+            "target": target,
+            "status": "ready",
+            "approvers": list(ring["approvers"]),
+            "note": ring["manifest_note"],
+        }
+        for ring in plan["promotion_rings"]
+    ]
+
+
+def assert_manifest_and_promotions(
+    test: unittest.TestCase, output: dict[str, object], plan: dict[str, object], target: str
+) -> None:
+    tag = plan["release_tag"]
+    test.assertEqual(output["release_manifests"][tag], expected_manifest(plan, target))
+    test.assertEqual(output["promotion_records"][tag], expected_promotions(plan, target))
 
 
 def action_positions(audit: list[dict[str, str]]) -> dict[str, list[int]]:
@@ -115,12 +176,24 @@ def assert_ordering(test: unittest.TestCase, audit: list[dict[str, str]]) -> Non
         test.assertLess(max(positions["apply_commit"]), min(positions["run_check"]))
     if "run_check" in positions and "update_changelog" in positions:
         test.assertLess(max(positions["run_check"]), min(positions["update_changelog"]))
-    if "update_changelog" in positions and "create_tag" in positions:
-        test.assertLess(max(positions["update_changelog"]), min(positions["create_tag"]))
+    if "update_changelog" in positions and "write_manifest" in positions:
+        test.assertLess(max(positions["update_changelog"]), min(positions["write_manifest"]))
+    if "write_manifest" in positions and "record_promotion" in positions:
+        test.assertLess(max(positions["write_manifest"]), min(positions["record_promotion"]))
+    if "record_promotion" in positions and "create_tag" in positions:
+        test.assertLess(max(positions["record_promotion"]), min(positions["create_tag"]))
 
 
 def assert_audit_schema(test: unittest.TestCase, audit: list[dict[str, str]]) -> None:
-    allowed = {"apply_commit", "run_check", "update_changelog", "create_tag", "noop"}
+    allowed = {
+        "apply_commit",
+        "run_check",
+        "update_changelog",
+        "write_manifest",
+        "record_promotion",
+        "create_tag",
+        "noop",
+    }
     for row in audit:
         test.assertEqual(set(row), {"action", "target", "detail"})
         test.assertIn(row["action"], allowed)
@@ -130,8 +203,9 @@ def assert_audit_schema(test: unittest.TestCase, audit: list[dict[str, str]]) ->
 
 class ReleaseTrainReconcileTests(unittest.TestCase):
     def test_visible_reconciles_release_train_in_required_order(self) -> None:
+        plan = visible_plan()
         with tempfile.TemporaryDirectory() as tmp:
-            output, audit = run_release(Path(tmp), visible_plan(), visible_state())
+            output, audit = run_release(Path(tmp), plan, visible_state())
 
         release = output["branches"]["release/2.7"]
         self.assertEqual(release["commits"], ["c1", "c2", "c3", "c4", "c5"])
@@ -142,12 +216,15 @@ class ReleaseTrainReconcileTests(unittest.TestCase):
         for check in ["unit", "integration", "smoke"]:
             self.assertEqual(output["status_checks"]["c4"][check], "passed")
             self.assertEqual(output["status_checks"]["c5"][check], "passed")
+        for check in ["deploy-canary", "smoke-canary", "prod-freeze", "pager-coverage"]:
+            self.assertEqual(output["status_checks"]["c5"][check], "passed")
 
         changelog = output["changelog"]["release/2.7"]
         self.assertIn("## v2.7.0 - 2026-07-05", changelog)
         self.assertEqual(changelog.count("- Fix payout rounding drift."), 1)
         self.assertEqual(changelog.count("- Patch invoice export ordering."), 1)
         self.assertLess(changelog.index("- Fix payout rounding drift."), changelog.index("- Patch invoice export ordering."))
+        assert_manifest_and_promotions(self, output, plan, "c5")
         self.assertEqual(output["tags"]["v2.7.0"], "c5")
 
         actions = [(row["action"], row["target"]) for row in audit]
@@ -158,7 +235,14 @@ class ReleaseTrainReconcileTests(unittest.TestCase):
                 ("apply_commit", "c5"),
                 ("run_check", "c5:integration"),
                 ("run_check", "c5:smoke"),
+                ("run_check", "c5:deploy-canary"),
+                ("run_check", "c5:smoke-canary"),
+                ("run_check", "c5:prod-freeze"),
+                ("run_check", "c5:pager-coverage"),
                 ("update_changelog", "release/2.7"),
+                ("write_manifest", "v2.7.0"),
+                ("record_promotion", "v2.7.0:canary"),
+                ("record_promotion", "v2.7.0:production"),
                 ("create_tag", "v2.7.0"),
             ],
         )
@@ -181,6 +265,9 @@ class ReleaseTrainReconcileTests(unittest.TestCase):
         self.assertEqual(output["status_checks"]["h2"]["security"], "passed")
         self.assertEqual(output["status_checks"]["h3"]["unit"], "passed")
         self.assertEqual(output["status_checks"]["h3"]["security"], "passed")
+        self.assertEqual(output["status_checks"]["h3"]["deploy-canary"], "passed")
+        self.assertEqual(output["status_checks"]["h3"]["prod-freeze"], "passed")
+        self.assertEqual(output["status_checks"]["h3"]["pager-coverage"], "passed")
 
         changelog = output["changelog"]["release/3.1"]
         self.assertEqual(changelog.count("- Harden token refresh handling."), 1)
@@ -189,6 +276,7 @@ class ReleaseTrainReconcileTests(unittest.TestCase):
             changelog.index("- Harden token refresh handling."),
             changelog.index("- Backfill export audit logging."),
         )
+        assert_manifest_and_promotions(self, output, plan, "h3")
 
         actions = [(row["action"], row["target"]) for row in audit]
         self.assertEqual(
@@ -198,7 +286,12 @@ class ReleaseTrainReconcileTests(unittest.TestCase):
                 ("run_check", "h2:security"),
                 ("run_check", "h3:unit"),
                 ("run_check", "h3:security"),
+                ("run_check", "h3:prod-freeze"),
+                ("run_check", "h3:pager-coverage"),
                 ("update_changelog", "release/3.1"),
+                ("write_manifest", "v3.1.0"),
+                ("record_promotion", "v3.1.0:canary"),
+                ("record_promotion", "v3.1.0:production"),
                 ("create_tag", "v3.1.0"),
             ],
         )
@@ -214,6 +307,8 @@ class ReleaseTrainReconcileTests(unittest.TestCase):
         self.assertEqual(replay["tags"], replay_state["tags"])
         self.assertEqual(replay["status_checks"], replay_state["status_checks"])
         self.assertEqual(replay["changelog"], replay_state["changelog"])
+        self.assertEqual(replay["release_manifests"], replay_state["release_manifests"])
+        self.assertEqual(replay["promotion_records"], replay_state["promotion_records"])
         self.assertEqual(len(replay_audit), 1)
         self.assertEqual(replay_audit[0]["action"], "noop")
         self.assertEqual(replay_audit[0]["target"], "v3.1.0")
@@ -233,6 +328,10 @@ class ReleaseTrainReconcileTests(unittest.TestCase):
             if row["action"] == "run_check":
                 self.assertLess(index, tag_index)
             if row["action"] == "update_changelog":
+                self.assertLess(index, tag_index)
+            if row["action"] == "write_manifest":
+                self.assertLess(index, tag_index)
+            if row["action"] == "record_promotion":
                 self.assertLess(index, tag_index)
         assert_ordering(self, audit)
 

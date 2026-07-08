@@ -1,0 +1,98 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/tenant-offboarding-reconcile"
+description = "Implement an idempotent tenant offboarding workflow over a mock operations state store, preserving ordering, legal-hold exceptions, replay safety, and summary artifacts."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "workflow", "large", "python", "state-reconcile"]
+
+[metadata]
+category = "workflow"
+size = "large"
+language = "python"
+shape = "ordered-state-reconciliation"
+subtype = "tenant-offboarding-runbook"
+family = "workflow_orchestration"
+maintenance_type = "adaptive"
+domain = "saas-operations"
+source_pattern = "implement an idempotent multi-step runbook over existing JSON state, call logs, audit logs, legal holds, and replayed partial progress"
+contamination_notes = "generated original synthetic workflow; generic tenant offboarding pattern only"
+repo_origin = "generated_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 260
+expected_steps = 62
+calibration_status = "candidate_probe"
+
+[verifier]
+timeout_sec = 240.0
+
+[agent]
+timeout_sec = 1200.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]
+
+[calibration.codex_subscription_2026_07_07]
+status = "valid_success_demotes_large_hypothesis"
+assigned_size = "small"
+band_confidence = "provisional_repaired_floor_n1"
+task_contract_review = "one_verifier_repair_then_legitimate_success"
+contract_issue = true
+trajectory_audit = "The first low-floor failure was fair, but the first Extra High failure exposed an unfair verifier assumption about JSON list order rather than workflow semantics. The prompt and verifier were repaired to treat non-call-log state list order as non-semantic while preserving call-log sequence checks. After repair, the low floor passed 1/1 with a generalized offboarding reconciler: the agent inspected state files and the local JSON helper, implemented scripts/process_offboarding.py with ordered request handling, state mutation, deduped call-log writes, audit summaries, and CLI path support, then passed visible and hidden idempotence checks. No hardcoding or verifier gaming was found. Because gpt-5.4-mini[low] passed the repaired task, this is too easy for the workflow-large lane as written."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 1
+floor_pass_rate = 1.0
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-floor-n1-r2/floor-gpt54mini-low-rollouts.json"
+floor_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-floor-n1-r2/pier-result.json"
+pre_repair_floor_jobs = [
+  "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-tenant-offboarding-floor-n1",
+]
+pre_repair_floor_verdicts = [
+  "fair_low_floor_failure_before_order-repair",
+]
+pre_repair_ceiling_jobs = [
+  "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-tenant-offboarding-xhigh-n1",
+]
+pre_repair_ceiling_verdicts = [
+  "invalid_failure_due_nonsemantic_list_order_verifier_assumption",
+]
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+ceiling_note = "Not run after the verifier repair because the repaired low-floor attempt passed. The pre-repair Extra High failure is superseded by the verifier-order repair and is not counted as formal ceiling evidence."
+
+[calibration.codex_subscription_2026_07_07_expanded_state_machine]
+status = "keep_provisional_large_pending_full_extra_high_gate"
+assigned_size = "large"
+band_confidence = "provisional_current_floor_n1_ceiling_n1"
+task_contract_review = "legitimate_floor_failure_and_legitimate_extra_high_success"
+scope_change = "Added integrations.json and billing_accounts.json workflow phases with visible and hidden verifier coverage."
+reference_replay_passed = true
+trajectory_audit = "Expanded low floor failed fairly: the agent implemented most phases but did not persist runbook.json, leaving eligible requests approved. Extra High passed with a generic reconciler that read the state model, verified on a copied visible state, persisted all state files including runbook.json, and passed visible plus hidden idempotence checks. No hardcoding or verifier gaming was found."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 0
+floor_pass_rate = 0.0
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-expanded-floor-n1/floor-gpt54mini-low-rollouts.json"
+floor_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-expanded-floor-n1/pier-result.json"
+floor_failure_note = "Fair failure: missing runbook.json persistence after completing requests."
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 1
+ceiling_passes = 1
+ceiling_pass_rate = 1.0
+ceiling_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-expanded-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+ceiling_source_pier_result = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tenant-offboarding-expanded-xhigh-n1/pier-result.json"
+ceiling_note = "Extra High is the formal ceiling. Medium smoke is not acceptance evidence. This N=1 Extra High probe passed; full N=8 admission gate remains pending."

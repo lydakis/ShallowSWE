@@ -1,0 +1,7 @@
+payment_id,invoice_id,currency,amount,status,received_at
+PM-1,INV-1,USD,120.00,settled,2026-01-07
+PM-2,INV-2,USD,25.00,settled,2026-01-20
+PM-3,INV-3,USD,100.00,pending,2026-02-15
+PM-4,INV-5,EUR,200.00,settled,2026-03-17
+PM-5,INV-4,USD,50.00,settled,2026-02-18
+PM-6,INV-9,USD,10.00,settled,2026-03-12

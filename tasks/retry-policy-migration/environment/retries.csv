@@ -1,0 +1,7 @@
+job_id,attempts,delay_seconds,max_attempts,retryable,status,mode
+job-a,0,10,3,true,failed,standard
+job-b,2,30,4,yes,failed,expedited
+job-c,1,15,3,false,failed,manual
+job-d,3,20,3,true,failed,standard
+job-e,1,5,4,true,done,standard
+job-f,oops,10,4,true,failed,standard

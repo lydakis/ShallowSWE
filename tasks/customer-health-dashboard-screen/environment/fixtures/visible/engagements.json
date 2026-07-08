@@ -1,0 +1,30 @@
+[
+  {
+    "account_id": "acct-100",
+    "channel": "exec",
+    "last_touch_at": "2026-06-20",
+    "next_touch_at": "2026-07-08",
+    "status": "scheduled"
+  },
+  {
+    "account_id": "acct-200",
+    "channel": "csm",
+    "last_touch_at": "2026-05-10",
+    "next_touch_at": "2026-06-15",
+    "status": "missed"
+  },
+  {
+    "account_id": "acct-300",
+    "channel": "qbr",
+    "last_touch_at": "2026-07-01",
+    "next_touch_at": "2026-07-20",
+    "status": "scheduled"
+  },
+  {
+    "account_id": "acct-400",
+    "channel": "csm",
+    "last_touch_at": "2026-04-01",
+    "next_touch_at": "2026-05-01",
+    "status": "missed"
+  }
+]

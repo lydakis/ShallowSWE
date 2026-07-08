@@ -1,0 +1,73 @@
+schema_version = "1.2"
+
+[task]
+name = "shallowswe/status-fanout-reconcile"
+description = "Reconcile build results into statuses, deployment gates, notifications, calls, and a release summary without duplicating unchanged state."
+authors = [{ name = "George Lydakis" }]
+keywords = ["shallowswe", "workflow", "large", "python", "status", "release"]
+
+[metadata]
+category = "workflow"
+size = "large"
+language = "python"
+shape = "release-signal-fanout-reconcile"
+subtype = "status-gate-notification-summary"
+family = "workflow_operation"
+maintenance_type = "adaptive"
+domain = "mock_api"
+source_pattern = "build status fanout must reconcile statuses, deployment gates, owner notifications, calls, summary output, and idempotent replay"
+contamination_notes = "original local fixture; abstract status-reconciliation pattern only"
+repo_origin = "small_original_repo"
+requires_test_authoring = false
+expected_engineer_minutes = 125
+expected_steps = 28
+calibration_status = "candidate_probe"
+
+[calibration]
+calibration_snapshot_id = "shallowswe-v1-task-funnel-tranche-1"
+admission_decision = "provisional_keep_pending_full_extra_high_gate"
+size_assignment_decision = "provisional_large"
+notes = "WL-5 refill candidate from docs/medium-large-refill-candidate-cards.md."
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[solution.env]
+
+[calibration.codex_subscription_2026_07_07_release_signal_expansion]
+status = "provisional_large_keep_pending_full_extra_high_gate"
+assigned_size = "large_hypothesis"
+band_confidence = "provisional_after_floor_failure_and_extra_high_probe"
+task_contract_review = "reference_solution_alt_replay_and_extra_high_probe_passed"
+contract_issue = false
+trajectory_audit = "Reference and alternate solution replay passed. The first low-floor rollout is excluded because the verifier copied already-mutated visible state from /app after agent self-test. The repaired low-floor rollout failed fairly on notification call ordering after implementing most of the workflow; hidden and visible failures matched the explicit sorted notification-key contract. The Extra High probe passed visible, hidden, and replay-idempotency verifier checks with a generic implementation and no hidden-fixture, verifier, hardcoding, or gaming signal in the trajectory. Medium rows are smoke-only and cannot accept this task."
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 1
+floor_passes = 0
+floor_pass_rate = 0.0
+floor_source_report = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-floor-n1-r2/floor-gpt54mini-low-rollouts.json"
+invalid_floor_source_report = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-floor-n1/floor-gpt54mini-low-rollouts.json"
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 1
+ceiling_passes = 1
+ceiling_pass_rate = 1.0
+ceiling_source_report = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+ceiling_note = "Formal ceiling is Extra High only. This n=1 probe is valid provisional evidence; the full n=8 Extra High gate remains pending."
+reference_replay_status = "passed"
+alternate_replay_status = "passed"
+reference_replay_image = "sha256:2bb96bb2cd51861f206f46573cb1546ae7acea824cca00b50f3954477f0acbb2"

@@ -1,0 +1,4 @@
+{
+  "invoice_ready": "Hallo {name}, Rechnung {invoice_id} ist bereit.",
+  "welcome": "Willkommen, {name}!"
+}

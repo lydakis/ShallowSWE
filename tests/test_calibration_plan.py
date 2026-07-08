@@ -32,7 +32,7 @@ class CalibrationPlanTests(unittest.TestCase):
 
         ceiling = groups["ceiling-admission-primary-n16"]
         self.assertEqual(ceiling["planned_attempts"], 36 * 16)
-        self.assertEqual(ceiling["current_rollouts_per_task_min"], 1)
+        self.assertEqual(ceiling["current_rollouts_per_task_min"], 0)
         self.assertEqual(ceiling["tasks_below_target"], 36)
         self.assertEqual(ceiling["budget_status"], "approval_required")
         self.assertTrue(ceiling["requires_explicit_approval"])

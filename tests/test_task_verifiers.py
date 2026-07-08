@@ -24,9 +24,18 @@ class TaskVerifierWrapperTests(unittest.TestCase):
                 "`rejects.csv` with columns `line,reason`",
             ],
             "billing-revenue-rollup": [
-                "`summary.json` with keys `open_disputes` and `recognized_revenue`",
-                "`revenue_rollup.csv` with columns `plan,gross,credits,net`",
-                "`adjustments.csv` with columns `dispute_id,invoice_id,amount,status`",
+                "`summary.json`",
+                "`period,plan,gross_usd,credits_usd,open_disputes_usd,net_usd`",
+                "`account_id,segment,region,manager,recognized_usd,open_disputes_usd,net_at_risk_usd,status`",
+                "`adjustment_id,invoice_id,account_id,type,amount_usd,status,period`",
+                "`input,event_id,reason`",
+            ],
+            "ledger-schema-upgrade": [
+                "`normalized_events.jsonl`",
+                "`account_id,currency,event_id,event_type,amount_cents,amount_usd_micros,running_balance_cents,running_balance_usd_micros,recognition_month`",
+                "`account_id,region,segment,currency,ending_balance_cents,ending_balance_usd_micros,status`",
+                "`recognition_month,plan_id,currency,gross_cents,discount_cents,tax_cents,net_cents,net_usd_micros`",
+                "`schema_version`, `source_files`, `normalized_events`, `ledger_rows`, `account_balance_rows`, `plan_revenue_rows`, `reject_count`, `currencies`, `net_usd_micros`, `generated_at`",
             ],
             "support-metrics-package": [
                 "`summary.json` with keys `escalations`, `sla_breaches`, and `tickets`",

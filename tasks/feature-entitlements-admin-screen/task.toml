@@ -42,3 +42,48 @@ mcp_servers = []
 [verifier.env]
 
 [solution.env]
+
+[calibration.codex_subscription_2026_07_06]
+status = "triaged_medium_smoke_only"
+assigned_size = "medium"
+band_confidence = "provisional_n3"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+failed_trajectory_count = 1
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_attempts = 1
+medium_smoke_passes = 1
+medium_smoke_pass_rate = 1.0
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 0
+ceiling_passes = 0
+ceiling_pass_rate = 0.0
+diagnostic_rescue_effort = "none"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 3
+floor_passes = 2
+floor_pass_rate = 0.6666666666666666
+source_report = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/codex-subscription-sizing-report.json"
+source_failure_audit = "results/shallowswe-codex-subscription-sizing-2026-07-06-141641/failed-trajectory-audit.json"
+
+[calibration.codex_subscription_2026_07_07_bridge]
+status = "keep_large_provisional"
+assigned_size = "large"
+band_confidence = "provisional_current_floor_n2_prior_n3_ceiling_n1"
+task_contract_review = "legitimate_model_miss"
+contract_issue = false
+trajectory_audit = "Bridge low-floor run failed fairly after the agent implemented both screens and passed its own visible regression tests. The verifier caught that reason_codes emitted only the priority subscription_not_serviceable reason and omitted the independently applicable usage_over_limit reason on visible and hidden fixtures. The instruction explicitly requires all applicable reason codes in fixed order. No hardcoding, verifier gaming, or task unfairness found."
+medium_smoke_model_config = "openai/gpt-5.5[medium]"
+medium_smoke_note = "Historical smoke only; not the formal ceiling."
+ceiling_model_config = "openai/gpt-5.5[extra_high]"
+ceiling_attempts = 1
+ceiling_passes = 1
+ceiling_pass_rate = 1.0
+ceiling_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+floor_model_config = "openai/gpt-5.4-mini[low]"
+floor_attempts = 2
+floor_passes = 0
+floor_pass_rate = 0.0
+floor_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/floor-gpt54mini-low-rollouts.json"
+bridge_source_report = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-feature-entitlements-bridge-floor-n1/pier-result.json"
+bridge_source_rollouts = "results/shallowswe-codex-subscription-sizing-2026-07-07-v1-feature-entitlements-bridge-floor-n1/floor-gpt54mini-low-rollouts.json"

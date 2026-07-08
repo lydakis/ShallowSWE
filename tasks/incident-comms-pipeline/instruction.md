@@ -25,7 +25,7 @@ State fields:
   `minimum_severity`.
 - `notification_queue`: array of already-enqueued notification objects.
 - `next_incident_number`: next integer used to create IDs as `INC-<number>`.
-- `call_log`: array maintained by the local API.
+- `call_log`: diagnostic array maintained by the local API for the current command run.
 
 Incident fields:
 
@@ -84,6 +84,9 @@ Rules:
   alphabetically.
 - Post an update only when its `update_key` is not already present on that incident.
 - Preserve existing updates and never duplicate an `update_key`.
+- A duplicate `update_key` only suppresses the `post_update` mutation and the incident-update
+  notifications for that update. The event must still reconcile the incident's `status` and
+  `components` before the duplicate update is skipped.
 - After all timeline events, resolve every incident in `stale_incident_keys` that exists and is not
   already resolved. Add one update with update_key `stale-resolve:<incident_key>`, `at` equal to
   `stale_resolution_at`, status `resolved`, and message `Resolved as stale after reconciliation`.
@@ -104,15 +107,28 @@ Rules:
 - Existing `notification_key` values are never duplicated.
 - Do not delete incidents, updates, or components.
 - Use the local API methods for state changes so `call_log` records one call per actual mutation
-  and no calls for unchanged data.
+  in the current command run and no calls for unchanged data.
+- Do not use `call_log` as durable replay state. A rerun may start from an already reconciled
+  state with `call_log` cleared. Determine idempotency from the durable state itself: component
+  final statuses, incident statuses/components, existing update keys, existing notification keys,
+  stale-resolution updates, and `next_incident_number`.
+- Component events can include intermediate transitions, such as degraded then operational. On
+  the first run, process every real transition in timeline order. On a rerun against an already
+  reconciled state, do not replay intermediate component transitions solely because the current
+  final status differs from an intermediate event.
 - Re-running the command against an already reconciled state should produce no state changes and a
-  single `noop` audit row.
+  single `noop` audit row. If the input state's `call_log` is empty on that rerun, the output
+  `call_log` should remain empty.
 
 The audit log is JSONL. Write one object per logical action with exactly these keys:
 
 - `action`
 - `target`
 - `detail`
+
+All three audit values must be strings. `detail` should be a short string such as the new component
+status, incident key, update key, subscriber ID, or `already reconciled`; do not write nested JSON
+objects in the audit log.
 
 Allowed `action` values:
 

@@ -1,0 +1,23 @@
+{
+  "report_time": "2026-08-12T09:30:00Z",
+  "context_prefix": "ci",
+  "protected_branches": ["main", "release/2026-08"],
+  "required_suites": {
+    "web": {
+      "staging": ["unit", "e2e"],
+      "prod": ["unit", "e2e"]
+    },
+    "api": {
+      "staging": ["unit", "integration"],
+      "prod": ["unit", "integration", "security"]
+    },
+    "worker": {
+      "staging": ["lint"]
+    }
+  },
+  "owner_channels": {
+    "frontend": "#team-frontend",
+    "platform": "#team-platform"
+  },
+  "default_channel": "#builds"
+}

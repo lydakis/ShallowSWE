@@ -134,4 +134,13 @@ The command prints one order id per line.
 Path("/app/.env.nightly").write_text(
     "DISPATCH_REGION=west\nDISPATCH_ACCOUNT=acme\nDISPATCH_VISIBILITY=all\n"
 )
+Path("/app/.env.legacy").write_text(
+    "DISPATCH_REGION=west\nDISPATCH_ACCOUNT=acme\nDISPATCH_VISIBILITY=all\n"
+)
+Path("/app/.env.preview").write_text(
+    "DISPATCH_REGION=east\nDISPATCH_ACCOUNT=acme\nDISPATCH_VISIBILITY=all\n"
+)
+Path("/app/.env.backfill").write_text(
+    "DISPATCH_REGION=west\nDISPATCH_ACCOUNT=globex\nDISPATCH_VISIBILITY=all\n"
+)
 PY

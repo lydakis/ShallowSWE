@@ -1,0 +1,30 @@
+[
+  {
+    "engagement_gap_days": 14,
+    "executive_arr_threshold": 100000,
+    "min_utilization_pct": 65,
+    "renewal_window_days": 45,
+    "segment": "enterprise"
+  },
+  {
+    "engagement_gap_days": 21,
+    "executive_arr_threshold": 75000,
+    "min_utilization_pct": 60,
+    "renewal_window_days": 30,
+    "segment": "midmarket"
+  },
+  {
+    "engagement_gap_days": 21,
+    "executive_arr_threshold": 50000,
+    "min_utilization_pct": 55,
+    "renewal_window_days": 30,
+    "segment": "growth"
+  },
+  {
+    "engagement_gap_days": 28,
+    "executive_arr_threshold": 25000,
+    "min_utilization_pct": 50,
+    "renewal_window_days": 21,
+    "segment": "startup"
+  }
+]
