@@ -1,0 +1,22 @@
+{
+  "schema_version": "shallowswe.panel.v0.1",
+  "name": "shallowswe-grok-4-5-preview",
+  "status": "preview",
+  "description": "Single pinned Grok 4.5 row used for incremental budget estimates against the 18-task N=3 preview set.",
+  "defaults": {
+    "harness": "mini-swe-agent",
+    "inference_gateway": "openrouter",
+    "provider_routing": {
+      "allow_fallbacks": false
+    }
+  },
+  "rows": [
+    {
+      "id": "mini_swe_agent_grok_4_5_default",
+      "model": "grok-4-5",
+      "openrouter_model": "x-ai/grok-4.5",
+      "upstream_provider": "x-ai",
+      "reasoning_effort": null
+    }
+  ]
+}
