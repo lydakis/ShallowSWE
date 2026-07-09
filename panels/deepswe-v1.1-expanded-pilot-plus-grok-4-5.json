@@ -19,7 +19,7 @@
   "selection_policy": {
     "include": [
       "All rows from deepswe-v1.1-expanded-pilot",
-      "Pinned xAI Grok 4.5 row for a same-task-set ShallowSWE preview extension"
+      "Pinned xAI Grok 4.5 high-effort row for a same-task-set ShallowSWE preview extension"
     ],
     "exclude": [
       "Moving Grok aliases such as ~x-ai/grok-latest",
@@ -119,11 +119,11 @@
       "deepswe_mean_cost_usd": 2.815536243274336
     },
     {
-      "id": "mini_swe_agent_grok_4_5_default",
+      "id": "mini_swe_agent_grok_4_5_high",
       "model": "grok-4-5",
       "openrouter_model": "x-ai/grok-4.5",
       "upstream_provider": "x-ai",
-      "reasoning_effort": null,
+      "reasoning_effort": "high",
       "deepswe_pass_at_1": null,
       "deepswe_mean_cost_usd": null
     }
