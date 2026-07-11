@@ -1,0 +1,72 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_plan.v0.1",
+  "name": "shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low",
+  "snapshot_id": "shallowswe-v0.2-large-replacement-candidate-2026-07-05",
+  "mode": "bounded_repair_loop_preview",
+  "task_root": "tasks",
+  "task_ids": [
+    "env-flags-to-json",
+    "extract-error-fields",
+    "payout-reconcile",
+    "access-log-to-incidents",
+    "billing-revenue-rollup",
+    "support-sla-business-hours",
+    "invoice-cli-regression-test-fix",
+    "retry-error-fallback",
+    "auth-token-expiry-regression",
+    "split-notification-renderer",
+    "cache-invalidates-on-settings-change",
+    "invoice-multi-source-merge",
+    "post-build-status",
+    "ticket-cut-from-bug-report",
+    "config-flag-ignored",
+    "ticket-update-dont-duplicate",
+    "merge-divergent-config-branches",
+    "config-key-rollover"
+  ],
+  "selection_policy": {
+    "tasks_per_category_size_cell": 2,
+    "purpose": "Run one low-effort GPT-5.6 Luna, Terra, and Sol row through the exact 18-task N=3 website preview matrix while preserving the July 6 540-row baseline.",
+    "source_evidence": [
+      "results/shallowswe-repair-loop-preview-n3-18-v0.2-config-rollover-temp-2026-07-06/repair-loop-run-report.json",
+      "configs/shallowswe-repair-loop-preview-n3-18-v0.2-config-rollover-temp.json",
+      "https://openrouter.ai/api/v1/models"
+    ],
+    "notes": [
+      "The task set is intentionally identical to the July 6 website-aligned 540-row preview run.",
+      "The GPT-5.6 rows are a preview extension, not final publish-grade scoring.",
+      "Use regular non-Pro Luna/Terra/Sol slugs first; defer Pro aliases until these placements are inspected.",
+      "Low effort is used because Terra and Sol high-effort probes hit an OpenRouter/OpenAI encrypted-content continuation error."
+    ]
+  },
+  "model_panel": "panels/shallowswe-gpt-5-6-low-preview.json",
+  "repair_loop_seeds_per_task_model_config": 3,
+  "protocol": {
+    "single_model_run_invariant": true,
+    "no_fallbacks": true,
+    "requires_conversation_continuation": true,
+    "requires_filesystem_continuation": true,
+    "verifier_submission_cap": 20,
+    "agent_step_cap": 120,
+    "wall_time_cap_seconds": 2400,
+    "dollar_cap_usd": 5.0,
+    "allowed_feedback_classes": [
+      "generic_failure",
+      "runtime_error",
+      "missing_required_artifact",
+      "output_mismatch"
+    ]
+  },
+  "budget_gate": {
+    "max_budget_usd": 250.0,
+    "global_hard_stop_usd": 250.0,
+    "estimate_artifact": "results/shallowswe-repair-loop-preview-plan-v0.2-gpt-5-6-low-2026-07-09/budget-estimate.json",
+    "requires_explicit_approval_if_over_budget": true
+  },
+  "status": "preview_plan_not_publish_grade",
+  "notes": [
+    "This is a feedback-seeking preview extension, not a final ShallowSWE snapshot.",
+    "The website should combine the 540 baseline rows with GPT-5.6 rows as they arrive.",
+    "Run validation should inspect preliminary trajectories immediately and stop early on verifier/task unfairness before retrying."
+  ]
+}

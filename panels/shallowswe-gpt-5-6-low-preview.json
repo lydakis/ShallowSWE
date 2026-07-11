@@ -1,0 +1,58 @@
+{
+  "schema_version": "shallowswe.panel.v0.1",
+  "name": "shallowswe-gpt-5-6-low-preview",
+  "status": "preview",
+  "description": "Three GPT-5.6 low-effort rows, one each for Luna, Terra, and Sol, used for the exact 18-task N=3 preview matrix.",
+  "source": {
+    "name": "OpenRouter GPT-5.6 model metadata",
+    "url": "https://openrouter.ai/api/v1/models",
+    "checked_at": "2026-07-09"
+  },
+  "defaults": {
+    "harness": "mini-swe-agent",
+    "inference_gateway": "openrouter",
+    "provider_routing": {
+      "allow_fallbacks": false
+    }
+  },
+  "selection_policy": {
+    "include": [
+      "One regular non-Pro OpenRouter row for each GPT-5.6 capability tier: Luna, Terra, and Sol",
+      "Low effort for all three rows because Terra and Sol high-effort probes hit an OpenRouter/OpenAI encrypted-content continuation error"
+    ],
+    "exclude": [
+      "Pro aliases until regular Luna/Terra/Sol rows are inspected",
+      "Mixed effort sweeps until the low-effort tier preview has data"
+    ],
+      "display_policy": "Always display reasoning_effort. Each effort level is a separate model_config."
+  },
+  "rows": [
+    {
+      "id": "mini_swe_agent_gpt_5_6_luna_low",
+      "model": "gpt-5-6-luna",
+      "openrouter_model": "openai/gpt-5.6-luna",
+      "upstream_provider": "openai",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": null,
+      "deepswe_mean_cost_usd": null
+    },
+    {
+      "id": "mini_swe_agent_gpt_5_6_terra_low",
+      "model": "gpt-5-6-terra",
+      "openrouter_model": "openai/gpt-5.6-terra",
+      "upstream_provider": "openai",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": null,
+      "deepswe_mean_cost_usd": null
+    },
+    {
+      "id": "mini_swe_agent_gpt_5_6_sol_low",
+      "model": "gpt-5-6-sol",
+      "openrouter_model": "openai/gpt-5.6-sol",
+      "upstream_provider": "openai",
+      "reasoning_effort": "low",
+      "deepswe_pass_at_1": null,
+      "deepswe_mean_cost_usd": null
+    }
+  ]
+}
