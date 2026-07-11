@@ -20,6 +20,14 @@ from shallowswe.results import (
 
 CATEGORY_WEIGHTS = {"artifact": 34, "code": 33, "workflow": 33}
 SIZE_WEIGHTS = {"small": 34, "medium": 33, "large": 33}
+REQUIRED_PROVENANCE_FIELDS = (
+    "repo_commit_sha",
+    "price_sheet_version",
+    "verifier_hash",
+    "environment_image_digest",
+    "runner",
+    "runner_version",
+)
 
 
 def main() -> None:
@@ -49,14 +57,11 @@ def main() -> None:
     (public_data / "aggregate-by-task-model.json").write_text(
         json.dumps(aggregate_by_task_model, indent=2) + "\n"
     )
-    shutil.copy2(prices_path, public_data / f"prices-{prices_path.name}")
-    if prices_path.name != "openrouter-2026-07-03.json":
-        shutil.copy2(prices_path, public_data / "prices-openrouter-2026-07-03.json")
-    else:
-        shutil.copy2(prices_path, public_data / "prices-openrouter-2026-07-03.json")
+    exported_prices = _copy_price_sheet(prices_path, public_data)
 
     plan = json.loads(plan_path.read_text())
     report = _load_report(run_dir)
+    provenance = _provenance_summary(rows)
     _write_manifest(
         public_data / "run-manifest.json",
         plan=plan,
@@ -64,6 +69,8 @@ def main() -> None:
         run_dir=run_dir,
         repo=repo,
         rows_exported=len(rows),
+        price_sheet_file=exported_prices.name,
+        provenance=provenance,
     )
 
     workload_index = _build_workload_index(
@@ -128,6 +135,102 @@ def _load_report(run_dir: Path) -> dict:
     return dict(json.loads(path.read_text()))
 
 
+def _copy_price_sheet(prices_path: Path, public_data: Path) -> Path:
+    """Publish one immutable, date-named price sheet without rewriting older snapshots."""
+
+    destination = public_data / f"prices-{prices_path.name}"
+    shutil.copy2(prices_path, destination)
+    return destination
+
+
+def _provenance_summary(rows: list) -> dict[str, object]:
+    repo_commit_shas = _distinct_row_values(rows, "repo_commit_sha")
+    price_sheet_versions = _distinct_row_values(rows, "price_sheet_version")
+    runners = _distinct_row_values(rows, "runner")
+    runner_versions = _distinct_row_values(rows, "runner_version")
+    missing_field_counts = {
+        field: sum(1 for row in rows if not getattr(row, field, None))
+        for field in REQUIRED_PROVENANCE_FIELDS
+    }
+    missing_field_counts = {
+        field: count for field, count in missing_field_counts.items() if count
+    }
+    verifier_hashes_by_task: dict[str, set[str]] = defaultdict(set)
+    environment_digests_by_task: dict[str, set[str]] = defaultdict(set)
+    for row in rows:
+        task_id = str(getattr(row, "task_id", "") or "")
+        if not task_id:
+            continue
+        verifier_hash = str(getattr(row, "verifier_hash", "") or "")
+        environment_digest = str(getattr(row, "environment_image_digest", "") or "")
+        if verifier_hash:
+            verifier_hashes_by_task[task_id].add(verifier_hash)
+        if environment_digest:
+            environment_digests_by_task[task_id].add(environment_digest)
+
+    tasks_with_multiple_verifier_hashes = sorted(
+        task_id for task_id, values in verifier_hashes_by_task.items() if len(values) > 1
+    )
+    tasks_with_multiple_environment_digests = sorted(
+        task_id for task_id, values in environment_digests_by_task.items() if len(values) > 1
+    )
+    mixed_snapshot = any(
+        (
+            len(repo_commit_shas) > 1,
+            len(price_sheet_versions) > 1,
+            len(runners) > 1,
+            len(runner_versions) > 1,
+            bool(tasks_with_multiple_verifier_hashes),
+            bool(tasks_with_multiple_environment_digests),
+        )
+    )
+    if mixed_snapshot:
+        state = "mixed"
+    elif not rows or missing_field_counts:
+        state = "incomplete"
+    else:
+        state = "complete"
+    return {
+        "state": state,
+        "mixed_snapshot": mixed_snapshot,
+        "row_count": len(rows),
+        "missing_field_counts": missing_field_counts,
+        "repo_commit_shas": repo_commit_shas,
+        "price_sheet_versions": price_sheet_versions,
+        "runners": runners,
+        "runner_versions": runner_versions,
+        "tasks_with_multiple_verifier_hashes": tasks_with_multiple_verifier_hashes,
+        "tasks_with_multiple_environment_digests": tasks_with_multiple_environment_digests,
+    }
+
+
+def _distinct_row_values(rows: list, field: str) -> list[str]:
+    return sorted(
+        {
+            str(value)
+            for row in rows
+            if (value := getattr(row, field, None)) is not None and str(value)
+        }
+    )
+
+
+def _manifest_status(provenance: dict[str, object]) -> str:
+    if provenance.get("state") == "mixed":
+        return "preview_mixed_snapshot"
+    if provenance.get("state") != "complete":
+        return "preview_incomplete_provenance"
+    return "preview_snapshot"
+
+
+def _manifest_runner(provenance: dict[str, object]) -> str | None:
+    runners = provenance.get("runners")
+    if not isinstance(runners, list) or not runners:
+        return None
+    if len(runners) == 1:
+        return str(runners[0])
+    return "mixed"
+
+
 def _write_manifest(
     path: Path,
     *,
@@ -136,6 +239,8 @@ def _write_manifest(
     run_dir: Path,
     repo: Path,
     rows_exported: int,
+    price_sheet_file: str,
+    provenance: dict[str, object],
 ) -> None:
     try:
         source_output_dir = str(run_dir.relative_to(repo))
@@ -145,12 +250,14 @@ def _write_manifest(
         json.dumps(
             {
                 "schema_version": "shallowswe.repair_loop_site_manifest.v0.1",
-                "name": f"{plan['name']}-clean",
+                "name": plan["name"],
                 "snapshot_id": plan.get("snapshot_id"),
                 "generated_at": datetime.now(timezone.utc)
                 .isoformat()
                 .replace("+00:00", "Z"),
-                "status": "preview_partial_clean",
+                "status": _manifest_status(provenance),
+                "price_sheet_file": price_sheet_file,
+                "provenance": provenance,
                 "tasks": plan.get("task_ids", []),
                 "repair_loop_seeds_per_task_model_config": plan.get(
                     "repair_loop_seeds_per_task_model_config"
@@ -161,7 +268,9 @@ def _write_manifest(
                 ),
                 "model_panel": plan.get("model_panel"),
                 "agent": "shallowswe-resumable-mini-swe-agent",
-                "runner": "Pier + ShallowSWE repair-loop controller",
+                "runner": _manifest_runner(provenance),
+                "runners": provenance.get("runners", []),
+                "runner_versions": provenance.get("runner_versions", []),
                 "protocol": plan.get("protocol"),
                 "budget_gate": plan.get("budget_gate"),
                 "run_report": {
