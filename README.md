@@ -11,7 +11,8 @@ category, size, and model configuration.
 
 - `SPEC.md` is the v0.1 product spec and source of truth.
 - `tasks/` is a Pier-compatible local dataset. It currently spans `code`, `artifact`, and `workflow` tasks across `small`, `medium`, and `large` sizes. `py-normalize-username` is harness smoke; the remaining tasks are realistic candidate or calibrated benchmark packets.
-- `src/shallowswe/` contains ShallowSWE metadata validation, Pier result export, and aggregation.
+- `src/shallowswe/` contains metadata validation, the shared repair-loop protocol, Kaggle and Pier
+  adapters, result export, and aggregation.
 - `prices/` contains dated provider price sheets used to derive dollar metrics from token usage.
 - `panels/` contains seed, preview, and calibration model-panel manifests. `shallowswe-calibration-v0.1` is the cheap anchor panel for size calibration; DeepSWE-aligned publish manifests are starting points, not the final ShallowSWE panel.
 - `docs/task-shape-catalog.md` defines durable task shapes used to instantiate original tasks.
@@ -22,7 +23,9 @@ category, size, and model configuration.
 - `docs/task-sourcing-methodology.md` defines how official benchmark tasks are mined, authored, reviewed, and calibrated.
 - `docs/calibration-log.md` records size-calibration runs and admission decisions.
 - `docs/pilot-plan.md` records the path from the 36-task scaffold to a calibrated v1 snapshot.
-- Pier owns execution, sandboxing, agents, verifier runs, and trajectories.
+- Kaggle is the primary published repair-loop backend. Pier/Harbor remains the parallel local and
+  calibration backend. `tasks/` is the single source of truth for both.
+- `docs/kaggle-runner.md` documents packaging, isolation, parity, live conformance, and operations.
 
 ## Quick Checks
 
@@ -40,6 +43,16 @@ uv run shallowswe tasks tasks
 uv run pier run -p tasks/py-normalize-username --agent oracle --env docker --job-name shallowswe_oracle_probe --jobs-dir /tmp/shallowswe-pier -n 1 -k 1 -q
 uv run shallowswe export-pier /tmp/shallowswe-pier/shallowswe_oracle_probe --tasks-root tasks > /tmp/shallowswe-results.json
 uv run shallowswe aggregate /tmp/shallowswe-results.json
+```
+
+Build a private Kaggle deployment bundle from the same canonical task packet:
+
+```sh
+uv run shallowswe kaggle-pack tmp/kaggle-smoke-bundle \
+  --task-id py-normalize-username \
+  --tasks-root tasks \
+  --config-file configs/mini-swe-agent-repair-loop-preview.yaml \
+  --mini-swe-agent-source-dir /Users/lydakis/Developer/oss/mini-swe-agent
 ```
 
 Add `--prices prices/openai-2026-07-03.json` when the result rows use models covered by that price sheet. The `aggregate` command summarizes one-shot rollout rows for calibration diagnostics. Final benchmark snapshots use bounded repair-loop rows and `aggregate-repair-loops`. Aggregates group by `model_config` by default, so reasoning-effort variants are separate rows.
@@ -125,4 +138,6 @@ uv run pier run -p tasks --include-task-name py-normalize-username \
 
 ## Boundary
 
-Do not build a ShallowSWE harness unless Pier cannot satisfy a concrete requirement. Local code should stay focused on the ShallowSWE problem definition: shallow-task metadata, calibration state, token normalization, price-sheet based CPSC aggregation, and site-ready exports.
+Keep runner-specific code thin. The shared controller owns repair-loop semantics, while Kaggle and
+Pier own only their transport, sandbox, and verifier adapters. Do not fork task definitions or
+methodology between backends.

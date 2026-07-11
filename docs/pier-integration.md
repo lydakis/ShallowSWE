@@ -54,10 +54,11 @@ size_assignment_decision = "candidate_pending_high_n_floor"
 
 ## Current Decision
 
-Use Pier as the runner until it fails a concrete ShallowSWE requirement. The final protocol needs a
-thin repair-loop controller around task execution: run the agent, run the hidden verifier, redact
-verifier output to the allowed feedback class, continue the same agent context, and stop at first
-pass or cap. Do not maintain a broader parallel harness unless Pier cannot support that controller.
+Kaggle is the primary backend for published repair-loop scoring because funded Kaggle capacity is
+available. Pier/Harbor remains supported as the parallel local, calibration, and portability
+backend. Both paths consume `tasks/` and call the shared repair-loop protocol; backend code owns
+only model transport, sandbox execution, and verifier invocation. See `docs/kaggle-runner.md` for
+the Kaggle deployment and live conformance evidence.
 
 ## Repair-Loop Continuation
 

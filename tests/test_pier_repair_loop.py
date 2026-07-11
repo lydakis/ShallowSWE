@@ -294,7 +294,7 @@ class PierRepairLoopTests(unittest.TestCase):
                 context=AgentContext(cost_usd=0.0),
                 dollar_cap_usd=1.5,
             ),
-            ("wall_time_cap", "scored", None),
+            ("wall_time_cap", "excluded", "infra_wall_time_guard"),
         )
 
     def test_classify_runner_exception_excludes_infra_failures(self) -> None:

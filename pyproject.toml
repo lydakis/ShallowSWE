@@ -8,12 +8,21 @@ dependencies = [
     "datacurve-pier>=0.3.0",
 ]
 
+[project.optional-dependencies]
+kaggle = [
+    "kaggle-benchmarks==0.6.1",
+    "mini-swe-agent @ git+https://github.com/lydakis/mini-swe-agent.git@8c3cfaee0ddb37c8325426990ff179c96690a1cf",
+]
+
 [project.scripts]
 shallowswe = "shallowswe.cli:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/shallowswe"]

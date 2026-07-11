@@ -17,14 +17,23 @@ from pier.models.trial.result import ExceptionInfo, TimingInfo, TrialResult
 from pier.models.verifier.result import VerifierResult
 from pier.trial.trial import Trial
 
+from .repair_loop_protocol import (
+    AgentSubmission,
+    RepairLoopPolicy,
+    VERIFIER_FEEDBACK,
+    VerifierOutcome,
+    execute_repair_loop,
+)
+from .mini_swe_config import effective_scaffold_prompt_hash, load_effective_mini_swe_config
 from .results import EXCLUDED_STATUS, RepairLoopResult
 from .task_metadata import load_task
+from .trajectory_usage import raw_usage_totals_from_trajectory as _raw_usage_totals_from_trajectory
 
 
 RESUMABLE_MINI_SWE_AGENT_IMPORT_PATH = (
     "shallowswe.pier_agents.resumable_mini_swe_agent:ResumableMiniSweAgent"
 )
-DEFAULT_REPAIR_FEEDBACK = "Verification failed. Continue working."
+DEFAULT_REPAIR_FEEDBACK = VERIFIER_FEEDBACK["generic_failure"]
 
 
 def run_pier_repair_loop(
@@ -134,12 +143,12 @@ async def _run_pier_repair_loop(
     _initialize_trial_result(trial, started_at=started_at)
 
     contexts: list[AgentContext] = []
-    verifier_submissions = 0
     passed = False
     stop_reason = "verifier_submission_cap"
     status = "scored"
     exclusion_reason = None
     trajectory_path = trial._trial_paths.agent_dir / "mini-swe-agent.trajectory.json"
+    backend: _PierRepairLoopBackend | None = None
 
     try:
         await trial._setup_environment()
@@ -148,43 +157,25 @@ async def _run_pier_repair_loop(
         await trial._setup_agent()
         trial._result.agent_info = trial._agent.to_agent_info()
 
-        feedback = trial._task.instruction
-        for _ in range(max_verifier_submissions):
-            if _wall_time_expired(
-                monotonic_started_at=monotonic_started_at,
+        backend = _PierRepairLoopBackend(
+            trial=trial,
+            contexts=contexts,
+            trajectory_path=trajectory_path,
+            dollar_cap_usd=dollar_cap_usd,
+        )
+        execution = await execute_repair_loop(
+            backend,
+            initial_instruction=trial._task.instruction,
+            policy=RepairLoopPolicy(
+                max_verifier_submissions=max_verifier_submissions,
                 wall_time_cap_seconds=wall_time_cap_seconds,
-            ):
-                status = "scored"
-                exclusion_reason = None
-                stop_reason = "wall_time_cap"
-                break
-            context = AgentContext()
-            contexts.append(context)
-            await _hide_verifier_artifacts(trial)
-            await _execute_agent_submission(trial=trial, instruction=feedback, context=context)
-            exit_status = _mini_swe_exit_status(trial)
-            if exit_status != "Submitted":
-                stop_reason, status, exclusion_reason = _classify_agent_exit(
-                    exit_status=exit_status,
-                    context=context,
-                    dollar_cap_usd=dollar_cap_usd,
-                    trajectory_path=trajectory_path,
-                )
-                break
-            verifier_result = await _verify_submission(trial)
-            verifier_submissions += 1
-            if _verifier_passed(verifier_result):
-                passed = True
-                stop_reason = "passed"
-                break
-            if _dollar_cap_hit(
-                context=context,
-                dollar_cap_usd=dollar_cap_usd,
-                trajectory_path=trajectory_path,
-            ):
-                stop_reason = "dollar_cap"
-                break
-            feedback = DEFAULT_REPAIR_FEEDBACK
+            ),
+            monotonic_started_at=monotonic_started_at,
+        )
+        passed = execution.passed
+        stop_reason = execution.stop_reason
+        status = execution.status
+        exclusion_reason = execution.exclusion_reason
     except Exception as exc:
         trial.result.exception_info = ExceptionInfo.from_exception(exc)
         trial._trial_paths.exception_message_path.write_text(traceback.format_exc())
@@ -207,7 +198,7 @@ async def _run_pier_repair_loop(
         loop=seed,
         passed=passed,
         stop_reason=stop_reason,
-        verifier_submissions=verifier_submissions,
+        verifier_submissions=backend.verifier_submissions if backend is not None else 0,
         input_tokens=usage["input_tokens"],
         output_tokens=usage["output_tokens"],
         cache_read_tokens=usage["cache_read_tokens"],
@@ -223,7 +214,14 @@ async def _run_pier_repair_loop(
         agent_version=trial._agent.version(),
         runner="pier-private-repair-loop-pilot",
         runner_version=_git_head_sha(Path(__file__).resolve().parents[2]),
-        scaffold_prompt_hash=_file_sha256(config_file),
+        scaffold_prompt_hash=effective_scaffold_prompt_hash(
+            load_effective_mini_swe_config(
+                config_file,
+                base_config_file=(
+                    mini_swe_agent_source_dir / "src" / "minisweagent" / "config" / "mini.yaml"
+                ),
+            )
+        ),
         inference_gateway=_gateway_from_model_name(model_name),
         requested_model=model_name,
         reasoning_effort=reasoning_effort,
@@ -241,6 +239,47 @@ async def _run_pier_repair_loop(
         started_at=started_at.isoformat(),
         finished_at=finished_at.isoformat(),
     )
+
+
+class _PierRepairLoopBackend:
+    def __init__(
+        self,
+        *,
+        trial: Trial,
+        contexts: list[AgentContext],
+        trajectory_path: Path,
+        dollar_cap_usd: float | None,
+    ) -> None:
+        self.trial = trial
+        self.contexts = contexts
+        self.trajectory_path = trajectory_path
+        self.dollar_cap_usd = dollar_cap_usd
+        self.verifier_submissions = 0
+
+    async def submit(self, instruction: str) -> AgentSubmission:
+        context = AgentContext()
+        self.contexts.append(context)
+        await _hide_verifier_artifacts(self.trial)
+        await _execute_agent_submission(
+            trial=self.trial,
+            instruction=instruction,
+            context=context,
+        )
+        return AgentSubmission(
+            exit_status=_mini_swe_exit_status(self.trial),
+            dollar_cap_hit=_dollar_cap_hit(
+                context=context,
+                dollar_cap_usd=self.dollar_cap_usd,
+                trajectory_path=self.trajectory_path,
+            ),
+        )
+
+    async def verify(self) -> VerifierOutcome:
+        verifier_result = await _verify_submission(self.trial)
+        self.verifier_submissions += 1
+        return VerifierOutcome(
+            "passed" if _verifier_passed(verifier_result) else "generic_failure"
+        )
 
 
 def _initialize_trial_result(trial: Trial, *, started_at: datetime) -> None:
@@ -351,7 +390,7 @@ def _classify_agent_exit(
     trajectory_path: Path | None = None,
 ) -> tuple[str, str, str | None]:
     if exit_status == "TimeExceeded":
-        return ("wall_time_cap", "scored", None)
+        return ("wall_time_cap", EXCLUDED_STATUS, "infra_wall_time_guard")
     if exit_status == "LimitsExceeded" and _dollar_cap_hit(
         context=context,
         dollar_cap_usd=dollar_cap_usd,
@@ -437,106 +476,6 @@ def _reported_cost_from_trajectory(path: Path) -> float | None:
         if cost is not None:
             return cost
     return None
-
-
-def _raw_usage_totals_from_trajectory(path: Path) -> dict[str, Any] | None:
-    if not path.exists():
-        return None
-    try:
-        trajectory = json.loads(path.read_text())
-    except json.JSONDecodeError:
-        return None
-
-    usage_entries: list[dict[str, Any]] = []
-    _collect_usage_entries(trajectory, usage_entries)
-    if not usage_entries:
-        return None
-    return {
-        "input_tokens": sum(_usage_input_tokens(usage) for usage in usage_entries),
-        "output_tokens": sum(_usage_output_tokens(usage) for usage in usage_entries),
-        "cache_read_tokens": sum(_usage_cache_read_tokens(usage) for usage in usage_entries),
-        "cache_write_tokens": sum(_usage_cache_write_tokens(usage) for usage in usage_entries),
-        "reasoning_tokens": sum(_usage_reasoning_tokens(usage) for usage in usage_entries),
-        "gateway_reported_cost_usd": _sum_optional_float(
-            usage.get("cost") for usage in usage_entries
-        ),
-    }
-
-
-def _collect_usage_entries(value: Any, entries: list[dict[str, Any]]) -> None:
-    if isinstance(value, dict):
-        usage = value.get("usage")
-        if isinstance(usage, dict):
-            entries.append(usage)
-        for child in value.values():
-            _collect_usage_entries(child, entries)
-    elif isinstance(value, list):
-        for child in value:
-            _collect_usage_entries(child, entries)
-
-
-def _usage_input_tokens(usage: dict[str, Any]) -> int:
-    return _first_int(usage, ("input_tokens", "prompt_tokens"))
-
-
-def _usage_output_tokens(usage: dict[str, Any]) -> int:
-    return _first_int(usage, ("output_tokens", "completion_tokens"))
-
-
-def _usage_cache_read_tokens(usage: dict[str, Any]) -> int:
-    details = usage.get("prompt_tokens_details") or usage.get("input_tokens_details") or {}
-    if not isinstance(details, dict):
-        return 0
-    return _int_or_zero(details.get("cached_tokens"))
-
-
-def _usage_cache_write_tokens(usage: dict[str, Any]) -> int:
-    details = usage.get("prompt_tokens_details") or usage.get("input_tokens_details") or {}
-    if not isinstance(details, dict):
-        return _first_int(usage, ("cache_creation_input_tokens", "cache_write_input_tokens"))
-    for key in ("cache_creation_tokens", "cache_write_tokens"):
-        if details.get(key) is not None:
-            return _int_or_zero(details.get(key))
-    return _first_int(usage, ("cache_creation_input_tokens", "cache_write_input_tokens"))
-
-
-def _usage_reasoning_tokens(usage: dict[str, Any]) -> int:
-    details = (
-        usage.get("completion_tokens_details")
-        or usage.get("output_tokens_details")
-        or {}
-    )
-    if not isinstance(details, dict):
-        return 0
-    return _int_or_zero(details.get("reasoning_tokens"))
-
-
-def _first_int(mapping: dict[str, Any], keys: tuple[str, ...]) -> int:
-    for key in keys:
-        if key in mapping:
-            return _int_or_zero(mapping[key])
-    return 0
-
-
-def _int_or_zero(value: Any) -> int:
-    try:
-        return int(value or 0)
-    except (TypeError, ValueError):
-        return 0
-
-
-def _sum_optional_float(values: Any) -> float | None:
-    total = 0.0
-    seen = False
-    for value in values:
-        if value is None:
-            continue
-        try:
-            total += float(value)
-            seen = True
-        except (TypeError, ValueError):
-            continue
-    return total if seen else None
 
 
 def _float_or_none(value: Any) -> float | None:

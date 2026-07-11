@@ -14,6 +14,7 @@ from .deepswe import (
     build_deepswe_comparison,
     load_deepswe_leaderboard,
 )
+from .kaggle_bundle import export_kaggle_bundle
 from .pier_export import export_pier_job
 from .pier_repair_loop import (
     dump_repair_loop_rows,
@@ -61,6 +62,35 @@ def main() -> None:
         help="audit a low-spend task-funnel ledger before broad scoring",
     )
     task_funnel_parser.add_argument("manifest_json", type=Path)
+
+    kaggle_pack_parser = subparsers.add_parser(
+        "kaggle-pack",
+        help="export canonical tasks and pinned runtime wheels for Kaggle Benchmarks",
+    )
+    kaggle_pack_parser.add_argument("output_dir", type=Path)
+    kaggle_pack_parser.add_argument(
+        "--task-id",
+        action="append",
+        required=True,
+        help="canonical task id to include; may be supplied more than once",
+    )
+    kaggle_pack_parser.add_argument("--tasks-root", type=Path, default=Path("tasks"))
+    kaggle_pack_parser.add_argument(
+        "--config-file",
+        type=Path,
+        default=Path("configs") / "mini-swe-agent-repair-loop-preview.yaml",
+    )
+    kaggle_pack_parser.add_argument("--project-root", type=Path, default=Path.cwd())
+    kaggle_pack_parser.add_argument(
+        "--mini-swe-agent-source-dir",
+        type=Path,
+        default=Path.home() / "Developer" / "oss" / "mini-swe-agent",
+    )
+    kaggle_pack_parser.add_argument(
+        "--notebook-source",
+        type=Path,
+        default=Path("kaggle") / "shallowswe_runner.py",
+    )
 
     repair_loop_pilot_parser = subparsers.add_parser(
         "repair-loop-pilot-plan",
@@ -315,6 +345,19 @@ def main() -> None:
 
     if args.command == "task-funnel":
         print(json.dumps(audit_task_funnel(args.manifest_json), indent=2))
+        return
+
+    if args.command == "kaggle-pack":
+        manifest = export_kaggle_bundle(
+            tasks_root=args.tasks_root,
+            output_dir=args.output_dir,
+            task_ids=args.task_id,
+            config_file=args.config_file,
+            project_root=args.project_root,
+            mini_swe_agent_source_dir=args.mini_swe_agent_source_dir,
+            notebook_source=args.notebook_source,
+        )
+        print(json.dumps(manifest, indent=2))
         return
 
     if args.command == "repair-loop-pilot-plan":
