@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-mkdir -p /logs/verifier
+APP_DIR="${APP_DIR:-/app}"
+LOG_DIR="${LOG_DIR:-/logs/verifier}"
+mkdir -p "$LOG_DIR"
 
 python3 - <<'PY'
 from __future__ import annotations
 
 from pathlib import Path
 import json
+import os
 import subprocess
 import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, "/app")
+app = Path(os.environ.get("APP_DIR", "/app"))
+sys.path.insert(0, str(app))
 
 from fulfillment_status.importer import import_orders_csv
 from fulfillment_status.report import build_report
@@ -22,9 +26,12 @@ from fulfillment_status.webhook import apply_carrier_webhook
 
 
 def run_cli(args: list[str]) -> subprocess.CompletedProcess[str]:
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(app)
     return subprocess.run(
         [sys.executable, "-m", "fulfillment_status.cli", *args],
         check=True,
+        env=env,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -80,6 +87,12 @@ class HiddenTerminalParityTests(unittest.TestCase):
         self.assertEqual(report["open"], 1)
         self.assertEqual(report["terminal_order_ids"], ["ORD-100", "ORD-101"])
         self.assertEqual(report["successful_order_ids"], ["ORD-101"])
+
+        literal = apply_carrier_webhook(
+            updated,
+            {"order_id": "ORD-102", "carrier_status": "return_to_sender"},
+        )
+        self.assertEqual(literal[2]["status"], "return_to_sender")
 
     def test_admin_repair_cli_accepts_literal_and_alias(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -137,6 +150,7 @@ class HiddenTerminalParityTests(unittest.TestCase):
         result = subprocess.run(
             [sys.executable, "-m", "fulfillment_status.cli", "repair", "--help"],
             check=True,
+            env={**os.environ, "PYTHONPATH": str(app)},
             text=True,
             stdout=subprocess.PIPE,
         )
@@ -185,8 +199,8 @@ PY
 
 status=$?
 if [[ $status -eq 0 ]]; then
-  echo 1 > /logs/verifier/reward.txt
+  echo 1 > "$LOG_DIR/reward.txt"
 else
-  echo 0 > /logs/verifier/reward.txt
+  echo 0 > "$LOG_DIR/reward.txt"
 fi
 exit "$status"

@@ -1,5 +1,9 @@
 # ShallowSWE Calibration Protocol
 
+> **Pre-v0.4.2 implementation history.** The active calibration contract is
+> `docs/white-paper-v0.4.2.md` plus `docs/six-task-pilot-protocol-v0.3.md`. Size bands, old model
+> identities, and fixed preview limits below are superseded and cannot launch official pilot rows.
+
 This document defines how a candidate task becomes part of a calibrated ShallowSWE snapshot.
 
 The short version:

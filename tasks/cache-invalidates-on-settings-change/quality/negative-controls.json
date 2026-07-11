@@ -1,0 +1,27 @@
+{
+  "schema_version": "shallowswe.negative_controls.v0.1",
+  "task_id": "cache-invalidates-on-settings-change",
+  "negative_controls": [
+    {
+      "id": "NC1",
+      "baseline": "base",
+      "setup": null,
+      "description": "Keep the original path-only cache implementation.",
+      "expected_failure": "The changed file returns stale feature flags."
+    },
+    {
+      "id": "NC2",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC2.sh",
+      "description": "Use one global cached value for every settings path.",
+      "expected_failure": "The second file is contaminated by the first file's flags."
+    },
+    {
+      "id": "NC3",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC3.sh",
+      "description": "Bypass the cache but always return the first parsed value.",
+      "expected_failure": "Content-change invalidation and per-file isolation checks fail."
+    }
+  ]
+}

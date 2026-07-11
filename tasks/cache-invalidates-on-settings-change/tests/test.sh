@@ -13,10 +13,16 @@ from settings_cache.cache import get_feature_flags
 with tempfile.TemporaryDirectory() as tmp:
     p=Path(tmp)/"flags.json"; other=Path(tmp)/"other.json"
     p.write_text('{"search": true, "billing": false}'); other.write_text('{"search": false, "billing": true}')
+    # check_initial_and_repeated_read
     assert get_feature_flags(p) == {"search": True, "billing": False}
+    assert get_feature_flags(p) == {"search": True, "billing": False}
+    # check_per_file_isolation
+    assert get_feature_flags(other) == {"search": False, "billing": True}
     p.write_text('{"search": false, "billing": true}')
+    # check_content_change_invalidation
     assert get_feature_flags(p) == {"search": False, "billing": True}
     assert get_feature_flags(other) == {"search": False, "billing": True}
+    assert get_feature_flags(p) == {"search": False, "billing": True}
 PY
 
 status=$?

@@ -1,9 +1,10 @@
 # Kaggle Runner
 
-Kaggle is the primary backend for published ShallowSWE repair-loop scoring. Pier/Harbor remains
-the parallel local and portability backend, and Codex/Pier can continue to handle cheap one-shot
-calibration. Both repair-loop backends consume the canonical `tasks/` tree and the same shared
-controller in `repair_loop_protocol.py`.
+Kaggle is the primary backend for official ShallowSWE pilot evidence. Pier/Harbor remains the
+parallel local-reproduction and portability backend. Codex/Pier may handle development triage, but
+Codex subscription trajectories are not official calibration evidence. Both repair-loop backends
+consume the canonical `tasks/` tree and the shared controller in `repair_loop_protocol.py`; runner
+role and evidence class follow `docs/protocol-governance.md`.
 
 ## Parity Contract
 
@@ -16,7 +17,7 @@ The methodology is backend-independent:
 - Hidden verifier submissions through the same result classes.
 - Only sanitized feedback is returned to the agent.
 - The same verifier-submission, step, cost, and wall-time guards.
-- The same `shallowswe.repair_loop.v0.2` result schema and token accounting.
+- The same active repair-loop result schema and token/accounting contract.
 
 Kaggle and Pier do not have byte-identical provider transports. Kaggle Benchmarks 0.6.1 rejects
 its native Gemini tool-result message on the next turn, so the Kaggle adapter asks for native tool
@@ -24,7 +25,9 @@ selection and records the same tool call in the mini-swe trajectory, then repres
 round to the next provider call as an assistant command plus user observation. The adapter uses
 this compatibility transport consistently for every Kaggle provider, rather than changing message
 shape by model. It does not change the controller, command, workspace, verifier, feedback class, or
-stop rules. Results should claim methodology parity, not byte-for-byte transcript parity.
+stop rules. Results should claim methodology parity, not byte-for-byte transcript parity. A
+transport, scaffold, or continuation difference creates a distinct `agent_policy_id`; parity does
+not permit pooling unequal identities.
 
 ## Bundle Boundary
 
@@ -55,6 +58,13 @@ uv run shallowswe kaggle-pack tmp/kaggle-smoke-bundle \
 
 Repeat `--task-id` for a panel or the accepted task set. Review `manifest.json`, especially task,
 environment, verifier, prompt, and runtime hashes, before publishing a dataset version.
+
+For the protocol-validation pilot, also attach `--pilot-manifest`, `--pilot-schedule`,
+`--pilot-launch-plan`, and `--price-sheet`. Official pilot bundles require
+`SHALLOWSWE_LAUNCH_UNIT_ID`. The runner resolves that ID against the attached launch plan and
+derives the task matrix, rollout seeds, model and agent identities, caps, funding pool, evidence
+class, and pre-registered trajectory IDs. A model, task, or seed that does not resolve to exactly
+one scheduled row fails before execution.
 
 ## Kaggle Isolation
 

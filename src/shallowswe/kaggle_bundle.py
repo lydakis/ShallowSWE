@@ -26,6 +26,10 @@ def export_kaggle_bundle(
     project_root: Path | None = None,
     mini_swe_agent_source_dir: Path | None = None,
     notebook_source: Path | None = None,
+    pilot_manifest_path: Path | None = None,
+    pilot_schedule_path: Path | None = None,
+    pilot_launch_plan_path: Path | None = None,
+    price_sheet_path: Path | None = None,
 ) -> dict[str, Any]:
     selected_task_ids = sorted(dict.fromkeys(str(task_id) for task_id in task_ids))
     if not selected_task_ids:
@@ -90,6 +94,25 @@ def export_kaggle_bundle(
         ),
         "source_of_truth": "tasks/",
     }
+    protocol_inputs = {
+        "pilot_manifest": pilot_manifest_path,
+        "pilot_schedule": pilot_schedule_path,
+        "pilot_launch_plan": pilot_launch_plan_path,
+        "price_sheet": price_sheet_path,
+    }
+    if any(value is not None for value in protocol_inputs.values()):
+        if pilot_manifest_path is None:
+            raise ValueError("pilot_manifest_path is required with protocol artifacts")
+        protocol_dir = output_dir / "protocol"
+        protocol_dir.mkdir()
+        for key, source in protocol_inputs.items():
+            if source is None:
+                continue
+            if not source.is_file():
+                raise ValueError(f"missing {key}: {source}")
+            destination = protocol_dir / source.name
+            shutil.copy2(source, destination)
+            manifest[key] = f"protocol/{destination.name}"
     runtime_values = (project_root, mini_swe_agent_source_dir, notebook_source)
     if any(value is not None for value in runtime_values):
         if any(value is None for value in runtime_values):

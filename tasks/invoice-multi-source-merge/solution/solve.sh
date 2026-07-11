@@ -5,6 +5,7 @@ cat > invoice_merge/importer.py <<'PY'
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 from typing import Any
@@ -48,13 +49,13 @@ def _status(value: object) -> str | None:
 def _date(value: object, *, legacy: bool = False) -> str | None:
     text = str(value or "").strip()
     if legacy:
-        if len(text) == 8 and text.isdigit():
-            return f"{text[:4]}-{text[4:6]}-{text[6:8]}"
+        if len(text) != 8 or not text.isdigit():
+            return None
+        text = f"{text[:4]}-{text[4:6]}-{text[6:8]}"
+    try:
+        return date.fromisoformat(text).isoformat()
+    except ValueError:
         return None
-    parts = text.split("-")
-    if len(parts) == 3 and all(part.isdigit() for part in parts):
-        return text
-    return None
 
 
 def _cents(value: object, currency: object, rates: dict[str, str], *, legacy: bool = False) -> tuple[int | None, str | None]:
@@ -149,9 +150,11 @@ def import_invoices(input_dir: str | Path) -> tuple[list[Invoice], list[dict[str
             rows.extend([record] if record else [])
             rejects.extend([reject] if reject else [])
 
-    for index, line in enumerate((root / "legacy_invoices.txt").read_text().splitlines(), start=1):
+    index = 0
+    for line in (root / "legacy_invoices.txt").read_text().splitlines():
         if not line.strip():
             continue
+        index += 1
         parts = line.split("|")
         record, reject = _validate(
             source="legacy",

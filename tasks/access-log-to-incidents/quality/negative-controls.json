@@ -1,0 +1,48 @@
+{
+  "schema_version": "shallowswe.negative_controls.v0.1",
+  "task_id": "access-log-to-incidents",
+  "negative_controls": [
+    {
+      "id": "NC1",
+      "baseline": "base",
+      "setup": null,
+      "description": "Leave scripts/build_outputs.py absent.",
+      "expected_failure": "The verifier rejects the missing implementation."
+    },
+    {
+      "id": "NC2",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC2.sh",
+      "description": "Hardcode the visible incident and summary outputs.",
+      "expected_failure": "Fresh hidden logs produce mismatched incidents, rejects, and counts."
+    },
+    {
+      "id": "NC3",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC3.sh",
+      "description": "Treat malformed numeric statuses as ordinary non-incidents instead of rejects.",
+      "expected_failure": "The hidden nonnumeric-status line is missing from rejects.csv."
+    },
+    {
+      "id": "NC4",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC4.sh",
+      "description": "Emit incidents in input order rather than timestamp order.",
+      "expected_failure": "The out-of-order hidden fixture fails the sorted incident comparison."
+    },
+    {
+      "id": "NC5",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC5.sh",
+      "description": "Recognize only the visible 500, 502, and 503 statuses as high severity.",
+      "expected_failure": "The hidden 501 and 599 boundary cases are omitted."
+    },
+    {
+      "id": "NC6",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC6.sh",
+      "description": "Sort rejected lines instead of preserving their input order.",
+      "expected_failure": "The hidden rejects.csv ordering comparison fails."
+    }
+  ]
+}

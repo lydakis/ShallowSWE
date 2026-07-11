@@ -20,6 +20,8 @@ def classify(status_text: str) -> str | None:
         status = int(status_text)
     except ValueError:
         return None
+    if not 100 <= status <= 599:
+        return None
     if status >= 500:
         return "high"
     if status == 429:
@@ -35,6 +37,14 @@ def main() -> None:
     for line in (root / "input" / "access.log").read_text().splitlines():
         pieces = line.split()
         if len(pieces) != 6:
+            rejects.append({"line": line, "reason": "malformed_line"})
+            continue
+        try:
+            status = int(pieces[4])
+        except ValueError:
+            rejects.append({"line": line, "reason": "malformed_line"})
+            continue
+        if not 100 <= status <= 599:
             rejects.append({"line": line, "reason": "malformed_line"})
             continue
         severity = classify(pieces[4])

@@ -1,4 +1,9 @@
-# ShallowSWE — Specification v0.1
+# ShallowSWE - Legacy Implementation Specification v0.1
+
+> **Superseded as normative methodology.** Use `docs/white-paper-v0.4.2.md`,
+> `docs/six-task-pilot-protocol-v0.3.md`, and `docs/protocol-governance.md` for v0.4.2 calibration.
+> This file preserves the category-by-size implementation contract until the schema migration is
+> complete; it must not be used to launch official pilot rows where it conflicts with those files.
 
 A benchmark for routine software work. Admitted tasks are intended to be within reach of current
 frontier agents; cheaper or lower-effort models may fail as tasks get larger. The score is cost per

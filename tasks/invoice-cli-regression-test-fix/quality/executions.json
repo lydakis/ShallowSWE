@@ -1,0 +1,145 @@
+{
+  "artifact_hashes": {
+    "alternate_solution": "sha256:d831b26dc6c6995a017f655b41562cab25d596d94491ff54b423c5b873680359",
+    "environment": "sha256:3ca94b3a0e9e36f9d34767e168c21405053d4c24fcbcb3f92d4b2c0cee442ba0",
+    "instruction": "sha256:22594986def8256b16c477df9a9d3cdac085aaa19518ef102b85961cfb1ce4e0",
+    "negative_control_scripts": "sha256:e3619dd61bff3ef364873b76fee55aa9e8f7682eab5c3b9be499c4dc615bba69",
+    "negative_controls": "sha256:9bf6d02503bf214eb7b34dbb46fc2bed5b99269f159d0c0312713afd507ca243",
+    "reference_solution": "sha256:cb22e380ce5f7a36529d88bb08d42a6341ea50c83deb7149df92df3e04402e45",
+    "verifier": "sha256:ac459392e988eca1cff296c02b447a74896d71af88a1c7084825a79097b4cc55"
+  },
+  "generated_at": "2026-07-11T20:06:15.621955+00:00",
+  "quality_outcome": "pass",
+  "runs": [
+    {
+      "artifact_sha256": "sha256:82583cb74b39232c104d0e31dad36669715e1597f532c8a961c7eaf50a437f5a",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "solution/solve.sh && tests/test.sh",
+      "container_exit_code": 0,
+      "control_id": null,
+      "exit_code": 0,
+      "kind": "reference_solution",
+      "output_sha256": "sha256:44a5f2ce9ce8f24ef90d390dc570b894dd8df4d01bacf62b4fc608736311c27a",
+      "verifier_reached": true
+    },
+    {
+      "artifact_sha256": "sha256:82583cb74b39232c104d0e31dad36669715e1597f532c8a961c7eaf50a437f5a",
+      "attempt": 2,
+      "clean_sandbox": true,
+      "command": "solution/solve.sh && tests/test.sh",
+      "container_exit_code": 0,
+      "control_id": null,
+      "exit_code": 0,
+      "kind": "reference_solution",
+      "output_sha256": "sha256:44a5f2ce9ce8f24ef90d390dc570b894dd8df4d01bacf62b4fc608736311c27a",
+      "verifier_reached": true
+    },
+    {
+      "artifact_sha256": "sha256:82583cb74b39232c104d0e31dad36669715e1597f532c8a961c7eaf50a437f5a",
+      "attempt": 3,
+      "clean_sandbox": true,
+      "command": "solution/solve.sh && tests/test.sh",
+      "container_exit_code": 0,
+      "control_id": null,
+      "exit_code": 0,
+      "kind": "reference_solution",
+      "output_sha256": "sha256:3c08acffd6a5c8fd449d6f1414d23de75fafe7dcdf57a400034c5fcbafc712ed",
+      "verifier_reached": true
+    },
+    {
+      "artifact_sha256": "sha256:a46ef0790e9f207d294e27e1821c3d672e2a35d241db668e7dbcdb2da159dd09",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "solution_alt/solve.sh && tests/test.sh",
+      "container_exit_code": 0,
+      "control_id": null,
+      "exit_code": 0,
+      "kind": "alternate_solution",
+      "output_sha256": "sha256:642b1ccc8cd9dc8a210e91a8e7c16b9e9bddf6874fa73b2c46f9be7896199d21",
+      "verifier_reached": true
+    },
+    {
+      "artifact_sha256": "sha256:0189f6afc92ff633149b1be205a48ed2021f11e60826c81eb853ce7d6b0af0b9",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "tests/test.sh",
+      "container_exit_code": 1,
+      "control_id": "NC1",
+      "exit_code": 1,
+      "kind": "negative_control",
+      "output_sha256": "sha256:5c14336e66703b04abab7db8bed3ca0f9477f0d2518793bbef417f55fa62e72b",
+      "verifier_reached": true
+    },
+    {
+      "artifact_sha256": "sha256:2f05957884ada58cdeef1566c0ef12da1a59180fc36eade830863e16ac782243",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "solution/solve.sh && quality/negative-controls/NC2.sh && tests/test.sh",
+      "container_exit_code": 1,
+      "control_id": "NC2",
+      "exit_code": 1,
+      "kind": "negative_control",
+      "output_sha256": "sha256:a4faa4329a13dda3dccf8a2ca21ea10b49ae721cd312e2b0ac126caf5f32df77",
+      "verifier_reached": true
+    },
+    {
+      "artifact_sha256": "sha256:f72bca66f753a1de60c3fe0a7d88a9d08f01c5379b7ab897b380b1c1e80507b2",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "solution/solve.sh && quality/negative-controls/NC3.sh && tests/test.sh",
+      "container_exit_code": 1,
+      "control_id": "NC3",
+      "exit_code": 1,
+      "kind": "negative_control",
+      "output_sha256": "sha256:37e95c75ead19679292f77255963465b957e692b2f9dba4fc1322565c9622aae",
+      "verifier_reached": true
+    },
+    {
+      "artifact_sha256": "sha256:1fc51c3c419d0c54934c5989180887a2def3fa9ff8585df793a2436aceb03c45",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "solution/solve.sh && quality/negative-controls/NC4.sh && tests/test.sh",
+      "container_exit_code": 1,
+      "control_id": "NC4",
+      "exit_code": 1,
+      "kind": "negative_control",
+      "output_sha256": "sha256:f615e03e2adaf2d2d0043166129c12ad59a90909ff4e79187a18c1d915d908bc",
+      "verifier_reached": true
+    },
+    {
+      "artifact_sha256": "sha256:3588e2616b5592f5d2c43a6879c74d1ca4b2624ac6de28ed02fe8b083c829bce",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "solution/solve.sh && quality/negative-controls/NC5.sh && tests/test.sh",
+      "container_exit_code": 1,
+      "control_id": "NC5",
+      "exit_code": 1,
+      "kind": "negative_control",
+      "output_sha256": "sha256:df1923ce5f369ec75161ad367d9142c67238e9fe4e39a46fdcb17f4c99a6604d",
+      "verifier_reached": true
+    },
+    {
+      "artifact_sha256": "sha256:bc4dcde15318628d423ecb13d984d1b8ca6e2cc297466de7097cdff994a1523a",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "solution/solve.sh && quality/negative-controls/NC6.sh && tests/test.sh",
+      "container_exit_code": 1,
+      "control_id": "NC6",
+      "exit_code": 1,
+      "kind": "negative_control",
+      "output_sha256": "sha256:4004d36c5ddae3f2f3eea23d0b710e466563eba4d012cb3fe407bb99678030bb",
+      "verifier_reached": true
+    }
+  ],
+  "runtime": {
+    "backend": "apple_container",
+    "image": "shallowswe-quality/invoice-cli-regression-test-fix:local",
+    "image_digest": "sha256:389c996d2b8b4bc0e617f1c813d69feb63bd1490e95bc88d525c3ccc995d1790",
+    "network_policy": "disabled",
+    "platform": "linux/arm64",
+    "version": "container CLI version 1.0.0 (build: release, commit: ee848e3)"
+  },
+  "schema_version": "shallowswe.task_quality_execution.v0.1",
+  "task_id": "invoice-cli-regression-test-fix"
+}

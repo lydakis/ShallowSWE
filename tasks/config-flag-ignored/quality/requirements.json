@@ -1,0 +1,36 @@
+{
+  "schema_version": "shallowswe.requirement_map.v0.1",
+  "task_id": "config-flag-ignored",
+  "requirements": [
+    {
+      "id": "R1",
+      "source": "instruction.md",
+      "behavior": "DISPATCH_INCLUDE_ARCHIVED=1 is loaded into include_archived.",
+      "verifier_checks": ["tests/test.sh:HiddenConfigFlagTests.test_documented_include_archived_flag_is_loaded", "tests/test.sh:HiddenConfigFlagTests.test_documented_flag_works_in_arbitrary_env_file", "tests/test.sh:HiddenConfigFlagTests.test_documented_flag_works_from_process_environment"]
+    },
+    {
+      "id": "R2",
+      "source": "instruction.md",
+      "behavior": "The documented flag changes planner and CLI output.",
+      "verifier_checks": ["tests/test.sh:HiddenConfigFlagTests.test_documented_flag_changes_dispatch_plan", "tests/test.sh:HiddenConfigFlagTests.test_cli_reads_documented_flag"]
+    },
+    {
+      "id": "R3",
+      "source": "instruction.md",
+      "behavior": "DISPATCH_INCLUDE_CLOSED=1 remains a compatibility alias.",
+      "verifier_checks": ["tests/test.sh:HiddenConfigFlagTests.test_legacy_alias_still_works"]
+    },
+    {
+      "id": "R4",
+      "source": "README.md and existing behavior",
+      "behavior": "Archived orders remain excluded when neither flag is enabled.",
+      "verifier_checks": ["tests/test.sh:HiddenConfigFlagTests.test_archived_orders_still_skipped_by_default"]
+    },
+    {
+      "id": "R5",
+      "source": "instruction.md",
+      "behavior": "The CLI command name remains dispatch-plan.",
+      "verifier_checks": ["tests/test.sh:HiddenConfigFlagTests.test_cli_command_name_is_stable"]
+    }
+  ]
+}

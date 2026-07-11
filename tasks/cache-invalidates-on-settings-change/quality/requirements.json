@@ -1,0 +1,24 @@
+{
+  "schema_version": "shallowswe.requirement_map.v0.1",
+  "task_id": "cache-invalidates-on-settings-change",
+  "requirements": [
+    {
+      "id": "R1",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "A file content change invalidates its cached feature flags.",
+      "verifier_checks": ["tests/test.sh:check_content_change_invalidation"]
+    },
+    {
+      "id": "R2",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Cache entries remain isolated by resolved file path.",
+      "verifier_checks": ["tests/test.sh:check_per_file_isolation"]
+    },
+    {
+      "id": "R3",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Repeated unchanged reads return the same parsed flags successfully.",
+      "verifier_checks": ["tests/test.sh:check_initial_and_repeated_read"]
+    }
+  ]
+}

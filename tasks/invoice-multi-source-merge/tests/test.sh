@@ -6,6 +6,7 @@ mkdir -p /logs/verifier
 python3 - <<'PY'
 from __future__ import annotations
 
+from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 import csv
@@ -53,13 +54,13 @@ def normalize_status(value: object) -> str | None:
 def parse_date(value: str, legacy: bool = False) -> str | None:
     value = str(value or "").strip()
     if legacy:
-        if len(value) == 8 and value.isdigit():
-            return f"{value[:4]}-{value[4:6]}-{value[6:8]}"
+        if len(value) != 8 or not value.isdigit():
+            return None
+        value = f"{value[:4]}-{value[4:6]}-{value[6:8]}"
+    try:
+        return date.fromisoformat(value).isoformat()
+    except ValueError:
         return None
-    parts = value.split("-")
-    if len(parts) == 3 and all(part.isdigit() for part in parts):
-        return value
-    return None
 
 
 def cents(value: object, currency: object, rates: dict[str, str], *, legacy: bool = False) -> tuple[int | None, str | None]:
@@ -143,9 +144,11 @@ def expected(input_dir: Path) -> tuple[list[dict[str, str]], list[dict[str, str]
                     }
                 )
 
-    for index, line in enumerate((input_dir / "legacy_invoices.txt").read_text().splitlines(), start=1):
+    index = 0
+    for line in (input_dir / "legacy_invoices.txt").read_text().splitlines():
         if not line.strip():
             continue
+        index += 1
         parts = line.split("|")
         invoice_id = normalize_id(parts[0] if len(parts) > 0 else "")
         status = normalize_status(parts[4] if len(parts) > 4 else "")
@@ -246,7 +249,9 @@ def write_hidden_fixture(root: Path) -> Path:
             [
                 {"id": "INV-501", "account": {"name": "API Should Win"}, "money": {"value": "20.005", "currency": "CAD"}, "state": "settled", "issued": "2026-07-03", "updated": "2026-07-03"},
                 {"id": "INV-503", "account": {"name": "API Void"}, "money": {"value": "7.00", "currency": "USD"}, "state": "cancelled", "issued": "2026-07-04", "updated": "2026-07-04"},
+                {"id": "INV-ROUND", "account": {"name": "Half Up"}, "money": {"value": "1.005", "currency": "USD"}, "state": "open", "issued": "2026-07-04", "updated": "2026-07-04"},
                 {"id": "INV-API-BAD", "account": {"name": "Bad Date"}, "money": {"value": "4.00", "currency": "USD"}, "state": "paid", "issued": "07/04/2026", "updated": "2026-07-04"},
+                {"id": "INV-API-BAD-MONTH", "account": {"name": "Bad Month"}, "money": {"value": "4.00", "currency": "USD"}, "state": "paid", "issued": "2026-13-04", "updated": "2026-07-04"},
             ],
             indent=2,
         )
@@ -254,6 +259,7 @@ def write_hidden_fixture(root: Path) -> Path:
     (input_dir / "legacy_invoices.txt").write_text(
         "\n".join(
             [
+                "",
                 "INV-504|Legacy Draft|3333|USD|draft|20260701|20260703",
                 "INV-501|Legacy Loses|9999|USD|paid|20260701|20260710",
                 "INV-LEG-BAD|Legacy Bad Currency|100|MXN|open|20260701|20260701",

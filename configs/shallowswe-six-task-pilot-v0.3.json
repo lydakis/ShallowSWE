@@ -1,0 +1,202 @@
+{
+  "schema_version": "shallowswe.pilot_manifest.v0.3",
+  "name": "shallowswe-six-task-pilot-v0.3",
+  "methodology_version": "v0.4.2",
+  "release_class": "protocol_validation",
+  "task_root": "tasks",
+  "task_ids": [
+    "env-flags-to-json",
+    "access-log-to-incidents",
+    "invoice-cli-regression-test-fix",
+    "invoice-multi-source-merge",
+    "config-flag-ignored",
+    "merge-divergent-config-branches"
+  ],
+  "canary_task_ids": [
+    "env-flags-to-json",
+    "invoice-multi-source-merge"
+  ],
+  "confirmation_task_ids": [
+    "access-log-to-incidents",
+    "invoice-multi-source-merge",
+    "merge-divergent-config-branches"
+  ],
+  "runner_contract": {
+    "canonical_official_runner": "kaggle",
+    "portability_runner": "pier_harbor",
+    "development_runner": "codex_subscription",
+    "official_evidence_class": "official_pilot",
+    "development_evidence_class": "development",
+    "pool_unequal_agent_policies": false
+  },
+  "model_configs": [
+    {
+      "role": "primary_anchor",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_8112cf1a49180bda3b036a7dc8e0dff6dfbccfe1914bc61f069f72d9219c3653",
+      "availability_evidence": "kaggle benchmarks tasks models, observed 2026-07-11",
+      "canonical": {
+        "requested_model": "gpt-5.5-2026-04-23",
+        "expected_resolved_model": "gpt-5.5-2026-04-23",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "high",
+        "sampling_config": {
+          "temperature": 0.0,
+          "seed_policy": "reserved_trajectory_replicate"
+        },
+        "context_policy": "kaggle_proxy_managed",
+        "model_context_limit_tokens": 1050000,
+        "model_max_output_tokens": 128000,
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "role": "floor_low",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_ad6eaac9bd25958f20b0006a32b23c8ca0bd7d5babf7f3e2ff33d18c7388c83e",
+      "availability_evidence": "kaggle benchmarks tasks models, observed 2026-07-11",
+      "canonical": {
+        "requested_model": "gpt-5.4-mini-2026-03-17",
+        "expected_resolved_model": "gpt-5.4-mini-2026-03-17",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "low",
+        "sampling_config": {
+          "temperature": 0.0,
+          "seed_policy": "reserved_trajectory_replicate"
+        },
+        "context_policy": "kaggle_proxy_managed",
+        "model_context_limit_tokens": 400000,
+        "model_max_output_tokens": 128000,
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "role": "floor_strong",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_2692d5776209c84868afabb2a51931becbb80469d0ab84148e16f3540add2872",
+      "availability_evidence": "kaggle benchmarks tasks models, observed 2026-07-11",
+      "canonical": {
+        "requested_model": "gpt-5.4-2026-03-05",
+        "expected_resolved_model": "gpt-5.4-2026-03-05",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "low",
+        "sampling_config": {
+          "temperature": 0.0,
+          "seed_policy": "reserved_trajectory_replicate"
+        },
+        "context_policy": "kaggle_proxy_managed",
+        "model_context_limit_tokens": 1050000,
+        "model_max_output_tokens": 128000,
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    }
+  ],
+  "agent_policy": {
+    "status": "frozen",
+    "agent_policy_ids_by_model_role": {
+      "primary_anchor": "ap_sha256_88a9e1193316f8cd537490eff46074e39e5a920010245f1708187f401b1ab4bf",
+      "floor_low": "ap_sha256_70d6d8c151932196e5efda7454f847b157c9df1320e2763b81a4298d6f426ba3",
+      "floor_strong": "ap_sha256_e94ae3701c132571fc7a35a6e70afb1ba3e5201e346d2a7384f0e71103b55e8a"
+    },
+    "canonical": {
+      "runner": "kaggle",
+      "runner_version": "kaggle-benchmarks==0.6.1",
+      "agent": "mini-swe-agent",
+      "agent_version": "mini-swe-agent==2.4.4@8c3cfaee0ddb37c8325426990ff179c96690a1cf",
+      "scaffold_prompt_hash": "sha256:937691ea72ef93dbb1fb6a01f4507eccb5a7c0dee7417a3908a9f57537f4b7b4",
+      "agent_step_limit": 256,
+      "max_output_tokens": 8192,
+      "tool_protocol": "shallowswe-kaggle-native-tools-v1",
+      "continuation_policy": "same_conversation_and_filesystem",
+      "sandbox_interface": "kaggle-chroot-seccomp-hidden-verifier",
+      "feedback_policy": "shallowswe-coarse-feedback-v1",
+      "config_path": "configs/mini-swe-agent-pilot-permissive.yaml"
+    }
+  },
+  "temporary_permissive_policy": {
+    "verifier_submission_limit": 16,
+    "agent_step_limit": 256,
+    "safety_dollar_limit_usd": 5.0,
+    "candidate_verifier_submission_caps": [2, 4, 6, 8, 12],
+    "candidate_agent_step_caps": [32, 64, 128],
+    "budget_bands_usd": [0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0],
+    "cap_disclosure": "undisclosed"
+  },
+  "pilot_measurement_policy": {
+    "first_submit_source": "permissive_repair_loop_prefix",
+    "standalone_one_shot_stage": false,
+    "pressure_use": "descriptive_protocol_signal",
+    "full_budget_and_confirmation_scope": "v1_freeze_machinery_demonstrated_on_preregistered_subset"
+  },
+  "trajectory_plan": {
+    "codex_development": {
+      "evidence_class": "development",
+      "funding_pool": "codex_subscription",
+      "total": 66
+    },
+    "kaggle_canary": {
+      "evidence_class": "official_pilot",
+      "funding_pool": "kaggle_grant",
+      "total": 16
+    },
+    "permissive_collection": {
+      "evidence_class": "official_pilot",
+      "funding_pool": "kaggle_grant",
+      "anchor_per_task": 6,
+      "anchor_proposal_per_task": 4,
+      "anchor_development_check_per_task": 2,
+      "each_floor_per_task": 3,
+      "total": 72
+    },
+    "fresh_anchor_confirmation": {
+      "evidence_class": "official_pilot",
+      "funding_pool": "kaggle_grant",
+      "task_ids": [
+        "access-log-to-incidents",
+        "invoice-multi-source-merge",
+        "merge-divergent-config-branches"
+      ],
+      "anchor_per_task": 8,
+      "minimum_successes_per_task": 7,
+      "total": 24
+    }
+  },
+  "funding_gate": {
+    "core_kaggle_limit_usd": 200.0,
+    "targeted_extension_reserve_usd": 100.0,
+    "daily_launch_soft_limit_usd": 160.0,
+    "daily_hard_limit_usd": 200.0,
+    "openrouter_cash_cap_usd": 25.0,
+    "requires_explicit_approval": true
+  },
+  "budget_preflight": {
+    "stage_high_estimates_usd": {
+      "kaggle_canary": 9.0,
+      "permissive_collection": 32.0,
+      "fresh_anchor_confirmation": 22.0
+    },
+    "core_high_estimate_usd": 63.0,
+    "canary_launch_reserve_usd": 20.0,
+    "price_basis": "planning_estimate_pending_frozen_price_sheet"
+  },
+  "freeze_artifacts": {
+    "price_sheet": null,
+    "task_hashes": null,
+    "verifier_hashes": null,
+    "environment_hashes": null,
+    "runner_artifact_hash": null,
+    "pilot_schedule": "configs/shallowswe-six-task-pilot-v0.3-schedule.json",
+    "pilot_schedule_hash": null,
+    "pilot_launch_plan": "configs/shallowswe-six-task-pilot-v0.3-launch-plan.json",
+    "pilot_launch_plan_hash": null
+  }
+}

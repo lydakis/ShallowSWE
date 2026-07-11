@@ -1,0 +1,41 @@
+{
+  "schema_version": "shallowswe.negative_controls.v0.1",
+  "task_id": "env-flags-to-json",
+  "negative_controls": [
+    {
+      "id": "NC1",
+      "baseline": "base",
+      "setup": null,
+      "description": "Leave scripts/build_outputs.py absent.",
+      "expected_failure": "The verifier rejects the missing implementation before checking outputs."
+    },
+    {
+      "id": "NC2",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC2.sh",
+      "description": "Hardcode the visible flags.json fixture instead of parsing input/flags.env.",
+      "expected_failure": "The fresh hidden input produces mismatched keys and values."
+    },
+    {
+      "id": "NC3",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC3.sh",
+      "description": "Parse every value as a string and preserve insertion order.",
+      "expected_failure": "Typed-value and deterministic-key-order checks fail."
+    },
+    {
+      "id": "NC4",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC4.sh",
+      "description": "Implement the transformation but also write an undeclared output/extra.txt file.",
+      "expected_failure": "The exact output-scope check rejects the additional file."
+    },
+    {
+      "id": "NC5",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC5.sh",
+      "description": "Recognize only lowercase true and false as booleans.",
+      "expected_failure": "The uppercase FALSE hidden value remains a string."
+    }
+  ]
+}

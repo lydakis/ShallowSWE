@@ -1,5 +1,9 @@
 # ShallowSWE Build Plan
 
+> **Historical build plan.** The active six-task launch sequence is
+> `docs/six-task-pilot-protocol-v0.3.md`. This page preserves the earlier category-by-size plan and
+> must not be treated as a calibration manifest.
+
 ShallowSWE is no longer in a pilot-only phase. This document tracks the path from the authored
 36-task candidate matrix to a calibrated v1 benchmark.
 

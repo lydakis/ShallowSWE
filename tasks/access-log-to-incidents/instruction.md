@@ -2,6 +2,15 @@
 
 Read `input/access.log` and create incidents, rejects, and summary outputs. Treat HTTP 500+ as high severity and 429 as medium.
 
+Each nonblank input line must contain exactly six whitespace-separated fields in this order:
+
+```text
+timestamp service method path status request_id
+```
+
+`status` must be a base-10 HTTP status integer from 100 through 599. Lines with another field
+count or an invalid status are malformed. Preserve malformed lines in input order in `rejects.csv`.
+
 ## Acceptance Criteria
 
 - Implement the transformation in `scripts/build_outputs.py`; the verifier reruns it on fresh inputs.

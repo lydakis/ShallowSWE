@@ -29,6 +29,9 @@ Every publishable task needs task-local evidence under:
 tasks/<task-id>/quality/
   requirements.json
   negative-controls.json
+  negative-controls/<control-id>.sh
+  executions.json
+  routine-review.json
   investigator-review.md   # optional but recommended for admitted tasks
 ```
 
@@ -73,6 +76,16 @@ Good negative controls are boring and specific: no-op patch, hardcoded visible f
 partial implementation, wrong ordering, missing malformed-row handling, deleted unrelated state, or
 test-only changes without runtime behavior.
 
+`executions.json` is generated evidence, not an author claim. It binds the task packet by SHA-256,
+records the clean-sandbox runtime and image digest, and records three clean reference runs, one
+materially different alternate run, and one rejecting run for every declared control. Any prompt,
+environment, verifier, solution, or control edit makes the evidence stale.
+
+`routine-review.json` records the construct gate separately from verifier QA. It requires at least
+one qualified reviewer who is not the task author, an accept/revise/reject rationale for every
+routine-work rubric field, and hashes for the reviewed instruction and environment. Investigator
+agents may assist this review but do not satisfy an independent engineer sign-off by themselves.
+
 ## Audit Workflow
 
 1. Write the original task, reference solution, and verifier.
@@ -99,9 +112,21 @@ Generate the current report with:
 uv run shallowswe task-quality tasks
 ```
 
-The command audits evidence presence, JSON structure, and verifier-check references. It reports
-`quality_evidence_complete`; it does not execute reference solutions or negative controls. Record
-those executions during the manual workflow above before admitting a task.
+The audit command reports three distinct states:
+
+- `quality_evidence_complete`: requirement and negative-control declarations are structurally valid;
+- `executed_quality_evidence_complete`: current hash-bound reference, alternate, and control runs pass;
+- `routine_review_complete`: a current independent construct review accepts the task.
+
+Generate executed evidence on macOS with Apple `container`:
+
+```sh
+container system start --enable-kernel-install
+uv run shallowswe execute-task-quality tasks --task-id <task-id>
+```
+
+Apple `container` is local deterministic QA only. Kaggle remains the canonical official pilot
+runner, and Pier/Harbor remains the portability runner.
 
 The report includes:
 

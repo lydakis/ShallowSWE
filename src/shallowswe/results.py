@@ -10,7 +10,7 @@ from .task_metadata import normalize_category, normalize_size
 
 
 RESULT_SCHEMA_VERSION = "shallowswe.result.v0.4"
-REPAIR_LOOP_SCHEMA_VERSION = "shallowswe.repair_loop.v0.2"
+REPAIR_LOOP_SCHEMA_VERSION = "shallowswe.repair_loop.v0.3"
 SCORED_STATUS = "scored"
 EXCLUDED_STATUS = "excluded"
 CAP_HIT_STOP_REASONS = frozenset(
@@ -134,8 +134,53 @@ class RepairLoopResult:
     price_sheet_date: str | None = None
     seed: int | None = None
     run_id: str | None = None
+    trajectory_id: str | None = None
+    launch_unit_id: str | None = None
+    pilot_stage: str | None = None
+    pilot_mode: str | None = None
     task_visibility: str | None = None
     transcript_hash: str | None = None
+    model_config_id: str | None = None
+    model_config_canonical_json: dict[str, Any] | None = None
+    agent_policy_id: str | None = None
+    agent_policy_canonical_json: dict[str, Any] | None = None
+    provider_route: str | None = None
+    context_limit: int | None = None
+    max_output_tokens: int | None = None
+    cache_policy: str | None = None
+    evidence_class: str | None = None
+    funding_pool: str | None = None
+    reference_task_budget_usd: float | None = None
+    reference_budget_version: str | None = None
+    reference_budget_band: str | None = None
+    reference_budget_coverage_target: float | None = None
+    reference_budget_proposal_attempts: int | None = None
+    reference_budget_development_check_attempts: int | None = None
+    reference_budget_band_bumps: int | None = None
+    primary_anchor_model_config_id: str | None = None
+    secondary_anchor_model_config_ids: list[str] | None = None
+    anchor_price_sheet_version: str | None = None
+    reference_anchor_replacement_cost_usd: float | None = None
+    reference_anchor_replacement_cost_ci_low_usd: float | None = None
+    reference_anchor_replacement_cost_ci_high_usd: float | None = None
+    anchor_confirmation_attempts: int | None = None
+    anchor_confirmation_successes: int | None = None
+    actual_model_spend_usd: float | None = None
+    canonical_list_price_equivalent_spend_usd: float | None = None
+    reference_budget_charged_spend_usd: float | None = None
+    realized_charged_spend_usd: float | None = None
+    escalation_charged_spend_usd: float | None = None
+    failure_charge_applied_usd: float | None = None
+    budget_overrun_usd: float | None = None
+    verifier_submission_cap: int | None = None
+    agent_step_cap: int | None = None
+    cap_disclosure: str | None = None
+    pressure_band: str | None = None
+    scope_metadata_version: str | None = None
+    routine_review_version: str | None = None
+    censoring_status: str | None = None
+    release_class: str | None = None
+    declared_coverage_weight: float | None = None
     status: str = SCORED_STATUS
     exclusion_reason: str | None = None
     started_at: str | None = None
@@ -333,8 +378,75 @@ def repair_loop_from_mapping(row: dict[str, object]) -> RepairLoopResult:
         price_sheet_date=_optional_str(row.get("price_sheet_date")),
         seed=_optional_int(row.get("seed")),
         run_id=_optional_str(row.get("run_id")),
+        trajectory_id=_optional_str(row.get("trajectory_id")),
+        launch_unit_id=_optional_str(row.get("launch_unit_id")),
+        pilot_stage=_optional_str(row.get("pilot_stage")),
+        pilot_mode=_optional_str(row.get("pilot_mode")),
         task_visibility=_optional_str(row.get("task_visibility")),
         transcript_hash=_optional_str(row.get("transcript_hash")),
+        model_config_id=_optional_str(row.get("model_config_id")),
+        model_config_canonical_json=_optional_dict(row.get("model_config_canonical_json")),
+        agent_policy_id=_optional_str(row.get("agent_policy_id")),
+        agent_policy_canonical_json=_optional_dict(row.get("agent_policy_canonical_json")),
+        provider_route=_optional_str(row.get("provider_route")),
+        context_limit=_optional_int(row.get("context_limit")),
+        max_output_tokens=_optional_int(row.get("max_output_tokens")),
+        cache_policy=_optional_str(row.get("cache_policy")),
+        evidence_class=_optional_str(row.get("evidence_class")),
+        funding_pool=_optional_str(row.get("funding_pool")),
+        reference_task_budget_usd=_optional_float(row.get("reference_task_budget_usd")),
+        reference_budget_version=_optional_str(row.get("reference_budget_version")),
+        reference_budget_band=_optional_str(row.get("reference_budget_band")),
+        reference_budget_coverage_target=_optional_float(
+            row.get("reference_budget_coverage_target")
+        ),
+        reference_budget_proposal_attempts=_optional_int(
+            row.get("reference_budget_proposal_attempts")
+        ),
+        reference_budget_development_check_attempts=_optional_int(
+            row.get("reference_budget_development_check_attempts")
+        ),
+        reference_budget_band_bumps=_optional_int(row.get("reference_budget_band_bumps")),
+        primary_anchor_model_config_id=_optional_str(
+            row.get("primary_anchor_model_config_id")
+        ),
+        secondary_anchor_model_config_ids=_optional_str_list(
+            row.get("secondary_anchor_model_config_ids")
+        ),
+        anchor_price_sheet_version=_optional_str(row.get("anchor_price_sheet_version")),
+        reference_anchor_replacement_cost_usd=_optional_float(
+            row.get("reference_anchor_replacement_cost_usd")
+        ),
+        reference_anchor_replacement_cost_ci_low_usd=_optional_float(
+            row.get("reference_anchor_replacement_cost_ci_low_usd")
+        ),
+        reference_anchor_replacement_cost_ci_high_usd=_optional_float(
+            row.get("reference_anchor_replacement_cost_ci_high_usd")
+        ),
+        anchor_confirmation_attempts=_optional_int(row.get("anchor_confirmation_attempts")),
+        anchor_confirmation_successes=_optional_int(row.get("anchor_confirmation_successes")),
+        actual_model_spend_usd=_optional_float(row.get("actual_model_spend_usd")),
+        canonical_list_price_equivalent_spend_usd=_optional_float(
+            row.get("canonical_list_price_equivalent_spend_usd")
+        ),
+        reference_budget_charged_spend_usd=_optional_float(
+            row.get("reference_budget_charged_spend_usd")
+        ),
+        realized_charged_spend_usd=_optional_float(row.get("realized_charged_spend_usd")),
+        escalation_charged_spend_usd=_optional_float(
+            row.get("escalation_charged_spend_usd")
+        ),
+        failure_charge_applied_usd=_optional_float(row.get("failure_charge_applied_usd")),
+        budget_overrun_usd=_optional_float(row.get("budget_overrun_usd")),
+        verifier_submission_cap=_optional_int(row.get("verifier_submission_cap")),
+        agent_step_cap=_optional_int(row.get("agent_step_cap")),
+        cap_disclosure=_optional_str(row.get("cap_disclosure")),
+        pressure_band=_optional_str(row.get("pressure_band")),
+        scope_metadata_version=_optional_str(row.get("scope_metadata_version")),
+        routine_review_version=_optional_str(row.get("routine_review_version")),
+        censoring_status=_optional_str(row.get("censoring_status")),
+        release_class=_optional_str(row.get("release_class")),
+        declared_coverage_weight=_optional_float(row.get("declared_coverage_weight")),
         status=str(row.get("status") or SCORED_STATUS),
         exclusion_reason=_optional_str(row.get("exclusion_reason")),
         started_at=_optional_str(row.get("started_at")),
@@ -465,11 +577,14 @@ def aggregate_results(
 
 def aggregate_repair_loops(
     rows: Iterable[RepairLoopResult],
-    group_by: tuple[str, ...] = ("model_config", "category", "size"),
+    group_by: tuple[str, ...] | None = None,
     prices: PriceCatalog | None = None,
 ) -> list[dict[str, object]]:
+    row_list = list(rows)
+    if group_by is None:
+        group_by = _default_repair_loop_grouping(row_list)
     grouped: dict[tuple[object, ...], list[RepairLoopResult]] = defaultdict(list)
-    for row in rows:
+    for row in row_list:
         grouped[tuple(getattr(row, field) for field in group_by)].append(row)
 
     summaries: list[dict[str, object]] = []
@@ -562,17 +677,67 @@ def aggregate_repair_loops(
                 "stop_reasons": _count_stop_reasons(scored),
             }
         )
-        if prices and scored:
-            row_costs = [repair_loop_cost_usd(row, prices) for row in scored]
-            successful_costs = [repair_loop_cost_usd(row, prices) for row in successful]
-            total_cost = sum(row_costs)
+        row_costs = [_canonical_repair_loop_spend(row, prices) for row in scored]
+        if row_costs and all(cost is not None for cost in row_costs):
+            complete_row_costs = [float(cost) for cost in row_costs if cost is not None]
+            successful_costs = [
+                cost
+                for row, cost in zip(scored, complete_row_costs, strict=True)
+                if row.passed
+            ]
+            total_cost = sum(complete_row_costs)
             successful_cost = sum(successful_costs)
+            reference_complete = [
+                row for row in scored if row.reference_task_budget_usd is not None
+            ]
+            replacement_complete = [
+                row
+                for row in scored
+                if row.reference_anchor_replacement_cost_usd is not None
+            ]
+            reference_total = (
+                sum(
+                    cost if row.passed else float(row.reference_task_budget_usd or 0.0)
+                    for row, cost in zip(scored, complete_row_costs, strict=True)
+                )
+                if len(reference_complete) == repair_loops
+                else None
+            )
+            escalation_total = (
+                sum(
+                    cost
+                    + (
+                        0.0
+                        if row.passed
+                        else float(row.reference_anchor_replacement_cost_usd or 0.0)
+                    )
+                    for row, cost in zip(scored, complete_row_costs, strict=True)
+                )
+                if len(replacement_complete) == repair_loops
+                else None
+            )
             summary.update(
                 {
                     "total_model_spend_usd": total_cost,
                     "mean_cost_per_repair_loop": total_cost / repair_loops,
-                    "p95_cost_per_repair_loop": _percentile(row_costs, 0.95),
+                    "p95_cost_per_repair_loop": _percentile(complete_row_costs, 0.95),
                     "cpsc": total_cost / successes if successes else None,
+                    "realized_cpsc": total_cost / successes if successes else None,
+                    "reference_budget_cpsc": (
+                        reference_total / successes
+                        if successes and reference_total is not None
+                        else None
+                    ),
+                    "escalation_cpsc": (
+                        escalation_total / successes
+                        if successes and escalation_total is not None
+                        else None
+                    ),
+                    "total_reference_budget_charged_spend_usd": reference_total,
+                    "total_realized_charged_spend_usd": total_cost,
+                    "total_escalation_charged_spend_usd": escalation_total,
+                    "reference_budget_complete_rows": len(reference_complete),
+                    "replacement_cost_complete_rows": len(replacement_complete),
                     "conditional_spend_among_solved_loops": (
                         successful_cost / successes if successes else None
                     ),
@@ -581,17 +746,24 @@ def aggregate_repair_loops(
                     ),
                 }
             )
-            cost_reconciliation = _cost_reconciliation(
-                scored,
-                prices,
-                unit_name="repair_loop",
-                unit_plural="repair_loops",
-            )
-            if cost_reconciliation is not None:
-                summary.update(cost_reconciliation)
+            if prices:
+                cost_reconciliation = _cost_reconciliation(
+                    scored,
+                    prices,
+                    unit_name="repair_loop",
+                    unit_plural="repair_loops",
+                )
+                if cost_reconciliation is not None:
+                    summary.update(cost_reconciliation)
         summaries.append(summary)
 
     return summaries
+
+
+def _default_repair_loop_grouping(rows: list[RepairLoopResult]) -> tuple[str, ...]:
+    if rows and all(row.model_config_id and row.agent_policy_id for row in rows):
+        return ("model_config_id", "agent_policy_id", "category", "size")
+    return ("model_config", "category", "size")
 
 
 def rollout_cost_usd(row: UsageRow, prices: PriceCatalog) -> float:
@@ -616,6 +788,17 @@ def rollout_cost_usd(row: UsageRow, prices: PriceCatalog) -> float:
 
 def repair_loop_cost_usd(row: RepairLoopResult, prices: PriceCatalog) -> float:
     return rollout_cost_usd(row, prices)
+
+
+def _canonical_repair_loop_spend(
+    row: RepairLoopResult,
+    prices: PriceCatalog | None,
+) -> float | None:
+    if row.canonical_list_price_equivalent_spend_usd is not None:
+        return row.canonical_list_price_equivalent_spend_usd
+    if prices is None:
+        return None
+    return repair_loop_cost_usd(row, prices)
 
 
 def _mean_cost(
@@ -727,6 +910,12 @@ def _optional_int(value: Any) -> int | None:
 
 def _optional_dict(value: object | None) -> dict[str, Any] | None:
     return dict(value) if isinstance(value, dict) else None
+
+
+def _optional_str_list(value: object | None) -> list[str] | None:
+    if not isinstance(value, list):
+        return None
+    return [str(item) for item in value]
 
 
 def _optional_str(value: object | None) -> str | None:

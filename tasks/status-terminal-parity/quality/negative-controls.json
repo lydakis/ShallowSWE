@@ -1,0 +1,48 @@
+{
+  "schema_version": "shallowswe.negative_controls.v0.1",
+  "task_id": "status-terminal-parity",
+  "negative_controls": [
+    {
+      "id": "NC1",
+      "baseline": "base",
+      "setup": null,
+      "description": "Leave all status surfaces unchanged.",
+      "expected_failure": "The new status and alias are rejected."
+    },
+    {
+      "id": "NC2",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC2.sh",
+      "description": "Update shared status helpers but leave carrier webhooks rejecting the new spellings.",
+      "expected_failure": "Webhook parity checks reject rts and return_to_sender."
+    },
+    {
+      "id": "NC3",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC3.sh",
+      "description": "Treat return_to_sender as a successful delivery.",
+      "expected_failure": "Successful counts and order IDs incorrectly include returned orders."
+    },
+    {
+      "id": "NC4",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC4.sh",
+      "description": "Support only the canonical literal and drop the rts compatibility alias.",
+      "expected_failure": "Helper, CSV, webhook, admin, and help alias checks fail."
+    },
+    {
+      "id": "NC5",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC5.sh",
+      "description": "Accept arbitrary unknown status strings.",
+      "expected_failure": "Unknown-status rejection checks fail."
+    },
+    {
+      "id": "NC6",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC6.sh",
+      "description": "Implement behavior but omit the new literal and alias from repair help.",
+      "expected_failure": "The CLI help contract fails."
+    }
+  ]
+}

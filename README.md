@@ -3,41 +3,49 @@
 An independent benchmark for the easy parts of software work.
 
 ShallowSWE is inspired by DeepSWE's rigor, but is not affiliated with DeepSWE, Datacurve, or Pier.
-The benchmark target is different: ShallowSWE pins a frontier ceiling, dials task size by a
-floor-probe panel, and measures bounded repair-loop cost per successful completion by task
-category, size, and model configuration.
+The benchmark target is different: ShallowSWE measures reference-budget cost per verified
+completion under one bounded repair loop, separating work category, empirical floor pressure,
+reference budget, and structural scope.
 
 ## Current Shape
 
-- `SPEC.md` is the v0.1 product spec and source of truth.
+- `docs/white-paper-v0.4.2.md` is the normative methodology source of truth.
+- `docs/six-task-pilot-protocol-v0.3.md` is the normative protocol-validation pilot guide.
+- `docs/protocol-governance.md` defines document precedence, freeze rules, runner roles, and
+  evidence classes.
+- `SPEC.md` is retained as the legacy v0.1 implementation specification while the v0.4.2 schema
+  migration is completed.
 - `tasks/` is a Pier-compatible local dataset. It currently spans `code`, `artifact`, and `workflow` tasks across `small`, `medium`, and `large` sizes. `py-normalize-username` is harness smoke; the remaining tasks are realistic candidate or calibrated benchmark packets.
 - `src/shallowswe/` contains metadata validation, the shared repair-loop protocol, Kaggle and Pier
   adapters, result export, and aggregation.
 - `prices/` contains dated provider price sheets used to derive dollar metrics from token usage.
 - `panels/` contains seed, preview, and calibration model-panel manifests. `shallowswe-calibration-v0.1` is the cheap anchor panel for size calibration; DeepSWE-aligned publish manifests are starting points, not the final ShallowSWE panel.
 - `docs/task-shape-catalog.md` defines durable task shapes used to instantiate original tasks.
-- `docs/calibration-protocol.md` defines pinned-ceiling, measured-floor calibration and the bounded
-  repair-loop protocol.
+- `docs/calibration-protocol.md` records the pre-v0.4.2 size-calibration implementation history.
 - `docs/task-selection-rubric.md` defines which work packets belong in ShallowSWE.
 - `docs/verifier-contract.md` defines what a passing rollout must prove and how task verifiers are reviewed.
 - `docs/task-quality-audit.md` defines the publishable prompt/verifier QA evidence required before
   calibration and scoring.
 - `docs/task-sourcing-methodology.md` defines how official benchmark tasks are mined, authored, reviewed, and calibrated.
 - `docs/calibration-log.md` records size-calibration runs and admission decisions.
-- `docs/pilot-plan.md` records the path from the 36-task scaffold to a calibrated v1 snapshot.
-- Kaggle is the primary published repair-loop backend. Pier/Harbor remains the parallel local and
-  calibration backend. `tasks/` is the single source of truth for both.
+- `docs/pilot-plan.md` records the pre-v0.4.2 build plan and is not a launch manifest.
+- Kaggle is the primary official pilot backend. Pier/Harbor remains the parallel portability and
+  local-reproduction backend. Codex subscription runs are development-only. `tasks/` is the single
+  authored source for every runner.
+- Apple `container` is the preferred clean-sandbox backend for local deterministic task QA on
+  supported macOS hosts. It does not replace Kaggle as the official funded runner.
 - `docs/kaggle-runner.md` documents packaging, isolation, parity, live conformance, and operations.
 
 ## Quick Checks
 
-ShallowSWE has two run modes:
+ShallowSWE has three evidence modes:
 
-- **One-shot calibration mode**: current Pier-style runs. Use for task admission, the 75% ceiling
-  gate, floor selection, and size calibration.
-- **Bounded repair-loop scoring mode**: final published CPSC. Use only after the accepted task set
-  is fixed. Each scoring row runs one `(model, effort)` pair only; ShallowSWE v1 does not fall back
-  to another model inside a run.
+- **Deterministic QA**: reference, alternate, negative-control, verifier, isolation, and schema
+  checks. These are not model evidence.
+- **One-shot calibration**: anchor admission and floor-pressure measurement under frozen identities.
+- **Bounded repair-loop calibration/scoring**: permissive policy calibration, fresh anchor
+  confirmation, and later leaderboard scoring. Each row runs one immutable model and agent policy;
+  there is no fallback inside a row.
 
 ```sh
 uv run python -m unittest discover -s tests
@@ -57,7 +65,7 @@ uv run shallowswe kaggle-pack tmp/kaggle-smoke-bundle \
   --mini-swe-agent-source-dir /Users/lydakis/Developer/oss/mini-swe-agent
 ```
 
-Add `--prices prices/openai-2026-07-03.json` when the result rows use models covered by that price sheet. The `aggregate` command summarizes one-shot rollout rows for calibration diagnostics. Final benchmark snapshots use bounded repair-loop rows and `aggregate-repair-loops`. Aggregates group by `model_config` by default, so reasoning-effort variants are separate rows.
+Add `--prices prices/openai-2026-07-03.json` when the result rows use models covered by that price sheet. The `aggregate` command summarizes one-shot rollout rows for calibration diagnostics. Final benchmark snapshots use bounded repair-loop rows and `aggregate-repair-loops`. Migrated repair-loop rows group by immutable model-config and agent-policy IDs by default; legacy rows retain the old model/category/size grouping.
 
 Build the site-ready workload index and optional DeepSWE all-dollars comparison:
 
@@ -96,13 +104,49 @@ The plan currently has two one-shot calibration groups: primary ceiling admissio
 floor size calibration at `N=10`. A valid plan can still require explicit budget approval; the
 ceiling phase is intentionally marked that way under the conservative July 4 estimate.
 
-Build the task-quality evidence report before treating candidate tasks as publishable benchmark
-items. The command validates evidence structure and verifier references; it does not execute the
-declared negative controls:
+Build and execute task-quality evidence before calibration. The first command audits declarations,
+hash-bound executions, and independent routine-review records. The second runs three reference
+replicates, one alternate solution, and every declared negative control in fresh network-disabled
+Apple containers:
 
 ```sh
 uv run shallowswe task-quality tasks
+uv run shallowswe execute-task-quality tasks \
+  --task-id env-flags-to-json \
+  --task-id access-log-to-incidents
 ```
+
+For the six-task pilot, `pilot-review-pack` exports blind reviewer materials without solutions,
+hidden verifiers, or trajectories. `pilot-review-import` validates the complete set before importing
+the six hash-bound independent-review forms.
+
+Expand the protocol-validation schedule and run the fail-closed preflight before any official
+canary launch:
+
+```sh
+uv run shallowswe pilot-schedule \
+  configs/shallowswe-six-task-pilot-v0.3.json \
+  configs/shallowswe-six-task-pilot-v0.3-schedule.json
+uv run shallowswe pilot-launch-plan \
+  configs/shallowswe-six-task-pilot-v0.3.json \
+  configs/shallowswe-six-task-pilot-v0.3-schedule.json \
+  configs/shallowswe-six-task-pilot-v0.3-launch-plan.json
+uv run shallowswe pilot-readiness configs/shallowswe-six-task-pilot-v0.3.json
+```
+
+After independent routine review, build the final Kaggle bundle with `--pilot-manifest`,
+`--pilot-schedule`, `--pilot-launch-plan`, and `--price-sheet`. Freeze hashes only after the bundle
+is final:
+
+```sh
+uv run shallowswe pilot-freeze configs/shallowswe-six-task-pilot-v0.3.json \
+  --runner-bundle /tmp/shallowswe-six-task-v0.3-freeze-candidate \
+  --price-sheet prices/openai-2026-07-06.json \
+  --write
+```
+
+The freeze command refuses to write while any quality, routine-review, schedule, launch-plan,
+bundle, or identity gate is incomplete. See `docs/six-task-pilot-launch-runbook.md`.
 
 Use the calibration panel for the floor-selection sweep. Calibration one-shot rollouts are not
 published leaderboard repair loops. A 36-task, 10-rollout sweep on the current cheap candidate

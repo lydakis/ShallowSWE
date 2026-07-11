@@ -271,6 +271,125 @@ class ResultAggregationTests(unittest.TestCase):
         self.assertEqual(row.task_visibility, "public")
         self.assertEqual(row.transcript_hash, "sha256:transcript")
 
+    def test_repair_loop_rows_preserve_v042_identity_and_accounting(self) -> None:
+        row = repair_loop_from_mapping(
+            {
+                "model": "openai/gpt-test",
+                "task_id": "example",
+                "category": "code",
+                "size": "small",
+                "loop": 0,
+                "passed": False,
+                "stop_reason": "dollar_cap",
+                "verifier_submissions": 2,
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "turns": 2,
+                "model_config_id": "mc_test",
+                "model_config_canonical_json": {"requested_model": "openai/gpt-test"},
+                "agent_policy_id": "ap_test",
+                "agent_policy_canonical_json": {"runner": "kaggle"},
+                "provider_route": "kaggle/openai",
+                "evidence_class": "official_pilot",
+                "funding_pool": "kaggle_grant",
+                "reference_task_budget_usd": 0.5,
+                "reference_anchor_replacement_cost_usd": 0.2,
+                "canonical_list_price_equivalent_spend_usd": 0.4,
+                "verifier_submission_cap": 8,
+                "agent_step_cap": 128,
+                "cap_disclosure": "undisclosed",
+                "pressure_band": "medium",
+                "censoring_status": "observed_stop",
+                "release_class": "protocol_validation",
+            }
+        )
+
+        self.assertEqual(row.model_config_id, "mc_test")
+        self.assertEqual(row.agent_policy_id, "ap_test")
+        self.assertEqual(row.evidence_class, "official_pilot")
+        self.assertEqual(row.funding_pool, "kaggle_grant")
+        self.assertEqual(row.reference_task_budget_usd, 0.5)
+        self.assertEqual(row.reference_anchor_replacement_cost_usd, 0.2)
+        self.assertEqual(row.pressure_band, "medium")
+
+    def test_repair_loop_aggregates_three_cpsc_variants(self) -> None:
+        prices = {
+            "small": ModelPrice(
+                input_per_1m=1.0,
+                cached_input_per_1m=None,
+                output_per_1m=1.0,
+            )
+        }
+        common = {
+            "model": "small",
+            "task_id": "example",
+            "category": "code",
+            "size": "small",
+            "verifier_submissions": 1,
+            "output_tokens": 0,
+            "turns": 1,
+            "reference_task_budget_usd": 5.0,
+            "reference_anchor_replacement_cost_usd": 3.0,
+        }
+        rows = [
+            repair_loop_from_mapping(
+                {
+                    **common,
+                    "loop": 0,
+                    "passed": True,
+                    "stop_reason": "passed",
+                    "input_tokens": 1_000_000,
+                }
+            ),
+            repair_loop_from_mapping(
+                {
+                    **common,
+                    "loop": 1,
+                    "passed": False,
+                    "stop_reason": "dollar_cap",
+                    "input_tokens": 2_000_000,
+                }
+            ),
+        ]
+
+        summary = aggregate_repair_loops(rows, prices=prices)[0]
+
+        self.assertAlmostEqual(summary["realized_cpsc"], 3.0)
+        self.assertAlmostEqual(summary["reference_budget_cpsc"], 6.0)
+        self.assertAlmostEqual(summary["escalation_cpsc"], 6.0)
+        self.assertAlmostEqual(summary["cpsc"], summary["realized_cpsc"])
+        self.assertEqual(summary["reference_budget_complete_rows"], 2)
+        self.assertEqual(summary["replacement_cost_complete_rows"], 2)
+
+    def test_repair_loop_default_grouping_separates_agent_policy_ids(self) -> None:
+        common = {
+            "model": "openai/gpt-test",
+            "task_id": "example",
+            "category": "code",
+            "size": "small",
+            "loop": 0,
+            "passed": True,
+            "stop_reason": "passed",
+            "verifier_submissions": 1,
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "turns": 1,
+            "model_config_id": "mc_same",
+            "canonical_list_price_equivalent_spend_usd": 0.1,
+        }
+        rows = [
+            repair_loop_from_mapping({**common, "agent_policy_id": "ap_kaggle"}),
+            repair_loop_from_mapping({**common, "agent_policy_id": "ap_pier"}),
+        ]
+
+        summaries = aggregate_repair_loops(rows)
+
+        self.assertEqual(len(summaries), 2)
+        self.assertEqual(
+            {summary["agent_policy_id"] for summary in summaries},
+            {"ap_kaggle", "ap_pier"},
+        )
+
     def test_cost_uses_long_context_rates_when_peak_context_crosses_threshold(self) -> None:
         prices = {
             "model": ModelPrice(

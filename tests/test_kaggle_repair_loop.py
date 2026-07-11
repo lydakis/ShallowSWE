@@ -89,6 +89,16 @@ class KaggleRepairLoopTests(unittest.TestCase):
                     config_file=config,
                     max_verifier_submissions=3,
                     seed=7,
+                    model_config_id="mc_test",
+                    model_config_canonical_json={"requested_model": "test/model"},
+                    agent_policy_id="ap_test",
+                    agent_policy_canonical_json={"runner": "kaggle"},
+                    context_limit=1000,
+                    cache_policy="disabled",
+                    evidence_class="official_pilot",
+                    funding_pool="kaggle_grant",
+                    price_sheet_version="test-prices",
+                    routine_review_version="review-v1",
                     environment_factory=lambda path, timeout: LocalEnvironment(
                         cwd=str(path), timeout=timeout
                     ),
@@ -102,6 +112,13 @@ class KaggleRepairLoopTests(unittest.TestCase):
             self.assertEqual(row.runner, "kaggle-benchmarks-repair-loop")
             self.assertEqual(row.inference_gateway, "kaggle")
             self.assertEqual(row.seed, 7)
+            self.assertEqual(row.model_config_id, "mc_test")
+            self.assertEqual(row.agent_policy_id, "ap_test")
+            self.assertEqual(row.verifier_submission_cap, 3)
+            self.assertEqual(row.agent_step_cap, 10)
+            self.assertEqual(row.evidence_class, "official_pilot")
+            self.assertEqual(row.funding_pool, "kaggle_grant")
+            self.assertEqual(row.censoring_status, "observed")
             self.assertEqual(verifier_calls, 2)
             self.assertTrue((artifacts / "mini-swe-agent.trajectory.json").is_file())
             self.assertTrue((artifacts / "verifier-diagnostics.jsonl").is_file())

@@ -54,11 +54,11 @@ size_assignment_decision = "candidate_pending_high_n_floor"
 
 ## Current Decision
 
-Kaggle is the primary backend for published repair-loop scoring because funded Kaggle capacity is
-available. Pier/Harbor remains supported as the parallel local, calibration, and portability
-backend. Both paths consume `tasks/` and call the shared repair-loop protocol; backend code owns
-only model transport, sandbox execution, and verifier invocation. See `docs/kaggle-runner.md` for
-the Kaggle deployment and live conformance evidence.
+Kaggle is the primary backend for official pilot evidence because funded Kaggle capacity is
+available. Pier/Harbor remains supported as the parallel local-reproduction and portability
+backend. Pier results are a separate evidence class unless immutable policy and transport identity
+are exactly equal; they are never pooled by assumption. Both paths consume `tasks/` and call the
+shared repair-loop protocol. See `docs/protocol-governance.md` and `docs/kaggle-runner.md`.
 
 ## Repair-Loop Continuation
 
@@ -78,14 +78,16 @@ submission with `--task`, and runs later submissions with `--resume-from` plus s
 `--resume-feedback`. That keeps the same workspace and conditions the next model call on the prior
 trajectory/messages.
 
-Before the first paid repair-loop pilot, use:
+Before the first official canary, use the v0.4.2 stage-aware preflight introduced by the schema
+migration. The legacy capability-only command remains useful for historical smoke plans:
 
 ```sh
 uv run shallowswe repair-loop-pilot-plan configs/shallowswe-repair-loop-pilot-v0.1.json
 ```
 
-The plan must report `ready_for_final_protocol_pilot = true`. The current candidate plan passes this
-gate using the local mini-swe fork source at `/Users/lydakis/Developer/oss/mini-swe-agent`.
+The legacy plan reporting `ready_for_final_protocol_pilot = true` does not authorize official spend.
+The v0.4.2 preflight must additionally freeze immutable identities, evidence class, task quality,
+stage allocation, censoring limits, price sheet, and cumulative budget.
 
 ## Accounting Decision
 
@@ -94,8 +96,9 @@ only when they reconcile with recursive raw provider usage in the mini-swe-agent
 gateway `cost_usd` is stored only as `gateway_reported_cost_usd` reconciliation metadata;
 price-sheet derived repair-loop CPSC remains the headline dollar metric.
 
-OpenRouter is the default gateway for broad model access during panel plumbing. Official runs
-should pin upstream provider dispatch, disable gateway fallbacks, and record both
+OpenRouter may be used for panel plumbing or the optional preregistered comparator. The canonical
+six-task pilot uses Kaggle. Every official or optional row must pin upstream provider dispatch,
+disable gateway fallbacks, and record both
 `inference_gateway` and `upstream_provider` in each row. Provider, network, credit, credential,
 model-resolution, provider-dispatch, verifier-infra, and wall-time guard failures are excluded from
 CPSC and retried; model failures inside the repair loop are scored.
@@ -103,9 +106,8 @@ CPSC and retried; model failures inside the repair loop are scored.
 ## Cheap Codex Exec Calibration
 
 Pier ships a native `codex` agent, so ShallowSWE does not need a custom Codex harness for cheap
-one-shot calibration probes. Use it for one-shot floor or plumbing checks only; scored repair-loop
-runs still need the resumable mini-swe-agent path until Codex continuation semantics are explicitly
-validated for ShallowSWE.
+development probes. Use it for prompt, verifier, floor-shape, or plumbing triage only. These rows
+remain development evidence even if continuation works; the canonical pilot runs through Kaggle.
 
 Budget the Codex mini panel before running it:
 

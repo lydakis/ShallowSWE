@@ -1,0 +1,42 @@
+{
+  "schema_version": "shallowswe.requirement_map.v0.1",
+  "task_id": "status-terminal-parity",
+  "requirements": [
+    {
+      "id": "R1",
+      "source": "instruction.md",
+      "behavior": "Normalize return_to_sender and case-insensitive rts to the canonical return_to_sender status.",
+      "verifier_checks": ["tests/test.sh:HiddenTerminalParityTests.test_status_helper_accepts_new_status_and_alias"]
+    },
+    {
+      "id": "R2",
+      "source": "instruction.md",
+      "behavior": "CSV import accepts both spellings and stores the canonical value while preserving existing aliases.",
+      "verifier_checks": ["tests/test.sh:HiddenTerminalParityTests.test_csv_import_canonicalizes_new_status"]
+    },
+    {
+      "id": "R3",
+      "source": "instruction.md",
+      "behavior": "Carrier webhooks accept both spellings and reports treat the canonical status as terminal but unsuccessful.",
+      "verifier_checks": ["tests/test.sh:HiddenTerminalParityTests.test_webhook_and_report_share_terminal_semantics"]
+    },
+    {
+      "id": "R4",
+      "source": "instruction.md",
+      "behavior": "The existing admin repair and report CLI surfaces accept both spellings without changing output shapes.",
+      "verifier_checks": ["tests/test.sh:HiddenTerminalParityTests.test_admin_repair_cli_accepts_literal_and_alias"]
+    },
+    {
+      "id": "R5",
+      "source": "instruction.md",
+      "behavior": "Repair help mentions return_to_sender and rts.",
+      "verifier_checks": ["tests/test.sh:HiddenTerminalParityTests.test_help_mentions_new_status_and_alias"]
+    },
+    {
+      "id": "R6",
+      "source": "instruction.md",
+      "behavior": "Unknown statuses remain rejected instead of becoming implicitly terminal.",
+      "verifier_checks": ["tests/test.sh:HiddenTerminalParityTests.test_unknown_statuses_are_not_silently_accepted"]
+    }
+  ]
+}

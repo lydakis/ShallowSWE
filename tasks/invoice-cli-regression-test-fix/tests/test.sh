@@ -29,7 +29,7 @@ class HiddenInvoiceBehaviorTests(unittest.TestCase):
         handle = tempfile.NamedTemporaryFile("w", suffix=".csv", delete=False, newline="")
         writer = csv.writer(handle)
         writer.writerow(["invoice_id", "customer", "amount", "status"])
-        writer.writerow(["INV-200", "Mae Jemison", "10.00", "open"])
+        writer.writerow([" INV-200 ", "Mae Jemison", "10.00", "open"])
         writer.writerow(["INV-201", "Dorothy Vaughan", "7.50", "paid"])
         writer.writerow(["INV-200", "Mae Jemison", "999.99", "open"])
         handle.close()
@@ -39,6 +39,8 @@ class HiddenInvoiceBehaviorTests(unittest.TestCase):
         invoices = import_invoices(self.make_csv())
 
         self.assertEqual([invoice.invoice_id for invoice in invoices], ["INV-200", "INV-201"])
+        self.assertEqual(invoices[0].customer, "Mae Jemison")
+        self.assertEqual(invoices[0].amount, 10.00)
         self.assertEqual(
             summarize(invoices),
             {
@@ -60,8 +62,10 @@ class HiddenInvoiceBehaviorTests(unittest.TestCase):
             stdout=subprocess.PIPE,
         )
 
-        self.assertIn("invoices: 2", result.stdout)
-        self.assertIn("total: $17.50", result.stdout)
+        self.assertEqual(
+            result.stdout.splitlines(),
+            ["invoices: 2", "total: $17.50", "open: $10.00"],
+        )
 
     def test_agent_added_duplicate_regression_test(self) -> None:
         def run_visible_tests(app_root: Path) -> subprocess.CompletedProcess[str]:

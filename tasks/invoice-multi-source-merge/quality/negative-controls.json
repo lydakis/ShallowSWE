@@ -1,0 +1,69 @@
+{
+  "schema_version": "shallowswe.negative_controls.v0.1",
+  "task_id": "invoice-multi-source-merge",
+  "negative_controls": [
+    {
+      "id": "NC1",
+      "baseline": "base",
+      "setup": null,
+      "description": "Leave the CSV-only seed implementation unchanged.",
+      "expected_failure": "API and legacy inputs, normalization, rejection, precedence, and regression-test requirements remain unmet."
+    },
+    {
+      "id": "NC2",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC2.sh",
+      "description": "Make CSV outrank API during duplicate resolution.",
+      "expected_failure": "The hidden cross-source duplicate selects CSV instead of API."
+    },
+    {
+      "id": "NC3",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC3.sh",
+      "description": "Use banker's rounding instead of decimal round half up.",
+      "expected_failure": "The hidden half-cent amount rounds to 100 rather than 101 USD cents."
+    },
+    {
+      "id": "NC4",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC4.sh",
+      "description": "Sort rejects in legacy, CSV, API order.",
+      "expected_failure": "Rejected rows violate the required API, CSV, legacy ordering."
+    },
+    {
+      "id": "NC5",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC5.sh",
+      "description": "Drop the settled status alias.",
+      "expected_failure": "A valid API invoice is rejected instead of normalized to paid."
+    },
+    {
+      "id": "NC6",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC6.sh",
+      "description": "Implement the importer but omit the required regression test.",
+      "expected_failure": "The verifier's CSV-only mutant survives the visible test suite."
+    },
+    {
+      "id": "NC7",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC7.sh",
+      "description": "Accept date-shaped strings without validating calendar dates.",
+      "expected_failure": "The hidden invalid month is accepted rather than rejected."
+    },
+    {
+      "id": "NC8",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC8.sh",
+      "description": "Count blank legacy lines when assigning row_ref.",
+      "expected_failure": "Legacy reject row numbering differs from the non-empty-line contract."
+    },
+    {
+      "id": "NC9",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC9.sh",
+      "description": "Stop uppercasing invoice IDs before duplicate resolution.",
+      "expected_failure": "Case variants no longer merge into one canonical invoice."
+    }
+  ]
+}

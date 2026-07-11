@@ -26,6 +26,12 @@ def read_csv(path: Path) -> list[dict[str, str]]:
     with path.open(newline="") as handle:
         return list(csv.DictReader(handle))
 
+def assert_csv(path: Path, fields: list[str], expected: list[dict[str, str]]) -> None:
+    with path.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        assert reader.fieldnames == fields
+        assert list(reader) == expected
+
 def assert_json(path: Path, expected: object) -> None:
     assert path.exists(), f"missing {path}"
     assert json.loads(path.read_text()) == expected
@@ -43,18 +49,24 @@ def copy_script_to_hidden(script_name: str) -> tuple[tempfile.TemporaryDirectory
 script = app / "scripts" / "build_outputs.py"
 assert script.exists(), "missing scripts/build_outputs.py"
 run_script("build_outputs.py", app)
+# check_summary_and_severity
 assert_json(app / 'output/summary.json', {'high': 2, 'medium': 1, 'total_incidents': 3})
-assert read_csv(app / 'output/incidents.csv') == [{'timestamp': '2026-07-04T10:01:00Z', 'service': 'api', 'method': 'POST', 'path': '/v1/login', 'status': '500', 'severity': 'high', 'request_id': 'req-2'}, {'timestamp': '2026-07-04T10:02:00Z', 'service': 'edge', 'method': 'GET', 'path': '/v1/search', 'status': '429', 'severity': 'medium', 'request_id': 'req-3'}, {'timestamp': '2026-07-04T10:03:00Z', 'service': 'api', 'method': 'GET', 'path': '/v1/orders', 'status': '503', 'severity': 'high', 'request_id': 'req-4'}]
-assert read_csv(app / 'output/rejects.csv') == [{'line': 'not a valid log line', 'reason': 'malformed_line'}]
+# check_incident_columns_and_sorting
+assert_csv(app / 'output/incidents.csv', ['timestamp', 'service', 'method', 'path', 'status', 'severity', 'request_id'], [{'timestamp': '2026-07-04T10:01:00Z', 'service': 'api', 'method': 'POST', 'path': '/v1/login', 'status': '500', 'severity': 'high', 'request_id': 'req-2'}, {'timestamp': '2026-07-04T10:02:00Z', 'service': 'edge', 'method': 'GET', 'path': '/v1/search', 'status': '429', 'severity': 'medium', 'request_id': 'req-3'}, {'timestamp': '2026-07-04T10:03:00Z', 'service': 'api', 'method': 'GET', 'path': '/v1/orders', 'status': '503', 'severity': 'high', 'request_id': 'req-4'}])
+# check_reject_columns_and_reason
+assert_csv(app / 'output/rejects.csv', ['line', 'reason'], [{'line': 'not a valid log line', 'reason': 'malformed_line'}])
+# check_exact_output_files
+assert sorted(path.name for path in (app / 'output').iterdir()) == ['incidents.csv', 'rejects.csv', 'summary.json']
 tmp, hidden = copy_script_to_hidden("build_outputs.py")
 with tmp:
     path = hidden / 'input/access.log'
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text('bad hidden line\n2026-07-05T01:00:00Z api GET /ok 200 req-a\n2026-07-05T01:01:00Z api GET /limited 429 req-b\n2026-07-05T01:02:00Z worker POST /job 502 req-c\n')
+    path.write_text('2026-07-05T01:05:00Z worker GET /edge 599 req-e\n2026-07-05T01:02:00Z worker POST /job 501 req-c\nbad hidden line\n2026-07-05T01:03:00Z api GET /broken nope req-d\n2026-07-05T01:04:00Z api GET /invalid 600 req-x\n2026-07-05T01:00:00Z api GET /ok 499 req-a\n2026-07-05T01:01:00Z api GET /limited 429 req-b\n')
     run_script("build_outputs.py", hidden)
-    assert_json(hidden / 'output/summary.json', {'high': 1, 'medium': 1, 'total_incidents': 2})
-    assert read_csv(hidden / 'output/incidents.csv') == [{'timestamp': '2026-07-05T01:01:00Z', 'service': 'api', 'method': 'GET', 'path': '/limited', 'status': '429', 'severity': 'medium', 'request_id': 'req-b'}, {'timestamp': '2026-07-05T01:02:00Z', 'service': 'worker', 'method': 'POST', 'path': '/job', 'status': '502', 'severity': 'high', 'request_id': 'req-c'}]
-    assert read_csv(hidden / 'output/rejects.csv') == [{'line': 'bad hidden line', 'reason': 'malformed_line'}]
+    # check_fresh_input_generalization
+    assert_json(hidden / 'output/summary.json', {'high': 2, 'medium': 1, 'total_incidents': 3})
+    assert_csv(hidden / 'output/incidents.csv', ['timestamp', 'service', 'method', 'path', 'status', 'severity', 'request_id'], [{'timestamp': '2026-07-05T01:01:00Z', 'service': 'api', 'method': 'GET', 'path': '/limited', 'status': '429', 'severity': 'medium', 'request_id': 'req-b'}, {'timestamp': '2026-07-05T01:02:00Z', 'service': 'worker', 'method': 'POST', 'path': '/job', 'status': '501', 'severity': 'high', 'request_id': 'req-c'}, {'timestamp': '2026-07-05T01:05:00Z', 'service': 'worker', 'method': 'GET', 'path': '/edge', 'status': '599', 'severity': 'high', 'request_id': 'req-e'}])
+    assert_csv(hidden / 'output/rejects.csv', ['line', 'reason'], [{'line': 'bad hidden line', 'reason': 'malformed_line'}, {'line': '2026-07-05T01:03:00Z api GET /broken nope req-d', 'reason': 'malformed_line'}, {'line': '2026-07-05T01:04:00Z api GET /invalid 600 req-x', 'reason': 'malformed_line'}])
 PY
 
 status=$?

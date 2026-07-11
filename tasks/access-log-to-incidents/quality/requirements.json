@@ -1,0 +1,30 @@
+{
+  "schema_version": "shallowswe.requirement_map.v0.1",
+  "task_id": "access-log-to-incidents",
+  "requirements": [
+    {
+      "id": "R1",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Classify HTTP 500 and above as high severity and HTTP 429 as medium severity.",
+      "verifier_checks": ["tests/test.sh:check_summary_and_severity", "tests/test.sh:check_fresh_input_generalization"]
+    },
+    {
+      "id": "R2",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Sort incident rows by timestamp and emit the required incident columns in order.",
+      "verifier_checks": ["tests/test.sh:check_incident_columns_and_sorting"]
+    },
+    {
+      "id": "R3",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Reject non-six-field lines and statuses outside the base-10 100 through 599 range with reason malformed_line, preserving reject input order.",
+      "verifier_checks": ["tests/test.sh:check_reject_columns_and_reason", "tests/test.sh:check_fresh_input_generalization"]
+    },
+    {
+      "id": "R4",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Write exactly summary.json, incidents.csv, and rejects.csv under output/ with the specified schemas.",
+      "verifier_checks": ["tests/test.sh:check_exact_output_files", "tests/test.sh:check_summary_and_severity"]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "shallowswe.requirement_map.v0.1",
+  "task_id": "merge-divergent-config-branches",
+  "requirements": [
+    {
+      "id": "R1",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Use the release branch region and exact release retry_timeout_seconds value.",
+      "verifier_checks": ["tests/test.sh:check_visible_merge", "tests/test.sh:check_release_timeout_and_hidden_feature_preservation"]
+    },
+    {
+      "id": "R2",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Preserve main-only state, overlay release state, and then preserve all feature flags from the feature branch, including unseen flags.",
+      "verifier_checks": ["tests/test.sh:check_release_timeout_and_hidden_feature_preservation"]
+    },
+    {
+      "id": "R3",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Write repo/config.json and an exact merge report naming release, feature, and the timeout conflict.",
+      "verifier_checks": ["tests/test.sh:check_merge_report"]
+    },
+    {
+      "id": "R4",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Implement scripts/apply_task.py so the operation generalizes to fresh branch state.",
+      "verifier_checks": ["tests/test.sh:check_release_timeout_and_hidden_feature_preservation"]
+    }
+  ]
+}

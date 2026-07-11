@@ -1,5 +1,10 @@
 # ShallowSWE Methodology Notes
 
+> **Implementation notes, not the v0.4.2 normative methodology.** The source of truth is
+> `docs/white-paper-v0.4.2.md`; document precedence and runner evidence classes are defined in
+> `docs/protocol-governance.md`. Category-by-size weighting and realized-only CPSC below describe
+> the current implementation until migration.
+
 ## Result Status
 
 Final benchmark rows are bounded repair loops. Historical one-shot rollout rows are retained as

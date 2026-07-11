@@ -16,6 +16,10 @@ from .deepswe import (
 )
 from .kaggle_bundle import export_kaggle_bundle
 from .pier_export import export_pier_job
+from .pilot_freeze import build_pilot_freeze_report, freeze_pilot_manifest
+from .pilot_readiness import audit_pilot_readiness
+from .pilot_launch import audit_pilot_launch_plan, write_pilot_launch_plan
+from .pilot_schedule import audit_pilot_schedule, write_pilot_schedule
 from .pier_repair_loop import (
     dump_repair_loop_rows,
     load_env_file,
@@ -24,6 +28,7 @@ from .pier_repair_loop import (
 from .repair_loop_batch import run_repair_loop_preview_batch
 from .repair_loop_pilot import audit_repair_loop_pilot_plan
 from .repair_loop_preview import audit_repair_loop_preview_plan
+from .routine_review import build_routine_review_packet, import_routine_reviews
 from .results import (
     aggregate_repair_loops,
     aggregate_results,
@@ -36,6 +41,7 @@ from .results import (
 from .task_funnel import audit_task_funnel
 from .task_metadata import discover_tasks
 from .task_quality import build_task_quality_report
+from .task_quality_execution import execute_task_quality
 from .workload import build_workload_index
 
 
@@ -74,6 +80,51 @@ def main() -> None:
         action="store_true",
         help="include only tasks whose calibration_status is eligible for official snapshots",
     )
+    execute_task_quality_parser = subparsers.add_parser(
+        "execute-task-quality",
+        help="execute reference, alternate, and negative-control probes in Apple containers",
+    )
+    execute_task_quality_parser.add_argument("root", type=Path)
+    execute_task_quality_parser.add_argument("--task-id", action="append", required=True)
+    execute_task_quality_parser.add_argument("--reference-runs", type=int, default=3)
+    pilot_schedule_parser = subparsers.add_parser(
+        "pilot-schedule",
+        help="expand and audit deterministic pilot trajectory identifiers",
+    )
+    pilot_schedule_parser.add_argument("manifest_json", type=Path)
+    pilot_schedule_parser.add_argument("output_json", type=Path)
+    pilot_launch_parser = subparsers.add_parser(
+        "pilot-launch-plan",
+        help="build and audit budget-gated runner launch units from the reserved schedule",
+    )
+    pilot_launch_parser.add_argument("manifest_json", type=Path)
+    pilot_launch_parser.add_argument("schedule_json", type=Path)
+    pilot_launch_parser.add_argument("output_json", type=Path)
+    pilot_freeze_parser = subparsers.add_parser(
+        "pilot-freeze",
+        help="compute or write fail-closed pilot artifact hashes",
+    )
+    pilot_freeze_parser.add_argument("manifest_json", type=Path)
+    pilot_freeze_parser.add_argument("--runner-bundle", type=Path, required=True)
+    pilot_freeze_parser.add_argument("--price-sheet", type=Path, required=True)
+    pilot_freeze_parser.add_argument(
+        "--write",
+        action="store_true",
+        help="write hashes only when every readiness and routine-review gate passes",
+    )
+    pilot_review_pack_parser = subparsers.add_parser(
+        "pilot-review-pack",
+        help="export a blind independent-review packet for the pilot task set",
+    )
+    pilot_review_pack_parser.add_argument("manifest_json", type=Path)
+    pilot_review_pack_parser.add_argument("output_dir", type=Path)
+    pilot_review_import_parser = subparsers.add_parser(
+        "pilot-review-import",
+        help="audit or import completed hash-bound independent reviews",
+    )
+    pilot_review_import_parser.add_argument("manifest_json", type=Path)
+    pilot_review_import_parser.add_argument("packet_dir", type=Path)
+    pilot_review_import_parser.add_argument("--write", action="store_true")
 
     kaggle_pack_parser = subparsers.add_parser(
         "kaggle-pack",
@@ -93,6 +144,10 @@ def main() -> None:
         default=Path("configs") / "mini-swe-agent-repair-loop-preview.yaml",
     )
     kaggle_pack_parser.add_argument("--project-root", type=Path, default=Path.cwd())
+    kaggle_pack_parser.add_argument("--pilot-manifest", type=Path)
+    kaggle_pack_parser.add_argument("--pilot-schedule", type=Path)
+    kaggle_pack_parser.add_argument("--pilot-launch-plan", type=Path)
+    kaggle_pack_parser.add_argument("--price-sheet", type=Path)
     kaggle_pack_parser.add_argument(
         "--mini-swe-agent-source-dir",
         type=Path,
@@ -109,6 +164,12 @@ def main() -> None:
         help="audit a bounded repair-loop pilot plan",
     )
     repair_loop_pilot_parser.add_argument("plan_json", type=Path)
+
+    pilot_readiness_parser = subparsers.add_parser(
+        "pilot-readiness",
+        help="audit the v0.4.2 six-task pilot before official canary spend",
+    )
+    pilot_readiness_parser.add_argument("manifest_json", type=Path)
 
     repair_loop_preview_parser = subparsers.add_parser(
         "repair-loop-preview-plan",
@@ -217,8 +278,10 @@ def main() -> None:
     aggregate_repair_parser.add_argument("results_json", type=Path)
     aggregate_repair_parser.add_argument(
         "--group-by",
-        default="model_config,category,size",
-        help="comma-separated RepairLoopResult fields",
+        help=(
+            "comma-separated RepairLoopResult fields; defaults to immutable model/policy IDs "
+            "for migrated rows and legacy model_config/category/size otherwise"
+        ),
     )
     aggregate_repair_parser.add_argument(
         "--prices",
@@ -368,6 +431,72 @@ def main() -> None:
         )
         return
 
+    if args.command == "execute-task-quality":
+        reports = [
+            execute_task_quality(
+                args.root / task_id,
+                reference_runs=args.reference_runs,
+            )
+            for task_id in args.task_id
+        ]
+        print(json.dumps(reports, indent=2))
+        return
+
+    if args.command == "pilot-schedule":
+        write_pilot_schedule(args.manifest_json, args.output_json)
+        print(json.dumps(audit_pilot_schedule(args.manifest_json, args.output_json), indent=2))
+        return
+
+    if args.command == "pilot-launch-plan":
+        write_pilot_launch_plan(args.manifest_json, args.schedule_json, args.output_json)
+        print(
+            json.dumps(
+                audit_pilot_launch_plan(
+                    args.manifest_json,
+                    args.schedule_json,
+                    args.output_json,
+                ),
+                indent=2,
+            )
+        )
+        return
+
+    if args.command == "pilot-freeze":
+        freeze = freeze_pilot_manifest if args.write else build_pilot_freeze_report
+        print(
+            json.dumps(
+                freeze(
+                    args.manifest_json,
+                    runner_bundle=args.runner_bundle,
+                    price_sheet=args.price_sheet,
+                ),
+                indent=2,
+            )
+        )
+        return
+
+    if args.command == "pilot-review-pack":
+        print(
+            json.dumps(
+                build_routine_review_packet(args.manifest_json, args.output_dir),
+                indent=2,
+            )
+        )
+        return
+
+    if args.command == "pilot-review-import":
+        print(
+            json.dumps(
+                import_routine_reviews(
+                    args.manifest_json,
+                    args.packet_dir,
+                    write=args.write,
+                ),
+                indent=2,
+            )
+        )
+        return
+
     if args.command == "kaggle-pack":
         manifest = export_kaggle_bundle(
             tasks_root=args.tasks_root,
@@ -377,12 +506,20 @@ def main() -> None:
             project_root=args.project_root,
             mini_swe_agent_source_dir=args.mini_swe_agent_source_dir,
             notebook_source=args.notebook_source,
+            pilot_manifest_path=args.pilot_manifest,
+            pilot_schedule_path=args.pilot_schedule,
+            pilot_launch_plan_path=args.pilot_launch_plan,
+            price_sheet_path=args.price_sheet,
         )
         print(json.dumps(manifest, indent=2))
         return
 
     if args.command == "repair-loop-pilot-plan":
         print(json.dumps(audit_repair_loop_pilot_plan(args.plan_json), indent=2))
+        return
+
+    if args.command == "pilot-readiness":
+        print(json.dumps(audit_pilot_readiness(args.manifest_json), indent=2))
         return
 
     if args.command == "repair-loop-preview-plan":
@@ -445,7 +582,11 @@ def main() -> None:
         return
 
     if args.command == "aggregate-repair-loops":
-        group_by = tuple(field.strip() for field in args.group_by.split(",") if field.strip())
+        group_by = (
+            tuple(field.strip() for field in args.group_by.split(",") if field.strip())
+            if args.group_by
+            else None
+        )
         rows = load_repair_loops(args.results_json)
         prices = _load_price_catalog(args.prices)
         print(

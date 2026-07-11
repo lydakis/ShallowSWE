@@ -32,6 +32,14 @@ class KaggleBundleTests(unittest.TestCase):
             _write_task(tasks_root / "generated-task")
             config = root / "mini.yaml"
             config.write_text("agent:\n  system_template: test\n")
+            pilot_manifest = root / "pilot.json"
+            pilot_manifest.write_text(json.dumps({"name": "pilot"}))
+            pilot_schedule = root / "schedule.json"
+            pilot_schedule.write_text(json.dumps({"rows": []}))
+            pilot_launch_plan = root / "launch-plan.json"
+            pilot_launch_plan.write_text(json.dumps({"units": []}))
+            price_sheet = root / "prices.json"
+            price_sheet.write_text(json.dumps({"models": {}}))
             output = root / "bundle"
 
             manifest = export_kaggle_bundle(
@@ -39,6 +47,10 @@ class KaggleBundleTests(unittest.TestCase):
                 output_dir=output,
                 task_ids=["generated-task"],
                 config_file=config,
+                pilot_manifest_path=pilot_manifest,
+                pilot_schedule_path=pilot_schedule,
+                pilot_launch_plan_path=pilot_launch_plan,
+                price_sheet_path=price_sheet,
             )
 
             disk_manifest = json.loads((output / "manifest.json").read_text())
@@ -53,6 +65,14 @@ class KaggleBundleTests(unittest.TestCase):
             self.assertTrue((output / "tasks" / "generated-task" / "environment").is_dir())
             self.assertTrue((output / "verifiers" / "generated-task" / "test.sh").is_file())
             self.assertTrue((output / "config" / "mini.yaml").is_file())
+            self.assertEqual(manifest["pilot_manifest"], "protocol/pilot.json")
+            self.assertEqual(manifest["pilot_schedule"], "protocol/schedule.json")
+            self.assertEqual(
+                manifest["pilot_launch_plan"],
+                "protocol/launch-plan.json",
+            )
+            self.assertEqual(manifest["price_sheet"], "protocol/prices.json")
+            self.assertTrue((output / "protocol" / "pilot.json").is_file())
             self.assertFalse((output / "tasks" / "generated-task" / "solution").exists())
             self.assertFalse((output / "tasks" / "generated-task" / "tests").exists())
             materialized = root / "materialized-export"

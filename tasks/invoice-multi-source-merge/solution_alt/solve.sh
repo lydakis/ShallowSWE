@@ -5,6 +5,7 @@ cat > invoice_merge/importer.py <<'PY'
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 import csv
@@ -47,9 +48,13 @@ def norm_status(value: object) -> str | None:
 def norm_date(value: object, legacy: bool = False) -> str | None:
     text = str(value or "").strip()
     if legacy:
-        return f"{text[:4]}-{text[4:6]}-{text[6:8]}" if len(text) == 8 and text.isdigit() else None
-    parts = text.split("-")
-    return text if len(parts) == 3 and all(part.isdigit() for part in parts) else None
+        if len(text) != 8 or not text.isdigit():
+            return None
+        text = f"{text[:4]}-{text[4:6]}-{text[6:8]}"
+    try:
+        return date.fromisoformat(text).isoformat()
+    except ValueError:
+        return None
 
 
 def usd_cents(amount: object, currency: object, rates: dict[str, str], legacy: bool = False) -> tuple[int | None, str | None]:
@@ -141,9 +146,11 @@ def import_invoices(input_dir: str | Path) -> tuple[list[Invoice], list[dict[str
                 },
             )
 
-    for idx, line in enumerate((root / "legacy_invoices.txt").read_text().splitlines(), 1):
+    idx = 0
+    for line in (root / "legacy_invoices.txt").read_text().splitlines():
         if not line.strip():
             continue
+        idx += 1
         parts = line.split("|")
         add_candidate(
             candidates,

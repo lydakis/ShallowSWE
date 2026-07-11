@@ -5,7 +5,7 @@
     {
       "id": "R1",
       "source": "instruction.md",
-      "behavior": "Duplicate invoice IDs are ignored after the first occurrence during import.",
+      "behavior": "Duplicate normalized invoice IDs are ignored after the first occurrence during import.",
       "verifier_checks": [
         "tests/test.sh:HiddenInvoiceBehaviorTests.test_duplicate_invoice_ids_keep_first_occurrence"
       ]
@@ -21,7 +21,7 @@
     {
       "id": "R3",
       "source": "instruction.md",
-      "behavior": "The existing CLI output path uses the deduplicated import behavior.",
+      "behavior": "The existing three-line CLI output remains exact and uses the deduplicated import behavior.",
       "verifier_checks": [
         "tests/test.sh:HiddenInvoiceBehaviorTests.test_cli_uses_deduplicated_import"
       ]

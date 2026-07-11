@@ -4,28 +4,45 @@
   "negative_controls": [
     {
       "id": "NC1",
+      "baseline": "base",
+      "setup": null,
       "description": "Leave the importer unchanged so duplicate invoice rows are counted.",
       "expected_failure": "Hidden duplicate fixture reports three invoices and inflated totals."
     },
     {
       "id": "NC2",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC2.sh",
       "description": "Keep the last duplicate invoice row instead of the first occurrence.",
       "expected_failure": "Hidden duplicate fixture total and open amount use the wrong row."
     },
     {
       "id": "NC3",
-      "description": "Fix only the CLI output while leaving import_invoices duplicate-prone.",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC3.sh",
+      "description": "Deduplicate only inside the CLI while leaving import_invoices duplicate-prone.",
       "expected_failure": "Direct hidden import and summarize checks still see duplicate invoices."
     },
     {
       "id": "NC4",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC4.sh",
       "description": "Fix runtime behavior but do not add a meaningful duplicate regression test.",
       "expected_failure": "Visible tests still pass when the original duplicate-import bug is restored."
     },
     {
       "id": "NC5",
-      "description": "Hardcode behavior for sample_invoices.csv instead of implementing generic dedupe.",
-      "expected_failure": "Verifier-created temporary CSV with different invoice IDs still fails."
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC5.sh",
+      "description": "Special-case the visible added-test ID INV-1 instead of implementing generic dedupe.",
+      "expected_failure": "The hidden INV-200 duplicate still inflates import and CLI totals."
+    },
+    {
+      "id": "NC6",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC6.sh",
+      "description": "Deduplicate raw invoice_id strings before applying the importer's existing whitespace normalization.",
+      "expected_failure": "Whitespace variants of INV-200 survive as duplicate normalized IDs."
     }
   ]
 }

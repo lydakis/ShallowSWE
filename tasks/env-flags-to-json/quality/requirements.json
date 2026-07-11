@@ -1,0 +1,36 @@
+{
+  "schema_version": "shallowswe.requirement_map.v0.1",
+  "task_id": "env-flags-to-json",
+  "requirements": [
+    {
+      "id": "R1",
+      "source": "instruction.md:Parsing rules",
+      "behavior": "Ignore comments, blank or malformed lines, and assignments with empty keys or values.",
+      "verifier_checks": ["tests/test.sh:check_fresh_inputs_and_malformed_lines"]
+    },
+    {
+      "id": "R2",
+      "source": "instruction.md:Parsing rules",
+      "behavior": "Coerce booleans case-insensitively, integers, and decimals while preserving other values as strings.",
+      "verifier_checks": ["tests/test.sh:check_typed_values", "tests/test.sh:check_fresh_inputs_and_malformed_lines"]
+    },
+    {
+      "id": "R3",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Emit output/flags.json with deterministic sorted key order and generalize to fresh inputs.",
+      "verifier_checks": ["tests/test.sh:check_sorted_keys", "tests/test.sh:check_fresh_inputs_and_malformed_lines"]
+    },
+    {
+      "id": "R4",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Do not modify files under input/.",
+      "verifier_checks": ["tests/test.sh:check_input_preserved"]
+    },
+    {
+      "id": "R5",
+      "source": "instruction.md:Acceptance Criteria",
+      "behavior": "Write only output/flags.json and no additional output files.",
+      "verifier_checks": ["tests/test.sh:check_exact_output_scope"]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": "shallowswe.negative_controls.v0.1",
+  "task_id": "merge-divergent-config-branches",
+  "negative_controls": [
+    {
+      "id": "NC1",
+      "baseline": "base",
+      "setup": null,
+      "description": "Leave scripts/apply_task.py absent.",
+      "expected_failure": "The verifier rejects the missing operation."
+    },
+    {
+      "id": "NC2",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC2.sh",
+      "description": "Resolve retry_timeout_seconds by taking the maximum branch value.",
+      "expected_failure": "The hidden fixture requires the smaller release value exactly."
+    },
+    {
+      "id": "NC3",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC3.sh",
+      "description": "Copy only the named enable_new_checkout flag from feature.",
+      "expected_failure": "The hidden beta_banner feature is lost."
+    },
+    {
+      "id": "NC4",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC4.sh",
+      "description": "Produce the merged config but omit or reorder merge_report sources.",
+      "expected_failure": "The exact merge report comparison fails."
+    },
+    {
+      "id": "NC5",
+      "baseline": "reference",
+      "setup": "quality/negative-controls/NC5.sh",
+      "description": "Build a selected-field config instead of merging complete main and release state.",
+      "expected_failure": "Hidden main-only and release-only keys and flags are lost."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": "shallowswe.requirement_map.v0.1",
+  "task_id": "invoice-multi-source-merge",
+  "requirements": [
+    {
+      "id": "R1",
+      "source": "instruction.md",
+      "behavior": "Keep the public importer and CLI surfaces and write exactly the three required output artifacts.",
+      "verifier_checks": [
+        "tests/test.sh:InvoiceMultiSourceMergeTests.test_visible_fixture_exact_and_idempotent",
+        "tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"
+      ]
+    },
+    {
+      "id": "R2",
+      "source": "instruction.md",
+      "behavior": "Parse CSV, API JSON, and non-empty legacy records using the documented source schemas and row numbering.",
+      "verifier_checks": ["tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"]
+    },
+    {
+      "id": "R3",
+      "source": "instruction.md",
+      "behavior": "Normalize invoice IDs before deduplication and apply API over CSV over legacy precedence.",
+      "verifier_checks": ["tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"]
+    },
+    {
+      "id": "R4",
+      "source": "instruction.md",
+      "behavior": "Break same-source duplicates by latest updated_at and then later source-file position.",
+      "verifier_checks": ["tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"]
+    },
+    {
+      "id": "R5",
+      "source": "instruction.md",
+      "behavior": "Normalize all documented paid, open, and void status aliases.",
+      "verifier_checks": ["tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"]
+    },
+    {
+      "id": "R6",
+      "source": "instruction.md",
+      "behavior": "Reject missing IDs, unknown statuses or currencies, real invalid dates, and non-positive amounts with the required reason vocabulary.",
+      "verifier_checks": ["tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"]
+    },
+    {
+      "id": "R7",
+      "source": "instruction.md",
+      "behavior": "Convert decimal major units and legacy cents to USD cents using decimal round-half-up semantics.",
+      "verifier_checks": ["tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"]
+    },
+    {
+      "id": "R8",
+      "source": "instruction.md",
+      "behavior": "Emit exact CSV schemas, deterministic row ordering, exact summary keys, and stable overwrite behavior.",
+      "verifier_checks": [
+        "tests/test.sh:InvoiceMultiSourceMergeTests.test_visible_fixture_exact_and_idempotent",
+        "tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"
+      ]
+    },
+    {
+      "id": "R9",
+      "source": "instruction.md",
+      "behavior": "Add a discovered regression test that fails against a CSV-only importer.",
+      "verifier_checks": ["tests/test.sh:InvoiceMultiSourceMergeTests.test_agent_added_multisource_regression_test"]
+    }
+  ]
+}
