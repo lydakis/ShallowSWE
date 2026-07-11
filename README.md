@@ -20,6 +20,8 @@ category, size, and model configuration.
   repair-loop protocol.
 - `docs/task-selection-rubric.md` defines which work packets belong in ShallowSWE.
 - `docs/verifier-contract.md` defines what a passing rollout must prove and how task verifiers are reviewed.
+- `docs/task-quality-audit.md` defines the publishable prompt/verifier QA evidence required before
+  calibration and scoring.
 - `docs/task-sourcing-methodology.md` defines how official benchmark tasks are mined, authored, reviewed, and calibrated.
 - `docs/calibration-log.md` records size-calibration runs and admission decisions.
 - `docs/pilot-plan.md` records the path from the 36-task scaffold to a calibrated v1 snapshot.
@@ -93,6 +95,14 @@ uv run shallowswe calibration-plan configs/shallowswe-v1-calibration-plan.json
 The plan currently has two one-shot calibration groups: primary ceiling admission at `N=16` and
 floor size calibration at `N=10`. A valid plan can still require explicit budget approval; the
 ceiling phase is intentionally marked that way under the conservative July 4 estimate.
+
+Build the task-quality evidence report before treating candidate tasks as publishable benchmark
+items. The command validates evidence structure and verifier references; it does not execute the
+declared negative controls:
+
+```sh
+uv run shallowswe task-quality tasks
+```
 
 Use the calibration panel for the floor-selection sweep. Calibration one-shot rollouts are not
 published leaderboard repair loops. A 36-task, 10-rollout sweep on the current cheap candidate

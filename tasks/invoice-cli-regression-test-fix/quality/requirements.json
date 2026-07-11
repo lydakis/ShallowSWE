@@ -1,0 +1,46 @@
+{
+  "schema_version": "shallowswe.requirement_map.v0.1",
+  "task_id": "invoice-cli-regression-test-fix",
+  "requirements": [
+    {
+      "id": "R1",
+      "source": "instruction.md",
+      "behavior": "Duplicate invoice IDs are ignored after the first occurrence during import.",
+      "verifier_checks": [
+        "tests/test.sh:HiddenInvoiceBehaviorTests.test_duplicate_invoice_ids_keep_first_occurrence"
+      ]
+    },
+    {
+      "id": "R2",
+      "source": "instruction.md",
+      "behavior": "Invoice summary totals are computed from the deduplicated invoice list.",
+      "verifier_checks": [
+        "tests/test.sh:HiddenInvoiceBehaviorTests.test_duplicate_invoice_ids_keep_first_occurrence"
+      ]
+    },
+    {
+      "id": "R3",
+      "source": "instruction.md",
+      "behavior": "The existing CLI output path uses the deduplicated import behavior.",
+      "verifier_checks": [
+        "tests/test.sh:HiddenInvoiceBehaviorTests.test_cli_uses_deduplicated_import"
+      ]
+    },
+    {
+      "id": "R4",
+      "source": "instruction.md",
+      "behavior": "A focused visible regression test is added for duplicate invoice IDs.",
+      "verifier_checks": [
+        "tests/test.sh:HiddenInvoiceBehaviorTests.test_agent_added_duplicate_regression_test"
+      ]
+    },
+    {
+      "id": "R5",
+      "source": "base repo visible tests",
+      "behavior": "The full visible suite remains compatible and the added regression test detects restoration of the original bug.",
+      "verifier_checks": [
+        "tests/test.sh:HiddenInvoiceBehaviorTests.test_agent_added_duplicate_regression_test"
+      ]
+    }
+  ]
+}

@@ -167,6 +167,10 @@ tasks/<task-id>/
   tests/
     verify.sh        # programmatic verifier, exits 0/1
   solution/          # reference solution, held out from the agent
+  solution_alt/      # materially different valid solution, held out from the agent
+  quality/
+    requirements.json        # prompt/repo requirement to verifier-check map
+    negative-controls.json   # intentionally bad solutions that must fail
 ```
 
 - Verifiers are **programmatic only**. Test behavior, not implementation. No LLM judges anywhere in the scoring path.
@@ -174,7 +178,29 @@ tasks/<task-id>/
 - `[calibration]` records task-admission provenance: snapshot id, ceiling/floor panels, current and
   target one-shot counts, pass counts, admission decision, and size-assignment decision. Candidate
   tasks may record pending high-N gates; accepted snapshot tasks must record accepted decisions.
+- `quality/` records task-QA evidence declarations. Accepted snapshot tasks must map hidden checks
+  to prompt or repo-contract requirements, record negative controls, and separately confirm those
+  controls fail. The structural audit does not execute the declared controls.
 - Evaluate Datacurve's Pier framework for the sandboxed execution layer before building anything custom. Fork and extend where possible; the goal is minimum time to first report.
+
+### Task quality audit
+
+Task QA is a separate gate from calibration. Before calibration, every candidate task must pass the
+quality audit in `docs/task-quality-audit.md`:
+
+1. Prompt-verifier consistency: every hidden verifier assertion maps to `instruction.md` or an
+   existing public repo contract.
+2. Implementation independence: reference and materially different alternate solutions pass.
+3. Coverage sufficiency: no-op, hardcoded visible fixture, partial, malformed-row-skipping, and
+   destructive-overreach controls fail.
+4. Example consistency: prompt examples, visible fixtures, hidden expectations, and reference
+   solution do not contradict each other.
+5. Repair-loop fairness: hidden verifier feedback remains coarse and non-oracle.
+
+OpenAI-style task-quality labels are `overly_strict_verifier`, `underspecified_prompt`,
+`low_coverage_verifier`, and `misleading_prompt`. Calibration can expose these problems, but it does
+not repair them. If a trajectory fails because the task is ambiguous or the verifier is too strict,
+fix or reject the task before using that row as benchmark evidence.
 
 ### Contamination policy
 
@@ -182,8 +208,9 @@ Write every task from scratch. Adapt nothing from existing repos, commits, PRs, 
 
 Task generation workflow: source public GitHub and benchmark datasets only for abstract patterns,
 author original project-shaped tasks, run prompt-verifier review, validate alternate solutions,
-then use the pinned-ceiling and measured-floor gates to place the task. `docs/task-sourcing-methodology.md`
-is the task-quality source of truth.
+record task-quality evidence, then use the pinned-ceiling and measured-floor gates to place the
+task. `docs/task-sourcing-methodology.md` is the task-authoring source of truth, and
+`docs/task-quality-audit.md` is the task-QA source of truth.
 
 Each public snapshot is frozen and fully reproducible. Once tasks, transcripts, and verifiers are
 broadly published, future model-ranking claims require a new task-suite version or a held-out

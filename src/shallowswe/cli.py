@@ -35,6 +35,7 @@ from .results import (
 )
 from .task_funnel import audit_task_funnel
 from .task_metadata import discover_tasks
+from .task_quality import build_task_quality_report
 from .workload import build_workload_index
 
 
@@ -62,6 +63,17 @@ def main() -> None:
         help="audit a low-spend task-funnel ledger before broad scoring",
     )
     task_funnel_parser.add_argument("manifest_json", type=Path)
+
+    task_quality_parser = subparsers.add_parser(
+        "task-quality",
+        help="build the task-quality audit report for prompt/verifier evidence",
+    )
+    task_quality_parser.add_argument("root", type=Path)
+    task_quality_parser.add_argument(
+        "--official-only",
+        action="store_true",
+        help="include only tasks whose calibration_status is eligible for official snapshots",
+    )
 
     kaggle_pack_parser = subparsers.add_parser(
         "kaggle-pack",
@@ -345,6 +357,15 @@ def main() -> None:
 
     if args.command == "task-funnel":
         print(json.dumps(audit_task_funnel(args.manifest_json), indent=2))
+        return
+
+    if args.command == "task-quality":
+        print(
+            json.dumps(
+                build_task_quality_report(args.root, official_only=args.official_only),
+                indent=2,
+            )
+        )
         return
 
     if args.command == "kaggle-pack":

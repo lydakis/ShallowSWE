@@ -115,6 +115,43 @@ calibration_status = "candidate"
         self.assertEqual(report["accept_min_passes"], 3)
         self.assertEqual(report["tasks"][0]["decision"], "accept")
 
+    def test_task_quality_cli_reports_quality_gaps(self) -> None:
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = root / "example"
+            task_dir.mkdir()
+            (task_dir / "environment").mkdir()
+            (task_dir / "tests").mkdir()
+            (task_dir / "tests" / "test.sh").write_text("#!/usr/bin/env bash\nexit 0\n")
+            (task_dir / "solution").mkdir()
+            (task_dir / "solution" / "solve.sh").write_text("#!/usr/bin/env bash\ntrue\n")
+            (task_dir / "solution_alt").mkdir()
+            (task_dir / "solution_alt" / "solve.sh").write_text("#!/usr/bin/env bash\ntrue\n")
+            (task_dir / "instruction.md").write_text("Do the task.\n")
+            (task_dir / "task.toml").write_text(
+                """
+[task]
+name = "shallowswe/example"
+
+[metadata]
+category = "code"
+size = "small"
+calibration_status = "candidate"
+""".strip()
+            )
+
+            report = _run_cli_json("task-quality", str(root))
+
+        self.assertEqual(report["schema_version"], "shallowswe.task_quality.v0.1")
+        self.assertFalse(report["quality_evidence_complete"])
+        self.assertEqual(
+            report["quality_issue_counts"],
+            {
+                "negative_controls_missing": 1,
+                "requirement_map_missing": 1,
+            },
+        )
+
 
 def _run_cli_json(*args: str):
     output = StringIO()

@@ -101,6 +101,10 @@ Every hidden verifier assertion must trace back to one of:
 
 Hidden tests must not invent requirements. If a correct engineer would not infer the behavior from the prompt or existing repo, the verifier is wrong or the prompt is incomplete.
 
+Accepted snapshot tasks record this traceability in `quality/requirements.json`, as defined in
+`docs/task-quality-audit.md`. If a hidden assertion cannot be mapped there, update the prompt,
+broaden the verifier, or reject the task before calibration.
+
 ## Required Check Types
 
 Every official verifier needs these check types unless the task category makes one irrelevant:
@@ -144,11 +148,17 @@ Before a task can enter calibration:
    - Official tasks cannot enter calibration until both the reference and alternate solution pass.
    - If a plausible correct alternate fails, broaden the verifier or reject the task.
 
-4. Review prompt-verifier alignment.
+4. Validate negative controls.
+   - Record intentionally bad patches or artifacts in `quality/negative-controls.json`.
+   - No-op, hardcoded visible fixture, partial, malformed-row-skipping, and destructive-overreach
+     controls must fail for the expected reason.
+   - If an incomplete control passes, improve coverage or reject the task.
+
+5. Review prompt-verifier alignment.
    - Every hidden assertion has a prompt or existing-contract source.
    - No hidden assertion requires a private implementation detail.
 
-5. Run calibration.
+6. Run calibration.
    - Use `docs/calibration-protocol.md`, not a single control model or author intuition.
    - The pinned ceiling must clear the pre-registered one-shot gate before floor failures are
      interpretable.

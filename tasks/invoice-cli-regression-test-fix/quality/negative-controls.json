@@ -1,0 +1,31 @@
+{
+  "schema_version": "shallowswe.negative_controls.v0.1",
+  "task_id": "invoice-cli-regression-test-fix",
+  "negative_controls": [
+    {
+      "id": "NC1",
+      "description": "Leave the importer unchanged so duplicate invoice rows are counted.",
+      "expected_failure": "Hidden duplicate fixture reports three invoices and inflated totals."
+    },
+    {
+      "id": "NC2",
+      "description": "Keep the last duplicate invoice row instead of the first occurrence.",
+      "expected_failure": "Hidden duplicate fixture total and open amount use the wrong row."
+    },
+    {
+      "id": "NC3",
+      "description": "Fix only the CLI output while leaving import_invoices duplicate-prone.",
+      "expected_failure": "Direct hidden import and summarize checks still see duplicate invoices."
+    },
+    {
+      "id": "NC4",
+      "description": "Fix runtime behavior but do not add a meaningful duplicate regression test.",
+      "expected_failure": "Visible tests still pass when the original duplicate-import bug is restored."
+    },
+    {
+      "id": "NC5",
+      "description": "Hardcode behavior for sample_invoices.csv instead of implementing generic dedupe.",
+      "expected_failure": "Verifier-created temporary CSV with different invoice IDs still fails."
+    }
+  ]
+}

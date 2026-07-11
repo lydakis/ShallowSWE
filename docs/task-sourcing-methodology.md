@@ -462,13 +462,23 @@ method. Do not present it as a measured result.
    - If a plausible correct solution fails hidden tests, broaden the verifier or reject the task.
    - Add edge/property-style tests where they clarify behavior without adding hidden requirements.
 
-6. **Human review**
+6. **Task-quality evidence**
+   - Follow `docs/task-quality-audit.md`.
+   - Write `quality/requirements.json` mapping every hidden verifier assertion to `instruction.md`
+     or an existing public repo contract.
+   - Write `quality/negative-controls.json` with incomplete, hardcoded, fixture-only, and
+     overreaching solutions that must fail.
+   - Label repaired or rejected defects as `overly_strict_verifier`, `underspecified_prompt`,
+     `low_coverage_verifier`, or `misleading_prompt`.
+   - Run `uv run shallowswe task-quality tasks` before calibration or snapshot admission.
+
+7. **Human review**
    - Reviewer A checks realism and prompt clarity.
    - Reviewer B checks verifier breadth and implementation independence.
    - Score prompt specificity, verifier scope, behavioral coverage, environment reliability, and realism from 0-3.
    - Any score of 2 or 3 blocks acceptance until fixed.
 
-7. **Calibration**
+8. **Calibration**
    - Run the floor-selection sweep before final size assignment.
    - Run the pinned ceiling and selected floor at enough rollouts for coarse bands.
    - Check whether the task fits the hypothesized size band.
@@ -477,9 +487,9 @@ method. Do not present it as a measured result.
    - If floor failures are ambiguity or verifier mismatch, rewrite. If failures are legitimate flailing, keep.
    - Quarantine calibration rollouts from published leaderboard results.
 
-8. **Snapshot admission**
+9. **Snapshot admission**
    - Freeze task version, source pattern notes, metadata, and reference patch stats.
-   - Add to the workload basket only after calibration and review.
+   - Add to the workload basket only after task-quality evidence, calibration, and review.
 
 ## Review Rubric
 
@@ -496,6 +506,8 @@ Score each item 0-3.
 - There is one reasonable interpretation of success.
 - The verifier accepts materially different correct implementations.
 - Hidden tests do not require behavior absent from the prompt.
+- Every hidden assertion maps to `quality/requirements.json`.
+- Negative controls fail for the expected reasons.
 - Public API/name checks are only used when the prompt makes that API/name part of the contract.
 - Base environment fails for the intended reason.
 - Reference solution passes three clean verifier runs.
