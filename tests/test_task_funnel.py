@@ -67,6 +67,95 @@ class TaskFunnelTests(unittest.TestCase):
         self.assertEqual(report["bridge_validation_pending"], ["maybe-medium"])
         self.assertEqual(report["formal_ceiling_pending"], ["maybe-medium"])
 
+    def test_kept_candidate_requires_full_formal_ceiling_sample(self) -> None:
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tasks = root / "tasks"
+            _write_task(tasks / "maybe-medium", category="artifact", size="medium")
+            candidate = _candidate("AM-1", "maybe-medium", "artifact", "medium", "authored")
+            candidate.update(
+                {
+                    "funnel_bucket": "keep_medium",
+                    "formal_ceiling": {
+                        "status": "complete",
+                        "model_config": "openai/gpt-5.5[extra_high]",
+                        "target_n": 8,
+                        "current_n": 1,
+                        "passes": 1,
+                        "pass_threshold": 0.75,
+                    },
+                    "bridge_validation": {
+                        "status": "complete",
+                        "harness": "pier/mini-swe-agent",
+                        "target_n": 2,
+                    },
+                }
+            )
+            manifest = _write_manifest(
+                root / "funnel.json",
+                tasks_root="tasks",
+                candidates=[candidate],
+            )
+
+            report = audit_task_funnel(manifest, repo_root=root)
+
+        self.assertFalse(report["valid"])
+        self.assertEqual(
+            report["candidate_issue_counts"],
+            {"formal_ceiling_incomplete_sample": 1},
+        )
+        self.assertEqual(report["formal_ceiling_pending"], ["maybe-medium"])
+        self.assertFalse(report["candidates"][0]["formal_ceiling_complete"])
+
+    def test_complete_formal_ceiling_requires_valid_threshold_and_pass_count(self) -> None:
+        invalid_fields = (
+            ({"pass_threshold": None}, "formal_ceiling_invalid_pass_threshold"),
+            ({"pass_threshold": 0.0}, "formal_ceiling_invalid_pass_threshold"),
+            ({"pass_threshold": 1.1}, "formal_ceiling_invalid_pass_threshold"),
+            ({"passes": 9}, "formal_ceiling_invalid_pass_count"),
+            ({"passes": -1}, "formal_ceiling_invalid_pass_count"),
+        )
+        for overrides, expected_issue in invalid_fields:
+            with self.subTest(overrides=overrides):
+                with TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    tasks = root / "tasks"
+                    _write_task(tasks / "maybe-medium", category="artifact", size="medium")
+                    candidate = _candidate(
+                        "AM-1", "maybe-medium", "artifact", "medium", "authored"
+                    )
+                    formal_ceiling = {
+                        "status": "complete",
+                        "model_config": "openai/gpt-5.5[extra_high]",
+                        "target_n": 8,
+                        "current_n": 8,
+                        "passes": 8,
+                        "pass_threshold": 0.75,
+                        **overrides,
+                    }
+                    candidate.update(
+                        {
+                            "funnel_bucket": "keep_medium",
+                            "formal_ceiling": formal_ceiling,
+                            "bridge_validation": {
+                                "status": "complete",
+                                "harness": "pier/mini-swe-agent",
+                                "target_n": 2,
+                            },
+                        }
+                    )
+                    manifest = _write_manifest(
+                        root / "funnel.json",
+                        tasks_root="tasks",
+                        candidates=[candidate],
+                    )
+
+                    report = audit_task_funnel(manifest, repo_root=root)
+
+                self.assertFalse(report["valid"])
+                self.assertIn(expected_issue, report["candidate_issue_counts"])
+                self.assertFalse(report["candidates"][0]["formal_ceiling_complete"])
+
     def test_task_funnel_cli_reports_audit(self) -> None:
         with TemporaryDirectory() as tmp:
             root = Path(tmp)

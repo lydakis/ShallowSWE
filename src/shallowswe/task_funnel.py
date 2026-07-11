@@ -110,7 +110,7 @@ def audit_task_funnel(
         for report in candidate_reports
         if report["task_id"]
         and report["funnel_bucket"] in {"keep_small", "keep_medium", "keep_large"}
-        and report["formal_ceiling_status"] != "complete"
+        and not report["formal_ceiling_complete"]
     ]
 
     valid = not issues and not candidate_issues
@@ -185,6 +185,28 @@ def _audit_candidate(
     formal_ceiling_status = str(formal_ceiling.get("status") or "")
     if formal_ceiling_status not in VALID_FORMAL_CEILING_STATUSES:
         issues.append("invalid_formal_ceiling_status")
+    formal_ceiling_target_n = int(formal_ceiling.get("target_n") or 0)
+    formal_ceiling_current_n = int(formal_ceiling.get("current_n") or 0)
+    formal_ceiling_passes = int(formal_ceiling.get("passes") or 0)
+    formal_ceiling_pass_threshold = float(formal_ceiling.get("pass_threshold") or 0)
+    formal_ceiling_complete = formal_ceiling_status == "complete"
+    if formal_ceiling_complete and (
+        formal_ceiling_target_n <= 0 or formal_ceiling_current_n < formal_ceiling_target_n
+    ):
+        issues.append("formal_ceiling_incomplete_sample")
+        formal_ceiling_complete = False
+    elif formal_ceiling_complete and not 0 < formal_ceiling_pass_threshold <= 1:
+        issues.append("formal_ceiling_invalid_pass_threshold")
+        formal_ceiling_complete = False
+    elif formal_ceiling_complete and not 0 <= formal_ceiling_passes <= formal_ceiling_current_n:
+        issues.append("formal_ceiling_invalid_pass_count")
+        formal_ceiling_complete = False
+    elif formal_ceiling_complete and (
+        formal_ceiling_current_n <= 0
+        or formal_ceiling_passes / formal_ceiling_current_n < formal_ceiling_pass_threshold
+    ):
+        issues.append("formal_ceiling_below_threshold")
+        formal_ceiling_complete = False
 
     bridge_validation = candidate.get("bridge_validation")
     if not isinstance(bridge_validation, dict):
@@ -233,6 +255,10 @@ def _audit_candidate(
         "calibration_status": calibration_status,
         "codex_triage_status": codex_triage_status,
         "formal_ceiling_status": formal_ceiling_status,
+        "formal_ceiling_target_n": formal_ceiling_target_n,
+        "formal_ceiling_current_n": formal_ceiling_current_n,
+        "formal_ceiling_passes": formal_ceiling_passes,
+        "formal_ceiling_complete": formal_ceiling_complete,
         "bridge_validation_status": bridge_validation_status,
         "next_action": candidate.get("next_action"),
         "issues": issues,
