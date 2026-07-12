@@ -15,6 +15,7 @@ import threading
 import time
 
 from pydantic import BaseModel, ConfigDict
+from kaggle_benchmarks.tools.base import ToolInvocationResult
 
 from .repair_loop_protocol import VerifierClass, VerifierOutcome
 
@@ -41,6 +42,19 @@ DEFAULT_FORMAT_ERROR_TEMPLATE = (
 )
 
 
+def model_proxy_api(model_name: str) -> str:
+    """Select the provider-native Kaggle Model Proxy API for tool continuation."""
+    return "genai" if model_name.startswith("google/") else "openai"
+
+
+def model_kwargs_for_proxy(model_name: str, model_kwargs: dict[str, Any]) -> dict[str, Any]:
+    """Translate the common output-token cap to the selected provider-native API."""
+    normalized = dict(model_kwargs)
+    if model_proxy_api(model_name) == "genai" and "max_tokens" in normalized:
+        normalized.setdefault("max_output_tokens", normalized.pop("max_tokens"))
+    return normalized
+
+
 class KaggleBenchmarksModelConfig(BaseModel):
     model_config = ConfigDict(extra="allow")
 
@@ -60,6 +74,10 @@ class KaggleBenchmarksModel:
     def __init__(self, *, llm: Any, **kwargs: Any) -> None:
         self.llm = llm
         self.config = KaggleBenchmarksModelConfig(**kwargs)
+        self.config.model_kwargs = model_kwargs_for_proxy(
+            self.config.model_name,
+            self.config.model_kwargs,
+        )
         self._synced_message_count = 0
 
     def query(self, messages: list[dict[str, Any]], **kwargs: Any) -> dict[str, Any]:
@@ -73,7 +91,6 @@ class KaggleBenchmarksModel:
             **self.config.model_kwargs,
         )
         actions, raw_tool_calls = self._parse_actions(response.tool_calls)
-        self._emit_text_transport_response(response, actions)
         usage = response.usage
         cost_nanodollars = usage.total_cost_nanodollars
         cost_usd = (cost_nanodollars / 1_000_000_000) if cost_nanodollars is not None else 0.0
@@ -122,8 +139,24 @@ class KaggleBenchmarksModel:
             template_vars=template_vars,
             multimodal_regex=self.config.multimodal_regex,
         )
-        for observation in rendered:
-            actors.user.send(observation.get("content", ""))
+        for index, action in enumerate(actions):
+            output = (
+                outputs[index]
+                if index < len(outputs)
+                else {
+                    "returncode": -1,
+                    "output": "",
+                    "exception_info": "action was not executed",
+                }
+            )
+            actors.Tool(name="bash").send(
+                ToolInvocationResult(
+                    name="bash",
+                    arguments={"command": action["command"]},
+                    call_id=action.get("tool_call_id"),
+                    output=output,
+                )
+            )
         return rendered
 
     def get_template_vars(self, **kwargs: Any) -> dict[str, Any]:
@@ -222,23 +255,6 @@ class KaggleBenchmarksModel:
                 }
             )
         return actions, raw_tool_calls
-
-    def _emit_text_transport_response(
-        self,
-        response: Any,
-        actions: list[dict[str, Any]],
-    ) -> None:
-        from kaggle_benchmarks import actors
-
-        # Kaggle Model Proxy currently rejects its own native tool-result message for
-        # Gemini on the following turn. Preserve the exact action and observation while
-        # representing the completed round as plain assistant/user messages.
-        response.is_visible_to_llm = False
-        commands = "\n".join(
-            f"<bash_command>{action['command']}</bash_command>" for action in actions
-        )
-        content = f"{response.text}\n\n{commands}".strip()
-        actors.Actor(name=self.config.model_name, role="assistant").send(content)
 
 
 def bash(command: str) -> str:

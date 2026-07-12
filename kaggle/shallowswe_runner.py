@@ -117,12 +117,14 @@ _install_runtime()
 
 # %%
 import kaggle_benchmarks as kbench  # noqa: E402
+from kaggle_benchmarks.kaggle.models import load_model  # noqa: E402
 from IPython import get_ipython  # noqa: E402
 
 from shallowswe.kaggle_repair_loop import (  # noqa: E402
     dump_kaggle_result,
     run_kaggle_repair_loop,
 )
+from shallowswe.kaggle_runtime import model_proxy_api  # noqa: E402
 from shallowswe.pilot_binding import (  # noqa: E402
     launch_matrix,
     resolve_launch_unit,
@@ -206,8 +208,9 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
     )
     if LAUNCH_UNIT is not None and verifier_submission_cap is None:
         raise RuntimeError("Launch unit verifier policy is not frozen")
+    native_llm = load_model(llm.name, api=model_proxy_api(llm.name))
     row = run_kaggle_repair_loop(
-        llm=llm,
+        llm=native_llm,
         task_path=BUNDLE_ROOT / task_entry["task_path"],
         verifier_dir=BUNDLE_ROOT / task_entry["verifier_path"],
         workspace_dir=run_root / "workspace",

@@ -13,6 +13,8 @@ from minisweagent.environments.local import LocalEnvironment
 from shallowswe.kaggle_runtime import (
     KaggleBenchmarksModel,
     build_chroot_command,
+    model_kwargs_for_proxy,
+    model_proxy_api,
 )
 from shallowswe.pier_repair_loop import _raw_usage_totals_from_trajectory
 
@@ -49,6 +51,16 @@ class _ScriptedLLM(LLMChat):
 
 
 class KaggleRuntimeTests(unittest.TestCase):
+    def test_google_models_use_genai_model_proxy_api(self) -> None:
+        self.assertEqual(model_proxy_api("google/gemini-3.5-flash"), "genai")
+        self.assertEqual(model_proxy_api("openai/gpt-5.5-2026-04-23"), "openai")
+        self.assertEqual(
+            model_kwargs_for_proxy(
+                "google/gemini-3.5-flash", {"max_tokens": 256, "top_p": 0.9}
+            ),
+            {"max_output_tokens": 256, "top_p": 0.9},
+        )
+
     def test_model_adapter_runs_and_resumes_the_same_mini_swe_agent(self) -> None:
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -88,11 +100,11 @@ class KaggleRuntimeTests(unittest.TestCase):
             visible = [message for message in chat.messages if message.is_visible_to_llm]
             roles = [message.sender.role for message in visible]
             self.assertEqual(roles.count("system"), 1)
-            self.assertEqual(roles.count("user"), 6)
+            self.assertEqual(roles.count("user"), 2)
             self.assertEqual(roles.count("assistant"), 4)
-            self.assertEqual(roles.count("tool"), 0)
+            self.assertEqual(roles.count("tool"), 4)
             self.assertTrue(
-                all(not message.tool_calls for message in visible if message.sender.role == "assistant")
+                all(message.tool_calls for message in visible if message.sender.role == "assistant")
             )
 
             usage = _raw_usage_totals_from_trajectory(trajectory)

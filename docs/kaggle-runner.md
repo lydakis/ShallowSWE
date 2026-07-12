@@ -19,15 +19,14 @@ The methodology is backend-independent:
 - The same verifier-submission, step, cost, and wall-time guards.
 - The same active repair-loop result schema and token/accounting contract.
 
-Kaggle and Pier do not have byte-identical provider transports. Kaggle Benchmarks 0.6.1 rejects
-its native Gemini tool-result message on the next turn, so the Kaggle adapter asks for native tool
-selection and records the same tool call in the mini-swe trajectory, then represents the completed
-round to the next provider call as an assistant command plus user observation. The adapter uses
-this compatibility transport consistently for every Kaggle provider, rather than changing message
-shape by model. It does not change the controller, command, workspace, verifier, feedback class, or
-stop rules. Results should claim methodology parity, not byte-for-byte transcript parity. A
-transport, scaffold, or continuation difference creates a distinct `agent_policy_id`; parity does
-not permit pooling unequal identities.
+Kaggle and Pier do not have byte-identical provider transports. The Kaggle runner preserves native
+structured function calls and results for every provider. Google models use Kaggle's provider-native
+GenAI route so Gemini thought signatures survive sequential tool calls; other providers use
+Kaggle's OpenAI-compatible route. Output-token caps are translated from `max_tokens` to
+`max_output_tokens` on the GenAI route. The controller, command, workspace, verifier, feedback
+class, and stop rules remain shared. Results should claim methodology parity, not byte-for-byte
+transcript parity. A transport, scaffold, or continuation difference creates a distinct
+`agent_policy_id`; parity does not permit pooling unequal identities.
 
 ## Bundle Boundary
 
