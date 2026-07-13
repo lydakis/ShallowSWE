@@ -76,10 +76,14 @@ At least **$700 of the Kaggle monthly allocation remains uncommitted** after the
 | Local deterministic execution | Reference, alternate, negative-control, isolation, and schema checks | Task QA and harness conformance only |
 | Codex Pro | Prompt, verifier, continuation, and accounting triage | Development only; never laundered into official pilot evidence |
 | Kaggle | Frozen canary, permissive collection, and targeted fresh confirmation | Canonical official metered pilot evidence |
-| Pier/Harbor | Portability, local reproduction, and backend parity | Separate runner evidence; never pooled with Kaggle unless the immutable policy and transport identity are exactly equal |
+| Pier/Harbor | Portability, local reproduction, and backend parity | Eligible pilot model evidence when the canonical model and shared execution contract match |
 | OpenRouter | Optional preregistered external comparator | Separate optional evidence with a $25 personal-cash cap |
 
-Every row records its runner and evidence class. Backend adapters share the repair-loop contract, but backend equality is not assumed.
+Rows are presumptively equivalent across Kaggle and Pier/Harbor when canonical model identity,
+task, agent policy, prompt, native tool and continuation contract, limits, and sampling controls
+match. Runner and gateway provenance remain mandatory on every row and in published aggregate
+manifests. Known fallback, unresolved identity, or material behavioral differences require
+stratification rather than pooling.
 
 ## 3. Pilot task set
 

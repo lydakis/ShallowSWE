@@ -25,8 +25,9 @@ GenAI route so Gemini thought signatures survive sequential tool calls; other pr
 Kaggle's OpenAI-compatible route. Output-token caps are translated from `max_tokens` to
 `max_output_tokens` on the GenAI route. The controller, command, workspace, verifier, feedback
 class, and stop rules remain shared. Results should claim methodology parity, not byte-for-byte
-transcript parity. A transport, scaffold, or continuation difference creates a distinct
-`agent_policy_id`; parity does not permit pooling unequal identities.
+transcript parity. Backend provenance remains mandatory, but runner or gateway differences alone
+do not prevent pooling when the canonical model, task, agent policy, controls, and continuation
+contract match. Known behavioral or identity mismatches remain separate.
 
 ## Bundle Boundary
 

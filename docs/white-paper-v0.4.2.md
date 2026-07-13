@@ -502,7 +502,15 @@ For each model, publish each task's contribution to charged spend and successful
 
 The canonical snapshot holds one scaffold, prompt, tool contract, continuation policy, and sandbox interface constant across the panel. Per-model prompt tuning is not allowed. Alternative scaffolds form separate agent policies.
 
-The protocol binds runner role to evidence class. Kaggle is the primary backend for official metered pilot evidence. Pier/Harbor is the parallel portability and local-reproduction backend; results from a materially different transport or scaffold receive a distinct `agent_policy_id` and are not pooled with Kaggle rows. Codex subscription runs are development-only unless the exact frozen model, route, usage, scaffold, and continuation contract can be proven. Local deterministic execution supplies task QA and harness conformance, not model evidence. Runner provenance is mandatory on every row.
+Kaggle is the primary funded backend for pilot execution, while Pier/Harbor is the parallel
+portability and local-reproduction backend. Rows are presumptively equivalent across these
+backends when canonical model identity, task, agent policy, prompt, native tool and continuation
+contract, limits, and sampling controls match. Runner or gateway differences alone do not prevent
+pooling. Known fallback, unresolved model identity, or materially different behavior requires
+stratification. Codex subscription runs remain development-only unless the frozen model, route,
+usage, scaffold, and continuation contract can be established. Local deterministic execution
+supplies task QA and harness conformance, not model evidence. Every row and published aggregate
+must disclose all contributing runners, gateways, and provider routes.
 
 ### 10.2 Immutable identities
 

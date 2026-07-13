@@ -56,6 +56,8 @@ class ExportRepairLoopSiteDataTests(unittest.TestCase):
         self.assertEqual(summary["repo_commit_shas"], ["aaa", "bbb"])
         self.assertEqual(summary["price_sheet_versions"], ["prices-a", "prices-b"])
         self.assertEqual(summary["runners"], ["pier-private-repair-loop-pilot"])
+        self.assertEqual(summary["inference_gateways"], ["openrouter"])
+        self.assertEqual(summary["provider_routes"], ["openrouter/anthropic"])
         self.assertEqual(summary["missing_field_counts"], {})
         self.assertEqual(summary["tasks_with_multiple_verifier_hashes"], ["task-a"])
         self.assertEqual(summary["tasks_with_multiple_environment_digests"], [])
@@ -64,7 +66,13 @@ class ExportRepairLoopSiteDataTests(unittest.TestCase):
         summary = EXPORTER._provenance_summary(
             [
                 _row(repo_commit_sha=None, verifier_hash=None),
-                _row(price_sheet_version=None, runner=None, runner_version=None),
+                _row(
+                    price_sheet_version=None,
+                    runner=None,
+                    runner_version=None,
+                    inference_gateway=None,
+                    provider_route=None,
+                ),
             ]
         )
 
@@ -75,6 +83,8 @@ class ExportRepairLoopSiteDataTests(unittest.TestCase):
             {
                 "price_sheet_version": 1,
                 "repo_commit_sha": 1,
+                "inference_gateway": 1,
+                "provider_route": 1,
                 "runner": 1,
                 "runner_version": 1,
                 "verifier_hash": 1,
@@ -91,6 +101,8 @@ class ExportRepairLoopSiteDataTests(unittest.TestCase):
         self.assertEqual(summary["state"], "complete")
         self.assertEqual(summary["runners"], ["pier-private-repair-loop-pilot"])
         self.assertEqual(summary["runner_versions"], ["runner-sha"])
+        self.assertEqual(summary["inference_gateways"], ["openrouter"])
+        self.assertEqual(summary["provider_routes"], ["openrouter/anthropic"])
         self.assertEqual(EXPORTER._manifest_runner(summary), "pier-private-repair-loop-pilot")
         self.assertEqual(EXPORTER._manifest_status(summary), "preview_snapshot")
 
@@ -104,6 +116,8 @@ def _row(**overrides: object) -> SimpleNamespace:
         "environment_image_digest": "image-sha",
         "runner": "pier-private-repair-loop-pilot",
         "runner_version": "runner-sha",
+        "inference_gateway": "openrouter",
+        "provider_route": "openrouter/anthropic",
     }
     values.update(overrides)
     return SimpleNamespace(**values)

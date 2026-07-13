@@ -27,6 +27,8 @@ REQUIRED_PROVENANCE_FIELDS = (
     "environment_image_digest",
     "runner",
     "runner_version",
+    "inference_gateway",
+    "provider_route",
 )
 
 
@@ -148,6 +150,8 @@ def _provenance_summary(rows: list) -> dict[str, object]:
     price_sheet_versions = _distinct_row_values(rows, "price_sheet_version")
     runners = _distinct_row_values(rows, "runner")
     runner_versions = _distinct_row_values(rows, "runner_version")
+    inference_gateways = _distinct_row_values(rows, "inference_gateway")
+    provider_routes = _distinct_row_values(rows, "provider_route")
     missing_field_counts = {
         field: sum(1 for row in rows if not getattr(row, field, None))
         for field in REQUIRED_PROVENANCE_FIELDS
@@ -199,6 +203,8 @@ def _provenance_summary(rows: list) -> dict[str, object]:
         "price_sheet_versions": price_sheet_versions,
         "runners": runners,
         "runner_versions": runner_versions,
+        "inference_gateways": inference_gateways,
+        "provider_routes": provider_routes,
         "tasks_with_multiple_verifier_hashes": tasks_with_multiple_verifier_hashes,
         "tasks_with_multiple_environment_digests": tasks_with_multiple_environment_digests,
     }
@@ -271,6 +277,8 @@ def _write_manifest(
                 "runner": _manifest_runner(provenance),
                 "runners": provenance.get("runners", []),
                 "runner_versions": provenance.get("runner_versions", []),
+                "inference_gateways": provenance.get("inference_gateways", []),
+                "provider_routes": provenance.get("provider_routes", []),
                 "protocol": plan.get("protocol"),
                 "budget_gate": plan.get("budget_gate"),
                 "run_report": {

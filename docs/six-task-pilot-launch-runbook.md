@@ -7,7 +7,8 @@ benchmark and does not waive the explicit funding approval in the pilot manifest
 
 - Kaggle Benchmarks is the canonical runner for all official pilot evidence.
 - Codex subscription runs are development evidence only and never enter official aggregates.
-- Pier/Harbor is the portability and parity runner, not an interchangeable official evidence source.
+- Pier/Harbor is the portability and parity runner. Matching rows are eligible for pooled model
+  evidence, with runner, gateway, and provider-route provenance retained and published.
 - Apple `container` is local, network-disabled verifier QA only.
 
 ## Freeze Sequence

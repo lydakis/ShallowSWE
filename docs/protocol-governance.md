@@ -30,13 +30,19 @@ selection semantics are recorded without reusing a frozen run manifest.
 | Apple `container` | Fresh network-disabled task-quality probes | Non-model QA |
 | Codex subscription | Development triage and defect discovery | Development only |
 | Kaggle | Canonical funded six-task pilot | Official metered pilot evidence |
-| Pier/Harbor | Portability, local reproduction, and backend parity | Separate runner evidence |
+| Pier/Harbor | Portability, local reproduction, and backend parity | Eligible model evidence under the shared contract |
 | OpenRouter | Optional preregistered external comparator | Separate optional evidence |
 
-Kaggle and Pier consume the same canonical task packet and shared repair-loop contract. They do not
-become the same `agent_policy_id` merely because they run the same task. A difference in scaffold,
-prompt, tool protocol, continuation behavior, sandbox interface, transport, or provider route
-creates a distinct immutable identity. Rows with unequal identities are never pooled.
+Kaggle and Pier consume the same canonical task packet and shared repair-loop contract. Rows are
+presumptively equivalent across those backends when canonical model identity, agent policy, task,
+prompt, tool protocol, continuation behavior, limits, and sampling controls match. Runner or
+gateway differences alone do not prevent pooling. Known model fallback, unresolved model identity,
+materially different behavior, or an incompatible scaffold or continuation contract does.
+
+Backend provenance is mandatory even when rows are pooled. Every model row records `runner`,
+`runner_version`, `inference_gateway`, and `provider_route`; requested and resolved model identity
+remain attached. Published aggregates disclose every contributing runner and route so backend
+effects can be audited or stratified without redefining the headline model result.
 
 ## Freeze Boundary
 

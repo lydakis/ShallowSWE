@@ -56,9 +56,11 @@ size_assignment_decision = "candidate_pending_high_n_floor"
 
 Kaggle is the primary backend for official pilot evidence because funded Kaggle capacity is
 available. Pier/Harbor remains supported as the parallel local-reproduction and portability
-backend. Pier results are a separate evidence class unless immutable policy and transport identity
-are exactly equal; they are never pooled by assumption. Both paths consume `tasks/` and call the
-shared repair-loop protocol. See `docs/protocol-governance.md` and `docs/kaggle-runner.md`.
+backend. Pier results remain eligible for pooled model evidence unless immutable policy or observed
+behavior materially differs. Rows are presumptively equivalent across Pier and Kaggle when the
+canonical model, task, agent policy, controls, and continuation behavior match. Both paths consume
+`tasks/` and call the shared repair-loop protocol, and every row retains runner, gateway, route, and resolved-model
+provenance. See `docs/protocol-governance.md` and `docs/kaggle-runner.md`.
 
 ## Repair-Loop Continuation
 
