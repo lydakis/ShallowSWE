@@ -1,0 +1,6 @@
+configurations,cost_field,model_families,price_semantics_status,provider_route
+11,trial.cost_usd,"[""claude-opus-4-8"", ""claude-sonnet-4-6"", ""claude-sonnet-5""]",provider_reported_not_common_price_reconciled,anthropic
+20,trial.cost_usd,"[""gpt-5-4"", ""gpt-5-5"", ""gpt-5-6-luna"", ""gpt-5-6-sol"", ""gpt-5-6-terra""]",provider_reported_not_common_price_reconciled,openai
+1,trial.cost_usd,"[""kimi-k2-7-code""]",provider_reported_not_common_price_reconciled,openrouter
+7,trial.cost_usd,"[""claude-fable-5"", ""gemini-3-1-pro-preview"", ""gemini-3-5-flash""]",provider_reported_not_common_price_reconciled,vertex_ai
+2,trial.cost_usd,"[""glm-5-2""]",provider_reported_not_common_price_reconciled,zai

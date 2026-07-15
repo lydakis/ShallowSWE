@@ -1,0 +1,17 @@
+minimum_pass_rate,most_selected_config,most_selected_count,most_selected_share_all_replicates,most_selected_share_when_defined,no_eligible_configuration_replicates,point_estimate_winner,point_winner_meets_floor_bootstrap_share,point_winner_selection_count,point_winner_selection_share_all_replicates,point_winner_selection_share_when_defined,selection_defined_replicates
+0.0,mini_swe_agent_gpt_5_6_terra_medium,4928,0.4928,0.4928,0,mini_swe_agent_gpt_5_6_terra_medium,1.0,4928,0.4928,0.4928,10000
+0.05,mini_swe_agent_gpt_5_6_terra_medium,4928,0.4928,0.4928,0,mini_swe_agent_gpt_5_6_terra_medium,1.0,4928,0.4928,0.4928,10000
+0.1,mini_swe_agent_gpt_5_6_terra_medium,4928,0.4928,0.4928,0,mini_swe_agent_gpt_5_6_terra_medium,1.0,4928,0.4928,0.4928,10000
+0.15,mini_swe_agent_gpt_5_6_terra_medium,5361,0.5361,0.5361,0,mini_swe_agent_gpt_5_6_terra_medium,1.0,5361,0.5361,0.5361,10000
+0.2,mini_swe_agent_gpt_5_6_terra_medium,5554,0.5554,0.5554,0,mini_swe_agent_gpt_5_6_terra_medium,1.0,5554,0.5554,0.5554,10000
+0.25,mini_swe_agent_gpt_5_6_terra_medium,5852,0.5852,0.5852,0,mini_swe_agent_gpt_5_6_terra_medium,0.9989,5852,0.5852,0.5852,10000
+0.3,mini_swe_agent_gpt_5_6_terra_medium,6868,0.6868,0.6868,0,mini_swe_agent_gpt_5_6_terra_medium,0.9287,6868,0.6868,0.6868,10000
+0.35,mini_swe_agent_gpt_5_6_luna_high,5579,0.5579,0.5579,0,mini_swe_agent_gpt_5_6_luna_high,0.9974,5579,0.5579,0.5579,10000
+0.4,mini_swe_agent_gpt_5_6_luna_high,8387,0.8387,0.8387,0,mini_swe_agent_gpt_5_6_luna_high,0.907,8387,0.8387,0.8387,10000
+0.45,mini_swe_agent_gpt_5_6_terra_high,5689,0.5689,0.5689,0,mini_swe_agent_gpt_5_6_terra_high,0.9942,5689,0.5689,0.5689,10000
+0.5,mini_swe_agent_gpt_5_6_terra_high,8176,0.8176,0.8176,0,mini_swe_agent_gpt_5_6_terra_high,0.879,8176,0.8176,0.8176,10000
+0.55,mini_swe_agent_gpt_5_6_luna_xhigh,3783,0.3783,0.3783,0,mini_swe_agent_gpt_5_6_luna_xhigh,0.7036,3783,0.3783,0.3783,10000
+0.6,mini_swe_agent_gpt_5_6_sol_medium,4261,0.4261,0.42614261426142613,1,mini_swe_agent_gpt_5_6_sol_medium,0.6085,4261,0.4261,0.42614261426142613,9999
+0.65,mini_swe_agent_gpt_5_6_luna_max,5796,0.5796,0.5810526315789474,25,mini_swe_agent_gpt_5_6_luna_max,0.7906,5796,0.5796,0.5810526315789474,9975
+0.7,mini_swe_agent_gpt_5_6_sol_high,2762,0.2762,0.31616300366300365,1264,mini_swe_agent_gpt_5_6_sol_xhigh,0.5967,1702,0.1702,0.19482600732600733,8736
+0.75,mini_swe_agent_gpt_5_6_sol_max,1223,0.1223,0.3802860696517413,6784,,,0,,,3216

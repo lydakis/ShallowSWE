@@ -1,0 +1,17 @@
+eligible_configurations,minimum_cpsc_config,minimum_cpsc_usd,minimum_pass_rate,observed_pass_rate
+41,mini_swe_agent_gpt_5_6_terra_medium,1.661153265822785,0.0,0.3511111111111111
+40,mini_swe_agent_gpt_5_6_terra_medium,1.661153265822785,0.05,0.3511111111111111
+40,mini_swe_agent_gpt_5_6_terra_medium,1.661153265822785,0.1,0.3511111111111111
+38,mini_swe_agent_gpt_5_6_terra_medium,1.661153265822785,0.15,0.3511111111111111
+38,mini_swe_agent_gpt_5_6_terra_medium,1.661153265822785,0.2,0.3511111111111111
+37,mini_swe_agent_gpt_5_6_terra_medium,1.661153265822785,0.25,0.3511111111111111
+35,mini_swe_agent_gpt_5_6_terra_medium,1.661153265822785,0.3,0.3511111111111111
+33,mini_swe_agent_gpt_5_6_terra_medium,1.661153265822785,0.35,0.3511111111111111
+29,mini_swe_agent_gpt_5_6_luna_high,1.758055695,0.4,0.4424778761061947
+26,mini_swe_agent_gpt_5_6_terra_high,2.1100332386831275,0.45,0.5376106194690266
+22,mini_swe_agent_gpt_5_6_terra_high,2.1100332386831275,0.5,0.5376106194690266
+16,mini_swe_agent_gpt_5_6_luna_xhigh,2.7007778575875485,0.55,0.5685840707964602
+13,mini_swe_agent_gpt_5_6_sol_medium,3.0494144094202897,0.6,0.6106194690265486
+10,mini_swe_agent_gpt_5_6_luna_max,4.506964554817276,0.65,0.671875
+2,mini_swe_agent_gpt_5_6_sol_xhigh,6.650007526645768,0.7,0.7073170731707317
+0,,,0.75,

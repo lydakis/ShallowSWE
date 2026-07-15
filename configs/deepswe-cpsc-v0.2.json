@@ -1,0 +1,139 @@
+{
+  "schema_version": "shallowswe.deepswe_cpsc_plan.v0.2",
+  "base_plan": {
+    "path": "configs/deepswe-cpsc-v0.1.json",
+    "sha256": "245d45f87bec842c0d2bbc79630eba85f354b4b242c19cee799286d509a32152",
+    "status": "historical_frozen_A1_through_A3"
+  },
+  "amended_at": "2026-07-14T12:37:49-04:00",
+  "paper_title": "Failure-Aware Economics of Frontier Coding Agents: A CPSC Reanalysis of DeepSWE",
+  "benchmark_release": "DeepSWE v1.1",
+  "artifacts": [
+    {
+      "id": "leaderboard",
+      "url": "https://deepswe.datacurve.ai/artifacts/v1.1/leaderboard-live.json",
+      "sha256": "bce76d9f89ff36b2ef17e56d04b63fad83d67049bd58e8b98684bfbc3c5fc773",
+      "bytes": 51213
+    },
+    {
+      "id": "trials",
+      "url": "https://deepswe.datacurve.ai/artifacts/v1.1/trials.json",
+      "sha256": "9f66c404d141fc18efc3d3c67e4f495e0b8b103109cb430eb5e436c9020e9794",
+      "bytes": 30708159
+    },
+    {
+      "id": "tasks",
+      "url": "https://deepswe.datacurve.ai/artifacts/v1.1/tasks.json",
+      "sha256": "bae967f6472943564c3fc5232fba3c8e0ac465c1be5ccf9dd4895d4ee9df6242",
+      "bytes": 57634
+    },
+    {
+      "id": "release",
+      "url": "https://deepswe.datacurve.ai/artifacts/v1.1/release.json",
+      "sha256": "0b77963ed8c54ef40c5f744ade178b54bfae2662ed94f9235cee85eb542bdc85",
+      "bytes": 562
+    }
+  ],
+  "cohort": {
+    "required": {
+      "source": "deep-swe",
+      "eval_scope": "full",
+      "included_in_score": true
+    },
+    "retain_model_caused_failures": true,
+    "exclude_infrastructure_errors": true,
+    "primary_panel": "all_configurations",
+    "display_panel": "best_pass_rate_per_model"
+  },
+  "missing_cost": {
+    "primary": "within_configuration_mean_imputation",
+    "sensitivities": [
+      "zero_cost_lower_bound",
+      "within_configuration_outcome_median_imputation",
+      "cost_complete_rows_only"
+    ]
+  },
+  "estimands": [
+    "solve_rate",
+    "realized_cpsc",
+    "equal_task_workload_cpsc",
+    "conditional_successful_spend",
+    "conditional_failed_spend",
+    "realized_reliability_tax",
+    "realized_reliability_tax_share",
+    "reported_token_counters_per_verified_success",
+    "steps_per_verified_success",
+    "agent_seconds_per_verified_success",
+    "trial_seconds_per_verified_success"
+  ],
+  "resource_missingness": {
+    "policy": "configuration_metric_undefined_if_any_scored_row_missing",
+    "frontier_eligibility": "requires_complete_configuration_metric"
+  },
+  "uncertainty": {
+    "method": "task_cluster_bootstrap",
+    "cluster": "task_name",
+    "replicates": 10000,
+    "seed": 20260714,
+    "confidence_level": 0.95,
+    "interval": "percentile",
+    "paired_model_comparisons": true
+  },
+  "counterfactual_failure_charge": {
+    "status": "retrospective_sensitivity_not_shallowswe_calibration",
+    "anchor_config": "mini_swe_agent_gpt_5_6_sol_max",
+    "task_budget_base": "median_included_cost_complete_anchor_spend_by_task",
+    "multipliers": [0.5, 1.0, 2.0]
+  },
+  "common_price_repricing": {
+    "status": "gated_on_complete_price_and_token_semantics_coverage",
+    "minimum_configuration_coverage": 1.0
+  },
+  "cross_regime_comparison": {
+    "allow_raw_dollars_as_descriptive_only": true,
+    "primary_comparisons": [
+      "within_benchmark_rank",
+      "cpsc_relative_to_anchor",
+      "reliability_tax_share",
+      "pareto_frontier",
+      "matched_configuration_rank_change"
+    ]
+  },
+  "amendments": [
+    {
+      "id": "A1",
+      "added_at": "2026-07-14",
+      "status": "result_informed_exploratory",
+      "trigger": "The first full-data pipeline dry run showed that unconstrained CPSC can favor low-cost configurations with low solve rates.",
+      "change": "Do not declare an unconstrained CPSC winner. Add a pass-rate versus cost Pareto frontier and a minimum-CPSC curve over observed reliability floors from 0.00 through 0.75 in increments of 0.05. Keep this analysis labeled exploratory."
+    },
+    {
+      "id": "A2",
+      "added_at": "2026-07-14",
+      "status": "reviewer_requested_result_informed_robustness",
+      "trigger": "Two independent Fable reviews agreed that the point-estimate rank association and reliability-floor winner were not sufficient for publication and identified task mix, exclusion imbalance, effort-level pooling, and selection uncertainty as the principal alternative explanations.",
+      "change": "Before paper revision, add task-level 0-of-4, 1-to-3-of-4, and 4-of-4 success heterogeneity; any-success task coverage; pairwise solved-task overlap and matched solved-task CPSC diagnostics; configuration-level exclusion accounting and exclusions-as-failures sensitivities; task-bootstrap intervals for rank association, rank distributions, and paired pass-rate differences; within-model effort association; and a bootstrap that reselects the reliability-floor policy within every replicate. Label matched solved-task and reliability-floor results as post-outcome exploratory diagnostics. Do not infer a sequential retry policy because the public rows do not identify a predeclared retry order or stopping rule."
+    },
+    {
+      "id": "A3",
+      "added_at": "2026-07-14",
+      "status": "discussion_requested_result_informed_hypothesis_test",
+      "trigger": "A follow-up Fable discussion proposed that realized CPSC rewards configurations that solve a cheap task subset and fail inexpensively elsewhere, and predicted that anchor-success pseudo-budgets and task strata defined by how many configurations solve each task would substantially reorder the results.",
+      "change": "Add a post-hoc common-basket pseudo-budget analysis. Restrict to tasks the declared Sol-max anchor solves at least once, set each task's pseudo-budget to the median anchor spend among successful attempts, and charge failures at the existing 0.5x, 1x, and 2x multipliers. Separately stratify tasks as rare, contested, or common according to whether at most one half, between one half and three quarters, or more than three quarters of configurations solve the task at least once. Recompute realized CPSC, pass rate, coverage, and ranks within each stratum. Treat both analyses as falsification diagnostics, not calibrated reference-budget results."
+    },
+    {
+      "id": "A4",
+      "added_at": "2026-07-14T11:07:00-04:00",
+      "status": "independent_review_requested_result_informed_methodological_revision",
+      "trigger": "GPT-5.6 Pro identified that pooled observed-attempt CPSC weights tasks in proportion to surviving scored attempts and that outcome-defined task strata were circular for a target family.",
+      "change": "Add equal-task workload CPSC for the 113-task complete basket and 111-task common basket; resample task IDs with replacement and recompute task-level means, equal-task eligibility, and the selected configuration inside each task-balanced replicate; rename retrospective failure-charge fields as proxy charges; relabel task groups as panel-solvedness strata; add leave-one-family-out and shared GPT-5.6 group-out assignments; and retain the lower-bound eligibility policy as an explicitly exploratory fixed-sample rule. For that rule, compute each configuration's 2.5th percentile pass-rate bound from the primary task-cluster bootstrap once, require the fixed bound to clear the floor, and select the eligible configuration with minimum point-estimate CPSC. All A4 outputs are exploratory."
+    },
+    {
+      "id": "A5",
+      "added_at": "2026-07-14T12:37:49-04:00",
+      "status": "independent_review_requested_result_informed_final_contrast",
+      "trigger": "Fable observed that Sol max is overprovisioned relative to Sol high and asked whether the Luna-max versus Sol-max reversal survives effort tuning; GPT-5.6 Pro requested a simpler reliability figure and stricter resource-field language.",
+      "change": "Add the paired Luna-max versus Sol-high comparison; add accumulated agent and trial seconds per verified success with task-paired percentile intervals; mark a configuration-resource metric unavailable when any scored row lacks that field and exclude it from the corresponding frontier; report both all-replicate and conditional-on-nonempty reliability selection shares; split the reliability figure into an observed point-policy panel and a stacked high-floor bootstrap-composition panel; remove task coverage from the abstract; soften the panel-solvedness claim; and rename the Sol effort result to distinguish its resolved cost premium from unresolved solve-rate gain. All A5 analyses and presentation changes are exploratory."
+    }
+  ]
+}

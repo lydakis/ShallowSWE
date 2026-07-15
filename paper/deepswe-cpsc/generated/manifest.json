@@ -1,0 +1,237 @@
+{
+  "analysis_schema_version": "shallowswe.deepswe_economics.v0.1",
+  "benchmark_release": "DeepSWE v1.1",
+  "files": [
+    {
+      "bytes": 125075,
+      "path": "figures/economic-frontier.png",
+      "sha256": "a63f4543e82997a238a43138ec50d5dfdb6c5b35eba63f5b2d80feeab654c9b9"
+    },
+    {
+      "bytes": 11186,
+      "path": "figures/economic-frontier.svg",
+      "sha256": "996b1abfc85dcedc9e59f65b5f526d85525843a7e2d02a33225ec3ed5596465f"
+    },
+    {
+      "bytes": 151400,
+      "path": "figures/failure-cost-decomposition.png",
+      "sha256": "bc82029ac62d8d6d55fe731d41fbe1c62dce077077f13b7a2559efd8b219a4c2"
+    },
+    {
+      "bytes": 13616,
+      "path": "figures/failure-cost-decomposition.svg",
+      "sha256": "f9de3bd1457f3220501ed031c2bc16ae1bc16af0f85f46caa70435be30267c2c"
+    },
+    {
+      "bytes": 124872,
+      "path": "figures/invoice-work-frontiers.png",
+      "sha256": "7656531adf28c428353f9a41967521c8d2eea712846fc03db17cb35908ed8364"
+    },
+    {
+      "bytes": 17361,
+      "path": "figures/invoice-work-frontiers.svg",
+      "sha256": "fe8023c295f04cde038f805b9c47de74e81a39cdb2adc9ebc2f5cb7d4e48a713"
+    },
+    {
+      "bytes": 103648,
+      "path": "figures/rank-divergence.png",
+      "sha256": "c4ae4a0dbb98ff955c7e934fdd8cb58f06cd57a9de715f4c4f21e90225e88e2e"
+    },
+    {
+      "bytes": 8773,
+      "path": "figures/rank-divergence.svg",
+      "sha256": "9fad5c68a3bf3a08fba3008a59ce45097e048ec474603af692be735e217693ef"
+    },
+    {
+      "bytes": 128827,
+      "path": "figures/reliability-floor.png",
+      "sha256": "19c19b91f436abd5c846e235dbb4bb193be355815faca35bef9b8c8df8593347"
+    },
+    {
+      "bytes": 12350,
+      "path": "figures/reliability-floor.svg",
+      "sha256": "bf8d1e8c482de336db3569a8bb63337da1d35592d39a59c0f511d5c696bddd32"
+    },
+    {
+      "bytes": 79856,
+      "path": "figures/task-coverage.png",
+      "sha256": "7e00a802f9ca0e06c0a1aa6a792b24f4db128865af0bf5369534b2323981b1db"
+    },
+    {
+      "bytes": 6654,
+      "path": "figures/task-coverage.svg",
+      "sha256": "3db242fd25de63eaaf04b5b32c11aefc2ebcb9e469d9ea767334330409bcd607"
+    },
+    {
+      "bytes": 255595,
+      "path": "summary.json",
+      "sha256": "b9abf899e0a000cef0cdf8fb3ebfde07a4f3334a396584e7a029f9382cdc97f2"
+    },
+    {
+      "bytes": 34197,
+      "path": "tables/anchor-success-budget-sensitivity.csv",
+      "sha256": "601526fde455b2bedcc376632e51ad7024b63f45de98e536aceda8441847f90a"
+    },
+    {
+      "bytes": 3721,
+      "path": "tables/best-model-results.csv",
+      "sha256": "c61608d44d1610d342697550c25a9e344c887728d0729dcebb0b49dd5ed42491"
+    },
+    {
+      "bytes": 12882,
+      "path": "tables/bootstrap-intervals.csv",
+      "sha256": "c48d8f29622b6a076d2ea83e46f4dc4db2c2edf7b865e0ff119651b2afb80b74"
+    },
+    {
+      "bytes": 10962,
+      "path": "tables/configuration-results.csv",
+      "sha256": "0fbc65f6139c127adb99faa3ba7ed75c0a83c9289ef25244a5610ea9a34b979f"
+    },
+    {
+      "bytes": 4621515,
+      "path": "tables/derived-trials.csv",
+      "sha256": "1162a75698de0329bd216323a160d4fd22c4570a412b3a8402856f8e5080e6af"
+    },
+    {
+      "bytes": 3656,
+      "path": "tables/economic-frontier.csv",
+      "sha256": "7ebd3cc55241f497fc6ef03dba45f2d22931642e75306a1c122cba7f8777b870"
+    },
+    {
+      "bytes": 2430,
+      "path": "tables/equal-task-bootstrap.csv",
+      "sha256": "4c04df848cba3f0f0b1be97448755a5dcc582b5f303183d69545dee0748dc6ab"
+    },
+    {
+      "bytes": 7350,
+      "path": "tables/equal-task-common-basket.csv",
+      "sha256": "c1bb778b32b289126800fd47ecfe0fc16375a9834d6432433ddee9be4fe7869f"
+    },
+    {
+      "bytes": 9702,
+      "path": "tables/equal-task-full-basket.csv",
+      "sha256": "b2d3753fd72e1ee5fa08b2f1cc87e3e923b45f4e6f8796216b021caad33671d6"
+    },
+    {
+      "bytes": 1307,
+      "path": "tables/equal-task-reliability-floor.csv",
+      "sha256": "eac3ff78a32e7405e035f1e7446a13c95f3c93285d804b72fdfddcbc88beb089"
+    },
+    {
+      "bytes": 7007,
+      "path": "tables/equal-task-selection-frequencies.csv",
+      "sha256": "4c6a0a8be6057283768dfd7df4f0007ead690c67499258babb13df116a589000"
+    },
+    {
+      "bytes": 31085,
+      "path": "tables/failure-charge-sensitivity.csv",
+      "sha256": "735eed5fb29a840ff4e7a85fedae07ce36af46380139c5445f46bdf36fb0c6dd"
+    },
+    {
+      "bytes": 6210,
+      "path": "tables/gpt-5-6-group-out-panel-solvedness-assignments.csv",
+      "sha256": "f659a678fc752d0a075d18daf5a62a636910f1af95db909d6b5c123140530b06"
+    },
+    {
+      "bytes": 12529,
+      "path": "tables/gpt-5-6-group-out-panel-solvedness.csv",
+      "sha256": "2c7193988a6c4f73c749b633f4e80620c62a530b8a3add2d84b7915a1d90c185"
+    },
+    {
+      "bytes": 9522,
+      "path": "tables/infrastructure-exclusion-audit.csv",
+      "sha256": "e51ecbc115c260c370098064ba3925e4bd8a55fc2c6a3ec77a344d7cf7e3071a"
+    },
+    {
+      "bytes": 88734,
+      "path": "tables/leave-one-family-out-panel-solvedness-assignments.csv",
+      "sha256": "6564b00e4daf48b21163f82129dfbc41cc7d26eb8ee4f3cb28601eb19a7386b6"
+    },
+    {
+      "bytes": 36158,
+      "path": "tables/leave-one-family-out-panel-solvedness.csv",
+      "sha256": "8a729347f91d808129bad4121ca717b87b594222276ce267234b4884684c21e4"
+    },
+    {
+      "bytes": 173515,
+      "path": "tables/matched-solved-task-comparisons.csv",
+      "sha256": "3d2bd7487269a6b6326319f6df8bf8945451a19eb2b79dacc76274e1cc9f4834"
+    },
+    {
+      "bytes": 37517,
+      "path": "tables/missing-cost-sensitivities.csv",
+      "sha256": "8c934addabf6680e59865c8a1bbd49f09e391718d55725677be1f938dd8ccd87"
+    },
+    {
+      "bytes": 241414,
+      "path": "tables/paired-comparisons.csv",
+      "sha256": "fe3d98ab9cb6d7472b1de82a5497c8fc5798757aecaac7561aae86a824d76a03"
+    },
+    {
+      "bytes": 935748,
+      "path": "tables/paired-resource-comparisons.csv",
+      "sha256": "e967e219f0a22c063c585feaff41d4fdf98088b135c1f997be1bce6a371e2c6e"
+    },
+    {
+      "bytes": 5288,
+      "path": "tables/panel-solvedness-assignments.csv",
+      "sha256": "c16cf76c10d7a720a3ecc2fb0c0108ee365d94f436d7ff18e48329f5b5127b6d"
+    },
+    {
+      "bytes": 34319,
+      "path": "tables/panel-solvedness-strata.csv",
+      "sha256": "86d6c2206d79ba9f4cb42a91763f08daae13b99b7e24b9b61727fc834a152ff5"
+    },
+    {
+      "bytes": 707,
+      "path": "tables/provider-cost-provenance.csv",
+      "sha256": "19586f1b6d1406fb8b551f5595d81e5556c7d3eb6b88ea64a0376da6cd0620fa"
+    },
+    {
+      "bytes": 467,
+      "path": "tables/rank-association-intervals.csv",
+      "sha256": "30da2f5dc690a2b535b93db9e8fe4b5cd439ab90603433a8642664053d5e59e4"
+    },
+    {
+      "bytes": 3605,
+      "path": "tables/reliability-floor-bootstrap.csv",
+      "sha256": "0a948d60c92508bf424f1b56a949f05f8b3c793e779feb183f8bb7de3d26ce6c"
+    },
+    {
+      "bytes": 2268,
+      "path": "tables/reliability-floor-lcb-eligibility.csv",
+      "sha256": "1ea75a3169647d34eb1e20230b3dc3409e2e4dcd698120f58b417f73ad803768"
+    },
+    {
+      "bytes": 6858,
+      "path": "tables/reliability-floor-selection-frequencies.csv",
+      "sha256": "a8b7f327c72fea740da7a3f75c47dfe3c137ce3221cc6a7cd0384faa9ec56778"
+    },
+    {
+      "bytes": 1301,
+      "path": "tables/reliability-floor.csv",
+      "sha256": "95ba7c135ece522824eec7f44d33251ab9940696e4ccb3992be41a18cb322e8b"
+    },
+    {
+      "bytes": 14237,
+      "path": "tables/resource-intensity-bootstrap.csv",
+      "sha256": "fdb511411500830705a1a9e35f428f10a1af415846e90ed78a8660b89c28f651"
+    },
+    {
+      "bytes": 15098,
+      "path": "tables/resource-intensity.csv",
+      "sha256": "5cadbfa9d24d70de08b62b4de21e504a87f2bcb6c2089edaa634aa2494854717"
+    },
+    {
+      "bytes": 3598,
+      "path": "tables/task-success-heterogeneity.csv",
+      "sha256": "bad6999733b96dc40861e554b9024384b466cbdd871fa5a549074910af69eafb"
+    },
+    {
+      "bytes": 653,
+      "path": "tables/within-model-rank-associations.csv",
+      "sha256": "e390d1403c7a2eb68f193bb153583e896001e0323687f33013c369b15e7b5524"
+    }
+  ],
+  "schema_version": "shallowswe.deepswe_paper_assets.v0.1"
+}
