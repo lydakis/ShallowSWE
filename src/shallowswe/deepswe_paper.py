@@ -47,6 +47,14 @@ def write_deepswe_paper_assets(
     exclusion_audit = _mapping(primary, "infrastructure_exclusion_audit")
     task_weighting = _mapping(primary, "task_weighting_sensitivity")
     task_weighting_bootstrap = _mapping(bootstrap, "task_weighting_sensitivity")
+    repository_value = report.get("repository_cluster_sensitivity")
+    repository_bootstrap = (
+        repository_value if isinstance(repository_value, dict) else {}
+    )
+    dispersion_value = report.get("paired_outcome_dispersion")
+    paired_outcome_dispersion = (
+        dispersion_value if isinstance(dispersion_value, dict) else {"rows": []}
+    )
     table_specs = {
         "derived-trials.csv": derive_deepswe_trial_rows(trials),
         "configuration-results.csv": _rows(primary, "configurations"),
@@ -127,6 +135,21 @@ def write_deepswe_paper_assets(
         "anchor-success-budget-sensitivity.csv": _anchor_success_budget_rows(
             report
         ),
+        "repository-bootstrap-paired-comparisons.csv": _rows(
+            repository_bootstrap, "paired_comparisons"
+        ),
+        "repository-bootstrap-paired-resources.csv": _rows(
+            repository_bootstrap, "paired_resource_comparisons"
+        ),
+        "repository-bootstrap-reliability-floor.csv": _rows(
+            repository_bootstrap, "reliability_floor_policy"
+        ),
+        "repository-bootstrap-selection-frequencies.csv": _rows(
+            repository_bootstrap, "reliability_floor_selection_frequencies"
+        ),
+        "paired-outcome-dispersion.csv": _rows(
+            paired_outcome_dispersion, "rows"
+        ),
     }
     for name, rows in table_specs.items():
         _write_csv(tables_dir / name, rows)
@@ -150,7 +173,11 @@ def write_deepswe_paper_assets(
         [
             path
             for path in output_dir.rglob("*")
-            if path.is_file() and path.name != "manifest.json"
+            if path.is_file()
+            and path.name != "manifest.json"
+            and not any(
+                part.startswith(".") for part in path.relative_to(output_dir).parts
+            )
         ]
     )
     manifest = {
@@ -208,6 +235,10 @@ def build_paper_summary(report: dict[str, Any]) -> dict[str, object]:
         "unconstrained_lowest_cpsc_configuration": lowest_cpsc,
         "best_per_model_lowest_cpsc_configuration": display_lowest,
         "reliability_floor_change_points": floor_changes,
+        "repository_cluster_sensitivity": report.get(
+            "repository_cluster_sensitivity"
+        ),
+        "paired_outcome_dispersion": report.get("paired_outcome_dispersion"),
         "reliability_floor_bootstrap": _mapping(report, "bootstrap").get(
             "reliability_floor_policy"
         ),

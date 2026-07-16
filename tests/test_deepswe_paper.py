@@ -167,6 +167,23 @@ class DeepSWEPaperAssetTests(unittest.TestCase):
             "provider_cost_provenance": [],
             "source_metadata": {},
             "anchor_success_budget_sensitivity": {"scenarios": []},
+            "repository_cluster_sensitivity": {
+                "paired_comparisons": [],
+                "paired_resource_comparisons": [],
+                "reliability_floor_policy": [],
+                "reliability_floor_selection_frequencies": [],
+            },
+            "paired_outcome_dispersion": {
+                "status": "result_informed_exploratory_outcome_dispersion",
+                "rows": [
+                    {
+                        "row_type": "contrast_a_minus_b",
+                        "config_a": "config-b",
+                        "config_b": "config-a",
+                        "middle_outcome_share_difference": 0.25,
+                    }
+                ],
+            },
         }
         trials = {
             "rows": [
@@ -194,6 +211,7 @@ class DeepSWEPaperAssetTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp)
+            (output / ".DS_Store").write_bytes(b"finder metadata")
             manifest = write_deepswe_paper_assets(trials, report, output)
 
             self.assertTrue((output / "tables" / "derived-trials.csv").exists())
@@ -231,6 +249,16 @@ class DeepSWEPaperAssetTests(unittest.TestCase):
             self.assertTrue(
                 (output / "tables" / "paired-resource-comparisons.csv").exists()
             )
+            self.assertTrue(
+                (
+                    output
+                    / "tables"
+                    / "repository-bootstrap-paired-comparisons.csv"
+                ).exists()
+            )
+            self.assertTrue(
+                (output / "tables" / "paired-outcome-dispersion.csv").exists()
+            )
             self.assertTrue((output / "figures" / "rank-divergence.svg").exists())
             self.assertTrue((output / "figures" / "economic-frontier.svg").exists())
             self.assertTrue((output / "figures" / "reliability-floor.svg").exists())
@@ -241,6 +269,7 @@ class DeepSWEPaperAssetTests(unittest.TestCase):
             )
             self.assertTrue((output / "summary.json").exists())
             self.assertEqual(json.loads((output / "manifest.json").read_text()), manifest)
+            self.assertNotIn(".DS_Store", {row["path"] for row in manifest["files"]})
             self.assertGreater(len(manifest["files"]), 8)
             self.assertIn("Pass-rate rank", (output / "figures" / "rank-divergence.svg").read_text())
             self.assertIn(

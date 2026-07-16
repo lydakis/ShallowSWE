@@ -63,9 +63,9 @@
       "sha256": "3db242fd25de63eaaf04b5b32c11aefc2ebcb9e469d9ea767334330409bcd607"
     },
     {
-      "bytes": 255595,
+      "bytes": 280514,
       "path": "summary.json",
-      "sha256": "b9abf899e0a000cef0cdf8fb3ebfde07a4f3334a396584e7a029f9382cdc97f2"
+      "sha256": "7597ed5a92aa4e891a90e80b3ce9259cbff83ed6334c807e9fbdb9afd01b2bd5"
     },
     {
       "bytes": 34197,
@@ -168,6 +168,11 @@
       "sha256": "fe3d98ab9cb6d7472b1de82a5497c8fc5798757aecaac7561aae86a824d76a03"
     },
     {
+      "bytes": 1124,
+      "path": "tables/paired-outcome-dispersion.csv",
+      "sha256": "ba87cd68b95c28d3810a3d1f3f870e5815a4621665490bc188618d73559ddb5a"
+    },
+    {
       "bytes": 935748,
       "path": "tables/paired-resource-comparisons.csv",
       "sha256": "e967e219f0a22c063c585feaff41d4fdf98088b135c1f997be1bce6a371e2c6e"
@@ -211,6 +216,26 @@
       "bytes": 1301,
       "path": "tables/reliability-floor.csv",
       "sha256": "95ba7c135ece522824eec7f44d33251ab9940696e4ccb3992be41a18cb322e8b"
+    },
+    {
+      "bytes": 1043,
+      "path": "tables/repository-bootstrap-paired-comparisons.csv",
+      "sha256": "a3fc4ee5df60555d4db1f7ab6cf8b566f4f3b5d466e63a34ec44a197f0dedbb6"
+    },
+    {
+      "bytes": 4625,
+      "path": "tables/repository-bootstrap-paired-resources.csv",
+      "sha256": "beece08c2f036d383f42d9df9f037517e2181595673fac3769c003c4ef34bd02"
+    },
+    {
+      "bytes": 367,
+      "path": "tables/repository-bootstrap-reliability-floor.csv",
+      "sha256": "d3708409e10ae9a7c05243dece898410837006334789f70e2bf023d6cb0fcb23"
+    },
+    {
+      "bytes": 1919,
+      "path": "tables/repository-bootstrap-selection-frequencies.csv",
+      "sha256": "5dc2099bbd81f3f3227f98da3713a5aeb4fa3a567063d4a42e0c2f142f5ab7f6"
     },
     {
       "bytes": 14237,

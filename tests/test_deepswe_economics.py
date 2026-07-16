@@ -9,6 +9,8 @@ from shallowswe.deepswe_economics import (
     analyze_anchor_success_budget_sensitivity,
     analyze_deepswe_trials,
     analyze_failure_charge_sensitivity,
+    analyze_paired_outcome_dispersion,
+    bootstrap_deepswe_repositories,
     bootstrap_deepswe_trials,
     derive_deepswe_trial_rows,
     verify_artifact,
@@ -398,6 +400,70 @@ class DeepSWEEconomicsTests(unittest.TestCase):
             "not_identified_from_public_trial_rows",
         )
 
+    def test_paired_outcome_dispersion_is_complete_cell_paired_and_deterministic(self) -> None:
+        rows = []
+        outcomes = {
+            "config-a": {
+                "task-a": (True, True, True, True),
+                "task-b": (True, True, False, False),
+                "task-c": (False, False, False, False),
+                "task-incomplete": (True, False, False),
+            },
+            "config-b": {
+                "task-a": (True, True, True, True),
+                "task-b": (True, True, True, True),
+                "task-c": (False, False, False, False),
+                "task-incomplete": (True, False, False, False),
+            },
+        }
+        for config, task_outcomes in outcomes.items():
+            for task_name, attempts in task_outcomes.items():
+                for index, passed in enumerate(attempts):
+                    rows.append(
+                        _row(
+                            f"{config}-{task_name}-{index}",
+                            config=config,
+                            model=f"model-{config[-1]}",
+                            task_name=task_name,
+                            passed=passed,
+                            cost_usd=1.0,
+                        )
+                    )
+
+        first = analyze_paired_outcome_dispersion(
+            {"rows": rows},
+            config_a="config-a",
+            config_b="config-b",
+            attempts_per_task=4,
+            replicates=200,
+            seed=11,
+        )
+        second = analyze_paired_outcome_dispersion(
+            {"rows": rows},
+            config_a="config-a",
+            config_b="config-b",
+            attempts_per_task=4,
+            replicates=200,
+            seed=11,
+        )
+
+        self.assertEqual(first, second)
+        self.assertEqual(first["paired_complete_tasks"], 3)
+        self.assertEqual(first["config_a_complete_tasks"], 3)
+        self.assertEqual(first["config_b_complete_tasks"], 4)
+        rows_by_type = {row["row_type"]: row for row in first["rows"]}
+        self.assertEqual(rows_by_type["configuration_a"]["middle_outcome_tasks"], 1)
+        self.assertEqual(rows_by_type["configuration_b"]["middle_outcome_tasks"], 0)
+        contrast = rows_by_type["contrast_a_minus_b"]
+        self.assertAlmostEqual(contrast["middle_outcome_share_difference"], 1 / 3)
+        self.assertAlmostEqual(contrast["coverage_rate_difference"], 0.0)
+        self.assertIn("middle_outcome_share_difference_ci_low", contrast)
+        self.assertIn("intraclass_correlation_difference_ci_high", contrast)
+        self.assertEqual(
+            first["mechanism_identification"]["status"],
+            "not_identified_from_binary_outcomes",
+        )
+
     def test_audits_exclusions_and_charges_them_as_failed_attempts(self) -> None:
         payload = {
             "rows": [
@@ -730,6 +796,68 @@ class DeepSWEEconomicsTests(unittest.TestCase):
         self.assertAlmostEqual(result["base_budget_summary_usd"]["median"], 15.0)
         self.assertEqual(candidate["attempts"], 2)
         self.assertAlmostEqual(candidate["proxy_failure_charge_cpsc_usd"], 16.0)
+
+    def test_repository_bootstrap_preserves_task_clusters(self) -> None:
+        rows = []
+        for config, model, outcomes in (
+            ("config-a", "model-a", (True, True, False)),
+            ("config-b", "model-b", (True, False, True)),
+        ):
+            for task_name, passed in zip(
+                ("task-a", "task-b", "task-c"), outcomes, strict=True
+            ):
+                rows.append(
+                    _row(
+                        f"{config}-{task_name}",
+                        config=config,
+                        model=model,
+                        task_name=task_name,
+                        passed=passed,
+                        cost_usd=1.0 if config == "config-a" else 2.0,
+                    )
+                )
+        tasks = {
+            "rows": [
+                {"id": "task-a", "repository": "owner/repo-one"},
+                {"id": "task-b", "repository": "owner/repo-one"},
+                {"id": "task-c", "repository": "owner/repo-two"},
+            ]
+        }
+
+        result = bootstrap_deepswe_repositories(
+            {"rows": rows},
+            tasks,
+            replicates=50,
+            seed=7,
+            paired_configurations=(("config-a", "config-b"),),
+            reliability_floors=(0.75,),
+        )
+
+        self.assertEqual(result["method"], "repository_cluster_bootstrap")
+        self.assertEqual(result["cluster_count"], 2)
+        self.assertEqual(result["task_count"], 3)
+        self.assertEqual(result["tasks_per_repository"]["histogram"], {1: 1, 2: 1})
+        comparison = result["paired_comparisons"][0]
+        self.assertEqual(comparison["config_a"], "config-a")
+        self.assertEqual(comparison["config_b"], "config-b")
+        self.assertGreater(comparison["defined_replicates"], 0)
+        self.assertLessEqual(comparison["defined_replicates"], 50)
+        self.assertEqual(result["reliability_floor_policy"][0]["minimum_pass_rate"], 0.75)
+
+    def test_repository_bootstrap_requires_metadata_for_every_scored_task(self) -> None:
+        with self.assertRaisesRegex(ValueError, "lacks repository metadata for: task-b"):
+            bootstrap_deepswe_repositories(
+                {
+                    "rows": [
+                        _row("trial-1", task_name="task-b", passed=True, cost_usd=1.0)
+                    ]
+                },
+                {"rows": [{"id": "task-a", "repository": "owner/repo"}]},
+                replicates=2,
+                seed=1,
+                paired_configurations=(("config-a", "config-a"),),
+                reliability_floors=(0.5,),
+            )
 
     def test_verify_artifact_checks_size_and_sha256(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

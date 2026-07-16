@@ -126,6 +126,189 @@ def analyze_deepswe_trials(
     }
 
 
+def analyze_paired_outcome_dispersion(
+    payload: dict[str, Any],
+    *,
+    config_a: str,
+    config_b: str,
+    attempts_per_task: int,
+    replicates: int,
+    seed: int,
+) -> dict[str, object]:
+    """Compare repeated binary outcomes on tasks with complete cells for both configs."""
+    if config_a == config_b:
+        raise ValueError("paired outcome dispersion requires two configurations")
+    if attempts_per_task < 2:
+        raise ValueError("paired outcome dispersion requires at least two attempts per task")
+    if replicates < 1:
+        raise ValueError("paired outcome dispersion requires at least one replicate")
+    source_rows = payload.get("rows")
+    if not isinstance(source_rows, list):
+        raise ValueError("DeepSWE trial artifact missing rows list")
+
+    by_config_task: dict[str, dict[str, list[bool]]] = {
+        config_a: defaultdict(list),
+        config_b: defaultdict(list),
+    }
+    for row in source_rows:
+        if not _is_scored_deepswe_row(row):
+            continue
+        config = _required_str(row, "config")
+        if config in by_config_task:
+            by_config_task[config][_required_str(row, "task_name")].append(
+                bool(row.get("passed"))
+            )
+
+    complete_by_config = {
+        config: {
+            task: sum(attempts)
+            for task, attempts in task_rows.items()
+            if len(attempts) == attempts_per_task
+        }
+        for config, task_rows in by_config_task.items()
+    }
+    paired_tasks = sorted(
+        set(complete_by_config[config_a]) & set(complete_by_config[config_b])
+    )
+    if len(paired_tasks) < 2:
+        raise ValueError("paired outcome dispersion requires at least two complete paired tasks")
+    counts_a = [complete_by_config[config_a][task] for task in paired_tasks]
+    counts_b = [complete_by_config[config_b][task] for task in paired_tasks]
+    point_a = _outcome_dispersion_metrics(counts_a, attempts_per_task)
+    point_b = _outcome_dispersion_metrics(counts_b, attempts_per_task)
+
+    middle_differences: list[float | None] = []
+    coverage_differences: list[float | None] = []
+    correlation_differences: list[float | None] = []
+    random = Random(seed)
+    for _ in range(replicates):
+        indices = [random.randrange(len(paired_tasks)) for _ in paired_tasks]
+        replicate_a = _outcome_dispersion_metrics(
+            [counts_a[index] for index in indices], attempts_per_task
+        )
+        replicate_b = _outcome_dispersion_metrics(
+            [counts_b[index] for index in indices], attempts_per_task
+        )
+        middle_differences.append(
+            float(replicate_a["middle_outcome_share"])
+            - float(replicate_b["middle_outcome_share"])
+        )
+        coverage_differences.append(
+            float(replicate_a["coverage_rate"])
+            - float(replicate_b["coverage_rate"])
+        )
+        correlation_a = replicate_a["intraclass_correlation"]
+        correlation_b = replicate_b["intraclass_correlation"]
+        correlation_differences.append(
+            float(correlation_a) - float(correlation_b)
+            if correlation_a is not None and correlation_b is not None
+            else None
+        )
+
+    middle_low, middle_high = _interval(middle_differences)
+    coverage_low, coverage_high = _interval(coverage_differences)
+    correlation_low, correlation_high = _interval(correlation_differences)
+    contrast = {
+        "row_type": "contrast_a_minus_b",
+        "config_a": config_a,
+        "config_b": config_b,
+        "paired_complete_tasks": len(paired_tasks),
+        "middle_outcome_share_difference": (
+            float(point_a["middle_outcome_share"])
+            - float(point_b["middle_outcome_share"])
+        ),
+        "middle_outcome_share_difference_ci_low": middle_low,
+        "middle_outcome_share_difference_ci_high": middle_high,
+        "coverage_rate_difference": (
+            float(point_a["coverage_rate"]) - float(point_b["coverage_rate"])
+        ),
+        "coverage_rate_difference_ci_low": coverage_low,
+        "coverage_rate_difference_ci_high": coverage_high,
+        "intraclass_correlation_difference": (
+            float(point_a["intraclass_correlation"])
+            - float(point_b["intraclass_correlation"])
+            if point_a["intraclass_correlation"] is not None
+            and point_b["intraclass_correlation"] is not None
+            else None
+        ),
+        "intraclass_correlation_difference_ci_low": correlation_low,
+        "intraclass_correlation_difference_ci_high": correlation_high,
+    }
+    return {
+        "status": "result_informed_exploratory_outcome_dispersion",
+        "attempts_per_task": attempts_per_task,
+        "config_a": config_a,
+        "config_b": config_b,
+        "config_a_complete_tasks": len(complete_by_config[config_a]),
+        "config_b_complete_tasks": len(complete_by_config[config_b]),
+        "paired_complete_tasks": len(paired_tasks),
+        "rows": [
+            {
+                "row_type": "configuration_a",
+                "config": config_a,
+                "paired_complete_tasks": len(paired_tasks),
+                **point_a,
+            },
+            {
+                "row_type": "configuration_b",
+                "config": config_b,
+                "paired_complete_tasks": len(paired_tasks),
+                **point_b,
+            },
+            contrast,
+        ],
+        "bootstrap": {
+            "method": "paired_task_cluster_bootstrap",
+            "replicates": replicates,
+            "seed": seed,
+            "confidence_level": 0.95,
+            "interval": "percentile",
+        },
+        "mechanism_identification": {
+            "status": "not_identified_from_binary_outcomes",
+            "reason": (
+                "Less-polarized task outcomes can arise from attempt-level strategy variation, "
+                "a less-polarized distribution of task success probabilities, sampling settings, "
+                "or other unobserved execution differences."
+            ),
+        },
+    }
+
+
+def _outcome_dispersion_metrics(
+    success_counts: list[int], attempts_per_task: int
+) -> dict[str, object]:
+    task_count = len(success_counts)
+    successes = sum(success_counts)
+    pass_rate = successes / (task_count * attempts_per_task)
+    mean_count = successes / task_count
+    count_variance = sum(
+        (count - mean_count) ** 2 for count in success_counts
+    ) / task_count
+    denominator = attempts_per_task * pass_rate * (1 - pass_rate)
+    intraclass_correlation = (
+        (count_variance / denominator - 1) / (attempts_per_task - 1)
+        if denominator > 0
+        else None
+    )
+    zero_tasks = sum(count == 0 for count in success_counts)
+    all_success_tasks = sum(count == attempts_per_task for count in success_counts)
+    middle_tasks = task_count - zero_tasks - all_success_tasks
+    coverage_tasks = task_count - zero_tasks
+    return {
+        "attempts": task_count * attempts_per_task,
+        "successes": successes,
+        "pass_rate": pass_rate,
+        "zero_success_tasks": zero_tasks,
+        "middle_outcome_tasks": middle_tasks,
+        "all_success_tasks": all_success_tasks,
+        "middle_outcome_share": middle_tasks / task_count,
+        "coverage_tasks": coverage_tasks,
+        "coverage_rate": coverage_tasks / task_count,
+        "intraclass_correlation": intraclass_correlation,
+    }
+
+
 def derive_deepswe_trial_rows(
     payload: dict[str, Any],
     *,
@@ -540,6 +723,282 @@ def bootstrap_deepswe_trials(
     }
 
 
+def bootstrap_deepswe_repositories(
+    payload: dict[str, Any],
+    tasks_payload: dict[str, Any],
+    *,
+    replicates: int,
+    seed: int,
+    paired_configurations: tuple[tuple[str, str], ...],
+    reliability_floors: tuple[float, ...],
+    missing_cost_method: str = "config_mean",
+) -> dict[str, object]:
+    """Resample repositories while retaining every task and attempt in each cluster."""
+    if replicates <= 0:
+        raise ValueError("bootstrap replicates must be positive")
+    if not paired_configurations:
+        raise ValueError("repository bootstrap requires paired configurations")
+    if not reliability_floors:
+        raise ValueError("repository bootstrap requires reliability floors")
+
+    source_rows = payload.get("rows")
+    task_rows = tasks_payload.get("rows")
+    if not isinstance(source_rows, list):
+        raise ValueError("DeepSWE trial artifact missing rows list")
+    if not isinstance(task_rows, list):
+        raise ValueError("DeepSWE task artifact missing rows list")
+
+    repository_by_task: dict[str, str] = {}
+    for row in task_rows:
+        if not isinstance(row, dict):
+            raise ValueError("DeepSWE task artifact contains a non-object row")
+        task = _required_str(row, "id")
+        repository = _required_str(row, "repository")
+        if task in repository_by_task:
+            raise ValueError(f"duplicate DeepSWE task metadata: {task}")
+        repository_by_task[task] = repository
+
+    scored_rows = [row for row in source_rows if _is_scored_deepswe_row(row)]
+    analysis_rows = _prepare_analysis_rows(scored_rows, missing_cost_method)
+    tasks = sorted({_required_str(row, "task_name") for row in analysis_rows})
+    missing_tasks = sorted(set(tasks) - repository_by_task.keys())
+    if missing_tasks:
+        raise ValueError(
+            "DeepSWE task artifact lacks repository metadata for: "
+            + ", ".join(missing_tasks)
+        )
+
+    repositories_to_tasks: dict[str, list[str]] = defaultdict(list)
+    for task in tasks:
+        repositories_to_tasks[repository_by_task[task]].append(task)
+    repositories = sorted(repositories_to_tasks)
+    repository_sizes = [len(repositories_to_tasks[repository]) for repository in repositories]
+
+    configs = sorted({_required_str(row, "config") for row in analysis_rows})
+    unknown_configs = sorted(
+        {
+            config
+            for pair in paired_configurations
+            for config in pair
+            if config not in configs
+        }
+    )
+    if unknown_configs:
+        raise ValueError(
+            "repository bootstrap comparison references unknown configurations: "
+            + ", ".join(unknown_configs)
+        )
+
+    matrix = _task_stat_matrix(analysis_rows, configs=configs, tasks=tasks)
+    resource_matrix = _task_resource_matrix(
+        analysis_rows,
+        configs=configs,
+        tasks=tasks,
+    )
+    point_configurations = _summarize_configurations(analysis_rows)
+    point_by_config = {str(row["config"]): row for row in point_configurations}
+    point_resources = _analyze_resource_intensity(
+        analysis_rows,
+        pooled_configurations=point_configurations,
+    )
+    focus_configs = sorted({config for pair in paired_configurations for config in pair})
+    resource_complete = {
+        config: {
+            output_field: all(
+                row.get(source_field) is not None
+                for row in analysis_rows
+                if _required_str(row, "config") == config
+            )
+            for output_field, source_field in RESOURCE_FIELD_SPECS
+        }
+        for config in focus_configs
+    }
+    for config in focus_configs:
+        resource_complete[config]["total_tokens_per_success"] = all(
+            resource_complete[config][field]
+            for field in (
+                "input_tokens_per_success",
+                "cache_tokens_per_success",
+                "output_tokens_per_success",
+            )
+        )
+
+    samples: dict[str, dict[str, list[float | None]]] = {
+        config: {"pass_rate": [], "realized_cpsc_usd": []} for config in configs
+    }
+    resource_samples: dict[str, dict[str, list[float | None]]] = {
+        config: {field: [] for field in RESOURCE_METRICS} for config in focus_configs
+    }
+    floor_winners = {floor: [] for floor in reliability_floors}
+    random = Random(seed)
+    for _ in range(replicates):
+        repository_counts = [0] * len(repositories)
+        for _ in repositories:
+            repository_counts[random.randrange(len(repositories))] += 1
+        count_by_repository = dict(zip(repositories, repository_counts, strict=True))
+        task_counts = [count_by_repository[repository_by_task[task]] for task in tasks]
+
+        replicate_rows = []
+        for config in configs:
+            metrics = _bootstrap_metrics(matrix[config], task_counts)
+            samples[config]["pass_rate"].append(metrics["pass_rate"])
+            samples[config]["realized_cpsc_usd"].append(metrics["realized_cpsc_usd"])
+            replicate_rows.append(
+                {
+                    "config": config,
+                    "pass_rate": metrics["pass_rate"],
+                    "realized_cpsc_usd": metrics["realized_cpsc_usd"],
+                }
+            )
+            if config not in resource_samples:
+                continue
+            resource_metrics = _bootstrap_resource_metrics(
+                resource_matrix[config], task_counts
+            )
+            for field, complete in resource_complete[config].items():
+                if not complete:
+                    resource_metrics[field] = None
+            for field, value in resource_metrics.items():
+                resource_samples[config][field].append(value)
+
+        for floor in reliability_floors:
+            eligible = [
+                row
+                for row in replicate_rows
+                if row.get("pass_rate") is not None
+                and float(row["pass_rate"]) >= floor
+                and row.get("realized_cpsc_usd") is not None
+            ]
+            best = min(
+                eligible,
+                key=lambda row: (float(row["realized_cpsc_usd"]), str(row["config"])),
+                default=None,
+            )
+            floor_winners[floor].append(str(best["config"]) if best else None)
+
+    paired_comparisons = []
+    paired_resource_comparisons = []
+    for config_a, config_b in paired_configurations:
+        pass_differences = [
+            float(value_a) - float(value_b)
+            for value_a, value_b in zip(
+                samples[config_a]["pass_rate"],
+                samples[config_b]["pass_rate"],
+                strict=True,
+            )
+            if value_a is not None and value_b is not None
+        ]
+        cpsc_ratios = [
+            float(value_a) / float(value_b)
+            for value_a, value_b in zip(
+                samples[config_a]["realized_cpsc_usd"],
+                samples[config_b]["realized_cpsc_usd"],
+                strict=True,
+            )
+            if value_a is not None and value_b is not None and float(value_b) > 0
+        ]
+        pass_low, pass_high = _interval(pass_differences)
+        cpsc_low, cpsc_high = _interval(cpsc_ratios)
+        point_a = point_by_config[config_a]
+        point_b = point_by_config[config_b]
+        paired_comparisons.append(
+            {
+                "config_a": config_a,
+                "config_b": config_b,
+                "point_pass_rate_difference_a_minus_b": (
+                    float(point_a["pass_rate"]) - float(point_b["pass_rate"])
+                ),
+                "pass_rate_difference_ci_low": pass_low,
+                "pass_rate_difference_ci_high": pass_high,
+                "point_cpsc_ratio_a_over_b": (
+                    float(point_a["realized_cpsc_usd"])
+                    / float(point_b["realized_cpsc_usd"])
+                ),
+                "cpsc_ratio_ci_low": cpsc_low,
+                "cpsc_ratio_ci_high": cpsc_high,
+                "defined_replicates": len(cpsc_ratios),
+                "a_lower_cpsc_replicates": sum(ratio < 1.0 for ratio in cpsc_ratios),
+                "a_lower_cpsc_share": (
+                    sum(ratio < 1.0 for ratio in cpsc_ratios) / len(cpsc_ratios)
+                    if cpsc_ratios
+                    else None
+                ),
+            }
+        )
+        paired_resource_comparisons.extend(
+            _paired_resource_comparisons(
+                [config_a, config_b],
+                resource_samples,
+                point_resources=point_resources,
+            )
+        )
+
+    reliability_floor_policy = []
+    reliability_floor_selection_frequencies = []
+    for floor in reliability_floors:
+        winners = floor_winners[floor]
+        counts = Counter(winner for winner in winners if winner is not None)
+        defined = sum(counts.values())
+        most_selected = min(
+            counts,
+            key=lambda config: (-counts[config], config),
+            default=None,
+        )
+        reliability_floor_policy.append(
+            {
+                "minimum_pass_rate": floor,
+                "selection_defined_replicates": defined,
+                "no_eligible_configuration_replicates": replicates - defined,
+                "no_eligible_configuration_share": (replicates - defined) / replicates,
+                "most_selected_config": most_selected,
+                "most_selected_share_all_replicates": (
+                    counts[most_selected] / replicates if most_selected else None
+                ),
+                "most_selected_share_when_defined": (
+                    counts[most_selected] / defined if most_selected and defined else None
+                ),
+            }
+        )
+        for config, count in sorted(
+            counts.items(), key=lambda item: (-item[1], item[0])
+        ):
+            reliability_floor_selection_frequencies.append(
+                {
+                    "minimum_pass_rate": floor,
+                    "config": config,
+                    "selection_count": count,
+                    "selection_share_all_replicates": count / replicates,
+                    "selection_share_when_defined": count / defined if defined else None,
+                }
+            )
+
+    size_histogram = Counter(repository_sizes)
+    return {
+        "schema_version": DEEPSWE_ECONOMICS_SCHEMA_VERSION,
+        "status": "reviewer_requested_result_informed_robustness",
+        "method": "repository_cluster_bootstrap",
+        "cluster_count": len(repositories),
+        "task_count": len(tasks),
+        "replicates": replicates,
+        "seed": seed,
+        "missing_cost_method": missing_cost_method,
+        "tasks_per_repository": {
+            "minimum": min(repository_sizes),
+            "median": median(repository_sizes),
+            "maximum": max(repository_sizes),
+            "single_task_repositories": sum(size == 1 for size in repository_sizes),
+            "multi_task_repositories": sum(size > 1 for size in repository_sizes),
+            "histogram": dict(sorted(size_histogram.items())),
+        },
+        "paired_comparisons": paired_comparisons,
+        "paired_resource_comparisons": paired_resource_comparisons,
+        "reliability_floor_policy": reliability_floor_policy,
+        "reliability_floor_selection_frequencies": (
+            reliability_floor_selection_frequencies
+        ),
+    }
+
+
 def analyze_failure_charge_sensitivity(
     payload: dict[str, Any],
     *,
@@ -783,6 +1242,7 @@ def build_deepswe_economics_report(
     leaderboard: dict[str, Any],
     plan: dict[str, Any],
     *,
+    tasks: dict[str, Any] | None = None,
     bootstrap_replicates: int | None = None,
 ) -> dict[str, object]:
     missing_plan = plan.get("missing_cost") or {}
@@ -833,6 +1293,49 @@ def build_deepswe_economics_report(
         multipliers=tuple(float(value) for value in failure_plan["multipliers"]),
         missing_cost_method=primary_method,
     )
+    repository_plan = plan.get("repository_cluster_sensitivity") or {}
+    repository_sensitivity = None
+    if repository_plan.get("status") == "run":
+        if tasks is None:
+            raise ValueError(
+                "repository-cluster sensitivity requires the DeepSWE tasks artifact"
+            )
+        paired_configurations = tuple(
+            (str(pair[0]), str(pair[1]))
+            for pair in repository_plan.get("paired_configurations") or []
+            if isinstance(pair, list) and len(pair) == 2
+        )
+        repository_sensitivity = bootstrap_deepswe_repositories(
+            trials,
+            tasks,
+            replicates=(
+                bootstrap_replicates
+                if bootstrap_replicates is not None
+                else int(repository_plan["replicates"])
+            ),
+            seed=int(repository_plan.get("seed") or uncertainty["seed"]),
+            paired_configurations=paired_configurations,
+            reliability_floors=tuple(
+                float(value)
+                for value in repository_plan.get("reliability_floors") or []
+            ),
+            missing_cost_method=primary_method,
+        )
+    dispersion_plan = plan.get("paired_outcome_dispersion") or {}
+    paired_outcome_dispersion = None
+    if dispersion_plan.get("status") == "run":
+        paired_outcome_dispersion = analyze_paired_outcome_dispersion(
+            trials,
+            config_a=str(dispersion_plan["config_a"]),
+            config_b=str(dispersion_plan["config_b"]),
+            attempts_per_task=int(dispersion_plan["attempts_per_task"]),
+            replicates=(
+                bootstrap_replicates
+                if bootstrap_replicates is not None
+                else int(dispersion_plan["replicates"])
+            ),
+            seed=int(dispersion_plan["seed"]),
+        )
     return {
         "schema_version": DEEPSWE_ECONOMICS_SCHEMA_VERSION,
         "plan_schema_version": plan.get("schema_version"),
@@ -850,6 +1353,8 @@ def build_deepswe_economics_report(
         "missing_cost_sensitivities": missing_sensitivities,
         "failure_charge_sensitivity": failure_sensitivity,
         "anchor_success_budget_sensitivity": anchor_success_sensitivity,
+        "repository_cluster_sensitivity": repository_sensitivity,
+        "paired_outcome_dispersion": paired_outcome_dispersion,
         "leaderboard_reconciliation": reconcile_deepswe_leaderboard(
             primary, leaderboard
         ),
@@ -2757,9 +3262,14 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("trials_json", type=Path)
     parser.add_argument("leaderboard_json", type=Path)
     parser.add_argument(
+        "--tasks-json",
+        type=Path,
+        help="DeepSWE tasks artifact, required by repository-cluster sensitivity plans",
+    )
+    parser.add_argument(
         "--plan",
         type=Path,
-        default=Path("configs/deepswe-cpsc-v0.2.json"),
+        default=Path("configs/deepswe-cpsc-v0.4.json"),
     )
     parser.add_argument(
         "--bootstrap-replicates",
@@ -2788,10 +3298,20 @@ def main(argv: list[str] | None = None) -> None:
             expected_sha256=str(leaderboard_spec["sha256"]),
         ),
     }
+    tasks_payload = None
+    if args.tasks_json is not None:
+        tasks_spec = _planned_artifact(plan, "tasks")
+        verification["tasks"] = verify_artifact(
+            args.tasks_json,
+            expected_bytes=int(tasks_spec["bytes"]),
+            expected_sha256=str(tasks_spec["sha256"]),
+        )
+        tasks_payload = json.loads(args.tasks_json.read_text())
     report = build_deepswe_economics_report(
         json.loads(args.trials_json.read_text()),
         json.loads(args.leaderboard_json.read_text()),
         plan,
+        tasks=tasks_payload,
         bootstrap_replicates=args.bootstrap_replicates,
     )
     report["artifact_verification"] = verification

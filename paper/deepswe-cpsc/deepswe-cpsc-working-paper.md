@@ -1,8 +1,8 @@
 <!-- Canonical typesetting source: main.tex -->
 
-# Failure-Aware Economics of Frontier Coding Agents
+# Economic Rankings Need an Operational Contract
 
-*A Cost-per-Success Reanalysis of DeepSWE v1.1*
+*Price, Effort, and Reliability on DeepSWE v1.1*
 
 George Lydakis  
 [george@lydakis.me](mailto:george@lydakis.me)
@@ -11,25 +11,22 @@ Working paper, July 2026
 
 ## Abstract
 
-DeepSWE ranks coding-agent capability. We ask what economic picture emerges when its trials are
-analyzed as reported spend and recorded work per verified success. We analyze 18,396 scored
-attempts from 41 model-effort configurations on 113 tasks. Realized cost per successful completion
-(CPSC) is algebraically mean attempt cost divided by pass rate and is therefore recoverable from
-aggregate leaderboard fields. Trial-level analysis nevertheless reveals three findings. First,
-reported-dollar and recorded-work frontiers disagree. Nine configurations on the dollar frontier
-span GPT-5.6 Luna, Terra, and Sol, whereas, among resource-complete configurations, every step- or
-token-counter frontier configuration is Sol. Luna max costs 0.390 times Sol max per success while
-using 1.80 times the agent steps and 2.12 times the sum of reported token counters. Against Sol
-high, however, Luna's invoice difference is unresolved while Sol uses substantially less recorded
-work and time. Second, within Sol, high and xhigh effort use fewer dollars and resources than max
-in every task-bootstrap replicate, while their observed solve-rate deficits remain unresolved.
-Third, no universal economic winner is identified: selection changes with the reliability floor
-and proxy failure charge, and at high floors the feasible set is unstable or empty. Equal-task
-workload weighting changes one winner exactly at a 35% eligibility boundary. The accounting lens
-transports to DeepSWE, but any economic recommendation remains conditional on workload,
-reliability, failure valuation, and price basis. The remaining behavioral question is whether
-rising task pressure makes initially inexpensive configurations consume enough repair work or
-failure consequence to reverse the economic ordering.
+DeepSWE ranks coding-agent capability, but its trial artifacts also permit economic comparison. We
+analyze 18,396 scored attempts from 41 model-effort configurations on 113 tasks. Realized cost per
+successful completion (CPSC) equals mean attempt cost divided by pass rate, so its point estimate
+and rank are recoverable from leaderboard aggregates. Trial records matter for paired
+suite-composition uncertainty, equal-task weighting, recorded-resource intensity, and policy
+reselection. Three results follow. First, within GPT-5.6 Sol, high and xhigh effort are cheaper and
+use fewer recorded resources than max in every task- and repository-bootstrap replicate, while
+paired solve-rate intervals include zero. Comparing Luna max with Sol high leaves the invoice
+difference unresolved and strongly favors Sol on recorded work and elapsed time. Second,
+reported-dollar and recorded-work frontiers disagree. Luna max costs 0.390 times Sol max per
+success while using 1.80 times the agent steps and 2.12 times the summed reported token counters.
+Third, no configuration is preferred independently of policy: reliability floors and proxy failure
+charges change the selected configuration, and high floors frequently leave the feasible set
+unstable or empty. DeepSWE therefore yields several well-defined economic rankings but does not
+identify an operational recommendation without a declared workload, reliability requirement,
+failure valuation, and price basis.
 
 ## 1. Introduction
 
@@ -53,18 +50,14 @@ mean attempt cost and pass rate. The contribution cannot be the division itself.
 useful because they support task-paired uncertainty, task-balanced workloads, outcome-conditioned
 spend, solved-task overlap, resource consumption, exclusion audits, and policy reselection.
 
-The analysis produces a more interesting picture than either a capability rank or a price sheet.
-Across all 41 configurations, the reported-invoice frontier and every recorded-work frontier select
-different sets of configurations. A memorable same-provider example, Luna max versus Sol max,
-shows why: Luna is much cheaper in reported dollars but consumes materially more agent steps and
-reported token counters. DeepSWE therefore rules out one explanation for Luna's dollar advantage,
-lower recorded resource appetite, but cannot distinguish provider pricing, serving cost, or
-margins. Crucially, comparing Luna max with Sol high nearly eliminates the invoice gap while Sol
-high uses far less recorded work and time. Most of the Luna-Sol-max invoice gap disappears when Sol
-is evaluated at high rather than max effort, while the recorded-work and elapsed-time gap becomes
-larger. Effort setting and model family therefore affect different economic surfaces. Within Sol,
-high and xhigh reduce both invoice and recorded work relative to max, with an unresolved loss in
-solve rate.
+The cleanest economic contrast is within one model and provider. Sol high and xhigh reduce invoice,
+recorded work, and elapsed time relative to max, while their point solve-rate deficits remain
+unresolved under suite resampling. A cross-family example then shows why the surfaces differ: Luna
+max is much cheaper than Sol max in reported dollars but consumes materially more agent steps and
+reported token counters. Comparing Luna max with Sol high nearly eliminates the invoice gap while
+Sol uses less work and time. Effort setting and model family therefore affect different economic
+surfaces. The primary economic contrasts are within the OpenAI GPT-5.6 generation; cross-provider
+dollars remain descriptive invoice surfaces.
 
 The economic answer is also policy-conditional. An unconstrained minimum rewards configurations
 with solve rates as low as 35%. Raising the reliability requirement changes the selected
@@ -74,14 +67,17 @@ It is that the benchmark contains multiple economic surfaces, and that a recomme
 identified until an operational contract specifies the workload, reliability requirement, failure
 consequence, and price basis.
 
-This paper makes four contributions:
+**Contribution map.** Aggregate fields identify several point rankings; trial records identify
+their suite-composition stability and additional economic surfaces. Neither identifies a deployment
+contract.
 
-1. An all-family comparison of reported dollars, agent steps, and token counters per success.
-2. Paired case studies separating a price-versus-work reversal from within-model effort
-   overprovisioning.
-3. Reliability-floor, proxy failure-charge, and task-weighting sensitivity analyses.
-4. An identification audit that separates aggregate-recoverable accounting from conclusions that
-   require trial records or additional benchmark design.
+| Recoverable from leaderboard aggregates | Requires trial or task records |
+|---|---|
+| CPSC point estimates and ranks | Task- and repository-cluster paired intervals |
+| Unconstrained minimum CPSC | Reliability-floor reselection frequencies |
+| Pass-CPSC frontier | Recorded-resource intensities and frontiers |
+|  | Equal-task estimands and eligibility changes |
+|  | Matched solved-task and exclusion diagnostics |
 
 ## 2. Related Work and Claim Boundary
 
@@ -111,9 +107,9 @@ economic claims remain policy-dependent.
 
 ### Claim boundary
 
-The analysis can show that the accounting and task-clustered stability procedures behave coherently
-on DeepSWE. It cannot validate a production reliability requirement, calibrated task-specific
-failure values, a stateful repair policy, a common-price ranking, or production return on
+The analysis can show that the accounting and task- and repository-clustered stability procedures
+behave coherently on DeepSWE. It cannot validate a production reliability requirement, calibrated
+task-specific failure values, a stateful repair policy, a common-price ranking, or production return on
 investment. Exact reconciliation and tests support implementation correctness; DeepSWE supplies a
 transport study, not construct or decision validation for another benchmark.
 
@@ -199,13 +195,25 @@ define their own strata, the primary mechanism diagnostic excludes all 15 GPT-5.
 when assigning 20 rare, 30 contested, and 63 common tasks. The labels remain retrospective
 panel-solvedness categories, not intrinsic difficulty or a preregistered pressure scale.
 
-Uncertainty uses 10,000 task-cluster bootstrap replicates with seed 20260714. Each replicate samples
+The highlighted Sol-effort and Luna-Sol case studies were selected after inspecting the panel and
+are interpreted as exploratory mechanism contrasts. Their intervals measure suite-composition
+stability, not confirmatory error control across all possible pairwise comparisons.
+
+Primary uncertainty uses 10,000 task-cluster bootstrap replicates with seed 20260714. Each replicate samples
 113 task IDs with replacement and retains every scored attempt for each selected task. Paired
 contrasts use the same task sample, and reported 95% intervals are the 2.5th and 97.5th
 percentiles. The task-balanced sensitivity recomputes task-level means, equal-task eligibility,
 and policy selection after the same resampling step. Intervals therefore measure sensitivity to
 suite composition, not all future tasks or rollout randomness. Reliability policies and economic
 winners are reselected inside each replicate.
+
+Because 113 tasks come from 91 repositories, a reviewer-requested sensitivity also samples 91
+repository IDs with replacement and retains every task and attempt within each selected repository.
+Seventy-five repositories contribute one task, 12 contribute two, three contribute three, and one
+contributes five. The sensitivity uses 10,000 replicates with seed 20260715 and recomputes the four
+highlighted contrasts plus policy selection at the 70% and 75% floors. With 113 task clusters and
+only four dependent attempts within most configuration-task cells, several-point solve-rate
+differences remain sensitive to suite composition even when cost ratios are highly stable.
 
 ### 3.5 Reliability and failure-price policies
 
@@ -230,42 +238,20 @@ charges, never reference-budget estimates.
 
 ### 4.1 The full panel separates invoice from work
 
-Table 1 gives one highest-pass configuration per base model. Sol max leads attempt solve rate at
-72.7%; Fable xhigh follows at 69.9%. The least expensive point estimate in this descriptive panel
-is Luna max at \$4.51 per success, but its 67.2% pass rate is not a substitute for a declared
-reliability policy. Across the full 41-configuration menu, unconstrained Terra medium minimizes
-CPSC at \$1.66 with only 35.1% pass rate.
-
-**Table 1. Highest-pass observed configuration per base model.** Selection is post-outcome and the
-table is descriptive. The last column sums input, cache, and output counters in millions per
-success; it is not a harmonized compute quantity.
-
-| Model | Provider | Effort | Pass | CPSC | Steps/success | Sum counters/success |
-|---|---|---:|---:|---:|---:|---:|
-| GPT-5.6 Sol | OpenAI | max | 72.7% | \$11.54 | 84 | 21.2M |
-| Claude Fable 5 | Vertex AI | xhigh | 69.9% | \$19.19 | 98 | 20.8M |
-| GPT-5.6 Terra | OpenAI | max | 69.6% | \$7.10 | 109 | 25.8M |
-| GPT-5.6 Luna | OpenAI | max | 67.2% | \$4.51 | 151 | 44.9M |
-| GPT-5.5 | OpenAI | xhigh | 67.0% | \$10.78 | 122 | 24.5M |
-| Claude Opus 4.8 | Anthropic | max | 59.0% | \$22.42 | 203 | 57.7M |
-| Claude Sonnet 5 | Anthropic | max | 53.8% | \$49.03 | 499 | 268.6M |
-| GPT-5.4 | OpenAI | xhigh | 51.8% | \$10.92 | 136 | 35.0M |
-| GLM-5.2 | Z.ai | max | 43.8% | \$8.95 | 295 | 57.2M |
-| Gemini 3.5 Flash | Vertex AI | medium | 37.4% | \$19.64 | 229 | 87.2M |
-| Kimi K2.7 Code | OpenRouter | default | 30.5% | \$9.22 | 488 | 84.9M |
-| Claude Sonnet 4.6 | Anthropic | high | 29.9% | \$18.45 | 447 | 85.7M |
-| Gemini 3.1 Pro Preview | Vertex AI | high | 11.8% | \$80.68 | 693 | 98.8M |
-
-The all-configuration Pareto surfaces are more revealing than a single rank. Nine configurations
-are nondominated in pass rate versus reported CPSC, spanning GPT-5.6 Luna, Terra, and Sol. In
-contrast, the four step-per-success frontier configurations are all Sol; every input-, output-,
-cache-, or summed-token frontier point is also Sol. Figure 1 visualizes the first two surfaces. A
-configuration can be invoice-efficient without minimizing recorded agent work.
+Sol max leads attempt solve rate at 72.7%; the highest-pass family panel is reported descriptively
+in Appendix A. Across the full 41-configuration menu, unconstrained Terra medium minimizes CPSC at
+\$1.66 with only 35.1% pass rate. The all-configuration Pareto surfaces are more revealing than
+either row. Nine configurations are nondominated on the pass-CPSC frontier, spanning GPT-5.6 Luna,
+Terra, and Sol. In contrast, the four step-per-success frontier configurations are all Sol; every
+input-, output-, or cache-counter frontier point is also Sol. The descriptive summed-counter
+frontier agrees. Figure 1 visualizes the pass-CPSC and pass-step-intensity surfaces. A configuration
+can be invoice-efficient without minimizing recorded agent work.
 
 ![Pass rate versus reported-dollar CPSC and agent steps per success](generated/figures/invoice-work-frontiers.png)
 
-**Figure 1.** Pass rate versus reported-dollar CPSC (left) and agent steps per success (right) for
-all 41 configurations. Colored points are nondominated within each surface. The frontier changes
+**Figure 1.** Pass rate versus reported-dollar CPSC (left) and agent steps per success (right). The
+dollar panel includes all 41 configurations; the step panel includes the 40 configurations with
+complete step fields. Colored points are nondominated within each surface. The frontier changes
 when dollars are replaced by recorded work. Dollar comparisons use reported provider prices;
 steps are not harmonized compute.
 
@@ -274,16 +260,42 @@ what the artifact can identify. Dollar efficiency equals observed resource appet
 through provider-specific units and prices. The data measure both sides imperfectly, but they are
 sufficient to reject the idea that one universal notion of "efficiency" explains the ranking.
 
-### 4.2 Luna-Sol is a price-versus-work reversal
+### 4.2 Sol max's cost premium is resolved; its solve-rate gain is not
 
-Table 2 compares Luna max with capability-leading Sol max. The point solve-rate gap is -5.5
+Within one model and provider, Sol high, xhigh, and max offer the cleanest effort comparison (Table
+2). Max has the highest point solve rate. However, paired task-bootstrap intervals for
+high-minus-max ([-7.7, +1.1] points) and xhigh-minus-max ([-5.6, +1.7]) include zero. Meanwhile
+high and xhigh are cheaper than max in every replicate and use fewer steps, individual token
+counters, and accumulated seconds with all paired ratio intervals below one.
+
+**Table 2. Within-Sol effort comparison.** The counter column is a descriptive sum of reported
+input, cache, and output counters; seconds are accumulated trial duration per verified success.
+
+| Configuration | Pass | CPSC | Steps/success | Sum counters/success | Trial s/success |
+|---|---:|---:|---:|---:|---:|
+| Sol high | 69.4% | \$5.00 | 53 | 7.5M | 1,004 |
+| Sol xhigh | 70.7% | \$6.65 | 62 | 11.7M | 1,273 |
+| Sol max | 72.7% | \$11.54 | 84 | 21.2M | 1,693 |
+
+Repository clustering preserves the result. High-minus-max has solve-rate interval
+[-7.8, +1.3] points and CPSC-ratio interval [0.399, 0.470]; xhigh-minus-max has
+[-5.6, +1.6] points and [0.537, 0.619]. Both alternatives are cheaper and leaner than max in all
+10,000 repository-bootstrap replicates. The interpretation is asymmetric: max's additional dollar,
+recorded-resource, and time cost is resolved; its solve-rate advantage is not. A larger evaluation
+could resolve the capability difference. For this suite under pure CPSC, maximum effort appears
+overprovisioned unless a decision maker values the unresolved point advantage enough to pay the
+premium.
+
+### 4.3 Luna-Sol is a price-versus-work reversal
+
+Table 3 compares Luna max with capability-leading Sol max. The point solve-rate gap is -5.5
 percentage points, with paired task-bootstrap interval [-12.1, +1.1]; this is unresolved, not
 evidence of equivalence. Luna's CPSC ratio is 0.390 [0.345, 0.439], and Luna is cheaper in all
 10,000 task-mix replicates. Yet Luna consumes materially more of every displayed step/token
 counter per success. Its trial-seconds ratio, 1.08 [0.97, 1.20], is unresolved. The result is an
 invoice advantage, not a lower-recorded-work advantage.
 
-**Table 2. Luna max versus Sol max.** Ratio intervals are paired 95% task-cluster bootstrap
+**Table 3. Luna max versus Sol max.** Ratio intervals are paired 95% task-cluster bootstrap
 intervals. A ratio below one favors Luna.
 
 | Metric | Luna max | Sol max | Luna/Sol contrast |
@@ -297,6 +309,11 @@ intervals. A ratio below one favors Luna.
 | Sum of counters/success | 44.9M | 21.2M | 2.12 [1.88, 2.39] |
 | Trial seconds/success | 1,830 | 1,693 | 1.08 [0.97, 1.20] |
 
+The repository bootstrap gives the same interpretation: Luna's solve-rate gap is
+[-11.4, +0.6] points, its CPSC ratio is [0.350, 0.434], and its step and summed-counter ratios
+remain strictly above one. The task-cluster result is not an artifact of treating related tasks as
+independent clusters.
+
 The solved-task composition does not erase the reversal. Luna and Sol solve 92 tasks in common
 (Jaccard overlap 0.86). On that post-outcome intersection, Luna's CPSC is \$3.88 versus Sol's
 \$9.72, while Sol's solve rate is higher, 85.8% versus 77.2%. This is a diagnostic, not a policy
@@ -304,12 +321,9 @@ for unseen tasks.
 
 The noncircular GPT-5.6 group-out strata also do not support a simple "Luna solves only the easy
 subset" story. On the 20 tasks deemed rare by the other 26 configurations, Luna succeeds on 39 of
-80 attempts and reaches 16 tasks; Sol succeeds on 34 of 80 and reaches 11. Luna's CPSC is \$8.36
-versus Sol's \$21.41. Sol leads attempt solve rate on the contested and common strata, while Luna
-remains cheaper in dollars in all three. With only four attempts per task, the rare-stratum
-coverage difference is suggestive rather than a resolved behavioral mechanism. The public
-artifact does not provide enough accessible trajectory content to test whether Luna's coverage
-comes from greater strategy diversity.
+80 attempts and reaches 16 tasks; Sol succeeds on 34 and reaches 11. Sol leads attempt solve rate
+on the contested and common strata, while Luna remains cheaper in all three. This retrospective
+coverage difference is not a resolved behavioral mechanism.
 
 What explains the dollar reversal? The data answer only part of the question. Luna does more
 recorded work, so lower resource consumption is not the mechanism. The residual necessarily lies
@@ -317,40 +331,16 @@ in how those resources map to reported dollars, including model-specific unit pr
 and unobserved token categories. Provider cost-to-serve, parameter count, utilization, and margin
 are absent. Those are plausible explanations, not findings.
 
-### 4.3 Sol max's cost premium is resolved; its solve-rate gain is not
-
-Within one model and provider, Sol high, xhigh, and max offer a cleaner effort comparison (Table
-3). Max has the highest point solve rate. However, paired task-bootstrap intervals for
-high-minus-max ([-7.7, +1.1] points) and xhigh-minus-max ([-5.6, +1.7]) include zero. Meanwhile
-high and xhigh are cheaper than max in every replicate and use fewer steps, reported token
-counters, and accumulated seconds with all paired ratio intervals below one.
-
-**Table 3. Effort-tuned comparison.** The counter column sums reported input, cache, and output
-counters; seconds are accumulated trial duration per verified success.
-
-| Configuration | Pass | CPSC | Steps/success | Sum counters/success | Trial s/success |
-|---|---:|---:|---:|---:|---:|
-| Luna max | 67.2% | \$4.51 | 151 | 44.9M | 1,830 |
-| Sol high | 69.4% | \$5.00 | 53 | 7.5M | 1,004 |
-| Sol xhigh | 70.7% | \$6.65 | 62 | 11.7M | 1,273 |
-| Sol max | 72.7% | \$11.54 | 84 | 21.2M | 1,693 |
-
-The correct interpretation is asymmetric. The additional dollar and recorded-resource cost of max
-is strongly resolved under suite resampling; its solve-rate advantage is not. The data do not prove
-the configurations equivalent, and a larger evaluation could resolve the capability difference.
-For this suite, maximum effort appears economically overprovisioned unless a decision maker values
-the unresolved point advantage enough to pay the premium.
-
 The effort-tuned cross-model comparison changes the headline gap. Luna max versus Sol high has a
 CPSC ratio of 0.901 [0.798, 1.018], which crosses parity, and a solve-rate difference of -2.2
-points [-8.6, +4.0]. Sol high uses 0.35 times the steps [0.32, 0.39], 0.17 times the sum of
-reported counters [0.15, 0.19], and 0.55 times the trial seconds [0.49, 0.61]. Thus the dramatic
-Luna-Sol-max invoice gap is partly an effort-overprovisioning result. Most of that invoice gap
-disappears when Sol is evaluated at high rather than max effort, while the recorded-work and
-elapsed-time gap becomes larger. Effort setting and model family therefore affect different
-economic surfaces.
+points [-8.6, +4.0]. The repository-cluster CPSC interval is [0.807, 1.010], also crossing parity.
+Sol high uses 0.35 times the steps [0.32, 0.39] and 0.55 times the trial seconds [0.49, 0.61], with
+lower individual input and output counters; the descriptive summed-counter ratio is 0.17
+[0.15, 0.19]. Thus the Luna-Sol-max invoice gap is partly an effort-setting result. It largely
+disappears when Sol is evaluated at high rather than max effort, while the work and elapsed-time gap
+becomes larger.
 
-### 4.4 Realized failure tax adds little beyond failure rate
+### 4.4 Observed failure spend is not an independent signal
 
 Across configurations, mean failed-attempt spend is 0.72 to 1.23 times mean successful-attempt
 spend, with median 1.02. The realized reliability-tax share therefore correlates 0.995 with failure
@@ -367,14 +357,21 @@ The unconstrained point minimum, Terra medium, passes 35.1% of attempts. As the 
 (5) increases, the point winner moves through Terra, Luna, and Sol configurations. At 65%, Luna
 max minimizes observed CPSC; at 70%, Sol xhigh does; no point estimate reaches 75%.
 
-Bootstrap reselection shows that high-reliability decisions are unstable. At 70%, Sol xhigh is
-selected in 16.4% of all replicates, or 18.5% conditional on a nonempty feasible set. Sol high is
-selected most often at 29.9% of all replicates, or 33.8% conditionally, and 11.7% have no eligible
-configuration. Sol high can be selected despite its 69.4% full-sample pass rate because pass rate
-and eligibility are recomputed on each resampled task mixture. At 75%, 67.1% have no eligible
-configuration; Sol max is selected in 13.3% of all replicates and 40.3% of nonempty ones. These
-frequencies combine uncertain eligibility near a hard threshold with uncertain CPSC ordering. They
-should not be read as posterior probabilities that a model is best.
+Bootstrap reselection shows that high-reliability decisions are unstable (Table 4). Sol high can
+be selected at 70% despite its 69.4% full-sample pass rate because pass rate and eligibility are
+recomputed on each resampled task mixture. Selection shares combine uncertain eligibility near a
+hard threshold with uncertain CPSC ordering. They are not posterior probabilities that a model is
+best.
+
+**Table 4. Reliability-policy summary under task-cluster resampling.** Selection shares are shown
+over all replicates and, in parentheses, conditional on a nonempty feasible set.
+
+| Floor | Point winner | Most frequent bootstrap selection | No eligible |
+|---:|---|---|---:|
+| 0% | Terra medium | Terra medium, 53.5% (53.5%) | 0.0% |
+| 65% | Luna max | Luna max, 57.3% (57.5%) | 0.3% |
+| 70% | Sol xhigh | Sol high, 29.9% (33.8%) | 11.7% |
+| 75% | None | Sol max, 13.3% (40.3%) | 67.1% |
 
 ![Reliability requirements change both the choice and whether a choice exists](generated/figures/reliability-floor.png)
 
@@ -384,15 +381,28 @@ no-eligible draws. No configuration reaches a 75% point floor.
 
 This is the central identification result. DeepSWE supports economic rankings, but it does not
 identify an economical configuration that satisfies an unspecified production reliability
-contract. At sufficiently high floors, it may identify no feasible configuration at all.
+contract. Repository clustering preserves and slightly strengthens the warning: no-eligible shares
+are 12.0% at the 70% floor and 70.0% at 75%. At sufficiently high floors, the benchmark may
+identify no feasible configuration at all.
 
 ### 5.2 Failure valuation changes the ordering
 
-The full-basket proxy failure-charge sensitivity selects Sol medium at 0.5x and Luna max at 1x and
-2x. The stricter Sol-solved 97-task variant moves the full-panel rank association toward capability
-rank as the charge grows. Its point minimum is Sol medium at 0.5x and 1x, then Sol high at 2x.
-Luna remains less expensive than Sol max at every tested multiplier: \$4.45 versus \$9.09 at 0.5x,
-\$5.90 versus \$9.83 at 1x, and \$8.79 versus \$11.30 at 2x.
+Recall that these are retrospective sensitivities, not observed failure costs. Successful attempts
+retain their observed spend, while each failed attempt is assigned 0.5×, 1×, or 2× a
+Sol-max-derived task-level spend proxy (Section 3.5). Under the full-basket construction, this
+selects Sol medium at 0.5× and Luna max at 1× and 2× (Table 5). The stricter Sol-solved 97-task
+variant moves the full-panel rank association toward capability rank as the charge grows. Its point
+minimum is Sol medium at 0.5× and 1×, then Sol high at 2×.
+Luna remains less expensive than Sol max at every tested multiplier: \$4.45 versus \$9.09 at 0.5×,
+\$5.90 versus \$9.83 at 1×, and \$8.79 versus \$11.30 at 2×.
+
+**Table 5. Minimum proxy-charge CPSC under two retrospective constructions.** Multipliers apply to
+the Sol-derived task proxy; neither construction is a calibrated failure value.
+
+| Proxy construction | 0.5× | 1× | 2× |
+|---|---|---|---|
+| Full 113-task basket | Sol medium | Luna max | Luna max |
+| Sol-solved 97-task basket | Sol medium | Sol medium | Sol high |
 
 These two proxy constructions answer different counterfactuals and are intentionally kept
 separate. Neither is a calibrated reference budget. They show that charging failure can materially
@@ -402,8 +412,8 @@ reorder the panel while the Luna-Sol pairwise reversal survives the tested Sol-f
 
 Observed-attempt pooling slightly overweights cells with four surviving attempts. Under the
 113-task equal-weight estimand, the largest CPSC change is 2.58% for Luna max. No relative order
-among the 40 full-basket configurations changes, and the pass-rate/mean-attempt-cost frontier is
-identical. On the common 111-task basket, only Luna low and Luna max swap adjacent CPSC ranks.
+among the 40 full-basket configurations changes, and the pass-CPSC frontier is identical. On the
+common 111-task basket, only Luna low and Luna max swap adjacent CPSC ranks.
 
 One policy boundary does change. At an exact 35% floor, pooled pass rate makes Terra medium eligible
 at 35.11%, while equal-task pass rate is 34.96%; the equal-task winner is therefore Luna high.
@@ -420,7 +430,8 @@ The artifact reports dollars across OpenAI, Anthropic, Vertex AI, Z.ai, and Open
 does not expose a dated, harmonized price sheet with consistent input, cache, output, and reasoning
 token semantics. A valid common-price reconstruction would need to reprice every candidate and any
 failure anchor before recomputing all metrics. We therefore report cross-provider invoice and
-resource surfaces as descriptive and keep the strongest causal language within a model or provider.
+resource surfaces as descriptive and reserve the strongest comparative claims for within-family
+and within-provider contrasts.
 
 Missing-cost rules preserve the qualitative results. Charging all 126 infrastructure exclusions as
 failures, with missing exclusion spend imputed at the configuration mean, changes no CPSC rank, no
@@ -431,7 +442,7 @@ routes rather than making open-source versus proprietary claims.
 
 ## 6. Implications for Benchmark Design
 
-The reanalysis supports transport of a failure-aware accounting layer, but it also exposes four
+The reanalysis supports transport of an operational accounting layer, but it also exposes four
 requirements for an economic benchmark:
 
 1. **Declare the workload.** Equal-task, category-weighted, and observed-invoice estimands answer
@@ -444,12 +455,21 @@ requirements for an economic benchmark:
    Provider prices are valid for buyer-invoice questions but not evidence of intrinsic
    computational efficiency.
 
-DeepSWE's independent attempts leave one useful behavioral question open. Luna's higher observed
-task coverage may reflect greater attempt-level strategy diversity, while Sol's higher attempt pass
-rate may reflect more consistent convergence. A bounded same-context repair loop is a different
-process from four independent attempts and could favor either behavior. Testing that mechanism
-requires accessible trajectories, predeclared stopping rules, and enough replications to separate
-rollout variance from task-mix variance.
+DeepSWE's independent attempts leave one useful behavioral question open. A result-informed paired
+diagnostic sharpens the observed pattern without identifying its mechanism. On the 110 tasks with
+exactly four scored attempts for both Luna max and Sol max, Luna records one to three successes on
+58 tasks (52.7%) versus Sol's 35 (31.8%). The paired task-bootstrap difference is 20.9 percentage
+points [8.2, 33.6]. A method-of-moments beta-binomial intraclass correlation is also lower for Luna,
+0.353 versus 0.569, with a difference of -0.216 [-0.367, -0.054]. By contrast, the paired
+any-success coverage difference, 99 versus 94 tasks, is 4.5 points [-1.8, 10.9] and remains
+unresolved.
+
+The supported result is therefore less-polarized task-level outcomes, not greater strategy
+diversity or a "chaotic" attempt process. The same counts can arise if Luna simply has more tasks
+with success probabilities near one half, even when its attempts use similar strategies. A bounded
+same-context repair loop is a different process from four independent attempts and could favor
+either behavior. Testing the mechanism requires accessible trajectories, declared sampling and
+stopping rules, and enough replications to separate rollout variance from task-mix variance.
 
 The economic hypothesis worth testing in a separately designed workload is not that small or cheap
 models must win easy tasks. It is conditional: as calibrated task pressure rises, do initially
@@ -469,16 +489,28 @@ confirmatory study.
 ### Four independent attempts
 
 The design does not identify an infinite-retry process, a same-context repair loop, or a sequential
-stopping policy. Coverage and panel-solvedness are observed-sample summaries. Four attempts per task
-are too sparse to establish mechanisms such as strategy diversity.
+stopping policy. Coverage and panel-solvedness are observed-sample summaries. The post-hoc
+dispersion diagnostic excludes three tasks without complete four-attempt cells for both focal
+configurations and varies the composition of the remaining 110 tasks. Its intraclass correlation is
+a descriptive moment estimate. Four attempts per task are too sparse to establish mechanisms such
+as strategy diversity.
+
+### Trajectory access
+
+At the 2026-07-16 access check, the public release manifest and trial metadata advertised GPT-5.6
+trajectories, but representative Luna and Sol objects returned S3/CloudFront `403 AccessDenied`.
+A Fable 5 trajectory using the same manifest pattern returned HTTP 200, indicating a selective
+artifact-publication failure rather than a general CDN outage. The public repository contains no
+trajectory fallback. The exact reproduction and upstream issue are recorded in amendment A7, so
+this paper does not perform diagnosis-overlap, patch-similarity, or strategy-pivot analysis.
 
 ### Task and model generalization
 
 The bootstrap varies the composition of these 113 tasks. It does not cover new repositories, future
 model versions, provider changes, or production workloads. Highest-pass model rows and Pareto
-frontiers are selected on the same data used to describe them. Because the tasks span 91
-repositories, task-level resampling also does not model possible dependence among multiple tasks
-from the same repository; a repository-cluster sensitivity remains future work.
+frontiers are selected on the same data used to describe them. The repository-cluster sensitivity
+preserves dependence among tasks from the same observed repository, but it does not establish
+generalization to unseen repositories.
 
 ### Price and resource semantics
 
@@ -495,19 +527,21 @@ human or fallback model.
 
 ## 8. Conclusion
 
-Applying failure-aware economics to DeepSWE reveals more than a cheaper leaderboard, but less than
-a universal winner. Realized CPSC itself is aggregate-recoverable. Trial-level records matter
-because they show that reported-dollar and recorded-work frontiers disagree, that the Luna-max
-invoice advantage over Sol max coexists with greater step and token-counter appetite, and that the
-gap nearly vanishes when Sol is tuned to high effort. Within Sol, max's additional dollar,
-resource, and time costs are resolved while its point solve-rate gain is not.
+Applying an operational economic lens to DeepSWE reveals more than a cheaper leaderboard, but less
+than a universal winner. Realized CPSC itself is aggregate-recoverable. Trial-level records matter
+because they show that within Sol, max's additional dollar, resource, and time costs are resolved
+while its point solve-rate gain is not; that reported-dollar and recorded-work frontiers disagree;
+and that Luna's invoice advantage over Sol max largely vanishes when Sol is tuned to high effort.
+Repository-cluster resampling preserves the highlighted within-Sol and Luna-Sol contrasts and the
+high-floor feasibility warning.
 
 The same records show why the answer is conditional. Reliability floors change the selected
 configuration and can empty the feasible set. Proxy failure charges move the ranking. Equal-task
 weighting is numerically modest here but changes one exact threshold decision. Cross-provider
-prices do not identify intrinsic efficiency. The empirical conclusion is therefore an
-identification statement: economic ranking is well-defined only relative to an operational
-contract specifying workload, reliability, failure value, and price basis.
+prices do not identify intrinsic efficiency. DeepSWE therefore yields several well-defined
+economic rankings, but it does not identify which ranking should govern an operational
+recommendation without a declared workload, reliability requirement, failure valuation, and price
+basis.
 
 ## References
 
@@ -537,16 +571,42 @@ contract specifying workload, reliability, failure value, and price basis.
   Kadous, and Ion Stoica. 2025. "RouteLLM: Learning to Route LLMs with Preference Data."
   *International Conference on Learning Representations*. <https://arxiv.org/abs/2406.18665>
 
-## Appendix A. Reproducibility and Frozen Artifacts
+## Appendix A. Descriptive Family Panel
+
+**Highest-pass observed configuration per base model.** Selection is retrospective and the table
+is descriptive. The last column sums input, cache, and output counters in millions per success; it
+is not a harmonized compute quantity.
+
+| Model | Provider | Effort | Pass | CPSC | Steps/success | Sum counters/success |
+|---|---|---:|---:|---:|---:|---:|
+| GPT-5.6 Sol | OpenAI | max | 72.7% | \$11.54 | 84 | 21.2M |
+| Claude Fable 5 | Vertex AI | xhigh | 69.9% | \$19.19 | 98 | 20.8M |
+| GPT-5.6 Terra | OpenAI | max | 69.6% | \$7.10 | 109 | 25.8M |
+| GPT-5.6 Luna | OpenAI | max | 67.2% | \$4.51 | 151 | 44.9M |
+| GPT-5.5 | OpenAI | xhigh | 67.0% | \$10.78 | 122 | 24.5M |
+| Claude Opus 4.8 | Anthropic | max | 59.0% | \$22.42 | 203 | 57.7M |
+| Claude Sonnet 5 | Anthropic | max | 53.8% | \$49.03 | 499 | 268.6M |
+| GPT-5.4 | OpenAI | xhigh | 51.8% | \$10.92 | 136 | 35.0M |
+| GLM-5.2 | Z.ai | max | 43.8% | \$8.95 | 295 | 57.2M |
+| Gemini 3.5 Flash | Vertex AI | medium | 37.4% | \$19.64 | 229 | 87.2M |
+| Kimi K2.7 Code | OpenRouter | default | 30.5% | \$9.22 | 488 | 84.9M |
+| Claude Sonnet 4.6 | Anthropic | high | 29.9% | \$18.45 | 447 | 85.7M |
+| Gemini 3.1 Pro Preview | Vertex AI | high | 11.8% | \$80.68 | 693 | 98.8M |
+
+## Appendix B. Reproducibility and Frozen Artifacts
 
 The historical A1-A3 plan is preserved byte-for-byte in
 [`configs/deepswe-cpsc-v0.1.json`](../../configs/deepswe-cpsc-v0.1.json), with its retrospective
 specification in [`docs/deepswe-cpsc-preanalysis.md`](../../docs/deepswe-cpsc-preanalysis.md). The
-executable A1-A5 plan is
-[`configs/deepswe-cpsc-v0.2.json`](../../configs/deepswe-cpsc-v0.2.json); the dated amendment ledger
-is [`docs/deepswe-cpsc-amendments-v0.2.md`](../../docs/deepswe-cpsc-amendments-v0.2.md). Both plans
-record the input SHA-256 identities. The deterministic pipeline verifies the trial and leaderboard
-hashes, reconciles official aggregates, runs the 10,000-replicate bootstrap, and hashes generated
-tables and figures in a manifest. Commands are in [`README.md`](README.md). A public URL and exact
-implementation commit will be added before circulation; none is asserted for uncommitted analysis
-code.
+A1-A5 plan is [`configs/deepswe-cpsc-v0.2.json`](../../configs/deepswe-cpsc-v0.2.json); the
+executable A1-A7 plan is
+[`configs/deepswe-cpsc-v0.4.json`](../../configs/deepswe-cpsc-v0.4.json). Dated amendment ledgers
+are [`docs/deepswe-cpsc-amendments-v0.2.md`](../../docs/deepswe-cpsc-amendments-v0.2.md),
+[`docs/deepswe-cpsc-amendments-v0.3.md`](../../docs/deepswe-cpsc-amendments-v0.3.md), and
+[`docs/deepswe-cpsc-amendments-v0.4.md`](../../docs/deepswe-cpsc-amendments-v0.4.md). The plans
+record the input SHA-256 identities. The deterministic pipeline verifies the trial, task, and
+leaderboard hashes, reconciles official aggregates, runs the task-, paired-complete-task, and repository-cluster
+bootstraps, and hashes generated tables and figures in a manifest. Commands are in
+[`README.md`](README.md). Public source is at <https://github.com/lydakis/ShallowSWE>; commit
+`2724572` freezes the A1-A5 package. The A6-A7 revision requires its own immutable commit before
+public circulation.

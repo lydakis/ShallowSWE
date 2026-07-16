@@ -1,5 +1,5 @@
 {
-  "analysis_report_sha256": "5f25f1e9e699f64f86d85a39ddb708c1b4279695f4b20edbebd0f6f0c558631e",
+  "analysis_report_sha256": "f46dfafa3838fe21555eac347406cf6d574ebf15caedd88595cd9feff978f98a",
   "anchor_success_budget_sensitivity": {
     "anchor_config": "mini_swe_agent_gpt_5_6_sol_max",
     "anchor_unsolved_tasks": 16,
@@ -2399,6 +2399,73 @@
     ],
     "scored_missing_rows": 21
   },
+  "paired_outcome_dispersion": {
+    "attempts_per_task": 4,
+    "bootstrap": {
+      "confidence_level": 0.95,
+      "interval": "percentile",
+      "method": "paired_task_cluster_bootstrap",
+      "replicates": 10000,
+      "seed": 20260716
+    },
+    "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+    "config_a_complete_tasks": 111,
+    "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+    "config_b_complete_tasks": 112,
+    "mechanism_identification": {
+      "reason": "Less-polarized task outcomes can arise from attempt-level strategy variation, a less-polarized distribution of task success probabilities, sampling settings, or other unobserved execution differences.",
+      "status": "not_identified_from_binary_outcomes"
+    },
+    "paired_complete_tasks": 110,
+    "rows": [
+      {
+        "all_success_tasks": 41,
+        "attempts": 440,
+        "config": "mini_swe_agent_gpt_5_6_luna_max",
+        "coverage_rate": 0.9,
+        "coverage_tasks": 99,
+        "intraclass_correlation": 0.35310310310310306,
+        "middle_outcome_share": 0.5272727272727272,
+        "middle_outcome_tasks": 58,
+        "paired_complete_tasks": 110,
+        "pass_rate": 0.6727272727272727,
+        "row_type": "configuration_a",
+        "successes": 296,
+        "zero_success_tasks": 11
+      },
+      {
+        "all_success_tasks": 59,
+        "attempts": 440,
+        "config": "mini_swe_agent_gpt_5_6_sol_max",
+        "coverage_rate": 0.8545454545454545,
+        "coverage_tasks": 94,
+        "intraclass_correlation": 0.5690277348180225,
+        "middle_outcome_share": 0.3181818181818182,
+        "middle_outcome_tasks": 35,
+        "paired_complete_tasks": 110,
+        "pass_rate": 0.7227272727272728,
+        "row_type": "configuration_b",
+        "successes": 318,
+        "zero_success_tasks": 16
+      },
+      {
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "coverage_rate_difference": 0.045454545454545525,
+        "coverage_rate_difference_ci_high": 0.10909090909090913,
+        "coverage_rate_difference_ci_low": -0.018181818181818188,
+        "intraclass_correlation_difference": -0.21592463171491943,
+        "intraclass_correlation_difference_ci_high": -0.053616819454983713,
+        "intraclass_correlation_difference_ci_low": -0.3673489165433469,
+        "middle_outcome_share_difference": 0.20909090909090905,
+        "middle_outcome_share_difference_ci_high": 0.33636363636363636,
+        "middle_outcome_share_difference_ci_low": 0.08181818181818179,
+        "paired_complete_tasks": 110,
+        "row_type": "contrast_a_minus_b"
+      }
+    ],
+    "status": "result_informed_exploratory_outcome_dispersion"
+  },
   "panel_solvedness_strata": [
     {
       "configurations": 41,
@@ -2938,6 +3005,597 @@
       "observed_pass_rate": null
     }
   ],
+  "repository_cluster_sensitivity": {
+    "cluster_count": 91,
+    "method": "repository_cluster_bootstrap",
+    "missing_cost_method": "config_mean",
+    "paired_comparisons": [
+      {
+        "a_lower_cpsc_replicates": 10000,
+        "a_lower_cpsc_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_high",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "cpsc_ratio_ci_high": 0.46994797820932016,
+        "cpsc_ratio_ci_low": 0.3992552372030541,
+        "defined_replicates": 10000,
+        "pass_rate_difference_ci_high": 0.01314631365142714,
+        "pass_rate_difference_ci_low": -0.07766399436182053,
+        "point_cpsc_ratio_a_over_b": 0.433210101801716,
+        "point_pass_rate_difference_a_minus_b": -0.03265336289726539
+      },
+      {
+        "a_lower_cpsc_replicates": 10000,
+        "a_lower_cpsc_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "cpsc_ratio_ci_high": 0.6193998332701205,
+        "cpsc_ratio_ci_low": 0.537059735324075,
+        "defined_replicates": 10000,
+        "pass_rate_difference_ci_high": 0.015780404746670095,
+        "pass_rate_difference_ci_low": -0.055555590051827225,
+        "point_cpsc_ratio_a_over_b": 0.5762088452047479,
+        "point_pass_rate_difference_a_minus_b": -0.019349593495935014
+      },
+      {
+        "a_lower_cpsc_replicates": 10000,
+        "a_lower_cpsc_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "cpsc_ratio_ci_high": 0.4337802379267228,
+        "cpsc_ratio_ci_low": 0.34966618373251535,
+        "defined_replicates": 10000,
+        "pass_rate_difference_ci_high": 0.005885484117333629,
+        "pass_rate_difference_ci_low": -0.11434121369424054,
+        "point_cpsc_ratio_a_over_b": 0.3905187822877373,
+        "point_pass_rate_difference_a_minus_b": -0.05479166666666668
+      },
+      {
+        "a_lower_cpsc_replicates": 9634,
+        "a_lower_cpsc_share": 0.9634,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_high",
+        "cpsc_ratio_ci_high": 1.0096121274293561,
+        "cpsc_ratio_ci_low": 0.8065262792615866,
+        "defined_replicates": 10000,
+        "pass_rate_difference_ci_high": 0.038624276628168405,
+        "pass_rate_difference_ci_low": -0.08381736717981489,
+        "point_cpsc_ratio_a_over_b": 0.9014535456665808,
+        "point_pass_rate_difference_a_minus_b": -0.02213830376940129
+      }
+    ],
+    "paired_resource_comparisons": [
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_high",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.6305741896987458,
+        "ratio_ci_high": 0.6765720516947552,
+        "ratio_ci_low": 0.5876832569408913,
+        "resource_metric": "agent_steps_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_high",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.35930334891767207,
+        "ratio_ci_high": 0.3879291660098273,
+        "ratio_ci_low": 0.33096105651002417,
+        "resource_metric": "input_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_high",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.34366902546888806,
+        "ratio_ci_high": 0.3717752963014784,
+        "ratio_ci_low": 0.3152163824448877,
+        "resource_metric": "cache_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_high",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.4963689274958892,
+        "ratio_ci_high": 0.5324097181703202,
+        "ratio_ci_low": 0.46252398042813814,
+        "resource_metric": "output_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_high",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.5512806622185296,
+        "ratio_ci_high": 0.5970109574562024,
+        "ratio_ci_low": 0.5089765139285672,
+        "resource_metric": "agent_seconds_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_high",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.592890396891629,
+        "ratio_ci_high": 0.642564119264294,
+        "ratio_ci_low": 0.5484769864390664,
+        "resource_metric": "trial_seconds_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_high",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.3522992976795866,
+        "ratio_ci_high": 0.3807571794091028,
+        "ratio_ci_low": 0.32407621756444827,
+        "resource_metric": "total_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.7379790731538888,
+        "ratio_ci_high": 0.7851339743255984,
+        "ratio_ci_low": 0.695280409889109,
+        "resource_metric": "agent_steps_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.5533674816428966,
+        "ratio_ci_high": 0.5927515965948288,
+        "ratio_ci_low": 0.5179304708360909,
+        "resource_metric": "input_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.549343668989152,
+        "ratio_ci_high": 0.5886770770926333,
+        "ratio_ci_low": 0.5137376558504959,
+        "resource_metric": "cache_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.697494954317053,
+        "ratio_ci_high": 0.7367601788852315,
+        "ratio_ci_low": 0.6609963627149553,
+        "resource_metric": "output_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.7287150706071276,
+        "ratio_ci_high": 0.7878017122912538,
+        "ratio_ci_low": 0.6809921286340407,
+        "resource_metric": "agent_seconds_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.7520680190455371,
+        "ratio_ci_high": 0.8104597490530401,
+        "ratio_ci_low": 0.7046995442035862,
+        "resource_metric": "trial_seconds_per_success"
+      },
+      {
+        "a_lower_replicates": 10000,
+        "a_lower_share": 1.0,
+        "config_a": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 0.5519893921525229,
+        "ratio_ci_high": 0.5912378773519898,
+        "ratio_ci_low": 0.5164926451366793,
+        "resource_metric": "total_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 1.7953784150061398,
+        "ratio_ci_high": 1.9753432951844925,
+        "ratio_ci_low": 1.6303788711006355,
+        "resource_metric": "agent_steps_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 2.1122779326369834,
+        "ratio_ci_high": 2.350172777662476,
+        "ratio_ci_low": 1.892146069076877,
+        "resource_metric": "input_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 2.138031275683808,
+        "ratio_ci_high": 2.382789227333937,
+        "ratio_ci_low": 1.912103116723767,
+        "resource_metric": "cache_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 1.322790557506958,
+        "ratio_ci_high": 1.4474034367817705,
+        "ratio_ci_low": 1.2058525002831846,
+        "resource_metric": "output_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 713,
+        "a_lower_share": 0.0713,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 1.0761093241631625,
+        "ratio_ci_high": 1.1853349601877847,
+        "ratio_ci_low": 0.9753819896504108,
+        "resource_metric": "agent_seconds_per_success"
+      },
+      {
+        "a_lower_replicates": 557,
+        "a_lower_share": 0.0557,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 1.0810075384951183,
+        "ratio_ci_high": 1.1882983531328217,
+        "ratio_ci_low": 0.9813244685820667,
+        "resource_metric": "trial_seconds_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_max",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 2.1216166147002595,
+        "ratio_ci_high": 2.3626566803492506,
+        "ratio_ci_low": 1.8990738783336942,
+        "resource_metric": "total_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_high",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 2.8472120241138863,
+        "ratio_ci_high": 3.13529693938016,
+        "ratio_ci_low": 2.5908701036498973,
+        "resource_metric": "agent_steps_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_high",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 5.878815043054258,
+        "ratio_ci_high": 6.597415181694859,
+        "ratio_ci_low": 5.2674028517336,
+        "resource_metric": "input_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_high",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 6.221192825762419,
+        "ratio_ci_high": 7.008997396923587,
+        "ratio_ci_low": 5.549323238687917,
+        "resource_metric": "cache_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_high",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 2.6649342540038696,
+        "ratio_ci_high": 2.920175366358801,
+        "ratio_ci_low": 2.434345185986562,
+        "resource_metric": "output_tokens_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_high",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 1.9520171809265985,
+        "ratio_ci_high": 2.160248820132767,
+        "ratio_ci_low": 1.7712681916930189,
+        "resource_metric": "agent_seconds_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_high",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 1.8232839394305613,
+        "ratio_ci_high": 2.0144390639710497,
+        "ratio_ci_low": 1.6537247710414782,
+        "resource_metric": "trial_seconds_per_success"
+      },
+      {
+        "a_lower_replicates": 0,
+        "a_lower_share": 0.0,
+        "config_a": "mini_swe_agent_gpt_5_6_luna_max",
+        "config_b": "mini_swe_agent_gpt_5_6_sol_high",
+        "defined_replicates": 10000,
+        "point_ratio_a_over_b": 6.022199387493109,
+        "ratio_ci_high": 6.766468651076988,
+        "ratio_ci_low": 5.386525888742972,
+        "resource_metric": "total_tokens_per_success"
+      }
+    ],
+    "reliability_floor_policy": [
+      {
+        "minimum_pass_rate": 0.7,
+        "most_selected_config": "mini_swe_agent_gpt_5_6_sol_high",
+        "most_selected_share_all_replicates": 0.2894,
+        "most_selected_share_when_defined": 0.3289757872001819,
+        "no_eligible_configuration_replicates": 1203,
+        "no_eligible_configuration_share": 0.1203,
+        "selection_defined_replicates": 8797
+      },
+      {
+        "minimum_pass_rate": 0.75,
+        "most_selected_config": "mini_swe_agent_gpt_5_6_sol_max",
+        "most_selected_share_all_replicates": 0.1302,
+        "most_selected_share_when_defined": 0.43342210386151797,
+        "no_eligible_configuration_replicates": 6996,
+        "no_eligible_configuration_share": 0.6996,
+        "selection_defined_replicates": 3004
+      }
+    ],
+    "reliability_floor_selection_frequencies": [
+      {
+        "config": "mini_swe_agent_gpt_5_6_sol_high",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 2894,
+        "selection_share_all_replicates": 0.2894,
+        "selection_share_when_defined": 0.3289757872001819
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_luna_max",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 1779,
+        "selection_share_all_replicates": 0.1779,
+        "selection_share_when_defined": 0.2022280322837331
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 1759,
+        "selection_share_all_replicates": 0.1759,
+        "selection_share_when_defined": 0.1999545299533932
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_sol_max",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 1306,
+        "selection_share_all_replicates": 0.1306,
+        "selection_share_when_defined": 0.14845970217119472
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_terra_max",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 437,
+        "selection_share_all_replicates": 0.0437,
+        "selection_share_when_defined": 0.04967602591792657
+      },
+      {
+        "config": "mini_swe_agent_claude_fable_5_xhigh",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 183,
+        "selection_share_all_replicates": 0.0183,
+        "selection_share_when_defined": 0.020802546322609982
+      },
+      {
+        "config": "mini_swe_agent_claude_fable_5_high",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 162,
+        "selection_share_all_replicates": 0.0162,
+        "selection_share_when_defined": 0.018415368875753096
+      },
+      {
+        "config": "mini_swe_agent_claude_fable_5_max",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 81,
+        "selection_share_all_replicates": 0.0081,
+        "selection_share_when_defined": 0.009207684437876548
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_sol_medium",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 73,
+        "selection_share_all_replicates": 0.0073,
+        "selection_share_when_defined": 0.008298283505740594
+      },
+      {
+        "config": "mini_swe_agent_claude_fable_5_medium",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 69,
+        "selection_share_all_replicates": 0.0069,
+        "selection_share_when_defined": 0.007843583039672615
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_5_xhigh",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 37,
+        "selection_share_all_replicates": 0.0037,
+        "selection_share_when_defined": 0.004205979311128794
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_terra_xhigh",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 13,
+        "selection_share_all_replicates": 0.0013,
+        "selection_share_when_defined": 0.0014777765147209276
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_5_high",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 2,
+        "selection_share_all_replicates": 0.0002,
+        "selection_share_when_defined": 0.00022735023303398886
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_luna_xhigh",
+        "minimum_pass_rate": 0.7,
+        "selection_count": 2,
+        "selection_share_all_replicates": 0.0002,
+        "selection_share_when_defined": 0.00022735023303398886
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_sol_max",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 1302,
+        "selection_share_all_replicates": 0.1302,
+        "selection_share_when_defined": 0.43342210386151797
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_sol_xhigh",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 608,
+        "selection_share_all_replicates": 0.0608,
+        "selection_share_when_defined": 0.20239680426098536
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_sol_high",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 457,
+        "selection_share_all_replicates": 0.0457,
+        "selection_share_when_defined": 0.15213049267643142
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_terra_max",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 190,
+        "selection_share_all_replicates": 0.019,
+        "selection_share_when_defined": 0.06324900133155792
+      },
+      {
+        "config": "mini_swe_agent_claude_fable_5_xhigh",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 168,
+        "selection_share_all_replicates": 0.0168,
+        "selection_share_when_defined": 0.0559254327563249
+      },
+      {
+        "config": "mini_swe_agent_claude_fable_5_max",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 126,
+        "selection_share_all_replicates": 0.0126,
+        "selection_share_when_defined": 0.041944074567243674
+      },
+      {
+        "config": "mini_swe_agent_claude_fable_5_high",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 73,
+        "selection_share_all_replicates": 0.0073,
+        "selection_share_when_defined": 0.02430093209054594
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_luna_max",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 53,
+        "selection_share_all_replicates": 0.0053,
+        "selection_share_when_defined": 0.017643142476697737
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_5_xhigh",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 14,
+        "selection_share_all_replicates": 0.0014,
+        "selection_share_when_defined": 0.004660452729693742
+      },
+      {
+        "config": "mini_swe_agent_claude_fable_5_medium",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 10,
+        "selection_share_all_replicates": 0.001,
+        "selection_share_when_defined": 0.003328894806924101
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_sol_medium",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 2,
+        "selection_share_all_replicates": 0.0002,
+        "selection_share_when_defined": 0.0006657789613848203
+      },
+      {
+        "config": "mini_swe_agent_gpt_5_6_terra_xhigh",
+        "minimum_pass_rate": 0.75,
+        "selection_count": 1,
+        "selection_share_all_replicates": 0.0001,
+        "selection_share_when_defined": 0.00033288948069241014
+      }
+    ],
+    "replicates": 10000,
+    "schema_version": "shallowswe.deepswe_economics.v0.1",
+    "seed": 20260715,
+    "status": "reviewer_requested_result_informed_robustness",
+    "task_count": 113,
+    "tasks_per_repository": {
+      "histogram": {
+        "1": 75,
+        "2": 12,
+        "3": 3,
+        "5": 1
+      },
+      "maximum": 5,
+      "median": 1,
+      "minimum": 1,
+      "multi_task_repositories": 16,
+      "single_task_repositories": 75
+    }
+  },
   "schema_version": "shallowswe.deepswe_paper_assets.v0.1",
   "source_metadata": {
     "leaderboard_generated_at": "2026-07-09T20:23:14.264468+00:00",
