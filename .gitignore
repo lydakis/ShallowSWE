@@ -38,5 +38,14 @@ results/*
 !results/shallowswe-repair-loop-pilot-plan-2026-07-04/*.json
 !results/shallowswe-repair-loop-preview-plan-2026-07-04/
 !results/shallowswe-repair-loop-preview-plan-2026-07-04/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-2026-07-17/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-2026-07-17/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-2026-07-17/rows/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-2026-07-17/rows/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-2026-07-17/retry-ledger/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-2026-07-17/retry-ledger/**/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-2026-07-17/retry-ledger/**/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-max-2026-07-17/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-max-2026-07-17/*.json
 artifacts/
 tmp/

@@ -1,0 +1,18 @@
+{
+  "schema_version": "shallowswe.reasoning_effort_migration.v0.1",
+  "model": "openrouter/moonshotai/kimi-k3",
+  "effective_reasoning_effort": "max",
+  "completed_rows": 18,
+  "request_state": "implicit_provider_default",
+  "basis": {
+    "moonshot_documentation": "K3 always has thinking enabled and currently supports only max, which is the default.",
+    "openrouter_model_metadata": {
+      "mandatory": true,
+      "default_enabled": true,
+      "supported_efforts": [
+        "max"
+      ]
+    }
+  },
+  "continuation_policy": "Retain completed implicit-max rows and send reasoning_effort=max explicitly for all remaining rows."
+}

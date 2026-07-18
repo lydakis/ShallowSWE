@@ -1,0 +1,20 @@
+{
+  "schema_version": "shallowswe.prices.v0.1",
+  "effective_date": "2026-07-17",
+  "gateway": "openrouter",
+  "source_urls": [
+    "https://openrouter.ai/api/v1/models"
+  ],
+  "models": {
+    "moonshotai/kimi-k3": {
+      "provider": "moonshotai",
+      "input_per_1m": 3.0,
+      "cached_input_per_1m": 0.3,
+      "output_per_1m": 15.0,
+      "cache_write_per_1m": null,
+      "aliases": [
+        "openrouter/moonshotai/kimi-k3"
+      ]
+    }
+  }
+}

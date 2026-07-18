@@ -1,0 +1,22 @@
+{
+  "schema_version": "shallowswe.panel.v0.1",
+  "name": "shallowswe-kimi-k3-max-preview",
+  "status": "preview",
+  "description": "Single explicitly pinned Kimi K3 max-effort row for the website-aligned 18-task N=3 preview.",
+  "defaults": {
+    "harness": "mini-swe-agent",
+    "inference_gateway": "openrouter",
+    "provider_routing": {
+      "allow_fallbacks": false
+    }
+  },
+  "rows": [
+    {
+      "id": "mini_swe_agent_kimi_k3_default",
+      "model": "kimi-k3",
+      "openrouter_model": "moonshotai/kimi-k3",
+      "upstream_provider": "moonshotai",
+      "reasoning_effort": "max"
+    }
+  ]
+}
