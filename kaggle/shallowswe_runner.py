@@ -131,7 +131,10 @@ from shallowswe.kaggle_repair_loop import (  # noqa: E402
     dump_kaggle_result,
     run_kaggle_repair_loop,
 )
-from shallowswe.kaggle_runtime import model_proxy_api  # noqa: E402
+from shallowswe.kaggle_runtime import (  # noqa: E402
+    is_kaggle_task_creation_placeholder,
+    model_proxy_api,
+)
 from shallowswe.run_spec import (  # noqa: E402
     resolve_agent_policy,
     resolve_execution_sampling,
@@ -190,6 +193,24 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
     model_entry = None
     agent_policy = None
     if RUN_SPEC is not None and RUN_UNIT is not None:
+        expected_model_entry = next(
+            entry
+            for entry in RUN_SPEC["model_configs"]
+            if entry["model_config_id"] == RUN_UNIT["model_config_id"]
+        )
+        expected_model = expected_model_entry["canonical"]["requested_model"]
+        if is_kaggle_task_creation_placeholder(
+            llm.name,
+            expected_model=expected_model,
+        ):
+            kbench.assertions.assert_true(
+                True,
+                expectation=(
+                    "Kaggle task creation completed without invoking its default "
+                    "model placeholder."
+                ),
+            )
+            return True
         model_entry = resolve_model_config(
             RUN_SPEC,
             RUN_UNIT,

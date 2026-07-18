@@ -41,6 +41,19 @@ DEFAULT_FORMAT_ERROR_TEMPLATE = (
     "Tool call error:\n\n<error>{{error}}</error>\n\n"
     "Every response must call the bash tool with a command argument."
 )
+KAGGLE_TASK_CREATION_PLACEHOLDER_MODEL = "google/gemini-3-flash-preview"
+
+
+def is_kaggle_task_creation_placeholder(
+    observed_model: str,
+    *,
+    expected_model: str,
+) -> bool:
+    """Recognize Kaggle's creation-only default without invoking it."""
+    return (
+        observed_model == KAGGLE_TASK_CREATION_PLACEHOLDER_MODEL
+        and observed_model != expected_model
+    )
 
 
 def model_proxy_api(

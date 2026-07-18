@@ -19,6 +19,9 @@ runner preserves:
 - opaque experiment metadata without branching on it.
 
 There is no model fallback. Unknown units, tasks, models, seeds, prices, or identities fail closed.
+During task creation only, Kaggle injects `google/gemini-3-flash-preview` as its platform default.
+The Kaggle adapter recognizes that exact placeholder and completes registration before loading or
+prompting any model. It emits no ShallowSWE result row and cannot enter later analysis.
 
 ## Bundle
 
@@ -101,9 +104,9 @@ kaggle benchmarks tasks push <task-name> \
 kaggle benchmarks tasks run <task-name> -m '<exact-kaggle-model-slug>' --wait
 ```
 
-Never print, commit, or bundle the Kaggle token or model-proxy environment. The harness contains no
-default-model registration workaround and must never invoke Gemini 3 Flash. Gemini 3.5 Flash is a
-different configured model and is only eligible when named by an exact run spec.
+Never print, commit, or bundle the Kaggle token or model-proxy environment. The creation-only guard
+must never load or prompt Gemini 3 Flash. Gemini 3.5 Flash is a different configured model and is
+only eligible when named by an exact run spec.
 
 ## Download and Reconcile
 

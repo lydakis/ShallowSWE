@@ -14,6 +14,7 @@ from minisweagent.environments.local import LocalEnvironment
 from shallowswe.kaggle_runtime import (
     KaggleBenchmarksModel,
     build_chroot_command,
+    is_kaggle_task_creation_placeholder,
     model_kwargs_for_proxy,
     model_proxy_api,
 )
@@ -78,6 +79,36 @@ class _ProviderResponseLLM(_ScriptedLLM):
 
 
 class KaggleRuntimeTests(unittest.TestCase):
+    def test_only_exact_kaggle_creation_placeholder_is_skipped(self) -> None:
+        self.assertTrue(
+            is_kaggle_task_creation_placeholder(
+                "google/gemini-3-flash-preview",
+                expected_model="gpt-5.6-sol",
+            )
+        )
+        self.assertFalse(
+            is_kaggle_task_creation_placeholder(
+                "gemini-3.5-flash",
+                expected_model="gpt-5.6-sol",
+            )
+        )
+        self.assertFalse(
+            is_kaggle_task_creation_placeholder(
+                "gpt-5.6-luna",
+                expected_model="gpt-5.6-sol",
+            )
+        )
+
+    def test_runner_skips_creation_placeholder_before_loading_a_model(self) -> None:
+        source = Path("kaggle/shallowswe_runner.py").read_text()
+
+        guard = source.index("if is_kaggle_task_creation_placeholder(")
+        resolution = source.index("model_entry = resolve_model_config(")
+        model_load = source.index("native_llm = load_model(")
+
+        self.assertLess(guard, resolution)
+        self.assertLess(guard, model_load)
+
     def test_captures_resolved_model_from_raw_provider_response(self) -> None:
         llm = _ProviderResponseLLM()
         model = KaggleBenchmarksModel(llm=llm, model_name="requested/model-alias")
