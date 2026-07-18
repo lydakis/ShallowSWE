@@ -1,0 +1,68 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_plan.v0.1",
+  "name": "shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high",
+  "snapshot_id": "shallowswe-v0.2-website-preview-2026-07-18",
+  "mode": "bounded_repair_loop_preview",
+  "task_root": "tasks",
+  "task_ids": [
+    "env-flags-to-json",
+    "extract-error-fields",
+    "payout-reconcile",
+    "access-log-to-incidents",
+    "billing-revenue-rollup",
+    "support-sla-business-hours",
+    "invoice-cli-regression-test-fix",
+    "retry-error-fallback",
+    "auth-token-expiry-regression",
+    "split-notification-renderer",
+    "cache-invalidates-on-settings-change",
+    "invoice-multi-source-merge",
+    "post-build-status",
+    "ticket-cut-from-bug-report",
+    "config-flag-ignored",
+    "ticket-update-dont-duplicate",
+    "merge-divergent-config-branches",
+    "config-key-rollover"
+  ],
+  "selection_policy": {
+    "tasks_per_category_size_cell": 2,
+    "purpose": "Run explicitly pinned Inkling high effort on the exact 18-task N=3 matrix currently published on the website.",
+    "source_evidence": [
+      "configs/shallowswe-repair-loop-preview-n3-18-v0.2-config-rollover-temp.json",
+      "results/shallowswe-repair-loop-preview-n3-18-v0.2-config-rollover-temp-2026-07-06/repair-loop-run-report.json"
+    ],
+    "notes": [
+      "This preserves the published preview task matrix and is not final publish-grade scoring."
+    ]
+  },
+  "model_panel": "panels/shallowswe-inkling-preview.json",
+  "repair_loop_seeds_per_task_model_config": 3,
+  "protocol": {
+    "single_model_run_invariant": true,
+    "no_fallbacks": true,
+    "requires_conversation_continuation": true,
+    "requires_filesystem_continuation": true,
+    "verifier_submission_cap": 20,
+    "agent_step_cap": 120,
+    "wall_time_cap_seconds": 2400,
+    "dollar_cap_usd": 5.0,
+    "allowed_feedback_classes": [
+      "generic_failure",
+      "runtime_error",
+      "missing_required_artifact",
+      "output_mismatch"
+    ]
+  },
+  "budget_gate": {
+    "max_budget_usd": 30.0,
+    "global_hard_stop_usd": 30.0,
+    "estimate_artifact": "results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/budget-estimate.json",
+    "requires_explicit_approval_if_over_budget": true
+  },
+  "status": "preview_plan_not_publish_grade",
+  "notes": [
+    "This is a website-aligned preview run, not final ShallowSWE snapshot admission.",
+    "The model route is pinned to OpenRouter thinkingmachines/inkling at high reasoning effort with fallbacks disabled.",
+    "OpenRouter documents high as Inkling's default reasoning effort; it is explicitly sent for every row."
+  ]
+}

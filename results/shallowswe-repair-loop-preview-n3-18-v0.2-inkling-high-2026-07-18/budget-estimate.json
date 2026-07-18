@@ -1,0 +1,97 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_budget.v0.1",
+  "plan": "shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high",
+  "plan_path": "configs/shallowswe-repair-loop-preview-n3-18-v0.2-inkling.json",
+  "task_count": 18,
+  "model_rows": 1,
+  "repair_loop_seeds_per_task_model_config": 3,
+  "estimated_total_rows": 54,
+  "caps": {
+    "single_model_run_invariant": true,
+    "no_fallbacks": true,
+    "requires_conversation_continuation": true,
+    "requires_filesystem_continuation": true,
+    "verifier_submission_cap": 20,
+    "agent_step_cap": 120,
+    "wall_time_cap_seconds": 2400,
+    "dollar_cap_usd": 5.0
+  },
+  "budget_gate": {
+    "max_budget_usd": 30.0,
+    "global_hard_stop_usd": 30.0,
+    "requires_explicit_approval_if_over_budget": true
+  },
+  "theoretical_spend_if_every_row_hits_dollar_cap_usd": 270.0,
+  "estimates": {
+    "published_kimi_k2_7_observed_token_average": {
+      "schema_version": "shallowswe.budget.v0.1",
+      "panel": "shallowswe-inkling-high-preview",
+      "panel_status": "preview",
+      "task_count": 18,
+      "rollouts_per_task": 3,
+      "estimated_attempts_per_row": 54,
+      "estimated_total_attempts": 54,
+      "token_basis": {
+        "input_tokens": 111683,
+        "output_tokens": 5820,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "peak_context_tokens": 2000
+      },
+      "rows": 1,
+      "priced_rows": 1,
+      "missing_price_rows": 0,
+      "priced_subset_cost_usd": 7.303716,
+      "estimated_full_panel_cost_usd": 7.303716,
+      "budget_limit_usd": 30.0,
+      "over_budget": false,
+      "row_estimates": [
+        {
+          "id": "mini_swe_agent_inkling_high",
+          "model": "thinkingmachines/inkling",
+          "upstream_provider": "thinkingmachines",
+          "reasoning_effort": "high",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.135254,
+          "estimated_row_cost_usd": 7.303716
+        }
+      ],
+      "missing_prices": []
+    },
+    "kimi_k3_observed_token_average_without_cache_discount": {
+      "schema_version": "shallowswe.budget.v0.1",
+      "panel": "shallowswe-inkling-high-preview",
+      "panel_status": "preview",
+      "task_count": 18,
+      "rollouts_per_task": 3,
+      "estimated_attempts_per_row": 54,
+      "estimated_total_attempts": 54,
+      "token_basis": {
+        "input_tokens": 339440,
+        "output_tokens": 14209,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "peak_context_tokens": 2000
+      },
+      "rows": 1,
+      "priced_rows": 1,
+      "missing_price_rows": 0,
+      "priced_subset_cost_usd": 21.4372683,
+      "estimated_full_panel_cost_usd": 21.4372683,
+      "budget_limit_usd": 30.0,
+      "over_budget": false,
+      "row_estimates": [
+        {
+          "id": "mini_swe_agent_inkling_high",
+          "model": "thinkingmachines/inkling",
+          "upstream_provider": "thinkingmachines",
+          "reasoning_effort": "high",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.39698645,
+          "estimated_row_cost_usd": 21.4372683
+        }
+      ],
+      "missing_prices": []
+    }
+  }
+}

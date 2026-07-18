@@ -59,5 +59,9 @@ results/*
 !results/shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low-2026-07-09/rows/*.json
 !results/shallowswe-repair-loop-preview-plan-v0.2-gpt-5-6-low-2026-07-09/
 !results/shallowswe-repair-loop-preview-plan-v0.2-gpt-5-6-low-2026-07-09/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/rows/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/rows/*.json
 artifacts/
 tmp/

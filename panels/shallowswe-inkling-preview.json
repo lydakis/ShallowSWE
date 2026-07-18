@@ -1,0 +1,22 @@
+{
+  "schema_version": "shallowswe.panel.v0.1",
+  "name": "shallowswe-inkling-high-preview",
+  "status": "preview",
+  "description": "Single explicitly pinned Inkling high-effort row for the website-aligned 18-task N=3 preview.",
+  "defaults": {
+    "harness": "mini-swe-agent",
+    "inference_gateway": "openrouter",
+    "provider_routing": {
+      "allow_fallbacks": false
+    }
+  },
+  "rows": [
+    {
+      "id": "mini_swe_agent_inkling_high",
+      "model": "inkling",
+      "openrouter_model": "thinkingmachines/inkling",
+      "upstream_provider": "thinkingmachines",
+      "reasoning_effort": "high"
+    }
+  ]
+}
