@@ -10,6 +10,8 @@ timestamp service method path status request_id
 
 `status` must be a base-10 HTTP status integer from 100 through 599. Lines with another field
 count or an invalid status are malformed. Preserve malformed lines in input order in `rejects.csv`.
+Ignore blank lines. Well-formed lines whose status is neither 429 nor 500 through 599 are valid
+non-incidents; omit them from both `incidents.csv` and `rejects.csv`.
 
 ## Acceptance Criteria
 

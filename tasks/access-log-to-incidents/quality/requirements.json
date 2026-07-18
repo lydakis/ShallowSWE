@@ -5,7 +5,7 @@
     {
       "id": "R1",
       "source": "instruction.md:Acceptance Criteria",
-      "behavior": "Classify HTTP 500 and above as high severity and HTTP 429 as medium severity.",
+      "behavior": "Classify HTTP 500 through 599 as high severity and HTTP 429 as medium severity; ignore blank lines and omit other valid statuses from incidents and rejects.",
       "verifier_checks": ["tests/test.sh:check_summary_and_severity", "tests/test.sh:check_fresh_input_generalization"]
     },
     {

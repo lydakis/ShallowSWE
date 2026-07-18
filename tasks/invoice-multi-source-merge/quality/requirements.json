@@ -14,7 +14,7 @@
     {
       "id": "R2",
       "source": "instruction.md",
-      "behavior": "Parse CSV, API JSON, and non-empty legacy records using the documented source schemas and row numbering.",
+      "behavior": "Parse CSV, API JSON, and non-empty legacy records using the documented source schemas and row numbering, normalizing valid dates to ISO YYYY-MM-DD.",
       "verifier_checks": ["tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"]
     },
     {
@@ -38,7 +38,7 @@
     {
       "id": "R6",
       "source": "instruction.md",
-      "behavior": "Reject missing IDs, unknown statuses or currencies, real invalid dates, and non-positive amounts with the required reason vocabulary.",
+      "behavior": "Reject missing IDs, unknown statuses or currencies, real invalid dates, and non-positive amounts with the required reason vocabulary and documented multi-defect precedence.",
       "verifier_checks": ["tests/test.sh:InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects"]
     },
     {

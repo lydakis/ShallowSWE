@@ -2,15 +2,27 @@
   "artifact_hashes": {
     "alternate_solution": "sha256:61d5db1c1e3806f8cdc21bfd69853e7be0e3f42efb470a49b3078a62a11138c1",
     "environment": "sha256:b4d36b97401400afcc3d83e258acad276dde75a22311b66100615f30b3c11714",
-    "instruction": "sha256:aa7a4a2798c1016099dc51bf841617daa0d2e276db8117026fce7df823cd9dbe",
+    "instruction": "sha256:c92eda6c4455b2928269f9ea0dc9ede7e71477d8d24c65a001cba8de696d94fa",
     "negative_control_scripts": "sha256:cd42717b0d6ce59c6bd1d466b1730cab5f0f6c39619a40fa5c190984370b30f4",
     "negative_controls": "sha256:5db33bea1157ced8967cb3d0ccf91f68e5bb6dead5e6c6f83a771cde577d3152",
     "reference_solution": "sha256:b7473c7992ef28c5b722e591a92a6ccb886397fc7fe9d909dc28867bfdb6e8ee",
     "verifier": "sha256:acf4f8f10a8fbd6fa49154852b25132073efd4a554d29bab63e717599f83d2f5"
   },
-  "generated_at": "2026-07-11T20:06:00.259248+00:00",
+  "generated_at": "2026-07-18T15:38:02.052289+00:00",
   "quality_outcome": "pass",
   "runs": [
+    {
+      "artifact_sha256": "sha256:38526d142f193b6e5a22179aaaadfa2e89c96ac0f27226dfee320916bcc0af27",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "tests/test.sh",
+      "container_exit_code": 1,
+      "control_id": null,
+      "exit_code": 1,
+      "kind": "pristine_submission",
+      "output_sha256": "sha256:8861258997648ba519b99c62200063c1f02c1e5d7a5fd16f8df86f2347c0db99",
+      "verifier_reached": true
+    },
     {
       "artifact_sha256": "sha256:3a56ed12acb723633d7f19ef7932d93f3b99e0b230f911fe1142e3e865e52c7c",
       "attempt": 1,
@@ -20,7 +32,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "reference_solution",
-      "output_sha256": "sha256:12f0e13305a869e8996d3f569184d5e17144a8598a56ca928d6f416601b39c7f",
+      "output_sha256": "sha256:99e4650062d18d782d288ec49bf366375eb8cbe24cf21d3b4256fe479a5a04f6",
       "verifier_reached": true
     },
     {
@@ -32,7 +44,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "reference_solution",
-      "output_sha256": "sha256:6e827c33c78aaee805f0e136926b9d9218f565dadbbd2c7ef26b2624c08cfe75",
+      "output_sha256": "sha256:99e4650062d18d782d288ec49bf366375eb8cbe24cf21d3b4256fe479a5a04f6",
       "verifier_reached": true
     },
     {
@@ -44,7 +56,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "reference_solution",
-      "output_sha256": "sha256:6e827c33c78aaee805f0e136926b9d9218f565dadbbd2c7ef26b2624c08cfe75",
+      "output_sha256": "sha256:99e4650062d18d782d288ec49bf366375eb8cbe24cf21d3b4256fe479a5a04f6",
       "verifier_reached": true
     },
     {
@@ -56,7 +68,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "alternate_solution",
-      "output_sha256": "sha256:d4fd39fcafbd9938c104ce4a79d2d3df8255bb32ee684d6126a42f468b69463d",
+      "output_sha256": "sha256:0b27bbe7326535e725b7d903c93896462c72a7dfccd19cfe90ab0d864f93c7f6",
       "verifier_reached": true
     },
     {
@@ -68,7 +80,7 @@
       "control_id": "NC1",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:832ac1344b4895d587e6af3a5719c65b9c8dbfbf12a6e82f792d910d67504198",
+      "output_sha256": "sha256:8861258997648ba519b99c62200063c1f02c1e5d7a5fd16f8df86f2347c0db99",
       "verifier_reached": true
     },
     {
@@ -80,7 +92,7 @@
       "control_id": "NC2",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:0c8d2b94e0040ddd1f5c330d6d9f3738e2925d5f83e4bd5489fc95a81f905654",
+      "output_sha256": "sha256:7d723182f3016cd1e4cf2856551d9e0031d9673e5697b1533ae5e5f7223fc5b1",
       "verifier_reached": true
     },
     {
@@ -92,7 +104,7 @@
       "control_id": "NC3",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:be359822b0fb0b510f43999fb389da9c3116c943790e3082c83b65e77a2b6ae7",
+      "output_sha256": "sha256:dbc0bda7a70f1e3900f6be4b93c91f1575173fad4c1ca2c3a96209402365aa96",
       "verifier_reached": true
     },
     {
@@ -104,7 +116,7 @@
       "control_id": "NC4",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:246223a6ee8eab1a9c61d38caa7bff234f2e3baad4b20012b81db6a0a1e8cc7e",
+      "output_sha256": "sha256:300273fc67f65da07df6e897c22f1398ba386e8327692796f1cd6b298be34558",
       "verifier_reached": true
     },
     {
@@ -116,7 +128,7 @@
       "control_id": "NC5",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:a63e9cd4aa3532845c3b88a41ca6d406e74aecda63b23c31ee7be6cd19341187",
+      "output_sha256": "sha256:c0a83e0ae616ce16f4abd56b3fda3074a1c7a65d7b03deadcaf30ca1ee3acf41",
       "verifier_reached": true
     },
     {
@@ -128,18 +140,20 @@
       "control_id": "NC6",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:10e5ba930552b29160d6be6f091b47dbd1e28b7af99b603a0e47678c9ce04ede",
+      "output_sha256": "sha256:61488a6b92aa014b7a7b40eeded31b857bf2a8ebb91b13c2d4e617697ce3f76f",
       "verifier_reached": true
     }
   ],
   "runtime": {
-    "backend": "apple_container",
+    "backend": "docker",
+    "build_dns_override": null,
     "image": "shallowswe-quality/access-log-to-incidents:local",
-    "image_digest": "sha256:f2b8cfee8825305f41ce81b5230e500588ffd747a62510ac67186f76bb116060",
+    "image_digest": "sha256:ba11beb257ffaccb70c72be74c802477bf3c347e5b2c72802c2fdc48c0a494b0",
+    "image_source": "built_for_execution",
     "network_policy": "disabled",
     "platform": "linux/arm64",
-    "version": "container CLI version 1.0.0 (build: release, commit: ee848e3)"
+    "version": "Docker version 29.6.1, build 8900f1d"
   },
-  "schema_version": "shallowswe.task_quality_execution.v0.1",
+  "schema_version": "shallowswe.task_quality_execution.v0.2",
   "task_id": "access-log-to-incidents"
 }

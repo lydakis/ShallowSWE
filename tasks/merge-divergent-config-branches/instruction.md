@@ -1,6 +1,7 @@
-# Merge Divergent Config Branches
+# Reconcile Divergent Config Snapshots
 
-The fixture simulates main, release, and feature config branches. Produce `repo/config.json` by merging release and feature into main.
+The repository contains exported config snapshots from the main, release, and feature lines. Produce
+`repo/config.json` by applying the release configuration and feature flags to the main snapshot.
 
 Merge semantics are deterministic:
 

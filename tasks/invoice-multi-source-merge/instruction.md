@@ -45,6 +45,10 @@ Rules:
   - `void`, `canceled`, and `cancelled` become `void`
 - Reject rows with a missing invoice ID, unknown status, unknown currency, malformed dates, or
   non-positive amount.
+- Parse every valid date and emit `issued_at` and `updated_at` as ISO `YYYY-MM-DD`, including dates
+  read from legacy `YYYYMMDD` fields.
+- If a row has multiple defects, choose its reject reason in this order: `missing_invoice_id`,
+  `unknown_status`, `malformed_date`, `unknown_currency`, then `non_positive_amount`.
 - Amounts from CSV and API are decimal major units. Legacy amounts are integer cents.
 - Normalize every kept invoice amount to USD cents using `currency_rates.json`. The rates map
   currency code to USD conversion rate. Round half up to the nearest cent.

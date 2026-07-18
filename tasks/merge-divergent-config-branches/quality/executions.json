@@ -2,15 +2,27 @@
   "artifact_hashes": {
     "alternate_solution": "sha256:9770c3e96204727a77d2c9c1b4ef8279fa4da1486e0d3065778811f33250a739",
     "environment": "sha256:0820b30f5f82db7f90c4ba5c3e3ecd1c6c9b3614858e5a315465adbc9a13bffc",
-    "instruction": "sha256:4f19c1a3c20e0f1e051cec82c6a94f8d740ff6bf5c5b40e48e3bb85209e9ba9b",
+    "instruction": "sha256:ed360ec5ed9f95e4778d8ddd827c53c1f330272ebc809a4aabac568d50f5247a",
     "negative_control_scripts": "sha256:46b9d9ad82b100c7be9cae02a185cc3ab395f70985e3f17fb55ed32f78686910",
     "negative_controls": "sha256:40d564284bb2292b596bd8a956bf4b0ea58976bb40a3d2c426988e823d53f97c",
     "reference_solution": "sha256:16c43b5ad43f648a58ae2df57ac5c481a9a763d95a588d97285e1a0ba9fff175",
     "verifier": "sha256:80251068bd8023a07900efce2e0aaf106c92011b1814c5d97c916717f513b658"
   },
-  "generated_at": "2026-07-11T20:08:30.946417+00:00",
+  "generated_at": "2026-07-18T15:38:16.973724+00:00",
   "quality_outcome": "pass",
   "runs": [
+    {
+      "artifact_sha256": "sha256:29d29b8e8256a8a38006d6cf516e8cec778499e2ea7da4f216f70e9ee6054d84",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "tests/test.sh",
+      "container_exit_code": 1,
+      "control_id": null,
+      "exit_code": 1,
+      "kind": "pristine_submission",
+      "output_sha256": "sha256:19588ececdc17c29c989294fe5d6de49c426421aad1fb8a171b3e033282c8376",
+      "verifier_reached": true
+    },
     {
       "artifact_sha256": "sha256:31b91b9dac6983dbc65e6fb3fd531c47bf174d74dd074151bb80d57782bb61b9",
       "attempt": 1,
@@ -20,7 +32,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "reference_solution",
-      "output_sha256": "sha256:eea26294326df013941476ef49746e72c711445de6b3ba4691614d89aa3093df",
+      "output_sha256": "sha256:f634cfbfd1e44aa375cf6cb5cb7a047497d03ace506b283a9dac2ef2adeef998",
       "verifier_reached": true
     },
     {
@@ -32,7 +44,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "reference_solution",
-      "output_sha256": "sha256:eea26294326df013941476ef49746e72c711445de6b3ba4691614d89aa3093df",
+      "output_sha256": "sha256:f634cfbfd1e44aa375cf6cb5cb7a047497d03ace506b283a9dac2ef2adeef998",
       "verifier_reached": true
     },
     {
@@ -44,7 +56,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "reference_solution",
-      "output_sha256": "sha256:eea26294326df013941476ef49746e72c711445de6b3ba4691614d89aa3093df",
+      "output_sha256": "sha256:f634cfbfd1e44aa375cf6cb5cb7a047497d03ace506b283a9dac2ef2adeef998",
       "verifier_reached": true
     },
     {
@@ -56,7 +68,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "alternate_solution",
-      "output_sha256": "sha256:40da3500cc46811a95635e2a033214847d18401026d6811c1ab90a856c9af6ad",
+      "output_sha256": "sha256:6eeee99f3572a0c07395cef1cac65907203dcfe794b3d028e2684e08ac428aa8",
       "verifier_reached": true
     },
     {
@@ -68,7 +80,7 @@
       "control_id": "NC1",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:a8af887c81fc503670e542877cfd7b9fd8b3c920393a598d895634a1971babd5",
+      "output_sha256": "sha256:19588ececdc17c29c989294fe5d6de49c426421aad1fb8a171b3e033282c8376",
       "verifier_reached": true
     },
     {
@@ -80,7 +92,7 @@
       "control_id": "NC2",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:442b7ec786acee1cc1f563559839ba299bfa366a2aa04ca17a15d817e90d4d55",
+      "output_sha256": "sha256:28fac3ea9abc3405d643625e8974fa0d1cda815d2eacffcda9109ff5cb8259bd",
       "verifier_reached": true
     },
     {
@@ -92,7 +104,7 @@
       "control_id": "NC3",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:82fa8394bea2505b2738bcfd6e91e0300b83c6950c7281d9c1cf3b9a513728c6",
+      "output_sha256": "sha256:dbb275cc437ca2eeadbfe59884ec2f06e57aa28455e23694286b57bcbc71353d",
       "verifier_reached": true
     },
     {
@@ -104,7 +116,7 @@
       "control_id": "NC4",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:cd8ac630a1fd92d0c4fc4825c6087531b49637c88f910bd6ae5b917b44761980",
+      "output_sha256": "sha256:bb8727824c0a88cfe08d0c57a339066a4e089aeb1211c2fca303936a6d782826",
       "verifier_reached": true
     },
     {
@@ -116,18 +128,20 @@
       "control_id": "NC5",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:2e6bd416f5bdf4e3d279747706f0a36822624723a306ce7818ffe1e8b2757625",
+      "output_sha256": "sha256:6569efff07eff05d04674784efde97b264218f1cc4b82537e946c9c1d524a8d5",
       "verifier_reached": true
     }
   ],
   "runtime": {
-    "backend": "apple_container",
+    "backend": "docker",
+    "build_dns_override": null,
     "image": "shallowswe-quality/merge-divergent-config-branches:local",
-    "image_digest": "sha256:83aae6baee7a78d717ca7fbdaaeebaec7dbc61ea63a8773a912a0b1aaaa2d39e",
+    "image_digest": "sha256:be008bac3f775ec2591de3fbf4d0234c41fc743f335856923dcb8b16d3698dd1",
+    "image_source": "built_for_execution",
     "network_policy": "disabled",
     "platform": "linux/arm64",
-    "version": "container CLI version 1.0.0 (build: release, commit: ee848e3)"
+    "version": "Docker version 29.6.1, build 8900f1d"
   },
-  "schema_version": "shallowswe.task_quality_execution.v0.1",
+  "schema_version": "shallowswe.task_quality_execution.v0.2",
   "task_id": "merge-divergent-config-branches"
 }

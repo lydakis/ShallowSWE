@@ -2,15 +2,27 @@
   "artifact_hashes": {
     "alternate_solution": "sha256:27b745d41885d0cfeb66edb68defb7375b61045f3e93116c12a7c783d9a1218d",
     "environment": "sha256:ce7f6c41af64ec119851b357ccc9174366162eca2402e33dbd9d6941e0fbefaf",
-    "instruction": "sha256:33ec2ef7c9f8a37e7ab4483cc909ca1f186d1ec3eae4010396f437794571fcda",
+    "instruction": "sha256:1424493e9090b476542e3e6df50fc5357267185f592c01cdae142785c6609757",
     "negative_control_scripts": "sha256:df4f395ad50184bb2b6ba5dbe1f6f4a69b2d7b865df9ebe6668540481f6c3de9",
     "negative_controls": "sha256:bd8ca6f54f116998e9b8e76ef49ed9c406e33dfafc9e94dc1a3c8cdd35192314",
     "reference_solution": "sha256:a6a54ea6b7d578737a4e64caddb034d2c20913ea89c192f95b30cc63ae638961",
     "verifier": "sha256:704ebf18cc77e048877fb943de5807cebc89b4a46586e8c1b2426e54ef73cfb1"
   },
-  "generated_at": "2026-07-11T20:14:20.531039+00:00",
+  "generated_at": "2026-07-18T15:38:12.258858+00:00",
   "quality_outcome": "pass",
   "runs": [
+    {
+      "artifact_sha256": "sha256:1bf22042109f2b16018ed1c9cf5ca34611cf9f3398ca2f64168c17b54a4b4bc6",
+      "attempt": 1,
+      "clean_sandbox": true,
+      "command": "tests/test.sh",
+      "container_exit_code": 1,
+      "control_id": null,
+      "exit_code": 1,
+      "kind": "pristine_submission",
+      "output_sha256": "sha256:ae5f7c9e966c6d17f02e063b680fdf90c1aa5dbd7e2e633fa13926527f5feda3",
+      "verifier_reached": true
+    },
     {
       "artifact_sha256": "sha256:a9d2a0f8a23bd85cdd1e017f35b2e748b86ff7255826e92528218a0bcbb61830",
       "attempt": 1,
@@ -20,7 +32,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "reference_solution",
-      "output_sha256": "sha256:508f87766d8bf75d46b4e7892b938e7940823cdea91e820bf333d96ff060fea7",
+      "output_sha256": "sha256:4c788faee158a0adb8e9584f68aaf7dbb651063fd0e8b90978916128f0e1846a",
       "verifier_reached": true
     },
     {
@@ -32,7 +44,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "reference_solution",
-      "output_sha256": "sha256:1972fbacdf84011c438eefa114989b9b4520e11556b487a0f5fc95a50dbf9c2f",
+      "output_sha256": "sha256:f85f4cfd69740d4484be6e257ad7a5cd9a39caf052e722ccda907c0e044f04a8",
       "verifier_reached": true
     },
     {
@@ -44,7 +56,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "reference_solution",
-      "output_sha256": "sha256:af93fd7c9198bda1f90e7030d03e058a50c3a9d0f982b4ff41ee19cf9f13f027",
+      "output_sha256": "sha256:b5e1b5fb2d3912e25d35a0c8154dc1f9257da52fbffe9f7d5a9e2821d374b21a",
       "verifier_reached": true
     },
     {
@@ -56,7 +68,7 @@
       "control_id": null,
       "exit_code": 0,
       "kind": "alternate_solution",
-      "output_sha256": "sha256:7ec96b2130f22cbfaca460c7ab5c1ebe30e03683d55d9af9224ce1f7897efa66",
+      "output_sha256": "sha256:2ed7ff31b96c9d4f8c07508991083ffed13a6efad6884c4708fe737afc2cbbbe",
       "verifier_reached": true
     },
     {
@@ -68,7 +80,7 @@
       "control_id": "NC1",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:fbc777266f0fd0f2d66bf08036ae60fe85a60aabe9b25877cb9b87485621204d",
+      "output_sha256": "sha256:ea2460791a19836280c8937ac231d9040bc4573b7ed98d8f073c92aa105bdfb5",
       "verifier_reached": true
     },
     {
@@ -80,7 +92,7 @@
       "control_id": "NC2",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:0ab97f9709f1c189e1c64a98b8a88dffc4bebec76bde889b3e8966769aa14d10",
+      "output_sha256": "sha256:86f5405eb871d22f0c14c2d4e2f9b36872473eb285ecf7ed5725fa2b78ef5030",
       "verifier_reached": true
     },
     {
@@ -92,7 +104,7 @@
       "control_id": "NC3",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:e0ea1b3f7c9f2a4e3ec4604a325443c1ec11998e83b961ef9cce2922a1ab88d1",
+      "output_sha256": "sha256:259da2599e7effbd768ed5e6fe7e761b2c9e82908cf27c595cb6e326d5a418ff",
       "verifier_reached": true
     },
     {
@@ -104,7 +116,7 @@
       "control_id": "NC4",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:3d1a9a224bd2f1d265d77e374a72294e342eee892081296001b74c9100c70b7f",
+      "output_sha256": "sha256:c8f667ddf651c64c86166cfa492a62d4252650196a2a1901426deeddf2f6d8c7",
       "verifier_reached": true
     },
     {
@@ -116,7 +128,7 @@
       "control_id": "NC5",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:2f7f22ca34117b46754e23464996a31fdbe95fdc6f2a880a58b885d7777e6e58",
+      "output_sha256": "sha256:fea2234287c7458c002106e10a977243c23b9870ecdd0711d181ddc0b8910e8f",
       "verifier_reached": true
     },
     {
@@ -128,7 +140,7 @@
       "control_id": "NC6",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:c1e5650ee352eb462d0c4300ddea9652ff1594339a9bafe524c1fd76e82860ca",
+      "output_sha256": "sha256:e8418832d35d4baff8635547eb9c5b57e0833e41471257d5c763e58d81c0361a",
       "verifier_reached": true
     },
     {
@@ -140,7 +152,7 @@
       "control_id": "NC7",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:f3af0484082686199e576d56f7aedb2dcf2338339cd36ccc6e3fdf0ac08143db",
+      "output_sha256": "sha256:79ec4e9b680405a0ce3f350da38da5e717090dd6dca729f9e01ae8f7891c98ea",
       "verifier_reached": true
     },
     {
@@ -152,7 +164,7 @@
       "control_id": "NC8",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:542ab8f602a66d86a3492c9c913b4a1fa466b23032dca96a8efab5ced3bf929a",
+      "output_sha256": "sha256:fceaf98077f144da46c7b9c2631c08e873c32c281771acfab29463298dfb4876",
       "verifier_reached": true
     },
     {
@@ -164,18 +176,20 @@
       "control_id": "NC9",
       "exit_code": 1,
       "kind": "negative_control",
-      "output_sha256": "sha256:16a27d12be3a3f72d14ba7d51c24b35501dea043b7ec66b6377f8ba338412495",
+      "output_sha256": "sha256:29ba1748aad4c813afc6359e9eb61c969198b505ed0d9df547208b9c10f68c02",
       "verifier_reached": true
     }
   ],
   "runtime": {
-    "backend": "apple_container",
+    "backend": "docker",
+    "build_dns_override": null,
     "image": "shallowswe-quality/invoice-multi-source-merge:local",
-    "image_digest": "sha256:47e69d6011640e549beaae5b9b42116c5b0a77b73b76c1ad4eb7b21a0732c273",
+    "image_digest": "sha256:03414cfb44476d96f27f29c418df95092b5c6376972459d53c7755314cdb3886",
+    "image_source": "built_for_execution",
     "network_policy": "disabled",
     "platform": "linux/arm64",
-    "version": "container CLI version 1.0.0 (build: release, commit: ee848e3)"
+    "version": "Docker version 29.6.1, build 8900f1d"
   },
-  "schema_version": "shallowswe.task_quality_execution.v0.1",
+  "schema_version": "shallowswe.task_quality_execution.v0.2",
   "task_id": "invoice-multi-source-merge"
 }

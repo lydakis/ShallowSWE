@@ -2,20 +2,20 @@ schema_version = "1.2"
 
 [task]
 name = "shallowswe/merge-divergent-config-branches"
-description = "Merge a small config branch and resolve deterministic conflicts."
+description = "Reconcile exported main, release, and feature configuration snapshots."
 authors = [{ name = "George Lydakis" }]
-keywords = ["shallowswe", "workflow", "large", "python"]
+keywords = ["shallowswe", "workflow", "large", "python", "config"]
 
 [metadata]
 category = "workflow"
 size = "large"
 language = "python"
-shape = "merge-divergent-branches"
-subtype = "deterministic-config-merge"
+shape = "reconcile-config-snapshots"
+subtype = "deterministic-config-promotion"
 family = "workflow_operation"
 maintenance_type = "adaptive"
-domain = "branch_workflow"
-source_pattern = "config branches often require preserving independent changes and resolving one conflict"
+domain = "config_release_workflow"
+source_pattern = "exported config snapshots require preserving independent changes and resolving one conflict"
 repo_origin = "small_original_repo"
 requires_test_authoring = false
 expected_engineer_minutes = 70
