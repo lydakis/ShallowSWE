@@ -5,7 +5,7 @@
 **Reviewer requirement:** at least one qualified software engineer who did not author the task
 
 Model-assisted investigator review and executed verifier QA are complete. They do not count as the
-independent sign-off required by `shallowswe.routine_review.v0.1`.
+independent sign-off required by `shallowswe.routine_review.v0.2`.
 
 Generate a reviewer-safe packet with:
 
@@ -16,6 +16,9 @@ uv run shallowswe pilot-review-pack \
 ```
 
 The generated `blind-review/` directories exclude solutions, hidden verifiers, and trajectories.
+Their `task.toml` files are redacted reviewer views that expose category but withhold authored size,
+expected effort, model identities, pass rates, and calibration outcomes. Review forms remain bound
+to the original complete task metadata.
 After the reviewer completes every `review-form.json`, audit all six forms and import them only after
 the complete packet passes:
 
@@ -59,14 +62,18 @@ Record `accept`, `revise`, or `reject` with a non-empty rationale for every rubr
 - `realism`
 - `ordinary_frequency`
 - `delegation_plausibility`
+- `category_fit`
 - `ambiguity_risk`
 - `engineer_effort`
 - `specialized_knowledge`
 - `horizon_classification`
 
+The top-level `decision` uses `accept`, `revise`, or `reject`. Each rubric `rating` uses `pass`,
+`revise`, or `reject`; do not use `accept` as a rubric rating.
+
 An accepted review is stored at `tasks/<task-id>/quality/routine-review.json`. Use the exact schema
-shown in `tests/test_task_quality_evidence.py`; copy the current `instruction` and `environment`
-hashes from the task's `quality/executions.json`. Any later task edit invalidates the review.
+shown in `tests/test_task_quality_evidence.py` and preserve the generated artifact hashes. Any later
+instruction, environment, or `task.toml` edit invalidates the review.
 
 ## Stop Conditions
 

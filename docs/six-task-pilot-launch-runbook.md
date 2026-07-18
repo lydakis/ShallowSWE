@@ -45,7 +45,7 @@ the attached launch plan. Do not set task or seed overrides for a frozen pilot u
 Also record:
 
 - `SHALLOWSWE_REPO_COMMIT_SHA` as the frozen commit;
-- `SHALLOWSWE_ROUTINE_REVIEW_VERSION=shallowswe.routine_review.v0.1`;
+- `SHALLOWSWE_ROUTINE_REVIEW_VERSION=shallowswe.routine_review.v0.2`;
 - concurrency and row timeout only as operational settings that do not alter agent policy.
 
 The requested Kaggle model must exactly match the launch unit. Mismatched models, unknown seeds,

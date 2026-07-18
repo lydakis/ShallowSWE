@@ -83,7 +83,8 @@ environment, verifier, solution, or control edit makes the evidence stale.
 
 `routine-review.json` records the construct gate separately from verifier QA. It requires at least
 one qualified reviewer who is not the task author, an accept/revise/reject rationale for every
-routine-work rubric field, and hashes for the reviewed instruction and environment. Investigator
+routine-work rubric field, including explicit category fit, and hashes for the reviewed instruction
+and environment. Investigator
 agents may assist this review but do not satisfy an independent engineer sign-off by themselves.
 
 ## Audit Workflow

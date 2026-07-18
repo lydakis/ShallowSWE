@@ -133,6 +133,13 @@ ShallowSWE separates four properties often collapsed into “task size.” The f
 - **Artifact:** transform local inputs into checked outputs, including reports, reconciliations, migrations, summaries, structured files, and data packages.
 - **Workflow:** operate on repository, tool, or system state, including git operations, configuration chains, local mock APIs, tickets, and idempotent reconciliation.
 
+Category follows the agent's primary requested work product and the verifier's judged outcome, not
+the subsystem being touched. A task that patches formatter, linter, package-manager, or workflow
+implementation is Code. It is Artifact only when the requested result is the checked output itself,
+produced with existing implementation. It is Workflow only when the agent must transition existing
+repository, tool, or system state without implementing new product behavior. Repository scale is
+orthogonal to category.
+
 ### 4.2 Floor pressure
 
 A frozen economical panel attempts every quality- and construct-valid candidate in one-shot mode. The primary floor configuration's first-submit pass rate assigns a snapshot-relative pressure band. The current candidate bands are:

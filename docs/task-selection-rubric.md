@@ -45,6 +45,19 @@ A task does not belong when any of these are true:
 
 Each task has exactly one primary category.
 
+Classify the task by what the agent is asked to deliver and what the verifier judges. Do not infer
+category from the subsystem name:
+
+- A source or test patch that changes behavior is Code, even when that behavior formats artifacts,
+  propagates configuration, or automates a workflow.
+- A checked report, migration, documentation set, manifest, or other non-code deliverable produced
+  with existing implementation is Artifact.
+- A repository, tool, ticket, API, or system state transition performed with existing behavior is
+  Workflow.
+
+Repository size and task category are independent. Every category can use a full production-scale
+repository as its substrate.
+
 ### Code
 
 Change code behavior.
@@ -66,6 +79,9 @@ Selection risks:
 
 Convert, join, normalize, or summarize local artifacts into a fixed output schema.
 
+The artifact itself is the requested deliverable. Changing the implementation of a formatter,
+generator, or migration engine is Code, not Artifact.
+
 Good examples:
 
 - Join invoices, payments, refunds, and customers into payouts and rejects.
@@ -80,6 +96,9 @@ Selection risks:
 ### Workflow
 
 Perform multi-step maintenance in a repo, local workflow, or deterministic tool/API surface.
+
+The final repository, tool, or system state is the requested deliverable. Patching application or
+tool source so a workflow behaves differently is Code, not Workflow.
 
 Good examples:
 
@@ -200,12 +219,13 @@ Do not create a Pier task until the pattern card has a plausible verifier shape.
 A candidate can enter calibration only after these gates pass:
 
 1. **Realism**: the task reads like normal work.
-2. **Prompt clarity**: reviewers agree on the expected outcome from the prompt alone.
-3. **Verifier feasibility**: the behavior can be judged programmatically.
-4. **Reference independence**: the verifier accepts two materially different correct solutions.
-5. **Contamination control**: source pattern notes are present and no content was copied.
-6. **Environment reliability**: the base project and verifier run offline and deterministically.
-7. **Pre-registered calibration**: the card states expected one-shot calibration bands and the
+2. **Category fit**: the declared category matches the requested work product and judged outcome.
+3. **Prompt clarity**: reviewers agree on the expected outcome from the prompt alone.
+4. **Verifier feasibility**: the behavior can be judged programmatically.
+5. **Reference independence**: the verifier accepts two materially different correct solutions.
+6. **Contamination control**: source pattern notes are present and no content was copied.
+7. **Environment reliability**: the base project and verifier run offline and deterministically.
+8. **Pre-registered calibration**: the card states expected one-shot calibration bands and the
    predicted cheapest-correct row class before any model run.
 
 Official admission requires verifier validation, human review, and calibration as defined in `docs/verifier-contract.md` and `docs/task-sourcing-methodology.md`.

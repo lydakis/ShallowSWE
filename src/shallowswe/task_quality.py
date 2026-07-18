@@ -29,11 +29,12 @@ EXECUTION_EVIDENCE_CANDIDATES = ("quality/executions.json",)
 ROUTINE_REVIEW_CANDIDATES = ("quality/routine-review.json",)
 LEGACY_TASK_QUALITY_EXECUTION_SCHEMA_VERSION = "shallowswe.task_quality_execution.v0.1"
 TASK_QUALITY_EXECUTION_SCHEMA_VERSION = "shallowswe.task_quality_execution.v0.2"
-ROUTINE_REVIEW_SCHEMA_VERSION = "shallowswe.routine_review.v0.1"
+ROUTINE_REVIEW_SCHEMA_VERSION = "shallowswe.routine_review.v0.2"
 ROUTINE_REVIEW_RUBRIC_FIELDS = (
     "realism",
     "ordinary_frequency",
     "delegation_plausibility",
+    "category_fit",
     "ambiguity_risk",
     "engineer_effort",
     "specialized_knowledge",
@@ -96,8 +97,7 @@ def build_task_quality_report(root: Path, *, official_only: bool = False) -> dic
         "routine_review_complete": all(row["routine_review_complete"] for row in rows),
         "quality_issue_counts": dict(sorted(issue_counts.items())),
         "openai_failure_mode_counts": {
-            mode: failure_mode_counts.get(mode, 0)
-            for mode in OPENAI_FAILURE_MODES
+            mode: failure_mode_counts.get(mode, 0) for mode in OPENAI_FAILURE_MODES
         },
         "contract_review_counts": dict(sorted(contract_review_counts.items())),
         "summary": _summary(rows),
@@ -150,9 +150,7 @@ def _audit_task_quality(path: Path) -> dict[str, Any]:
         "negative_controls_path": negative_controls["path"],
         "negative_control_count": negative_controls["item_count"],
         "investigator_review_path": (
-            str(investigator_review_path.relative_to(path))
-            if investigator_review_path
-            else None
+            str(investigator_review_path.relative_to(path)) if investigator_review_path else None
         ),
         "execution_evidence_path": execution_evidence["path"],
         "execution_evidence_issues": execution_evidence["issues"],
@@ -186,7 +184,11 @@ def _audit_task_quality(path: Path) -> dict[str, Any]:
 
 def quality_artifact_hashes(path: Path) -> dict[str, str]:
     alternate = next(
-        (path / name / "solve.sh" for name in ALTERNATE_SOLUTION_DIRS if (path / name / "solve.sh").is_file()),
+        (
+            path / name / "solve.sh"
+            for name in ALTERNATE_SOLUTION_DIRS
+            if (path / name / "solve.sh").is_file()
+        ),
         path / "solution_alt" / "solve.sh",
     )
     return {
@@ -197,6 +199,15 @@ def quality_artifact_hashes(path: Path) -> dict[str, str]:
         "alternate_solution": _hash_path(alternate),
         "negative_controls": _hash_path(path / "quality" / "negative-controls.json"),
         "negative_control_scripts": _hash_path(path / "quality" / "negative-controls"),
+    }
+
+
+def routine_review_artifact_hashes(path: Path) -> dict[str, str]:
+    quality_hashes = quality_artifact_hashes(path)
+    return {
+        "instruction": quality_hashes["instruction"],
+        "environment": quality_hashes["environment"],
+        "task_metadata": _hash_path(path / "task.toml"),
     }
 
 
@@ -249,7 +260,9 @@ def _load_execution_evidence(path: Path, negative_controls: list[dict[str, Any]]
     if not alternate_runs or any(run["exit_code"] != 0 for run in alternate_runs):
         issues.append("execution_evidence_alternate_run_incomplete")
     declared_control_ids = {
-        str(control.get("id")) for control in negative_controls if _nonempty_string(control.get("id"))
+        str(control.get("id"))
+        for control in negative_controls
+        if _nonempty_string(control.get("id"))
     }
     rejected_control_ids = {
         str(run.get("control_id"))
@@ -296,7 +309,10 @@ def _load_routine_review(path: Path) -> dict[str, Any]:
 
 def routine_review_payload_issues(path: Path, payload: Any) -> list[str]:
     issues: list[str] = []
-    if not isinstance(payload, dict) or payload.get("schema_version") != ROUTINE_REVIEW_SCHEMA_VERSION:
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schema_version") != ROUTINE_REVIEW_SCHEMA_VERSION
+    ):
         issues.append("routine_review_schema_mismatch")
         payload = payload if isinstance(payload, dict) else {}
     if payload.get("task_id") != path.name:
@@ -304,9 +320,13 @@ def routine_review_payload_issues(path: Path, payload: Any) -> list[str]:
     if payload.get("decision") != "accept":
         issues.append("routine_review_not_accepted")
     reviewer = payload.get("reviewer")
-    if not isinstance(reviewer, dict) or not all(
-        _nonempty_string(reviewer.get(field)) for field in ("reviewer_id", "qualification")
-    ) or reviewer.get("independent_from_task_author") is not True:
+    if (
+        not isinstance(reviewer, dict)
+        or not all(
+            _nonempty_string(reviewer.get(field)) for field in ("reviewer_id", "qualification")
+        )
+        or reviewer.get("independent_from_task_author") is not True
+    ):
         issues.append("routine_review_invalid_reviewer")
     if int(payload.get("reviewer_count") or 0) < 1:
         issues.append("routine_review_invalid_reviewer_count")
@@ -318,10 +338,7 @@ def routine_review_payload_issues(path: Path, payload: Any) -> list[str]:
         for field in ROUTINE_REVIEW_RUBRIC_FIELDS
     ):
         issues.append("routine_review_incomplete_rubric")
-    if payload.get("artifact_hashes") != {
-        "instruction": quality_artifact_hashes(path)["instruction"],
-        "environment": quality_artifact_hashes(path)["environment"],
-    }:
+    if payload.get("artifact_hashes") != routine_review_artifact_hashes(path):
         issues.append("routine_review_stale_artifact_hashes")
     return sorted(set(issues))
 
@@ -354,11 +371,7 @@ def _calibration_entries(raw: dict[str, Any]) -> list[tuple[str, dict[str, Any]]
         return []
 
     entries: list[tuple[str, dict[str, Any]]] = []
-    root_fields = {
-        key: value
-        for key, value in calibration.items()
-        if not isinstance(value, dict)
-    }
+    root_fields = {key: value for key, value in calibration.items() if not isinstance(value, dict)}
     if root_fields:
         entries.append(("calibration", root_fields))
 

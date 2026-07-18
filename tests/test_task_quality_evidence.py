@@ -9,6 +9,7 @@ from shallowswe.task_quality import (
     TASK_QUALITY_EXECUTION_SCHEMA_VERSION,
     build_task_quality_report,
     quality_artifact_hashes,
+    routine_review_artifact_hashes,
 )
 
 
@@ -19,7 +20,7 @@ class ExecutedTaskQualityEvidenceTests(unittest.TestCase):
             task = _write_task(root / "ready")
             hashes = quality_artifact_hashes(task)
             _write_execution_evidence(task, hashes)
-            _write_routine_review(task, hashes)
+            _write_routine_review(task, routine_review_artifact_hashes(task))
 
             ready = build_task_quality_report(root)["tasks"][0]
 
@@ -163,6 +164,7 @@ def _write_routine_review(task: Path, hashes: dict[str, str]) -> None:
             "realism",
             "ordinary_frequency",
             "delegation_plausibility",
+            "category_fit",
             "ambiguity_risk",
             "engineer_effort",
             "specialized_knowledge",
@@ -172,7 +174,7 @@ def _write_routine_review(task: Path, hashes: dict[str, str]) -> None:
     (task / "quality" / "routine-review.json").write_text(
         json.dumps(
             {
-                "schema_version": "shallowswe.routine_review.v0.1",
+                "schema_version": "shallowswe.routine_review.v0.2",
                 "task_id": task.name,
                 "reviewer_count": 1,
                 "reviewer": {
@@ -185,6 +187,7 @@ def _write_routine_review(task: Path, hashes: dict[str, str]) -> None:
                 "artifact_hashes": {
                     "instruction": hashes["instruction"],
                     "environment": hashes["environment"],
+                    "task_metadata": hashes["task_metadata"],
                 },
             }
         )
