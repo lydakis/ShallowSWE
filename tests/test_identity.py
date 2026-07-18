@@ -25,11 +25,12 @@ class IdentityTests(unittest.TestCase):
             model_config_id({**base, "provider_route": "openrouter/openai"}),
         )
 
-    def test_agent_policy_id_includes_model_identity(self) -> None:
+    def test_agent_policy_id_is_independent_of_model_identity(self) -> None:
         policy = {"runner": "kaggle", "prompt_hash": "sha256:prompt"}
+        self.assertEqual(agent_policy_id(policy), agent_policy_id(dict(reversed(list(policy.items())))))
         self.assertNotEqual(
-            agent_policy_id(policy, model_config_id="mc_one"),
-            agent_policy_id(policy, model_config_id="mc_two"),
+            agent_policy_id(policy),
+            agent_policy_id({**policy, "runner": "pier"}),
         )
 
 

@@ -109,7 +109,11 @@ class RepairPolicyTests(unittest.TestCase):
                     "anchor_proposal_per_task": 4,
                     "anchor_budget_check_per_task": 2,
                     "each_floor_per_task": 3,
-                }
+                },
+                "anchor_confirmation": {
+                    "task_ids": task_ids,
+                    "anchor_per_task": 8,
+                },
             },
         }
 
@@ -335,6 +339,56 @@ class RepairPolicyTests(unittest.TestCase):
             build_repair_policy(
                 rows + confirmation,
                 methodology,
+            )
+
+    def test_rejects_incomplete_anchor_confirmation_matrix(self) -> None:
+        rows = [
+            _row(
+                task_id="task-a",
+                loop=loop,
+                cohort="budget_proposal" if loop < 4 else "budget_check",
+                success_submission=1,
+                spend=0.04,
+                steps=20,
+            )
+            for loop in range(6)
+        ]
+        for role in ("floor_low", "floor_strong"):
+            for loop in range(3):
+                rows.append(
+                    _row(
+                        task_id="task-a",
+                        loop=loop,
+                        cohort="floor_panel",
+                        success_submission=1,
+                        spend=0.03,
+                        steps=10,
+                        role=role,
+                    )
+                )
+        confirmation = [
+            replace(
+                _row(
+                    task_id="task-a",
+                    loop=loop,
+                    cohort="anchor_confirmation",
+                    success_submission=1,
+                    spend=0.04,
+                    steps=20,
+                ),
+                run_metadata={
+                    "phase": "anchor_confirmation",
+                    "cohort": "anchor_confirmation",
+                    "require_canonical_spend": True,
+                },
+            )
+            for loop in range(7)
+        ]
+
+        with self.assertRaisesRegex(ValueError, "incomplete anchor-confirmation matrix"):
+            build_repair_policy(
+                rows + confirmation,
+                self._complete_methodology(task_ids=["task-a"]),
             )
 
 

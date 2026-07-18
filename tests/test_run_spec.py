@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import unittest
 
+from shallowswe.identity import agent_policy_id, model_config_id
 from shallowswe.run_spec import (
     audit_run_spec,
     resolve_agent_policy,
+    resolve_execution_sampling,
     resolve_model_config,
     resolve_run_unit,
     trajectory_id,
@@ -15,6 +17,22 @@ from shallowswe.run_spec import (
 
 class RunSpecTests(unittest.TestCase):
     def setUp(self) -> None:
+        low = {
+            "requested_model": "gpt-5.6-sol",
+            "expected_resolved_model": "gpt-5.6-sol",
+            "reasoning_effort": "low",
+            "sampling_config": {"temperature": 0.0},
+        }
+        high = {
+            "requested_model": "gpt-5.6-sol",
+            "expected_resolved_model": "gpt-5.6-sol",
+            "reasoning_effort": "high",
+            "sampling_config": {"temperature": 0.0},
+        }
+        agent = {"agent": "mini-swe-agent"}
+        self.low_id = model_config_id(low)
+        self.high_id = model_config_id(high)
+        self.agent_id = agent_policy_id(agent)
         self.spec = {
             "schema_version": "shallowswe.run_spec.v0.1",
             "run_spec_id": "six-task-shakedown-v1",
@@ -22,32 +40,24 @@ class RunSpecTests(unittest.TestCase):
             "task_suite_version": "six-task-v1",
             "model_configs": [
                 {
-                    "model_config_id": "sol-low",
-                    "canonical": {
-                        "requested_model": "gpt-5.6-sol",
-                        "expected_resolved_model": "gpt-5.6-sol",
-                        "reasoning_effort": "low",
-                    },
+                    "model_config_id": self.low_id,
+                    "canonical": low,
                 },
                 {
-                    "model_config_id": "sol-high",
-                    "canonical": {
-                        "requested_model": "gpt-5.6-sol",
-                        "expected_resolved_model": "gpt-5.6-sol",
-                        "reasoning_effort": "high",
-                    },
+                    "model_config_id": self.high_id,
+                    "canonical": high,
                 },
             ],
             "agent_policies": [
-                {"agent_policy_id": "agent-v1", "canonical": {"agent": "mini-swe-agent"}}
+                {"agent_policy_id": self.agent_id, "canonical": agent}
             ],
             "units": [
                 {
                     "run_unit_id": "sol-low-all",
                     "runner": "kaggle",
                     "kaggle_task_name": "shallowswe-sol-low-all",
-                    "model_config_id": "sol-low",
-                    "agent_policy_id": "agent-v1",
+                    "model_config_id": self.low_id,
+                    "agent_policy_id": self.agent_id,
                     "task_ids": ["task-a", "task-b"],
                     "rollout_seeds": [4000, 4001],
                     "limits": {
@@ -69,7 +79,7 @@ class RunSpecTests(unittest.TestCase):
 
         self.assertEqual(unit_matrix(unit), (["task-a", "task-b"], [4000, 4001]))
         self.assertEqual(model["canonical"]["reasoning_effort"], "low")
-        self.assertEqual(policy["agent_policy_id"], "agent-v1")
+        self.assertEqual(policy["agent_policy_id"], self.agent_id)
         self.assertEqual(unit["metadata"]["phase"], "candidate_panel")
         self.assertEqual(
             trajectory_id(self.spec, unit, task_id="task-b", rollout_seed=4001),
@@ -78,7 +88,7 @@ class RunSpecTests(unittest.TestCase):
 
     def test_rejects_model_effort_collapse(self) -> None:
         unit = resolve_run_unit(self.spec, "sol-low-all")
-        unit["model_config_id"] = "sol-high"
+        unit["model_config_id"] = self.high_id
 
         with self.assertRaisesRegex(RuntimeError, "does not match"):
             resolve_model_config(self.spec, unit, observed_model="different-model")
@@ -89,10 +99,44 @@ class RunSpecTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "not registered"):
             trajectory_id(self.spec, unit, task_id="task-a", rollout_seed=9)
 
+    def test_registered_sampling_ignores_external_fallbacks(self) -> None:
+        temperature, task_suite_version = resolve_execution_sampling(
+            self.spec,
+            self.spec["model_configs"][0],
+            fallback_temperature=1.0,
+            fallback_task_suite_version="external-suite",
+        )
+
+        self.assertEqual(temperature, 0.0)
+        self.assertEqual(task_suite_version, "six-task-v1")
+
+    def test_unregistered_sampling_uses_external_fallbacks(self) -> None:
+        temperature, task_suite_version = resolve_execution_sampling(
+            None,
+            None,
+            fallback_temperature=0.25,
+            fallback_task_suite_version="smoke-suite",
+        )
+
+        self.assertEqual(temperature, 0.25)
+        self.assertEqual(task_suite_version, "smoke-suite")
+
     def test_rejects_invalid_limits_without_reading_metadata_labels(self) -> None:
         self.spec["units"][0]["limits"]["verifier_submissions"] = 0
 
         with self.assertRaisesRegex(ValueError, "verifier_submissions"):
+            validate_run_spec(self.spec)
+
+    def test_rejects_stale_model_content_id(self) -> None:
+        self.spec["model_configs"][0]["canonical"]["reasoning_effort"] = "medium"
+
+        with self.assertRaisesRegex(ValueError, "model_config_id does not match"):
+            validate_run_spec(self.spec)
+
+    def test_rejects_stale_agent_policy_content_id(self) -> None:
+        self.spec["agent_policies"][0]["canonical"]["agent"] = "different-agent"
+
+        with self.assertRaisesRegex(ValueError, "agent_policy_id does not match"):
             validate_run_spec(self.spec)
 
     def test_schema_accepts_a_transport_name_without_interpreting_it(self) -> None:

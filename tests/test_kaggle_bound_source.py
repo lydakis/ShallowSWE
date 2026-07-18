@@ -5,13 +5,25 @@ from tempfile import TemporaryDirectory
 import json
 import unittest
 
+from shallowswe.identity import agent_policy_id, model_config_id
 from shallowswe.kaggle_bound_source import write_bound_kaggle_task_sources
+
+
+def _identity_rows() -> tuple[dict[str, object], str, dict[str, object], str]:
+    model = {
+        "requested_model": "model-name",
+        "expected_resolved_model": "model-name",
+        "sampling_config": {"temperature": 0.0},
+    }
+    policy = {"agent": "mini-swe-agent"}
+    return model, model_config_id(model), policy, agent_policy_id(policy)
 
 
 class KaggleTaskSourceTests(unittest.TestCase):
     def test_writes_one_hash_bound_source_per_ready_unit(self) -> None:
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
+            model, model_id, policy, policy_id = _identity_rows()
             source = root / "runner.py"
             source.write_text(
                 'FROZEN_RUN_UNIT_ID: str | None = None\n'
@@ -27,17 +39,14 @@ class KaggleTaskSourceTests(unittest.TestCase):
                         "task_suite_version": "test-suite",
                         "model_configs": [
                             {
-                                "model_config_id": "model-id",
-                                "canonical": {
-                                    "requested_model": "model-name",
-                                    "expected_resolved_model": "model-name",
-                                },
+                                "model_config_id": model_id,
+                                "canonical": model,
                             }
                         ],
                         "agent_policies": [
                             {
-                                "agent_policy_id": "agent-id",
-                                "canonical": {"agent": "mini-swe-agent"},
+                                "agent_policy_id": policy_id,
+                                "canonical": policy,
                             }
                         ],
                         "units": [
@@ -45,8 +54,8 @@ class KaggleTaskSourceTests(unittest.TestCase):
                                 "run_unit_id": "unit-one",
                                 "runner": "kaggle",
                                 "kaggle_task_name": "unit-one",
-                                "model_config_id": "model-id",
-                                "agent_policy_id": "agent-id",
+                                "model_config_id": model_id,
+                                "agent_policy_id": policy_id,
                                 "task_ids": ["task-a"],
                                 "rollout_seeds": [0],
                                 "limits": {
@@ -83,6 +92,7 @@ class KaggleTaskSourceTests(unittest.TestCase):
     def test_rejects_non_kaggle_units(self) -> None:
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
+            model, model_id, policy, policy_id = _identity_rows()
             source = root / "runner.py"
             source.write_text(
                 'FROZEN_RUN_UNIT_ID: str | None = None\n'
@@ -95,22 +105,19 @@ class KaggleTaskSourceTests(unittest.TestCase):
                 "task_suite_version": "test-suite",
                 "model_configs": [
                     {
-                        "model_config_id": "model-id",
-                        "canonical": {
-                            "requested_model": "model-name",
-                            "expected_resolved_model": "model-name",
-                        },
+                        "model_config_id": model_id,
+                        "canonical": model,
                     }
                 ],
                 "agent_policies": [
-                    {"agent_policy_id": "agent-id", "canonical": {"agent": "agent"}}
+                    {"agent_policy_id": policy_id, "canonical": policy}
                 ],
                 "units": [
                     {
                         "run_unit_id": "pier-unit",
                         "runner": "pier",
-                        "model_config_id": "model-id",
-                        "agent_policy_id": "agent-id",
+                        "model_config_id": model_id,
+                        "agent_policy_id": policy_id,
                         "task_ids": ["task-a"],
                         "rollout_seeds": [0],
                         "limits": {

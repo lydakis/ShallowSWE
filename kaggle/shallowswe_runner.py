@@ -133,6 +133,7 @@ from shallowswe.kaggle_repair_loop import (  # noqa: E402
 from shallowswe.kaggle_runtime import model_proxy_api  # noqa: E402
 from shallowswe.run_spec import (  # noqa: E402
     resolve_agent_policy,
+    resolve_execution_sampling,
     resolve_model_config,
     resolve_run_unit,
     trajectory_id,
@@ -215,6 +216,15 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
     canonical_price = PRICE_CATALOG.get(price_model)
     if RUN_UNIT is not None and canonical_price is None:
         raise RuntimeError(f"Run price sheet does not contain model: {price_model}")
+    temperature, task_suite_version = resolve_execution_sampling(
+        RUN_SPEC if RUN_UNIT is not None else None,
+        model_entry,
+        fallback_temperature=float(os.environ.get("SHALLOWSWE_TEMPERATURE", "0")),
+        fallback_task_suite_version=os.environ.get(
+            "SHALLOWSWE_TASK_SUITE_VERSION",
+            "shallowswe-kaggle-smoke-v0.1",
+        ),
+    )
     row = run_kaggle_repair_loop(
         llm=native_llm,
         task_path=BUNDLE_ROOT / task_entry["task_path"],
@@ -247,12 +257,9 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
             if model_entry
             else os.environ.get("SHALLOWSWE_REASONING_EFFORT") or None
         ),
-        temperature=float(os.environ.get("SHALLOWSWE_TEMPERATURE", "0")),
+        temperature=temperature,
         seed=rollout_seed,
-        task_suite_version=os.environ.get(
-            "SHALLOWSWE_TASK_SUITE_VERSION",
-            RUN_SPEC["task_suite_version"] if RUN_SPEC else "shallowswe-kaggle-smoke-v0.1",
-        ),
+        task_suite_version=task_suite_version,
         repo_commit_sha=os.environ.get("SHALLOWSWE_REPO_COMMIT_SHA") or None,
         model_config_id=model_entry.get("model_config_id") if model_entry else None,
         model_config_canonical_json=model_entry.get("canonical") if model_entry else None,

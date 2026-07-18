@@ -7,9 +7,9 @@
   "allow_fallbacks": true,
   "task_ids": ["env-flags-to-json", "access-log-to-incidents", "invoice-cli-regression-test-fix", "invoice-multi-source-merge", "config-flag-ignored", "merge-divergent-config-branches"],
   "model_roles": {
-    "primary_anchor": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
-    "floor_low": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
-    "floor_strong": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365"
+    "primary_anchor": "mc_sha256_17f0e4cf183ee242379ae1f4033289fc79c2cc94ef404e8cdfef317208052d70",
+    "floor_low": "mc_sha256_9d6dd46a64579d29947f62e3cbddbc8b3bdd176dd700a085b219eb443f7767c4",
+    "floor_strong": "mc_sha256_fa72cb881ec0f93ec6f129633fc6525b93af76cf5403e6181292af0abd29046f"
   },
   "permissive_policy": {
     "candidate_verifier_submission_caps": [2, 4, 6, 8, 12, 16],

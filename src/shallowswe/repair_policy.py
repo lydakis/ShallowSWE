@@ -264,7 +264,7 @@ def _require_confirmation_matrix(
     observed = [row for row in rows if _metadata(row, "phase") == "anchor_confirmation"]
     if not observed or not isinstance(trajectory_plan, dict):
         return
-    plan = trajectory_plan.get("fresh_anchor_confirmation")
+    plan = trajectory_plan.get("anchor_confirmation")
     if not isinstance(plan, dict):
         return
     task_ids = [str(value) for value in plan.get("task_ids", [])]
@@ -276,7 +276,7 @@ def _require_confirmation_matrix(
     )
     expected = Counter({task_id: expected_attempts for task_id in task_ids})
     if actual != expected or len(observed) != sum(expected.values()):
-        raise ValueError("incomplete fresh-confirmation matrix")
+        raise ValueError("incomplete anchor-confirmation matrix")
 
 
 def _smallest_meeting_target(table: list[dict[str, Any]], target: float) -> int | None:

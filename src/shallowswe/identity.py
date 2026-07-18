@@ -6,7 +6,7 @@ import hashlib
 import json
 
 
-IDENTITY_SCHEMA_VERSION = "shallowswe.identity.v0.1"
+IDENTITY_SCHEMA_VERSION = "shallowswe.identity.v0.2"
 
 
 def canonical_json(value: Mapping[str, Any]) -> str:
@@ -17,8 +17,8 @@ def model_config_id(config: Mapping[str, Any]) -> str:
     return _content_id("mc", config)
 
 
-def agent_policy_id(policy: Mapping[str, Any], *, model_config_id: str) -> str:
-    return _content_id("ap", {"model_config_id": model_config_id, **dict(policy)})
+def agent_policy_id(policy: Mapping[str, Any]) -> str:
+    return _content_id("ap", policy)
 
 
 def _content_id(prefix: str, value: Mapping[str, Any]) -> str:

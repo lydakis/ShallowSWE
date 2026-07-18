@@ -5,7 +5,7 @@
   "task_suite_version": "shallowswe-six-task-kaggle-shakedown-v0.1",
   "model_configs": [
     {
-      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+      "model_config_id": "mc_sha256_17f0e4cf183ee242379ae1f4033289fc79c2cc94ef404e8cdfef317208052d70",
       "canonical": {
         "requested_model": "gpt-5.6-sol",
         "expected_resolved_model": "gpt-5.6-sol",
@@ -21,7 +21,7 @@
       }
     },
     {
-      "model_config_id": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
+      "model_config_id": "mc_sha256_9d6dd46a64579d29947f62e3cbddbc8b3bdd176dd700a085b219eb443f7767c4",
       "canonical": {
         "requested_model": "gpt-5.6-luna",
         "expected_resolved_model": "gpt-5.6-luna",
@@ -37,7 +37,7 @@
       }
     },
     {
-      "model_config_id": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365",
+      "model_config_id": "mc_sha256_fa72cb881ec0f93ec6f129633fc6525b93af76cf5403e6181292af0abd29046f",
       "canonical": {
         "requested_model": "gpt-5.6-sol",
         "expected_resolved_model": "gpt-5.6-sol",
@@ -55,7 +55,7 @@
   ],
   "agent_policies": [
     {
-      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "agent_policy_id": "ap_sha256_dd673cc1b504b52767d0d51e77fffe37eb62f2cad0dbcda5f6faa3005e3a0897",
       "canonical": {
         "runner": "kaggle",
         "runner_version": "kaggle-benchmarks==0.6.1",
@@ -76,8 +76,8 @@
       "run_unit_id": "canary-anchor-one-shot",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-canary-anchor-one-shot",
-      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
-      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "model_config_id": "mc_sha256_17f0e4cf183ee242379ae1f4033289fc79c2cc94ef404e8cdfef317208052d70",
+      "agent_policy_id": "ap_sha256_dd673cc1b504b52767d0d51e77fffe37eb62f2cad0dbcda5f6faa3005e3a0897",
       "task_ids": ["env-flags-to-json", "invoice-multi-source-merge"],
       "rollout_seeds": [1000, 1001],
       "limits": {"verifier_submissions": 1, "agent_steps": 256, "dollar_usd": 5.0, "wall_time_seconds": 2400},
@@ -87,8 +87,8 @@
       "run_unit_id": "canary-anchor-repair-loop",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-canary-anchor-repair-loop",
-      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
-      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "model_config_id": "mc_sha256_17f0e4cf183ee242379ae1f4033289fc79c2cc94ef404e8cdfef317208052d70",
+      "agent_policy_id": "ap_sha256_dd673cc1b504b52767d0d51e77fffe37eb62f2cad0dbcda5f6faa3005e3a0897",
       "task_ids": ["env-flags-to-json", "invoice-multi-source-merge"],
       "rollout_seeds": [1100, 1101],
       "limits": {"verifier_submissions": 16, "agent_steps": 256, "dollar_usd": 5.0, "wall_time_seconds": 2400},
@@ -98,8 +98,8 @@
       "run_unit_id": "canary-floor-low-repair-loop",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-canary-floor-low-repair-loop",
-      "model_config_id": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
-      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "model_config_id": "mc_sha256_9d6dd46a64579d29947f62e3cbddbc8b3bdd176dd700a085b219eb443f7767c4",
+      "agent_policy_id": "ap_sha256_dd673cc1b504b52767d0d51e77fffe37eb62f2cad0dbcda5f6faa3005e3a0897",
       "task_ids": ["env-flags-to-json", "invoice-multi-source-merge"],
       "rollout_seeds": [1200, 1201],
       "limits": {"verifier_submissions": 16, "agent_steps": 256, "dollar_usd": 5.0, "wall_time_seconds": 2400},
@@ -109,8 +109,8 @@
       "run_unit_id": "canary-floor-strong-repair-loop",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-canary-floor-strong-repair-loop",
-      "model_config_id": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365",
-      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "model_config_id": "mc_sha256_fa72cb881ec0f93ec6f129633fc6525b93af76cf5403e6181292af0abd29046f",
+      "agent_policy_id": "ap_sha256_dd673cc1b504b52767d0d51e77fffe37eb62f2cad0dbcda5f6faa3005e3a0897",
       "task_ids": ["env-flags-to-json", "invoice-multi-source-merge"],
       "rollout_seeds": [1300, 1301],
       "limits": {"verifier_submissions": 16, "agent_steps": 256, "dollar_usd": 5.0, "wall_time_seconds": 2400},

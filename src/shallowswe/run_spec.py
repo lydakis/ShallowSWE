@@ -5,7 +5,7 @@ from typing import Any
 import hashlib
 import json
 
-from .identity import canonical_json
+from .identity import agent_policy_id, canonical_json, model_config_id
 
 
 RUN_SPEC_SCHEMA_VERSION = "shallowswe.run_spec.v0.1"
@@ -51,13 +51,26 @@ def validate_run_spec(spec: dict[str, Any]) -> None:
         canonical = config.get("canonical")
         if not isinstance(canonical, dict):
             raise ValueError(f"model config {identifier} requires canonical identity")
+        if identifier != model_config_id(canonical):
+            raise ValueError(f"model_config_id does not match canonical identity: {identifier}")
         for field in ("requested_model", "expected_resolved_model"):
             if not isinstance(canonical.get(field), str) or not canonical[field]:
                 raise ValueError(f"model config {identifier} requires canonical.{field}")
+        sampling = canonical.get("sampling_config")
+        if not isinstance(sampling, dict):
+            raise ValueError(f"model config {identifier} requires canonical.sampling_config")
+        temperature = sampling.get("temperature")
+        if isinstance(temperature, bool) or not isinstance(temperature, (int, float)):
+            raise ValueError(
+                f"model config {identifier} requires numeric canonical.sampling_config.temperature"
+            )
 
     for identifier, policy in agent_policies.items():
-        if not isinstance(policy.get("canonical"), dict):
+        canonical = policy.get("canonical")
+        if not isinstance(canonical, dict):
             raise ValueError(f"agent policy {identifier} requires canonical identity")
+        if identifier != agent_policy_id(canonical):
+            raise ValueError(f"agent_policy_id does not match canonical identity: {identifier}")
 
     for identifier, unit in units.items():
         if not isinstance(unit.get("runner"), str) or not unit["runner"]:
@@ -142,6 +155,25 @@ def resolve_agent_policy(spec: dict[str, Any], unit: dict[str, Any]) -> dict[str
     if len(matches) != 1:
         raise RuntimeError(f"Run unit has no unique agent policy: {unit['run_unit_id']}")
     return matches[0]
+
+
+def resolve_execution_sampling(
+    spec: dict[str, Any] | None,
+    model_config: dict[str, Any] | None,
+    *,
+    fallback_temperature: float,
+    fallback_task_suite_version: str,
+) -> tuple[float, str]:
+    if spec is None:
+        if model_config is not None:
+            raise RuntimeError("model configuration requires a run spec")
+        return fallback_temperature, fallback_task_suite_version
+    if model_config is None:
+        raise RuntimeError("registered execution requires a model configuration")
+    return (
+        float(model_config["canonical"]["sampling_config"]["temperature"]),
+        str(spec["task_suite_version"]),
+    )
 
 
 def unit_matrix(unit: dict[str, Any]) -> tuple[list[str], list[int]]:

@@ -5,6 +5,7 @@ from tempfile import TemporaryDirectory
 import json
 import unittest
 
+from shallowswe.identity import agent_policy_id, model_config_id
 from shallowswe.kaggle_bundle import (
     export_kaggle_bundle,
     materialize_task_environment,
@@ -151,6 +152,14 @@ timeout_sec = 120.0
 
 
 def _run_spec() -> dict[str, object]:
+    model = {
+        "requested_model": "model-name",
+        "expected_resolved_model": "model-name",
+        "sampling_config": {"temperature": 0.0},
+    }
+    policy = {"agent": "mini-swe-agent"}
+    model_id = model_config_id(model)
+    policy_id = agent_policy_id(policy)
     return {
         "schema_version": "shallowswe.run_spec.v0.1",
         "run_spec_id": "test-run",
@@ -158,22 +167,19 @@ def _run_spec() -> dict[str, object]:
         "task_suite_version": "test-suite",
         "model_configs": [
             {
-                "model_config_id": "model-id",
-                "canonical": {
-                    "requested_model": "model-name",
-                    "expected_resolved_model": "model-name",
-                },
+                "model_config_id": model_id,
+                "canonical": model,
             }
         ],
         "agent_policies": [
-            {"agent_policy_id": "agent-id", "canonical": {"agent": "mini-swe-agent"}}
+            {"agent_policy_id": policy_id, "canonical": policy}
         ],
         "units": [
             {
                 "run_unit_id": "unit-id",
                 "runner": "kaggle",
-                "model_config_id": "model-id",
-                "agent_policy_id": "agent-id",
+                "model_config_id": model_id,
+                "agent_policy_id": policy_id,
                 "task_ids": ["generated-task"],
                 "rollout_seeds": [0],
                 "limits": {
