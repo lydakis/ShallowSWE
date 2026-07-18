@@ -1,0 +1,39 @@
+{
+    "id": "bbcc5491-9317-4186-ab19-ec6084461530",
+    "started_at": "2026-07-07T08:48:27.043135",
+    "updated_at": "2026-07-07T08:53:59.786157",
+    "finished_at": "2026-07-07T08:53:59.786157",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 0,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "shallowswe-codex-subscription__gpt-5.5__tasks": {
+                "n_trials": 1,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 1.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "privacy-retention-evidence-packa__wpDxjvf"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
+        },
+        "n_input_tokens": 706495,
+        "n_cache_tokens": 619008,
+        "n_output_tokens": 15422,
+        "cost_usd": 1.209599
+    }
+}

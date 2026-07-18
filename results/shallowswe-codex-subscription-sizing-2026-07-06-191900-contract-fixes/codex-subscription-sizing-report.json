@@ -1,0 +1,374 @@
+{
+  "diagnostic_effort_ladder": {
+    "efforts": [
+      "high",
+      "xhigh"
+    ],
+    "model": "openai/gpt-5.5",
+    "role": "diagnostic rescue signal only",
+    "rule": "Run high only for medium failures and xhigh only for high failures."
+  },
+  "fixed_ceiling": {
+    "model": "openai/gpt-5.5",
+    "reasoning_effort": "medium",
+    "role": "fixed ceiling calibration point",
+    "rule": "Only gpt-5.5 medium counts as the ceiling signal. High and xhigh runs are diagnostics for medium failures, not alternate ceilings."
+  },
+  "floor_probe": {
+    "attempts_per_task": 3,
+    "model": "openai/gpt-5.4-mini",
+    "reasoning_effort": "low",
+    "size_rule": "N=3 provisional: >=0.70 small, >=0.30 medium, otherwise large."
+  },
+  "schema_version": "shallowswe.codex_subscription_sizing.v0.2",
+  "status": {
+    "jobs_dir": "/private/tmp/shallowswe-pier",
+    "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes",
+    "schema_version": "shallowswe.codex_subscription_sizing.v0.2",
+    "stages": {
+      "ceiling_high": {
+        "status": "skipped",
+        "task_count": 0
+      },
+      "ceiling_medium": {
+        "excluded_retry_count": 0,
+        "failed_task_count": 0,
+        "job_name": "shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1",
+        "job_names": [
+          "shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1"
+        ],
+        "rollout_paths": [
+          "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes/ceiling-gpt55-medium-rollouts.json"
+        ],
+        "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes/ceiling-gpt55-medium-rollouts.json",
+        "scored_task_count": 7,
+        "status": "complete",
+        "task_count": 7,
+        "tasks_without_scored_attempt": []
+      },
+      "ceiling_xhigh": {
+        "status": "skipped",
+        "task_count": 0
+      },
+      "floor_gpt54mini_low": {
+        "attempts_per_task": 3,
+        "job_name": "shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+        "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes/floor-gpt54mini-low-rollouts.json",
+        "status": "complete",
+        "task_count": 7
+      }
+    },
+    "stamp": "2026-07-06-191900-contract-fixes",
+    "task_count": 7
+  },
+  "tasks": [
+    {
+      "calibration_status": "candidate",
+      "category": "artifact",
+      "codex_5_4_mini_low_attempts": 3,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.6666666666666666,
+      "codex_5_4_mini_low_passes": 2,
+      "codex_5_5_diagnostic_rescue_effort": null,
+      "codex_5_5_diagnostics": {
+        "high": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        },
+        "xhigh": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        }
+      },
+      "codex_5_5_medium_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "medium",
+      "task_id": "audit-log-normalization"
+    },
+    {
+      "calibration_status": "candidate",
+      "category": "artifact",
+      "codex_5_4_mini_low_attempts": 3,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.6666666666666666,
+      "codex_5_4_mini_low_passes": 2,
+      "codex_5_5_diagnostic_rescue_effort": null,
+      "codex_5_5_diagnostics": {
+        "high": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        },
+        "xhigh": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        }
+      },
+      "codex_5_5_medium_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "medium",
+      "task_id": "billing-revenue-rollup"
+    },
+    {
+      "calibration_status": "candidate",
+      "category": "workflow",
+      "codex_5_4_mini_low_attempts": 3,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.6666666666666666,
+      "codex_5_4_mini_low_passes": 2,
+      "codex_5_5_diagnostic_rescue_effort": null,
+      "codex_5_5_diagnostics": {
+        "high": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        },
+        "xhigh": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        }
+      },
+      "codex_5_5_medium_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "medium",
+      "task_id": "feature-branch-select-commits"
+    },
+    {
+      "calibration_status": "candidate",
+      "category": "artifact",
+      "codex_5_4_mini_low_attempts": 3,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 1.0,
+      "codex_5_4_mini_low_passes": 3,
+      "codex_5_5_diagnostic_rescue_effort": null,
+      "codex_5_5_diagnostics": {
+        "high": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        },
+        "xhigh": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        }
+      },
+      "codex_5_5_medium_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "metadata_size": "medium",
+      "provisional_floor_size": "small",
+      "task_id": "markdown-table-inventory"
+    },
+    {
+      "calibration_status": "candidate",
+      "category": "workflow",
+      "codex_5_4_mini_low_attempts": 3,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 1.0,
+      "codex_5_4_mini_low_passes": 3,
+      "codex_5_5_diagnostic_rescue_effort": null,
+      "codex_5_5_diagnostics": {
+        "high": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        },
+        "xhigh": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        }
+      },
+      "codex_5_5_medium_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "metadata_size": "medium",
+      "provisional_floor_size": "small",
+      "task_id": "release-branch-cherry-pick"
+    },
+    {
+      "calibration_status": "candidate",
+      "category": "artifact",
+      "codex_5_4_mini_low_attempts": 3,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 1.0,
+      "codex_5_4_mini_low_passes": 3,
+      "codex_5_5_diagnostic_rescue_effort": null,
+      "codex_5_5_diagnostics": {
+        "high": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        },
+        "xhigh": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        }
+      },
+      "codex_5_5_medium_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "metadata_size": "medium",
+      "provisional_floor_size": "small",
+      "task_id": "subscription-summary-report"
+    },
+    {
+      "calibration_status": "candidate",
+      "category": "workflow",
+      "codex_5_4_mini_low_attempts": 3,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 1.0,
+      "codex_5_4_mini_low_passes": 3,
+      "codex_5_5_diagnostic_rescue_effort": null,
+      "codex_5_5_diagnostics": {
+        "high": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        },
+        "xhigh": {
+          "attempts": 0,
+          "exceptions": 0,
+          "excluded": 0,
+          "pass_rate": null,
+          "passed": false,
+          "passes": 0,
+          "scored_failure": false,
+          "total_rows": 0
+        }
+      },
+      "codex_5_5_medium_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "small",
+      "task_id": "ticket-state-reconcile"
+    }
+  ]
+}

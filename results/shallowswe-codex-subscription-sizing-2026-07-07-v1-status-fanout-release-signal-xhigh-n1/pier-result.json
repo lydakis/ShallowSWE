@@ -1,0 +1,114 @@
+{
+    "id": "c75f14c5-81be-4325-aa3d-363528a5903a",
+    "task_name": "shallowswe/status-fanout-reconcile",
+    "trial_name": "status-fanout-reconcile__sUG9YUi",
+    "trial_uri": "file:///private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-status-fanout-release-signal-xhigh-n1_ceiling_gpt55_xhigh_n1/status-fanout-reconcile__sUG9YUi",
+    "task_id": {
+        "path": "/Users/lydakis/Developer/ShallowSWE/tasks/status-fanout-reconcile"
+    },
+    "source": "tasks",
+    "task_checksum": "7f92dcb0cb8285b2038217af1a64cf1b898cd2b0777ae41e26dd43ac94a149a2",
+    "config": {
+        "task": {
+            "path": "/Users/lydakis/Developer/ShallowSWE/tasks/status-fanout-reconcile",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": "tasks"
+        },
+        "trial_name": "status-fanout-reconcile__sUG9YUi",
+        "trials_dir": "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-status-fanout-release-signal-xhigh-n1_ceiling_gpt55_xhigh_n1",
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": null,
+            "import_path": "shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent",
+            "model_name": "openai/gpt-5.5",
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {
+                "version": "0.142.0",
+                "reasoning_effort": "xhigh"
+            },
+            "env": {
+                "CODEX_FORCE_AUTH_JSON": "${CODEX_FORCE_AUTH_JSON}"
+            }
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "suppress_override_warnings": false,
+            "mounts": null,
+            "env": {},
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "env": {},
+            "disable": false
+        },
+        "artifacts": [],
+        "job_id": "119bf7b5-2d83-449f-8a61-e1e29221b541"
+    },
+    "agent_info": {
+        "name": "shallowswe-codex-subscription",
+        "version": "0.142.0",
+        "model_info": {
+            "name": "gpt-5.5",
+            "provider": "openai"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 302293,
+        "n_cache_tokens": 243072,
+        "n_output_tokens": 12557,
+        "cost_usd": 0.794351,
+        "peak_context_tokens": 30478,
+        "summarization_count": 0,
+        "n_agent_steps": 13,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "exception_info": null,
+    "started_at": "2026-07-07T11:27:07.798823Z",
+    "finished_at": "2026-07-07T11:31:51.276479Z",
+    "environment_setup": {
+        "started_at": "2026-07-07T11:27:07.959052Z",
+        "finished_at": "2026-07-07T11:27:11.724997Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-07-07T11:27:11.725060Z",
+        "finished_at": "2026-07-07T11:27:11.825760Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-07-07T11:27:11.825867Z",
+        "finished_at": "2026-07-07T11:31:47.875347Z"
+    },
+    "verifier": {
+        "started_at": "2026-07-07T11:31:47.985696Z",
+        "finished_at": "2026-07-07T11:31:48.454133Z"
+    },
+    "n_agent_steps": 13,
+    "step_results": null
+}

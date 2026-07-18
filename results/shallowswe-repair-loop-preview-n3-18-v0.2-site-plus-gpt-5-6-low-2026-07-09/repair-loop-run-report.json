@@ -1,0 +1,16 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_batch.v0.1",
+  "plan": "shallowswe-repair-loop-preview-n3-18-v0.2-site-plus-gpt-5-6-low",
+  "snapshot_id": "shallowswe-v0.2-large-replacement-candidate-2026-07-05",
+  "total_planned_rows": 756,
+  "completed_rows": 756,
+  "remaining_rows": 0,
+  "scored_rows": 756,
+  "successes": 753,
+  "solve_rate_so_far": 0.996031746031746,
+  "cumulative_spend_usd": null,
+  "stopped": false,
+  "stop_reason": null,
+  "parallelism": 3,
+  "gpt_5_6_completed_rows": 162
+}

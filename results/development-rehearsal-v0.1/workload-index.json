@@ -1,0 +1,231 @@
+{
+  "schema_version": "shallowswe.repair_loop_workload_index.v0.1",
+  "evidence_class": "development_dry_run",
+  "release_class": "development_dry_run",
+  "weighting": {
+    "scheme": "equal_category_equal_pressure_equal_declared_task",
+    "categories": [
+      "code",
+      "artifact",
+      "workflow"
+    ],
+    "pressure_bands": [
+      "lower",
+      "elevated"
+    ],
+    "target_tasks_per_category_pressure": 2,
+    "declared_task_weight": 0.08333333333333333,
+    "declared_coverage_weight": 0.5,
+    "partial_basket": true
+  },
+  "recompute_contract": {
+    "formula": "sum(w_t * mean_charge_mt) / sum(w_t * mean_success_mt)",
+    "zero_success_cells_retained": true,
+    "missing_cells_not_imputed": true
+  },
+  "evidence_audit": {
+    "schema_version": "shallowswe.repair_loop_evidence_audit.v0.1",
+    "valid": true,
+    "issues": [],
+    "rows": 12,
+    "migrated_rows": 12
+  },
+  "underfilled_cells": [
+    {
+      "category": "code",
+      "pressure_band": "lower",
+      "observed_tasks": 1,
+      "target_tasks": 2,
+      "missing_tasks": 1
+    },
+    {
+      "category": "code",
+      "pressure_band": "elevated",
+      "observed_tasks": 1,
+      "target_tasks": 2,
+      "missing_tasks": 1
+    },
+    {
+      "category": "artifact",
+      "pressure_band": "lower",
+      "observed_tasks": 1,
+      "target_tasks": 2,
+      "missing_tasks": 1
+    },
+    {
+      "category": "artifact",
+      "pressure_band": "elevated",
+      "observed_tasks": 1,
+      "target_tasks": 2,
+      "missing_tasks": 1
+    },
+    {
+      "category": "workflow",
+      "pressure_band": "lower",
+      "observed_tasks": 1,
+      "target_tasks": 2,
+      "missing_tasks": 1
+    },
+    {
+      "category": "workflow",
+      "pressure_band": "elevated",
+      "observed_tasks": 1,
+      "target_tasks": 2,
+      "missing_tasks": 1
+    }
+  ],
+  "task_weights": [
+    {
+      "task_id": "invoice-cli-regression-test-fix",
+      "category": "code",
+      "pressure_band": "lower",
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "task_id": "invoice-multi-source-merge",
+      "category": "code",
+      "pressure_band": "elevated",
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "task_id": "env-flags-to-json",
+      "category": "artifact",
+      "pressure_band": "lower",
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "task_id": "access-log-to-incidents",
+      "category": "artifact",
+      "pressure_band": "elevated",
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "task_id": "config-flag-ignored",
+      "category": "workflow",
+      "pressure_band": "lower",
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "task_id": "merge-divergent-config-branches",
+      "category": "workflow",
+      "pressure_band": "elevated",
+      "declared_weight": 0.08333333333333333
+    }
+  ],
+  "cells": [
+    {
+      "model_config_id": "mc_development_candidate",
+      "agent_policy_id": "ap_development_candidate",
+      "model": "development-candidate",
+      "task_id": "access-log-to-incidents",
+      "category": "artifact",
+      "pressure_band": "elevated",
+      "attempts": 2,
+      "excluded_attempts": 0,
+      "successes": 2,
+      "solve_rate": 1.0,
+      "mean_realized_charge_usd": 0.05,
+      "mean_reference_budget_charge_usd": 0.05,
+      "mean_escalation_charge_usd": 0.05,
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "model_config_id": "mc_development_candidate",
+      "agent_policy_id": "ap_development_candidate",
+      "model": "development-candidate",
+      "task_id": "config-flag-ignored",
+      "category": "workflow",
+      "pressure_band": "lower",
+      "attempts": 2,
+      "excluded_attempts": 0,
+      "successes": 2,
+      "solve_rate": 1.0,
+      "mean_realized_charge_usd": 0.05,
+      "mean_reference_budget_charge_usd": 0.05,
+      "mean_escalation_charge_usd": 0.05,
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "model_config_id": "mc_development_candidate",
+      "agent_policy_id": "ap_development_candidate",
+      "model": "development-candidate",
+      "task_id": "env-flags-to-json",
+      "category": "artifact",
+      "pressure_band": "lower",
+      "attempts": 2,
+      "excluded_attempts": 0,
+      "successes": 2,
+      "solve_rate": 1.0,
+      "mean_realized_charge_usd": 0.05,
+      "mean_reference_budget_charge_usd": 0.05,
+      "mean_escalation_charge_usd": 0.05,
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "model_config_id": "mc_development_candidate",
+      "agent_policy_id": "ap_development_candidate",
+      "model": "development-candidate",
+      "task_id": "invoice-cli-regression-test-fix",
+      "category": "code",
+      "pressure_band": "lower",
+      "attempts": 2,
+      "excluded_attempts": 0,
+      "successes": 2,
+      "solve_rate": 1.0,
+      "mean_realized_charge_usd": 0.05,
+      "mean_reference_budget_charge_usd": 0.05,
+      "mean_escalation_charge_usd": 0.05,
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "model_config_id": "mc_development_candidate",
+      "agent_policy_id": "ap_development_candidate",
+      "model": "development-candidate",
+      "task_id": "invoice-multi-source-merge",
+      "category": "code",
+      "pressure_band": "elevated",
+      "attempts": 2,
+      "excluded_attempts": 0,
+      "successes": 2,
+      "solve_rate": 1.0,
+      "mean_realized_charge_usd": 0.05,
+      "mean_reference_budget_charge_usd": 0.05,
+      "mean_escalation_charge_usd": 0.05,
+      "declared_weight": 0.08333333333333333
+    },
+    {
+      "model_config_id": "mc_development_candidate",
+      "agent_policy_id": "ap_development_candidate",
+      "model": "development-candidate",
+      "task_id": "merge-divergent-config-branches",
+      "category": "workflow",
+      "pressure_band": "elevated",
+      "attempts": 2,
+      "excluded_attempts": 0,
+      "successes": 0,
+      "solve_rate": 0.0,
+      "mean_realized_charge_usd": 0.05,
+      "mean_reference_budget_charge_usd": 0.2,
+      "mean_escalation_charge_usd": 0.2,
+      "declared_weight": 0.08333333333333333
+    }
+  ],
+  "models": [
+    {
+      "model_config_id": "mc_development_candidate",
+      "agent_policy_id": "ap_development_candidate",
+      "model": "development-candidate",
+      "task_count": 6,
+      "declared_coverage_weight": 0.5,
+      "missing_declared_weight": 0.5,
+      "weighted_solve_rate": null,
+      "partial_weighted_solve_rate": 0.8333333333333333,
+      "partial_basket_reference_budget_cpsc": 0.09000000000000001,
+      "basket_reference_budget_cpsc": null,
+      "partial_basket_realized_cpsc": 0.06000000000000001,
+      "basket_realized_cpsc": null,
+      "partial_basket_escalation_cpsc": 0.09000000000000001,
+      "basket_escalation_cpsc": null
+    }
+  ]
+}

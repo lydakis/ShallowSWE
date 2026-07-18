@@ -1,0 +1,114 @@
+{
+    "id": "4067e0c8-d284-4bcf-8868-e756cdcf1d42",
+    "task_name": "shallowswe/status-fanout-reconcile",
+    "trial_name": "status-fanout-reconcile__bVYeuEU",
+    "trial_uri": "file:///private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-status-fanout-release-signal-floor-n1-r2_floor_gpt54mini_low_n1/status-fanout-reconcile__bVYeuEU",
+    "task_id": {
+        "path": "/Users/lydakis/Developer/ShallowSWE/tasks/status-fanout-reconcile"
+    },
+    "source": "tasks",
+    "task_checksum": "7f92dcb0cb8285b2038217af1a64cf1b898cd2b0777ae41e26dd43ac94a149a2",
+    "config": {
+        "task": {
+            "path": "/Users/lydakis/Developer/ShallowSWE/tasks/status-fanout-reconcile",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": "tasks"
+        },
+        "trial_name": "status-fanout-reconcile__bVYeuEU",
+        "trials_dir": "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-status-fanout-release-signal-floor-n1-r2_floor_gpt54mini_low_n1",
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": null,
+            "import_path": "shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent",
+            "model_name": "openai/gpt-5.4-mini",
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {
+                "version": "0.142.0",
+                "reasoning_effort": "low"
+            },
+            "env": {
+                "CODEX_FORCE_AUTH_JSON": "${CODEX_FORCE_AUTH_JSON}"
+            }
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "suppress_override_warnings": false,
+            "mounts": null,
+            "env": {},
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "env": {},
+            "disable": false
+        },
+        "artifacts": [],
+        "job_id": "f8d4559d-3f35-4016-8d1a-4f8e46a5c40a"
+    },
+    "agent_info": {
+        "name": "shallowswe-codex-subscription",
+        "version": "0.142.0",
+        "model_info": {
+            "name": "gpt-5.4-mini",
+            "provider": "openai"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 390968,
+        "n_cache_tokens": 356608,
+        "n_output_tokens": 9184,
+        "cost_usd": 0.0938436,
+        "peak_context_tokens": 29225,
+        "summarization_count": 0,
+        "n_agent_steps": 18,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 0.0
+        }
+    },
+    "exception_info": null,
+    "started_at": "2026-07-07T11:23:40.713496Z",
+    "finished_at": "2026-07-07T11:26:28.655019Z",
+    "environment_setup": {
+        "started_at": "2026-07-07T11:23:40.864496Z",
+        "finished_at": "2026-07-07T11:23:44.365672Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-07-07T11:23:44.365738Z",
+        "finished_at": "2026-07-07T11:23:44.457608Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-07-07T11:23:44.457704Z",
+        "finished_at": "2026-07-07T11:26:25.259066Z"
+    },
+    "verifier": {
+        "started_at": "2026-07-07T11:26:25.365773Z",
+        "finished_at": "2026-07-07T11:26:25.917086Z"
+    },
+    "n_agent_steps": 18,
+    "step_results": null
+}

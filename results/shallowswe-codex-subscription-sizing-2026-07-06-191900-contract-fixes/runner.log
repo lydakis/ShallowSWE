@@ -1,0 +1,52 @@
+$ uv run shallowswe tasks /Users/lydakis/Developer/ShallowSWE/tasks
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 1 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.5 --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=medium --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name audit-log-normalization --include-task-name billing-revenue-rollup --include-task-name feature-branch-select-commits --include-task-name markdown-table-inventory --include-task-name release-branch-cherry-pick --include-task-name subscription-summary-report --include-task-name ticket-state-reconcile
+  7/7 Mean: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:13:40 0:00:00
+
+tasks • shallowswe-codex-subscription • gpt-5.5
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      7 │          0 │ 1.000 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 1.0    │     7 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 13m 40s
+Results written to 
+/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contr
+act-fixes_ceiling_gpt55_medium_n1/result.json
+Inspect results by running `pier view /private/tmp/shallowswe-pier`
+
+$ uv run shallowswe export-pier /private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1 --tasks-root /Users/lydakis/Developer/ShallowSWE/tasks > /Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes/ceiling-gpt55-medium-rollouts.json
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 3 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.4-mini --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=low --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name audit-log-normalization --include-task-name billing-revenue-rollup --include-task-name feature-branch-select-commits --include-task-name markdown-table-inventory --include-task-name release-branch-cherry-pick --include-task-name subscription-summary-report --include-task-name ticket-state-reconcile
+  21/21 Mean: 0.857 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:19:06 0:00:00
+
+tasks • shallowswe-codex-subscription • gpt-5.4-mini
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃ Pass@2 ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━┩
+│     21 │          0 │ 0.857 │  1.000 │
+└────────┴────────────┴───────┴────────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 1.0    │    18 │
+│ 0.0    │     3 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 19m 6s
+Results written to 
+/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contr
+act-fixes_floor_gpt54mini_low_n3/result.json
+Inspect results by running `pier view /private/tmp/shallowswe-pier`
+
+$ uv run shallowswe export-pier /private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3 --tasks-root /Users/lydakis/Developer/ShallowSWE/tasks > /Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes/floor-gpt54mini-low-rollouts.json
+$ uv run shallowswe tasks /Users/lydakis/Developer/ShallowSWE/tasks
+$ uv run shallowswe tasks /Users/lydakis/Developer/ShallowSWE/tasks

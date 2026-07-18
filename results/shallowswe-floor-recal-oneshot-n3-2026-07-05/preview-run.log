@@ -1,0 +1,265 @@
+running 1/162 env-flags-to-json openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$0.0000
+running 2/162 env-flags-to-json openrouter/z-ai/glm-5.2[high] seed=0 spend=$0.0000
+Message at index 2 has no preceding agent step
+running 3/162 env-flags-to-json openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$0.0180
+running 4/162 extract-error-fields openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$0.3288
+running 5/162 extract-error-fields openrouter/z-ai/glm-5.2[high] seed=0 spend=$0.3379
+running 6/162 extract-error-fields openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$0.4485
+running 7/162 payout-reconcile openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$0.4570
+running 8/162 payout-reconcile openrouter/z-ai/glm-5.2[high] seed=0 spend=$0.4711
+running 9/162 payout-reconcile openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$0.7668
+running 10/162 access-log-to-incidents openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$0.7809
+running 11/162 access-log-to-incidents openrouter/z-ai/glm-5.2[high] seed=0 spend=$1.1556
+running 12/162 access-log-to-incidents openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$1.2032
+running 13/162 billing-revenue-rollup openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$1.2261
+running 14/162 billing-revenue-rollup openrouter/z-ai/glm-5.2[high] seed=0 spend=$1.2698
+running 15/162 billing-revenue-rollup openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$1.5336
+running 16/162 support-metrics-package openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$1.5441
+running 17/162 support-metrics-package openrouter/z-ai/glm-5.2[high] seed=0 spend=$1.5677
+running 18/162 support-metrics-package openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$1.5910
+running 19/162 invoice-cli-regression-test-fix openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$2.0215
+running 20/162 invoice-cli-regression-test-fix openrouter/z-ai/glm-5.2[high] seed=0 spend=$2.0334
+running 21/162 invoice-cli-regression-test-fix openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$2.1447
+running 22/162 retry-error-fallback openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$2.1739
+running 23/162 retry-error-fallback openrouter/z-ai/glm-5.2[high] seed=0 spend=$2.2054
+running 24/162 retry-error-fallback openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$2.3760
+running 25/162 auth-token-expiry-regression openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$2.3902
+running 26/162 auth-token-expiry-regression openrouter/z-ai/glm-5.2[high] seed=0 spend=$2.4051
+running 27/162 auth-token-expiry-regression openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$2.4154
+running 28/162 split-notification-renderer openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$2.6662
+running 29/162 split-notification-renderer openrouter/z-ai/glm-5.2[high] seed=0 spend=$2.8319
+running 30/162 split-notification-renderer openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$2.8523
+running 31/162 cache-invalidates-on-settings-change openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$2.8616
+running 32/162 cache-invalidates-on-settings-change openrouter/z-ai/glm-5.2[high] seed=0 spend=$2.8774
+running 33/162 cache-invalidates-on-settings-change openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$3.0580
+running 34/162 status-terminal-parity openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$3.0770
+running 35/162 status-terminal-parity openrouter/z-ai/glm-5.2[high] seed=0 spend=$3.0910
+running 36/162 status-terminal-parity openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$3.4189
+running 37/162 post-build-status openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$3.4639
+running 38/162 post-build-status openrouter/z-ai/glm-5.2[high] seed=0 spend=$3.5924
+running 39/162 post-build-status openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$3.6927
+running 40/162 ticket-cut-from-bug-report openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$3.6994
+running 41/162 ticket-cut-from-bug-report openrouter/z-ai/glm-5.2[high] seed=0 spend=$3.7156
+running 42/162 ticket-cut-from-bug-report openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$3.8412
+running 43/162 config-flag-ignored openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$3.8494
+running 44/162 config-flag-ignored openrouter/z-ai/glm-5.2[high] seed=0 spend=$3.8592
+running 45/162 config-flag-ignored openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$4.0275
+running 46/162 ticket-update-dont-duplicate openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$4.0473
+running 47/162 ticket-update-dont-duplicate openrouter/z-ai/glm-5.2[high] seed=0 spend=$4.1621
+running 48/162 ticket-update-dont-duplicate openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$4.2009
+running 49/162 config-key-rollover openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$4.2231
+running 50/162 config-key-rollover openrouter/z-ai/glm-5.2[high] seed=0 spend=$4.2495
+running 51/162 config-key-rollover openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$4.5122
+running 52/162 merge-divergent-config-branches openrouter/google/gemini-3.5-flash[medium] seed=0 spend=$4.5429
+running 53/162 merge-divergent-config-branches openrouter/z-ai/glm-5.2[high] seed=0 spend=$4.5775
+running 54/162 merge-divergent-config-branches openrouter/moonshotai/kimi-k2.7-code seed=0 spend=$4.8798
+running 55/162 env-flags-to-json openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$4.9020
+running 56/162 env-flags-to-json openrouter/z-ai/glm-5.2[high] seed=1 spend=$5.1534
+running 57/162 env-flags-to-json openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$5.2243
+running 58/162 extract-error-fields openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$5.2343
+running 59/162 extract-error-fields openrouter/z-ai/glm-5.2[high] seed=1 spend=$5.2445
+running 60/162 extract-error-fields openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$5.3375
+running 61/162 payout-reconcile openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$5.3441
+running 62/162 payout-reconcile openrouter/z-ai/glm-5.2[high] seed=1 spend=$5.3600
+running 63/162 payout-reconcile openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$5.6806
+running 64/162 access-log-to-incidents openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$5.7347
+running 65/162 access-log-to-incidents openrouter/z-ai/glm-5.2[high] seed=1 spend=$5.7660
+running 66/162 access-log-to-incidents openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$6.1756
+running 67/162 billing-revenue-rollup openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$6.1865
+running 68/162 billing-revenue-rollup openrouter/z-ai/glm-5.2[high] seed=1 spend=$6.5809
+running 69/162 billing-revenue-rollup openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$6.6201
+running 70/162 support-metrics-package openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$6.6356
+running 71/162 support-metrics-package openrouter/z-ai/glm-5.2[high] seed=1 spend=$6.6659
+running 72/162 support-metrics-package openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$6.6816
+running 73/162 invoice-cli-regression-test-fix openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$6.9110
+running 74/162 invoice-cli-regression-test-fix openrouter/z-ai/glm-5.2[high] seed=1 spend=$6.9198
+running 75/162 invoice-cli-regression-test-fix openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$7.0492
+running 76/162 retry-error-fallback openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$7.0674
+running 77/162 retry-error-fallback openrouter/z-ai/glm-5.2[high] seed=1 spend=$7.0925
+running 78/162 retry-error-fallback openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$7.3033
+running 79/162 auth-token-expiry-regression openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$7.3144
+Traceback (most recent call last):
+  File "/Users/lydakis/Developer/ShallowSWE/.venv/bin/shallowswe", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/lydakis/Developer/ShallowSWE/src/shallowswe/cli.py", line 343, in main
+    report = run_repair_loop_preview_batch(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lydakis/Developer/ShallowSWE/src/shallowswe/repair_loop_batch.py", line 236, in run_repair_loop_preview_batch
+    progress(
+      ^^^^^^^^
+  File "/Users/lydakis/.local/share/uv/python/cpython-3.12-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 305, in wait
+    waiter.event.wait(timeout)
+  File "/Users/lydakis/.local/share/uv/python/cpython-3.12-macos-aarch64-none/lib/python3.12/threading.py", line 655, in wait
+    signaled = self._cond.wait(timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lydakis/.local/share/uv/python/cpython-3.12-macos-aarch64-none/lib/python3.12/threading.py", line 355, in wait
+    waiter.acquire()
+KeyboardInterrupt
+running 78/162 retry-error-fallback openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$7.3144
+running 79/162 auth-token-expiry-regression openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$7.3144
+running 78/162 retry-error-fallback openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$7.3144
+running 79/162 auth-token-expiry-regression openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$7.3144
+running 80/162 auth-token-expiry-regression openrouter/z-ai/glm-5.2[high] seed=1 spend=$7.4818
+running 81/162 auth-token-expiry-regression openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$7.4933
+running 82/162 split-notification-renderer openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$7.5290
+running 83/162 split-notification-renderer openrouter/z-ai/glm-5.2[high] seed=1 spend=$7.6533
+running 84/162 split-notification-renderer openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$7.6632
+running 85/162 cache-invalidates-on-settings-change openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$7.6950
+running 86/162 cache-invalidates-on-settings-change openrouter/z-ai/glm-5.2[high] seed=1 spend=$7.7111
+running 87/162 cache-invalidates-on-settings-change openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$7.9048
+running 88/162 status-terminal-parity openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$7.9186
+running 89/162 status-terminal-parity openrouter/z-ai/glm-5.2[high] seed=1 spend=$8.2489
+running 90/162 status-terminal-parity openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$8.2913
+running 91/162 post-build-status openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$8.3362
+running 92/162 post-build-status openrouter/z-ai/glm-5.2[high] seed=1 spend=$8.4574
+running 93/162 post-build-status openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$8.4646
+running 94/162 ticket-cut-from-bug-report openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$8.4718
+running 95/162 ticket-cut-from-bug-report openrouter/z-ai/glm-5.2[high] seed=1 spend=$8.5811
+running 96/162 ticket-cut-from-bug-report openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$8.6891
+running 97/162 config-flag-ignored openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$8.6978
+running 98/162 config-flag-ignored openrouter/z-ai/glm-5.2[high] seed=1 spend=$8.7155
+running 99/162 config-flag-ignored openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$8.8674
+running 100/162 ticket-update-dont-duplicate openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$8.8861
+running 101/162 ticket-update-dont-duplicate openrouter/z-ai/glm-5.2[high] seed=1 spend=$8.9143
+running 102/162 ticket-update-dont-duplicate openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$9.0634
+running 103/162 config-key-rollover openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$9.0762
+running 104/162 config-key-rollover openrouter/z-ai/glm-5.2[high] seed=1 spend=$9.0972
+running 105/162 config-key-rollover openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$9.3822
+running 106/162 merge-divergent-config-branches openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$9.4143
+running 107/162 merge-divergent-config-branches openrouter/z-ai/glm-5.2[high] seed=1 spend=$9.8322
+running 108/162 merge-divergent-config-branches openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$9.9043
+running 109/162 env-flags-to-json openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$9.9357
+running 110/162 env-flags-to-json openrouter/z-ai/glm-5.2[high] seed=2 spend=$10.2662
+running 111/162 env-flags-to-json openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$10.3277
+running 112/162 extract-error-fields openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$10.3427
+running 113/162 extract-error-fields openrouter/z-ai/glm-5.2[high] seed=2 spend=$10.3530
+running 114/162 extract-error-fields openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$10.4535
+running 115/162 payout-reconcile openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$10.4684
+running 116/162 payout-reconcile openrouter/z-ai/glm-5.2[high] seed=2 spend=$10.4793
+running 117/162 payout-reconcile openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$10.7506
+running 118/162 access-log-to-incidents openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$10.7664
+running 119/162 access-log-to-incidents openrouter/z-ai/glm-5.2[high] seed=2 spend=$11.1464
+running 120/162 access-log-to-incidents openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$11.1961
+running 121/162 billing-revenue-rollup openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$11.2099
+running 122/162 billing-revenue-rollup openrouter/z-ai/glm-5.2[high] seed=2 spend=$11.2290
+running 123/162 billing-revenue-rollup openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$11.6013
+running 124/162 support-metrics-package openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$11.6241
+running 125/162 support-metrics-package openrouter/z-ai/glm-5.2[high] seed=2 spend=$11.6391
+running 126/162 support-metrics-package openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$11.9292
+running 127/162 invoice-cli-regression-test-fix openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$11.9544
+running 128/162 invoice-cli-regression-test-fix openrouter/z-ai/glm-5.2[high] seed=2 spend=$12.0718
+running 129/162 invoice-cli-regression-test-fix openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$12.0843
+running 130/162 retry-error-fallback openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$12.1231
+running 131/162 retry-error-fallback openrouter/z-ai/glm-5.2[high] seed=2 spend=$12.2876
+running 132/162 retry-error-fallback openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$12.3160
+running 133/162 auth-token-expiry-regression openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$12.3268
+running 134/162 auth-token-expiry-regression openrouter/z-ai/glm-5.2[high] seed=2 spend=$12.3422
+running 135/162 auth-token-expiry-regression openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$12.4986
+running 136/162 split-notification-renderer openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$12.5232
+running 137/162 split-notification-renderer openrouter/z-ai/glm-5.2[high] seed=2 spend=$12.5468
+running 138/162 split-notification-renderer openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$12.6684
+running 139/162 cache-invalidates-on-settings-change openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$12.6781
+running 140/162 cache-invalidates-on-settings-change openrouter/z-ai/glm-5.2[high] seed=2 spend=$12.6904
+running 141/162 cache-invalidates-on-settings-change openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$12.8909
+running 142/162 status-terminal-parity openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$13.0695
+running 143/162 status-terminal-parity openrouter/z-ai/glm-5.2[high] seed=2 spend=$13.1059
+running 144/162 status-terminal-parity openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$13.3889
+running 145/162 post-build-status openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$13.4184
+running 146/162 post-build-status openrouter/z-ai/glm-5.2[high] seed=2 spend=$13.5704
+running 147/162 post-build-status openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$13.5833
+running 148/162 ticket-cut-from-bug-report openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$13.5914
+running 149/162 ticket-cut-from-bug-report openrouter/z-ai/glm-5.2[high] seed=2 spend=$13.6560
+running 150/162 ticket-cut-from-bug-report openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$13.7346
+running 151/162 config-flag-ignored openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$13.7434
+running 152/162 config-flag-ignored openrouter/z-ai/glm-5.2[high] seed=2 spend=$13.8779
+running 153/162 config-flag-ignored openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$13.8961
+running 154/162 ticket-update-dont-duplicate openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$13.9092
+running 155/162 ticket-update-dont-duplicate openrouter/z-ai/glm-5.2[high] seed=2 spend=$13.9304
+running 156/162 ticket-update-dont-duplicate openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$14.0591
+running 157/162 config-key-rollover openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$14.0671
+running 158/162 config-key-rollover openrouter/z-ai/glm-5.2[high] seed=2 spend=$14.0954
+running 159/162 config-key-rollover openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$14.4067
+running 160/162 merge-divergent-config-branches openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$14.4381
+running 161/162 merge-divergent-config-branches openrouter/z-ai/glm-5.2[high] seed=2 spend=$14.6668
+running 162/162 merge-divergent-config-branches openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$14.7364
+{
+  "schema_version": "shallowswe.repair_loop_preview_batch.v0.1",
+  "plan": "shallowswe-floor-recal-oneshot-n3",
+  "snapshot_id": "shallowswe-v0.1-frozen-2026-07-05",
+  "audit_ready_to_launch": true,
+  "output_dir": "results/shallowswe-floor-recal-oneshot-n3-2026-07-05",
+  "combined_results_path": "results/shallowswe-floor-recal-oneshot-n3-2026-07-05/repair-loop-results.json",
+  "report_path": "results/shallowswe-floor-recal-oneshot-n3-2026-07-05/repair-loop-run-report.json",
+  "updated_at": "2026-07-05T18:52:28.910318+00:00",
+  "dry_run": false,
+  "parallelism": 2,
+  "total_planned_rows": 162,
+  "completed_rows": 162,
+  "remaining_rows": 0,
+  "skipped_existing_rows": 77,
+  "scored_rows": 162,
+  "successes": 147,
+  "solve_rate_so_far": 0.9074074074074074,
+  "cumulative_spend_usd": 14.7732382948,
+  "global_hard_stop_usd": 35.0,
+  "remaining_budget_usd": 20.226761705199998,
+  "stopped": false,
+  "stop_reason": null,
+  "last_row": {
+    "model": "openrouter/moonshotai/kimi-k2.7-code",
+    "task_id": "merge-divergent-config-branches",
+    "category": "workflow",
+    "size": "large",
+    "loop": 2,
+    "passed": true,
+    "stop_reason": "passed",
+    "verifier_submissions": 1,
+    "input_tokens": 9329,
+    "output_tokens": 950,
+    "cache_read_tokens": 4592,
+    "cache_write_tokens": 0,
+    "turns": 7,
+    "agent_steps": 7,
+    "peak_context_tokens": 2147,
+    "provider": null,
+    "inference_gateway": "openrouter",
+    "upstream_provider": "moonshotai",
+    "requested_model": "openrouter/moonshotai/kimi-k2.7-code",
+    "resolved_model": null,
+    "model_variant": null,
+    "reasoning_effort": null,
+    "reasoning_tokens": 0,
+    "temperature": null,
+    "sampling_config": {
+      "config_file": "configs/mini-swe-agent-repair-loop-preview.yaml",
+      "model_name": "openrouter/moonshotai/kimi-k2.7-code",
+      "model_kwargs": {
+        "max_tokens": 8192
+      }
+    },
+    "gateway_reported_cost_usd": 0.008373470000000001,
+    "agent": "shallowswe-resumable-mini-swe-agent",
+    "agent_version": null,
+    "runner": "pier-private-repair-loop-pilot",
+    "runner_version": "1ad573839eb0b98830642bdac42b37988bdccd80",
+    "scaffold_prompt_hash": "530113f4566e2bd5d40a7e15ab7992f8d81d665ff31ebebc29bd2b325d506ee1",
+    "token_source": null,
+    "task_version": "merge-divergent-config-branches@local",
+    "task_suite_version": "shallowswe-v0.1-frozen-2026-07-05",
+    "verifier_hash": "sha256:ccacc2e2b8ad391dda6f9542dcb541cdac6c1e1f7419e82e3755fb4e7f967e22",
+    "environment_image_digest": "sha256:0820b30f5f82db7f90c4ba5c3e3ecd1c6c9b3614858e5a315465adbc9a13bffc",
+    "repo_commit_sha": "1ad573839eb0b98830642bdac42b37988bdccd80",
+    "price_sheet_version": "openrouter-2026-07-03",
+    "price_sheet_date": "2026-07-03",
+    "seed": 2,
+    "run_id": "shallowswe_floor_recal_20260705__seed-02__merge-divergent-config-branches__anchor_kimi_k2_7_code_default",
+    "task_visibility": "local-hidden-verifier",
+    "transcript_hash": "e64cde213be7fa896044d58c271d6bdddc82ccfbb82012e9dcbcda35d13b5a12",
+    "status": "scored",
+    "exclusion_reason": null,
+    "started_at": "2026-07-05T18:51:06.655582+00:00",
+    "finished_at": "2026-07-05T18:52:28.854342+00:00",
+    "schema_version": "shallowswe.repair_loop.v0.2"
+  }
+}

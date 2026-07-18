@@ -1,0 +1,243 @@
+running 1/162 env-flags-to-json openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$0.0000
+running 2/162 env-flags-to-json openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$0.0000
+running 3/162 env-flags-to-json openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$0.0000
+running 4/162 extract-error-fields openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$0.0161
+running 5/162 extract-error-fields openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$0.0673
+running 6/162 extract-error-fields openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$0.2094
+running 7/162 payout-reconcile openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$0.2220
+running 8/162 payout-reconcile openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$0.2744
+running 9/162 payout-reconcile openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$0.3734
+running 10/162 access-log-to-incidents openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$0.3990
+running 11/162 access-log-to-incidents openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$0.4798
+running 12/162 access-log-to-incidents openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$0.6230
+running 13/162 billing-revenue-rollup openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$0.6406
+running 14/162 billing-revenue-rollup openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$0.7108
+running 15/162 billing-revenue-rollup openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$0.7518
+running 16/162 support-sla-business-hours openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$0.8913
+running 17/162 support-sla-business-hours openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$1.0224
+running 18/162 support-sla-business-hours openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$1.0532
+running 19/162 invoice-cli-regression-test-fix openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$1.3235
+running 20/162 invoice-cli-regression-test-fix openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$1.4713
+running 21/162 invoice-cli-regression-test-fix openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$1.4885
+running 22/162 retry-error-fallback openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$1.7398
+running 23/162 retry-error-fallback openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$1.8064
+running 24/162 retry-error-fallback openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$1.8233
+running 25/162 auth-token-expiry-regression openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$1.9666
+running 26/162 auth-token-expiry-regression openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$1.9800
+running 27/162 auth-token-expiry-regression openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$2.0746
+running 28/162 split-notification-renderer openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$2.2469
+running 29/162 split-notification-renderer openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$2.3640
+running 30/162 split-notification-renderer openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$2.4420
+running 31/162 cache-invalidates-on-settings-change openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$2.4550
+running 32/162 cache-invalidates-on-settings-change openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$2.4743
+running 33/162 cache-invalidates-on-settings-change openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$2.5356
+running 34/162 invoice-multi-source-merge openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$2.6555
+running 35/162 invoice-multi-source-merge openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$2.7288
+running 36/162 invoice-multi-source-merge openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$2.7621
+running 37/162 post-build-status openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$2.9009
+running 38/162 post-build-status openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$2.9946
+running 39/162 post-build-status openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$3.0050
+running 40/162 ticket-cut-from-bug-report openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$3.2183
+running 41/162 ticket-cut-from-bug-report openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$3.2626
+running 42/162 ticket-cut-from-bug-report openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$3.3516
+running 43/162 config-flag-ignored openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$3.3637
+running 44/162 config-flag-ignored openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$3.4083
+running 45/162 config-flag-ignored openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$3.5126
+running 46/162 ticket-update-dont-duplicate openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$3.5274
+running 47/162 ticket-update-dont-duplicate openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$3.6055
+running 48/162 ticket-update-dont-duplicate openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$3.6212
+running 49/162 merge-divergent-config-branches openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$3.7520
+running 50/162 merge-divergent-config-branches openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$3.8155
+running 51/162 merge-divergent-config-branches openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$3.9562
+running 52/162 config-key-rollover openrouter/openai/gpt-5.6-luna[low] seed=0 spend=$3.9751
+running 53/162 config-key-rollover openrouter/openai/gpt-5.6-terra[low] seed=0 spend=$4.0521
+running 54/162 config-key-rollover openrouter/openai/gpt-5.6-sol[low] seed=0 spend=$4.0750
+running 55/162 env-flags-to-json openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$4.2339
+running 56/162 env-flags-to-json openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$4.3337
+running 57/162 env-flags-to-json openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$4.3590
+running 58/162 extract-error-fields openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$4.6123
+running 59/162 extract-error-fields openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$4.6632
+running 60/162 extract-error-fields openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$4.7561
+running 61/162 payout-reconcile openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$4.7690
+running 62/162 payout-reconcile openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$4.8136
+running 63/162 payout-reconcile openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$4.8372
+running 64/162 access-log-to-incidents openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$4.9575
+running 65/162 access-log-to-incidents openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$5.0823
+running 66/162 access-log-to-incidents openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$5.1056
+running 67/162 billing-revenue-rollup openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$5.2504
+running 68/162 billing-revenue-rollup openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$5.3170
+running 69/162 billing-revenue-rollup openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$5.4603
+running 70/162 support-sla-business-hours openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$5.4966
+running 71/162 support-sla-business-hours openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$5.6655
+running 72/162 support-sla-business-hours openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$5.6968
+running 73/162 invoice-cli-regression-test-fix openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$5.9350
+running 74/162 invoice-cli-regression-test-fix openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$5.9556
+running 75/162 invoice-cli-regression-test-fix openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$6.0788
+running 76/162 retry-error-fallback openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$6.3416
+running 77/162 retry-error-fallback openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$6.4021
+running 78/162 retry-error-fallback openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$6.4209
+running 79/162 auth-token-expiry-regression openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$6.5754
+running 80/162 auth-token-expiry-regression openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$6.6374
+running 81/162 auth-token-expiry-regression openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$6.6527
+running 82/162 split-notification-renderer openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$6.8143
+running 83/162 split-notification-renderer openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$6.8698
+running 84/162 split-notification-renderer openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$6.8868
+running 85/162 cache-invalidates-on-settings-change openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$7.0271
+running 86/162 cache-invalidates-on-settings-change openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$7.1007
+running 87/162 cache-invalidates-on-settings-change openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$7.1213
+running 88/162 invoice-multi-source-merge openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$7.2341
+running 89/162 invoice-multi-source-merge openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$7.3146
+running 90/162 invoice-multi-source-merge openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$7.3411
+running 91/162 post-build-status openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$7.4685
+running 92/162 post-build-status openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$7.4804
+running 93/162 post-build-status openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$7.6046
+running 94/162 ticket-cut-from-bug-report openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$7.7871
+running 95/162 ticket-cut-from-bug-report openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$7.8248
+running 96/162 ticket-cut-from-bug-report openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$7.9173
+running 97/162 config-flag-ignored openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$7.9289
+running 98/162 config-flag-ignored openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$7.9670
+running 99/162 config-flag-ignored openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$8.0343
+running 100/162 ticket-update-dont-duplicate openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$8.0522
+running 101/162 ticket-update-dont-duplicate openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$8.1351
+running 102/162 ticket-update-dont-duplicate openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$8.1533
+running 103/162 merge-divergent-config-branches openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$8.2734
+running 104/162 merge-divergent-config-branches openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$8.3365
+running 105/162 merge-divergent-config-branches openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$8.3523
+running 106/162 config-key-rollover openrouter/openai/gpt-5.6-luna[low] seed=1 spend=$8.4995
+running 107/162 config-key-rollover openrouter/openai/gpt-5.6-terra[low] seed=1 spend=$8.6416
+running 108/162 config-key-rollover openrouter/openai/gpt-5.6-sol[low] seed=1 spend=$8.7551
+running 109/162 env-flags-to-json openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$8.7825
+running 110/162 env-flags-to-json openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$8.7975
+running 111/162 env-flags-to-json openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$8.9087
+running 112/162 extract-error-fields openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$9.1163
+running 113/162 extract-error-fields openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$9.1722
+running 114/162 extract-error-fields openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$9.2881
+running 115/162 payout-reconcile openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$9.3045
+running 116/162 payout-reconcile openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$9.3526
+running 117/162 payout-reconcile openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$9.3762
+running 118/162 access-log-to-incidents openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$9.4875
+running 119/162 access-log-to-incidents openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$9.5064
+running 120/162 access-log-to-incidents openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$9.6660
+running 121/162 billing-revenue-rollup openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$9.8962
+running 122/162 billing-revenue-rollup openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$9.9638
+running 123/162 billing-revenue-rollup openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$10.0923
+running 124/162 support-sla-business-hours openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$10.1237
+running 125/162 support-sla-business-hours openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$10.2407
+running 126/162 support-sla-business-hours openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$10.4956
+running 127/162 invoice-cli-regression-test-fix openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$10.5277
+running 128/162 invoice-cli-regression-test-fix openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$10.6670
+running 129/162 invoice-cli-regression-test-fix openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$10.6889
+running 130/162 retry-error-fallback openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$10.8990
+running 131/162 retry-error-fallback openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$10.9607
+running 132/162 retry-error-fallback openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$10.9809
+running 133/162 auth-token-expiry-regression openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$11.1324
+running 134/162 auth-token-expiry-regression openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$11.2110
+running 135/162 auth-token-expiry-regression openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$11.2262
+running 136/162 split-notification-renderer openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$11.3975
+running 137/162 split-notification-renderer openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$11.4691
+running 138/162 split-notification-renderer openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$11.4824
+running 139/162 cache-invalidates-on-settings-change openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$11.6505
+running 140/162 cache-invalidates-on-settings-change openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$11.7070
+running 141/162 cache-invalidates-on-settings-change openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$11.7225
+running 142/162 invoice-multi-source-merge openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$11.8352
+running 143/162 invoice-multi-source-merge openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$11.8998
+running 144/162 invoice-multi-source-merge openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$12.0344
+running 145/162 post-build-status openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$12.0872
+running 146/162 post-build-status openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$12.1805
+running 147/162 post-build-status openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$12.1933
+running 148/162 ticket-cut-from-bug-report openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$12.3665
+running 149/162 ticket-cut-from-bug-report openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$12.4167
+running 150/162 ticket-cut-from-bug-report openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$12.4297
+running 151/162 config-flag-ignored openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$12.5246
+running 152/162 config-flag-ignored openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$12.5698
+running 153/162 config-flag-ignored openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$12.5906
+running 154/162 ticket-update-dont-duplicate openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$12.7034
+running 155/162 ticket-update-dont-duplicate openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$12.7704
+running 156/162 ticket-update-dont-duplicate openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$12.7890
+running 157/162 merge-divergent-config-branches openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$12.9103
+running 158/162 merge-divergent-config-branches openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$12.9782
+running 159/162 merge-divergent-config-branches openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$13.0003
+running 160/162 config-key-rollover openrouter/openai/gpt-5.6-luna[low] seed=2 spend=$13.1390
+running 161/162 config-key-rollover openrouter/openai/gpt-5.6-terra[low] seed=2 spend=$13.1980
+running 162/162 config-key-rollover openrouter/openai/gpt-5.6-sol[low] seed=2 spend=$13.2208
+{
+  "schema_version": "shallowswe.repair_loop_preview_batch.v0.1",
+  "plan": "shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low",
+  "snapshot_id": "shallowswe-v0.2-large-replacement-candidate-2026-07-05",
+  "audit_ready_to_launch": true,
+  "output_dir": "results/shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low-2026-07-09",
+  "combined_results_path": "results/shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low-2026-07-09/repair-loop-results.json",
+  "report_path": "results/shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low-2026-07-09/repair-loop-run-report.json",
+  "updated_at": "2026-07-09T19:56:58.718991+00:00",
+  "dry_run": false,
+  "parallelism": 3,
+  "total_planned_rows": 162,
+  "completed_rows": 162,
+  "remaining_rows": 0,
+  "skipped_existing_rows": 0,
+  "scored_rows": 162,
+  "successes": 160,
+  "solve_rate_so_far": 0.9876543209876543,
+  "cumulative_spend_usd": 13.603590050000001,
+  "global_hard_stop_usd": 250.0,
+  "remaining_budget_usd": 236.39640995,
+  "stopped": false,
+  "stop_reason": null,
+  "last_row": {
+    "model": "openrouter/openai/gpt-5.6-sol",
+    "task_id": "config-key-rollover",
+    "category": "workflow",
+    "size": "large",
+    "loop": 2,
+    "passed": true,
+    "stop_reason": "passed",
+    "verifier_submissions": 1,
+    "input_tokens": 22801,
+    "output_tokens": 3214,
+    "cache_read_tokens": 13711,
+    "cache_write_tokens": 8085,
+    "turns": 5,
+    "agent_steps": 5,
+    "peak_context_tokens": 8088,
+    "provider": null,
+    "inference_gateway": "openrouter",
+    "upstream_provider": "openai",
+    "requested_model": "openrouter/openai/gpt-5.6-sol",
+    "resolved_model": null,
+    "model_variant": null,
+    "reasoning_effort": "low",
+    "reasoning_tokens": 291,
+    "temperature": null,
+    "sampling_config": {
+      "config_file": "configs/mini-swe-agent-repair-loop-preview.yaml",
+      "model_name": "openrouter/openai/gpt-5.6-sol",
+      "model_kwargs": {
+        "max_tokens": 8192,
+        "reasoning_effort": "low"
+      }
+    },
+    "gateway_reported_cost_usd": 0.15883175,
+    "agent": "shallowswe-resumable-mini-swe-agent",
+    "agent_version": null,
+    "runner": "pier-private-repair-loop-pilot",
+    "runner_version": "9ec3c469bba52660d8145ac79f25f5aa56e33ccb",
+    "scaffold_prompt_hash": "530113f4566e2bd5d40a7e15ab7992f8d81d665ff31ebebc29bd2b325d506ee1",
+    "token_source": null,
+    "task_version": "config-key-rollover@local",
+    "task_suite_version": "shallowswe-v0.2-large-replacement-candidate-2026-07-05",
+    "verifier_hash": "sha256:44537397dc80fb93b38c0b4b03ece27c2402d5ed7f2b054a4559df4cad5da776",
+    "environment_image_digest": "sha256:9d5a33fa5f7f0fbf2d88b0e7d342bc2beda9b680637cf86048c53b964760c772",
+    "repo_commit_sha": "9ec3c469bba52660d8145ac79f25f5aa56e33ccb",
+    "price_sheet_version": "openrouter-2026-07-09",
+    "price_sheet_date": "2026-07-09",
+    "seed": 2,
+    "run_id": "shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low__seed-02__config-key-rollover__mini_swe_agent_gpt_5_6_sol_low",
+    "task_visibility": "local-hidden-verifier",
+    "transcript_hash": "5be98ffd5709d2a0ac82a111eb08411be5571c805efbcdb6a83fb519955e3d82",
+    "status": "scored",
+    "exclusion_reason": null,
+    "started_at": "2026-07-09T19:55:41.351376+00:00",
+    "finished_at": "2026-07-09T19:56:58.670520+00:00",
+    "schema_version": "shallowswe.repair_loop.v0.2"
+  }
+}

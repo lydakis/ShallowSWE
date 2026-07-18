@@ -1,0 +1,74 @@
+{
+  "schema_version": "shallowswe.failed_trajectory_audit_cache.v0.1",
+  "tasks": {
+    "audit-log-normalization": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/audit-log-normalization/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/audit-log-normalization/tests/test.sh"
+      },
+      "fingerprint": "4eeeb4b570d363e2d7917d72e5b214e0a8553b19324edab38036b45ce0706c93"
+    },
+    "billing-revenue-rollup": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/billing-revenue-rollup/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/billing-revenue-rollup/tests/test.sh"
+      },
+      "fingerprint": "b7b6240f66bbc95ff45d5f72d67352ef853264941eb805ce41b9c857bda12445"
+    },
+    "feature-branch-select-commits": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/feature-branch-select-commits/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/feature-branch-select-commits/tests/test.sh"
+      },
+      "fingerprint": "780c9112ecfdd45d88c0f5272817229440843cd7f91941cdca80376f51eca564"
+    }
+  }
+}

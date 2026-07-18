@@ -1,0 +1,36 @@
+{
+  "formal_ceiling": {
+    "attempts_per_task": 1,
+    "model": "openai/gpt-5.5",
+    "model_config": "openai/gpt-5.5[extra_high]",
+    "reasoning_effort": "xhigh",
+    "role": "formal ceiling probe"
+  },
+  "jobs_dir": "/tmp/shallowswe-pier",
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-xhigh-n1",
+  "schema_version": "shallowswe.codex_subscription_sizing_status.v0.1",
+  "stages": {
+    "ceiling_xhigh": {
+      "attempts_per_task": 1,
+      "job_name": "shallowswe_codex_sub_sizing_2026-07-07-v1-customer-health-recovery-export-xhigh-n1_ceiling_gpt55_xhigh_n1",
+      "job_names": [
+        "shallowswe_codex_sub_sizing_2026-07-07-v1-customer-health-recovery-export-xhigh-n1_ceiling_gpt55_xhigh_n1"
+      ],
+      "model": "openai/gpt-5.5",
+      "reasoning_effort": "xhigh",
+      "rollout_paths": [
+        "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+      ],
+      "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+      "task_ids": [
+        "customer-health-dashboard-screen"
+      ]
+    }
+  },
+  "stamp": "2026-07-07-v1-customer-health-recovery-export-xhigh-n1",
+  "task_count": 1,
+  "task_ids": [
+    "customer-health-dashboard-screen"
+  ],
+  "tasks_root": "/Users/lydakis/Developer/ShallowSWE/tasks"
+}

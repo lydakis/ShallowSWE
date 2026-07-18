@@ -1,0 +1,114 @@
+{
+    "id": "5f0f2f50-53df-431f-917b-268e8609a90b",
+    "task_name": "shallowswe/seat-compliance-admin-console",
+    "trial_name": "seat-compliance-admin-console__Bf4mGaz",
+    "trial_uri": "file:///private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-seat-compliance-expanded-xhigh-n1-r3_ceiling_gpt55_xhigh_n1/seat-compliance-admin-console__Bf4mGaz",
+    "task_id": {
+        "path": "/Users/lydakis/Developer/ShallowSWE/tasks/seat-compliance-admin-console"
+    },
+    "source": "tasks",
+    "task_checksum": "c003ab311d585e2df3376c641b8b544a394711d8a911a89c8839cac14e403e2f",
+    "config": {
+        "task": {
+            "path": "/Users/lydakis/Developer/ShallowSWE/tasks/seat-compliance-admin-console",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": "tasks"
+        },
+        "trial_name": "seat-compliance-admin-console__Bf4mGaz",
+        "trials_dir": "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-seat-compliance-expanded-xhigh-n1-r3_ceiling_gpt55_xhigh_n1",
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": null,
+            "import_path": "shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent",
+            "model_name": "openai/gpt-5.5",
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {
+                "version": "0.142.0",
+                "reasoning_effort": "xhigh"
+            },
+            "env": {
+                "CODEX_FORCE_AUTH_JSON": "${CODEX_FORCE_AUTH_JSON}"
+            }
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "suppress_override_warnings": false,
+            "mounts": null,
+            "env": {},
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "env": {},
+            "disable": false
+        },
+        "artifacts": [],
+        "job_id": "9189098e-f4e7-49ed-a415-d4f52251d7db"
+    },
+    "agent_info": {
+        "name": "shallowswe-codex-subscription",
+        "version": "0.142.0",
+        "model_info": {
+            "name": "gpt-5.5",
+            "provider": "openai"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 626569,
+        "n_cache_tokens": 499328,
+        "n_output_tokens": 24597,
+        "cost_usd": 1.623779,
+        "peak_context_tokens": 50933,
+        "summarization_count": 0,
+        "n_agent_steps": 19,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "exception_info": null,
+    "started_at": "2026-07-07T10:00:12.406500Z",
+    "finished_at": "2026-07-07T10:08:24.634152Z",
+    "environment_setup": {
+        "started_at": "2026-07-07T10:00:12.547486Z",
+        "finished_at": "2026-07-07T10:00:16.472609Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-07-07T10:00:16.472700Z",
+        "finished_at": "2026-07-07T10:00:16.577006Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-07-07T10:00:16.577119Z",
+        "finished_at": "2026-07-07T10:08:20.620111Z"
+    },
+    "verifier": {
+        "started_at": "2026-07-07T10:08:20.729163Z",
+        "finished_at": "2026-07-07T10:08:21.789532Z"
+    },
+    "n_agent_steps": 19,
+    "step_results": null
+}

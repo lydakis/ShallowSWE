@@ -1,0 +1,114 @@
+{
+    "id": "d3383fc2-37fc-46c5-a09c-9e0f0ed9da39",
+    "task_name": "shallowswe/customer-health-dashboard-screen",
+    "trial_name": "customer-health-dashboard-screen__wiqji5Z",
+    "trial_uri": "file:///private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-customer-health-recovery-export-xhigh-n1_ceiling_gpt55_xhigh_n1/customer-health-dashboard-screen__wiqji5Z",
+    "task_id": {
+        "path": "/Users/lydakis/Developer/ShallowSWE/tasks/customer-health-dashboard-screen"
+    },
+    "source": "tasks",
+    "task_checksum": "8e2e91b72dfa681cf169710651ee7ac2d4a46b4f8e71e4cfd61f35c675e3e6fe",
+    "config": {
+        "task": {
+            "path": "/Users/lydakis/Developer/ShallowSWE/tasks/customer-health-dashboard-screen",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": "tasks"
+        },
+        "trial_name": "customer-health-dashboard-screen__wiqji5Z",
+        "trials_dir": "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-customer-health-recovery-export-xhigh-n1_ceiling_gpt55_xhigh_n1",
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": null,
+            "import_path": "shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent",
+            "model_name": "openai/gpt-5.5",
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {
+                "version": "0.142.0",
+                "reasoning_effort": "xhigh"
+            },
+            "env": {
+                "CODEX_FORCE_AUTH_JSON": "${CODEX_FORCE_AUTH_JSON}"
+            }
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "suppress_override_warnings": false,
+            "mounts": null,
+            "env": {},
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "env": {},
+            "disable": false
+        },
+        "artifacts": [],
+        "job_id": "65411d34-f6d5-4f88-92b5-3e88b2fe249f"
+    },
+    "agent_info": {
+        "name": "shallowswe-codex-subscription",
+        "version": "0.142.0",
+        "model_info": {
+            "name": "gpt-5.5",
+            "provider": "openai"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 988592,
+        "n_cache_tokens": 897024,
+        "n_output_tokens": 19956,
+        "cost_usd": 1.505032,
+        "peak_context_tokens": 52756,
+        "summarization_count": 0,
+        "n_agent_steps": 28,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 0.0
+        }
+    },
+    "exception_info": null,
+    "started_at": "2026-07-07T10:42:57.224455Z",
+    "finished_at": "2026-07-07T10:50:00.681458Z",
+    "environment_setup": {
+        "started_at": "2026-07-07T10:42:57.387236Z",
+        "finished_at": "2026-07-07T10:43:00.959401Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-07-07T10:43:00.959473Z",
+        "finished_at": "2026-07-07T10:43:01.056181Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-07-07T10:43:01.056294Z",
+        "finished_at": "2026-07-07T10:49:56.783149Z"
+    },
+    "verifier": {
+        "started_at": "2026-07-07T10:49:56.895601Z",
+        "finished_at": "2026-07-07T10:49:57.860109Z"
+    },
+    "n_agent_steps": 28,
+    "step_results": null
+}

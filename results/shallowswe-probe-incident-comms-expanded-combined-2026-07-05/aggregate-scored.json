@@ -1,0 +1,38 @@
+[
+  {
+    "model_config": "google/gemini-3.5-flash",
+    "category": "workflow",
+    "size": "large",
+    "total_trials": 3,
+    "attempts": 3,
+    "excluded_attempts": 0,
+    "passes": 1,
+    "pass_rate": 0.3333333333333333,
+    "mean_tokens_per_attempt": 237873.33333333334,
+    "tokens_per_success": 713620.0000000001,
+    "mean_input_tokens_per_attempt": 214856.33333333334,
+    "mean_output_tokens_per_attempt": 23017.0,
+    "mean_cache_read_tokens_per_attempt": 122984.0,
+    "mean_cache_write_tokens_per_attempt": 0.0,
+    "mean_reasoning_tokens_per_attempt": 0.0,
+    "mean_turns": 20.0
+  },
+  {
+    "model_config": "moonshotai/kimi-k2.7-code",
+    "category": "workflow",
+    "size": "large",
+    "total_trials": 1,
+    "attempts": 1,
+    "excluded_attempts": 0,
+    "passes": 0,
+    "pass_rate": 0.0,
+    "mean_tokens_per_attempt": 440715.0,
+    "tokens_per_success": null,
+    "mean_input_tokens_per_attempt": 414464.0,
+    "mean_output_tokens_per_attempt": 26251.0,
+    "mean_cache_read_tokens_per_attempt": 382719.0,
+    "mean_cache_write_tokens_per_attempt": 0.0,
+    "mean_reasoning_tokens_per_attempt": 16903.0,
+    "mean_turns": 20.0
+  }
+]

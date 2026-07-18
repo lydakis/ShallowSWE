@@ -1,0 +1,430 @@
+{
+  "floor_probe": {
+    "attempts_per_task": 1,
+    "model": "openai/gpt-5.4-mini",
+    "reasoning_effort": "low",
+    "size_rule": "N=3 provisional: >=0.70 small, >=0.30 medium, otherwise large."
+  },
+  "formal_ceiling": {
+    "model": "openai/gpt-5.5",
+    "model_config": "openai/gpt-5.5[extra_high]",
+    "reasoning_effort": "xhigh",
+    "role": "formal ceiling probe",
+    "rule": "Only the configured formal ceiling effort counts as ceiling evidence."
+  },
+  "practical_smoke": {
+    "model": "openai/gpt-5.5",
+    "model_config": "openai/gpt-5.5[medium]",
+    "reasoning_effort": "medium",
+    "role": "optional low-spend smoke signal only",
+    "rule": "Medium smoke rows do not satisfy the formal ceiling gate."
+  },
+  "schema_version": "shallowswe.codex_subscription_sizing.v0.2",
+  "status": {
+    "formal_ceiling": {
+      "attempts_per_task": 1,
+      "model": "openai/gpt-5.5",
+      "model_config": "openai/gpt-5.5[extra_high]",
+      "reasoning_effort": "xhigh",
+      "role": "formal ceiling probe"
+    },
+    "jobs_dir": "/private/tmp/shallowswe-pier",
+    "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1",
+    "schema_version": "shallowswe.codex_subscription_sizing.v0.2",
+    "stages": {
+      "ceiling_xhigh": {
+        "attempts_per_task": 1,
+        "excluded_retry_count": 0,
+        "failed_task_count": 2,
+        "job_name": "shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+        "job_names": [
+          "shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1"
+        ],
+        "rollout_paths": [
+          "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json"
+        ],
+        "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+        "scored_task_count": 11,
+        "status": "complete",
+        "task_count": 11,
+        "tasks_without_scored_attempt": []
+      },
+      "floor_gpt54mini_low": {
+        "attempts_per_task": 1,
+        "job_name": "shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_floor_gpt54mini_low_n1",
+        "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/floor-gpt54mini-low-rollouts.json",
+        "status": "complete",
+        "task_count": 11
+      }
+    },
+    "stamp": "2026-07-07-v1-large-heavy-xhigh-n1",
+    "task_count": 11,
+    "task_ids": [
+      "billing-revenue-rollup",
+      "config-key-rollover",
+      "customer-health-dashboard-screen",
+      "feature-entitlements-admin-screen",
+      "incident-comms-pipeline",
+      "invoice-multi-source-merge",
+      "ledger-schema-upgrade",
+      "release-train-reconcile",
+      "renewal-risk-admin-screen",
+      "status-fanout-reconcile",
+      "ticket-update-dont-duplicate"
+    ]
+  },
+  "tasks": [
+    {
+      "calibration_status": "candidate",
+      "category": "artifact",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.0,
+      "codex_5_4_mini_low_passes": 0,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "large",
+      "task_id": "billing-revenue-rollup"
+    },
+    {
+      "calibration_status": "candidate",
+      "category": "workflow",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.0,
+      "codex_5_4_mini_low_passes": 0,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 0.0,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": true,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "large",
+      "task_id": "config-key-rollover"
+    },
+    {
+      "calibration_status": "candidate_probe",
+      "category": "code",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.0,
+      "codex_5_4_mini_low_passes": 0,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "large",
+      "task_id": "customer-health-dashboard-screen"
+    },
+    {
+      "calibration_status": "candidate_probe",
+      "category": "code",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.0,
+      "codex_5_4_mini_low_passes": 0,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "large",
+      "task_id": "feature-entitlements-admin-screen"
+    },
+    {
+      "calibration_status": "candidate_probe",
+      "category": "workflow",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.0,
+      "codex_5_4_mini_low_passes": 0,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 0.0,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": true,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "large",
+      "task_id": "incident-comms-pipeline"
+    },
+    {
+      "calibration_status": "candidate_probe",
+      "category": "code",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.0,
+      "codex_5_4_mini_low_passes": 0,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "large",
+      "task_id": "invoice-multi-source-merge"
+    },
+    {
+      "calibration_status": "candidate",
+      "category": "artifact",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 1.0,
+      "codex_5_4_mini_low_passes": 1,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "small",
+      "task_id": "ledger-schema-upgrade"
+    },
+    {
+      "calibration_status": "candidate_probe",
+      "category": "workflow",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.0,
+      "codex_5_4_mini_low_passes": 0,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "large",
+      "task_id": "release-train-reconcile"
+    },
+    {
+      "calibration_status": "candidate_probe",
+      "category": "code",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 1.0,
+      "codex_5_4_mini_low_passes": 1,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "large",
+      "provisional_floor_size": "small",
+      "task_id": "renewal-risk-admin-screen"
+    },
+    {
+      "calibration_status": "candidate_probe",
+      "category": "workflow",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 1.0,
+      "codex_5_4_mini_low_passes": 1,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "medium",
+      "provisional_floor_size": "small",
+      "task_id": "status-fanout-reconcile"
+    },
+    {
+      "calibration_status": "candidate",
+      "category": "workflow",
+      "codex_5_4_mini_low_attempts": 1,
+      "codex_5_4_mini_low_excluded": 0,
+      "codex_5_4_mini_low_pass_rate": 0.0,
+      "codex_5_4_mini_low_passes": 0,
+      "codex_5_5_formal_ceiling": {
+        "attempts": 1,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": 1.0,
+        "passed": true,
+        "passes": 1,
+        "scored_failure": false,
+        "total_rows": 1
+      },
+      "codex_5_5_formal_ceiling_effort": "xhigh",
+      "codex_5_5_medium_smoke": {
+        "attempts": 0,
+        "exceptions": 0,
+        "excluded": 0,
+        "pass_rate": null,
+        "passed": false,
+        "passes": 0,
+        "scored_failure": false,
+        "total_rows": 0
+      },
+      "metadata_size": "medium",
+      "provisional_floor_size": "large",
+      "task_id": "ticket-update-dont-duplicate"
+    }
+  ]
+}

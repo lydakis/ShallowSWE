@@ -1,0 +1,68 @@
+{
+  "schema_version": "shallowswe.floor_selection.v0.1",
+  "saturation_threshold": 0.85,
+  "recommended_floor_model_config": "google/gemini-3.5-flash",
+  "selection_rule": "choose the non-saturated pair with the widest task pass-rate spread; large-band count breaks ties",
+  "candidates": [
+    {
+      "model_config": "google/gemini-3.5-flash",
+      "attempts": 1,
+      "tasks": 1,
+      "overall_pass_rate": 0.0,
+      "saturated_overall": false,
+      "floor_candidate": true,
+      "task_pass_rate_min": 0.0,
+      "task_pass_rate_max": 0.0,
+      "task_pass_rate_range": 0.0,
+      "large_band_task_count": 1,
+      "size_pass_rates": {
+        "small": null,
+        "medium": null,
+        "large": 0.0
+      },
+      "category_size_pass_rates": {
+        "code/large": 0.0
+      }
+    },
+    {
+      "model_config": "z-ai/glm-5.2",
+      "attempts": 1,
+      "tasks": 1,
+      "overall_pass_rate": 0.0,
+      "saturated_overall": false,
+      "floor_candidate": true,
+      "task_pass_rate_min": 0.0,
+      "task_pass_rate_max": 0.0,
+      "task_pass_rate_range": 0.0,
+      "large_band_task_count": 1,
+      "size_pass_rates": {
+        "small": null,
+        "medium": null,
+        "large": 0.0
+      },
+      "category_size_pass_rates": {
+        "code/large": 0.0
+      }
+    },
+    {
+      "model_config": "moonshotai/kimi-k2.7-code",
+      "attempts": 1,
+      "tasks": 1,
+      "overall_pass_rate": 1.0,
+      "saturated_overall": true,
+      "floor_candidate": false,
+      "task_pass_rate_min": 1.0,
+      "task_pass_rate_max": 1.0,
+      "task_pass_rate_range": 0.0,
+      "large_band_task_count": 0,
+      "size_pass_rates": {
+        "small": null,
+        "medium": null,
+        "large": 1.0
+      },
+      "category_size_pass_rates": {
+        "code/large": 1.0
+      }
+    }
+  ]
+}

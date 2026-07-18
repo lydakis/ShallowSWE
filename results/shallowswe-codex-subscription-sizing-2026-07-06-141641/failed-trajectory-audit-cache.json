@@ -1,0 +1,517 @@
+{
+  "schema_version": "shallowswe.failed_trajectory_audit_cache.v0.1",
+  "tasks": {
+    "audit-log-normalization": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/audit-log-normalization/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/audit-log-normalization/tests/test.sh"
+      },
+      "fingerprint": "902a5d9fdb324522af37aba8ee2c5cd760b60fcc8974f152d1d44a80f7461da0"
+    },
+    "billing-revenue-rollup": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/billing-revenue-rollup/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/billing-revenue-rollup/tests/test.sh"
+      },
+      "fingerprint": "4ff38e4970cda8411b3042f0a82381feb10c14fd5d34c18352ad5098a223f1bd"
+    },
+    "config-key-rollover": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/config-key-rollover/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "test_all_visibility_includes_active_and_archived_orders (__main__.HiddenConfigKeyRolloverTests.test_all_visibility_includes_active_and_archived_orders) ... ok",
+              "test_archived_visibility_only_includes_archived_ready_orders (__main__.HiddenConfigKeyRolloverTests.test_archived_visibility_only_includes_archived_ready_orders) ... ok",
+              "test_cli_help_and_readme_name_new_public_contract (__main__.HiddenConfigKeyRolloverTests.test_cli_help_and_readme_name_new_public_contract) ... ok",
+              "test_cli_keeps_command_behavior_and_output_format (__main__.HiddenConfigKeyRolloverTests.test_cli_keeps_command_behavior_and_output_format) ... ok",
+              "test_default_and_explicit_active_visibility (__main__.HiddenConfigKeyRolloverTests.test_default_and_explicit_active_visibility) ... ok",
+              "test_existing_region_and_account_filters_still_work (__main__.HiddenConfigKeyRolloverTests.test_existing_region_and_account_filters_still_work) ... ok",
+              "test_legacy_alias_maps_to_all_when_new_key_absent (__main__.HiddenConfigKeyRolloverTests.test_legacy_alias_maps_to_all_when_new_key_absent) ... ok",
+              "test_new_key_wins_when_both_keys_are_present (__main__.HiddenConfigKeyRolloverTests.test_new_key_wins_when_both_keys_are_present) ... ok",
+              "test_nightly_fixture_uses_new_key (__main__.HiddenConfigKeyRolloverTests.test_nightly_fixture_uses_new_key) ... ok",
+              "",
+              "----------------------------------------------------------------------",
+              "Ran 9 tests in 0.067s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/config-key-rollover/tests/test.sh"
+      },
+      "fingerprint": "b92c0981a854447d2278fa6f44452d499ddafa8e09421f61c1d51aa165cdfb20"
+    },
+    "customer-health-dashboard-screen": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/customer-health-dashboard-screen/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "....",
+              "----------------------------------------------------------------------",
+              "Ran 2 tests in 0.157s",
+              "",
+              "OK",
+              "..",
+              "----------------------------------------------------------------------",
+              "Ran 4 tests in 0.455s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/customer-health-dashboard-screen/tests/test.sh"
+      },
+      "fingerprint": "d043c8601f1792b8e9f79a420e3ee2d3fea520651096bac7bdf5f7c1271d8ccf"
+    },
+    "deployment-approval-reconcile": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/deployment-approval-reconcile/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "test_hidden_failed_check_freeze_priority_and_unrelated_preservation (__main__.DeploymentApprovalReconcileTests.test_hidden_failed_check_freeze_priority_and_unrelated_preservation) ... ok",
+              "test_replay_does_not_duplicate_history (__main__.DeploymentApprovalReconcileTests.test_replay_does_not_duplicate_history) ... ok",
+              "test_visible_respects_checks_approval_freeze_and_ordering (__main__.DeploymentApprovalReconcileTests.test_visible_respects_checks_approval_freeze_and_ordering) ... ok",
+              "",
+              "----------------------------------------------------------------------",
+              "Ran 3 tests in 0.107s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/deployment-approval-reconcile/tests/test.sh"
+      },
+      "fingerprint": "b83946b547b7a65bbb8a1245e68617c52955460bc2e946186fca717ffe01e2d5"
+    },
+    "feature-branch-select-commits": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/feature-branch-select-commits/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/feature-branch-select-commits/tests/test.sh"
+      },
+      "fingerprint": "6171887971bd1de9cefac385d5b175b1b99d3a548a796d708a0d7430be9f4178"
+    },
+    "feature-entitlements-admin-screen": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/feature-entitlements-admin-screen/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              ".....",
+              "----------------------------------------------------------------------",
+              "Ran 3 tests in 0.302s",
+              "",
+              "OK",
+              "..",
+              "----------------------------------------------------------------------",
+              "Ran 4 tests in 0.695s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/feature-entitlements-admin-screen/tests/test.sh"
+      },
+      "fingerprint": "e887f60b680cf29c97a43914d0f325aebf242f289face51a2566071099bb7850"
+    },
+    "incident-comms-pipeline": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/incident-comms-pipeline/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "test_audit_and_call_log_do_not_hide_extra_mutations (__main__.IncidentCommsPipelineTests.test_audit_and_call_log_do_not_hide_extra_mutations) ... ok",
+              "test_hidden_exercises_dedupe_severity_filtering_and_stale_resolution (__main__.IncidentCommsPipelineTests.test_hidden_exercises_dedupe_severity_filtering_and_stale_resolution) ... ok",
+              "test_visible_reconciles_state_notifications_and_replay (__main__.IncidentCommsPipelineTests.test_visible_reconciles_state_notifications_and_replay) ... ok",
+              "",
+              "----------------------------------------------------------------------",
+              "Ran 3 tests in 0.123s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/incident-comms-pipeline/tests/test.sh"
+      },
+      "fingerprint": "2776a2c35dca2d9a8df424f49afc25a4b7a7458707145ab929109c8efe4d7e18"
+    },
+    "invoice-multi-source-merge": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/invoice-multi-source-merge/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "test_agent_added_multisource_regression_test (__main__.InvoiceMultiSourceMergeTests.test_agent_added_multisource_regression_test) ... ok",
+              "test_hidden_fixture_exercises_precedence_rounding_and_rejects (__main__.InvoiceMultiSourceMergeTests.test_hidden_fixture_exercises_precedence_rounding_and_rejects) ... ok",
+              "test_visible_fixture_exact_and_idempotent (__main__.InvoiceMultiSourceMergeTests.test_visible_fixture_exact_and_idempotent) ... ok",
+              "",
+              "----------------------------------------------------------------------",
+              "Ran 3 tests in 0.300s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/invoice-multi-source-merge/tests/test.sh"
+      },
+      "fingerprint": "bdcf642ebe536721777a4338d147985077812a4b37f57e3a8bdaa793b26df0eb"
+    },
+    "ledger-schema-upgrade": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/ledger-schema-upgrade/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "test_ledger_applies_adjustments_then_capped_credits_per_account (__main__.HiddenLedgerSchemaUpgradeTests.test_ledger_applies_adjustments_then_capped_credits_per_account) ... ok",
+              "test_normalized_events_are_canonical (__main__.HiddenLedgerSchemaUpgradeTests.test_normalized_events_are_canonical) ... ok",
+              "test_output_schemas_are_exact (__main__.HiddenLedgerSchemaUpgradeTests.test_output_schemas_are_exact) ... ok",
+              "test_rejects_have_distinct_reasons (__main__.HiddenLedgerSchemaUpgradeTests.test_rejects_have_distinct_reasons) ... ok",
+              "test_summary_totals_match_ledger (__main__.HiddenLedgerSchemaUpgradeTests.test_summary_totals_match_ledger) ... ok",
+              "",
+              "----------------------------------------------------------------------",
+              "Ran 5 tests in 0.117s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/ledger-schema-upgrade/tests/test.sh"
+      },
+      "fingerprint": "219c6bc6047e316d588795215d401a0a4ec8536bc05767a1012315c093096b94"
+    },
+    "markdown-table-inventory": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/markdown-table-inventory/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/markdown-table-inventory/tests/test.sh"
+      },
+      "fingerprint": "fc00645d2c8f286269a867f3908c0cfa623e25d9fb7825cdf81645bbfbaadd79"
+    },
+    "release-branch-cherry-pick": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/release-branch-cherry-pick/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/release-branch-cherry-pick/tests/test.sh"
+      },
+      "fingerprint": "375b065880aa593234ecb6f56be2ae2952399f962507ccedac01c15323ac483b"
+    },
+    "release-train-reconcile": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/release-train-reconcile/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "test_hidden_handles_partial_prior_state_and_idempotent_noop (__main__.ReleaseTrainReconcileTests.test_hidden_handles_partial_prior_state_and_idempotent_noop) ... ok",
+              "test_release_tag_is_not_created_before_checks_and_changelog (__main__.ReleaseTrainReconcileTests.test_release_tag_is_not_created_before_checks_and_changelog) ... ok",
+              "test_visible_reconciles_release_train_in_required_order (__main__.ReleaseTrainReconcileTests.test_visible_reconciles_release_train_in_required_order) ... ok",
+              "",
+              "----------------------------------------------------------------------",
+              "Ran 3 tests in 0.160s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/release-train-reconcile/tests/test.sh"
+      },
+      "fingerprint": "319110d576c6c7947ec3526eb2d36bf138130a9a609033d8ba02297f66f17cec"
+    },
+    "renewal-risk-admin-screen": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/renewal-risk-admin-screen/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "...",
+              "----------------------------------------------------------------------",
+              "Ran 3 tests in 0.226s",
+              "",
+              "OK",
+              "__SOLUTION_EXIT__=0",
+              ".....",
+              "----------------------------------------------------------------------",
+              "Ran 3 tests in 0.182s",
+              "",
+              "OK",
+              "..",
+              "----------------------------------------------------------------------",
+              "Ran 4 tests in 0.508s",
+              "",
+              "OK",
+              "1__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/renewal-risk-admin-screen/tests/test.sh"
+      },
+      "fingerprint": "eefb9df17b552115039247343dc601e6707c35c733ea4bcff3c794f80d81d323"
+    },
+    "strip-sort-allowlist": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/strip-sort-allowlist/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/strip-sort-allowlist/tests/test.sh"
+      },
+      "fingerprint": "a9e722fbfe2fd3b4bb9bb69ab7a67f4ba26bc5120e7e2227d7717cdeb0a29e17"
+    },
+    "subscription-summary-report": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/subscription-summary-report/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/subscription-summary-report/tests/test.sh"
+      },
+      "fingerprint": "4a7b77a9678a1dce498a19fc5ba505fb8be2f27719f6e1f1575c1babdc717aeb"
+    },
+    "ticket-state-reconcile": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/ticket-state-reconcile/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "test_noop_when_state_already_matches (__main__.HiddenTicketReconcileTests.test_noop_when_state_already_matches) ... ok",
+              "test_reconcile_duplicates_transitions_retry_and_preserves_unmentioned (__main__.HiddenTicketReconcileTests.test_reconcile_duplicates_transitions_retry_and_preserves_unmentioned) ... ok",
+              "",
+              "----------------------------------------------------------------------",
+              "Ran 2 tests in 0.131s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/ticket-state-reconcile/tests/test.sh"
+      },
+      "fingerprint": "f483afa234a69ec32fa9703e13a9cf7e0170697dc2e40b85e7cdf2421c7cf24e"
+    },
+    "ticket-update-dont-duplicate": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/ticket-update-dont-duplicate/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/ticket-update-dont-duplicate/tests/test.sh"
+      },
+      "fingerprint": "71f93f507f34c45d29dc4136d3bff6a21ad21becb800fd64565f24802629458a"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "model": "anthropic/claude-fable-5",
+    "task_id": "ticket-state-reconcile",
+    "category": "invoke",
+    "tier": "t4",
+    "rollout": 0,
+    "passed": true,
+    "input_tokens": 39896,
+    "output_tokens": 3520,
+    "cache_read_tokens": 30554,
+    "cache_write_tokens": 9330,
+    "turns": 6,
+    "peak_context_tokens": 11690,
+    "provider": "openrouter",
+    "inference_gateway": "openrouter",
+    "upstream_provider": "anthropic",
+    "requested_model": "anthropic/claude-fable-5",
+    "resolved_model": "anthropic/claude-5-fable-20260609",
+    "model_variant": null,
+    "reasoning_effort": "low",
+    "reasoning_tokens": 439,
+    "temperature": null,
+    "sampling_config": {
+      "model_kwargs": {
+        "drop_params": true,
+        "reasoning_effort": "low",
+        "max_tokens": 4096
+      },
+      "set_cache_control": "default_end",
+      "cost_tracking": "ignore_errors"
+    },
+    "gateway_reported_cost_usd": 0.323299,
+    "agent": "mini-swe-agent",
+    "agent_version": "2.4.4",
+    "runner": "pier",
+    "runner_version": "0.3.0",
+    "scaffold_prompt_hash": "09a0b38b96a5c6ba1581a2846dcd1f8194b966ec4b1742d312e446447b9dd55f",
+    "token_source": "pier_atif_final_metrics_reconciled",
+    "status": "scored",
+    "exclusion_reason": null,
+    "started_at": "2026-07-04T05:10:02.921823Z",
+    "finished_at": "2026-07-04T05:11:18.177241Z",
+    "schema_version": "shallowswe.result.v0.2"
+  }
+]

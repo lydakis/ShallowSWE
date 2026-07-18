@@ -1,0 +1,35 @@
+{
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-status-fanout-release-signal-floor-n1",
+  "schema_version": "shallowswe.codex_subscription_progress.v0.2",
+  "stages": {
+    "floor_gpt54mini_low": {
+      "active_or_pending_trial_dirs": [],
+      "completed": 1,
+      "completed_tasks": [
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T11:22:23.132268Z",
+          "job_dir": "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-status-fanout-release-signal-floor-n1_floor_gpt54mini_low_n1",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-07T11:20:48.690799Z",
+          "task_id": "status-fanout-reconcile",
+          "trial_name": "status-fanout-reconcile__rsGqrxW"
+        }
+      ],
+      "exceptions": 0,
+      "failures": 1,
+      "job_dir": "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-status-fanout-release-signal-floor-n1_floor_gpt54mini_low_n1",
+      "job_dirs": [
+        "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-status-fanout-release-signal-floor-n1_floor_gpt54mini_low_n1"
+      ],
+      "passes": 0,
+      "status": "complete",
+      "trial_dirs": 1
+    },
+    "formal_ceiling_gpt55_xhigh": {
+      "status": "not_started"
+    }
+  },
+  "task_count": 1
+}

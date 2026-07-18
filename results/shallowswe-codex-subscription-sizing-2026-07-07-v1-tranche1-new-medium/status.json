@@ -1,0 +1,16 @@
+{
+  "jobs_dir": "/private/tmp/shallowswe-pier",
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tranche1-new-medium",
+  "schema_version": "shallowswe.codex_subscription_sizing.v0.2",
+  "stages": {},
+  "stamp": "2026-07-07-v1-tranche1-new-medium",
+  "task_count": 6,
+  "task_ids": [
+    "access-log-sessionize",
+    "billing-proration-schedule",
+    "notification-locale-fallback",
+    "retry-policy-migration",
+    "status-fanout-reconcile",
+    "ticket-bulk-triage"
+  ]
+}

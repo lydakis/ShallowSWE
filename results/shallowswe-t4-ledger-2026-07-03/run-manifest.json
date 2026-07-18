@@ -1,0 +1,44 @@
+{
+  "schema_version": "shallowswe.run_manifest.v0.1",
+  "name": "shallowswe-t4-ledger-2026-07-03",
+  "date": "2026-07-03",
+  "purpose": "Corrected-prompt N=1 expanded-panel sizing sweep for the ledger-schema-upgrade shelf-edge candidate.",
+  "task_ids": ["ledger-schema-upgrade"],
+  "task_status": "t4_signal_candidate_needs_high_n_calibration",
+  "panel_basis": "deepswe-v1.1-expanded-pilot plus shallowswe-calibration-v0.1 anchors",
+  "rollouts_per_model_config": 1,
+  "published_leaderboard_eligible": false,
+  "calibration_eligible": "sizing_only",
+  "decision": "The corrected-prompt sweep is non-saturated: 9 of 10 model configs passed and Gemini 3.5 Flash medium failed. This is a plausible shelf-edge task, but N=1 is not enough for tier assignment.",
+  "summary": {
+    "model_config_count": 10,
+    "passes": 9,
+    "failures": 1,
+    "failed_model_configs": ["google/gemini-3.5-flash[medium]"],
+    "derived_total_cost_usd": 2.50268209,
+    "total_tokens": 1094090,
+    "max_turns": 21
+  },
+  "calibration_anchor_snapshot": {
+    "panel": "shallowswe-calibration-v0.1",
+    "n": 1,
+    "passes": 2,
+    "attempts": 3,
+    "passed_model_configs": ["moonshotai/kimi-k2.7-code", "z-ai/glm-5.2[high]"],
+    "failed_model_configs": ["google/gemini-3.5-flash[medium]"]
+  },
+  "diagnostic_note": "Earlier prompt versions under-specified ledger account ordering, reject input labels, and summary event-count semantics. Those diagnostic rows are quarantined under diagnostic-prepromptfix and should not be used for calibration or publication.",
+  "pier_jobs": [
+    "/tmp/shallowswe-pier-ledger-v3/shallowswe_t4_ledger_low_v3",
+    "/tmp/shallowswe-pier-ledger-v3/shallowswe_t4_ledger_medium_v3",
+    "/tmp/shallowswe-pier-ledger-v3/shallowswe_t4_ledger_gemini_medium_v3",
+    "/tmp/shallowswe-pier-ledger-v3/shallowswe_t4_ledger_glm_high_v3",
+    "/tmp/shallowswe-pier-ledger-v3/shallowswe_t4_ledger_kimi_default_v3"
+  ],
+  "artifacts": {
+    "rollouts": "results/shallowswe-t4-ledger-2026-07-03/rollouts.json",
+    "aggregate_by_model": "results/shallowswe-t4-ledger-2026-07-03/aggregate-by-model.json",
+    "aggregate_by_task_model": "results/shallowswe-t4-ledger-2026-07-03/aggregate-by-task-model.json",
+    "workload_index": "results/shallowswe-t4-ledger-2026-07-03/workload-index.json"
+  }
+}

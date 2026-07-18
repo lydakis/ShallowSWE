@@ -1,0 +1,135 @@
+{
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1",
+  "schema_version": "shallowswe.codex_subscription_progress.v0.2",
+  "stages": {
+    "floor_gpt54mini_low": {
+      "status": "not_started"
+    },
+    "formal_ceiling_gpt55_xhigh": {
+      "active_or_pending_trial_dirs": [],
+      "completed": 11,
+      "completed_tasks": [
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:46:29.655959Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-07T03:44:35.935381Z",
+          "task_id": "billing-revenue-rollup",
+          "trial_name": "billing-revenue-rollup__qgt2q6V"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:34:23.204942Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-07T03:31:04.201831Z",
+          "task_id": "config-key-rollover",
+          "trial_name": "config-key-rollover__3rZcTSo"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:20:55.190366Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-07T03:16:35.386873Z",
+          "task_id": "customer-health-dashboard-screen",
+          "trial_name": "customer-health-dashboard-screen__7PXanKv"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:51:45.502172Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-07T03:46:29.660537Z",
+          "task_id": "feature-entitlements-admin-screen",
+          "trial_name": "feature-entitlements-admin-scree__rNjQdp3"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:44:35.931260Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-07T03:36:13.232497Z",
+          "task_id": "incident-comms-pipeline",
+          "trial_name": "incident-comms-pipeline__ZKaVz9f"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:29:33.761682Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-07T03:25:30.421232Z",
+          "task_id": "invoice-multi-source-merge",
+          "trial_name": "invoice-multi-source-merge__D9tXUu9"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:25:30.416883Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-07T03:20:55.194349Z",
+          "task_id": "ledger-schema-upgrade",
+          "trial_name": "ledger-schema-upgrade__5dasxuf"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:56:43.326260Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-07T03:51:45.505728Z",
+          "task_id": "release-train-reconcile",
+          "trial_name": "release-train-reconcile__mG5GAm9"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T04:01:20.245255Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-07T03:56:43.330486Z",
+          "task_id": "renewal-risk-admin-screen",
+          "trial_name": "renewal-risk-admin-screen__demSJHa"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:36:13.229126Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-07T03:34:23.210090Z",
+          "task_id": "status-fanout-reconcile",
+          "trial_name": "status-fanout-reconcile__HrmEP6n"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-07T03:31:04.196689Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-07T03:29:33.766564Z",
+          "task_id": "ticket-update-dont-duplicate",
+          "trial_name": "ticket-update-dont-duplicate__taWtn7S"
+        }
+      ],
+      "exceptions": 0,
+      "failures": 2,
+      "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1",
+      "job_dirs": [
+        "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1"
+      ],
+      "passes": 9,
+      "status": "complete",
+      "trial_dirs": 11
+    }
+  },
+  "task_count": 11
+}

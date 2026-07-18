@@ -1,0 +1,39 @@
+{
+    "id": "e7ba8bd3-bfce-4130-843b-b1e6e11a2d92",
+    "started_at": "2026-07-07T05:05:21.375528",
+    "updated_at": "2026-07-07T05:10:15.524562",
+    "finished_at": "2026-07-07T05:10:15.524562",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 0,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "shallowswe-codex-subscription__gpt-5.5__tasks": {
+                "n_trials": 1,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 0.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "0.0": [
+                            "tenant-offboarding-reconcile__hFDQ2t9"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
+        },
+        "n_input_tokens": 250866,
+        "n_cache_tokens": 149120,
+        "n_output_tokens": 11468,
+        "cost_usd": 0.92733
+    }
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "shallowswe.failed_trajectory_audit_cache.v0.1",
+  "tasks": {
+    "customer-health-dashboard-screen": {
+      "audit": {
+        "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/customer-health-dashboard-screen/instruction.md",
+        "official_solution_passed": true,
+        "solution_checks": [
+          {
+            "output_tail": [
+              "__SOLUTION_EXIT__=0",
+              ".....",
+              "----------------------------------------------------------------------",
+              "Ran 3 tests in 0.225s",
+              "",
+              "OK",
+              "..",
+              "----------------------------------------------------------------------",
+              "Ran 4 tests in 0.761s",
+              "",
+              "OK",
+              "__VERIFIER_EXIT__=0"
+            ],
+            "solution": "solution",
+            "solution_exit_code": 0,
+            "timed_out": false,
+            "verifier_exit_code": 0,
+            "verifier_passed": true,
+            "verifier_reward_txt": "1"
+          }
+        ],
+        "verdict": "verifier_sanity_passed",
+        "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/customer-health-dashboard-screen/tests/test.sh"
+      },
+      "fingerprint": "de4126d624e0ebd971cc7f92c4e24cf5a8292f8c55c27e8cdf62cb0bfea647c3"
+    }
+  }
+}

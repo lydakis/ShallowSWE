@@ -1,0 +1,12 @@
+{
+  "jobs_dir": "/private/tmp/shallowswe-pier",
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-repaired-config-incident-xhigh-n1",
+  "schema_version": "shallowswe.codex_subscription_sizing.v0.2",
+  "stages": {},
+  "stamp": "2026-07-07-v1-repaired-config-incident-xhigh-n1",
+  "task_count": 2,
+  "task_ids": [
+    "config-key-rollover",
+    "incident-comms-pipeline"
+  ]
+}

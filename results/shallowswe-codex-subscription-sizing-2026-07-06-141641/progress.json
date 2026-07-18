@@ -1,0 +1,1873 @@
+{
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641",
+  "schema_version": "shallowswe.codex_subscription_progress.v0.2",
+  "stages": {
+    "diagnostic_gpt55_high": {
+      "active_or_pending_trial_dirs": [],
+      "completed": 8,
+      "completed_tasks": [
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:55:43.836480Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:53:23.177634Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__GxGDFfJ"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:41:44.434679Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:38:58.650099Z",
+          "task_id": "customer-health-dashboard-screen",
+          "trial_name": "customer-health-dashboard-screen__F4KxCAW"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:51:03.041151Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:48:44.120312Z",
+          "task_id": "deployment-approval-reconcile",
+          "trial_name": "deployment-approval-reconcile__YUur3BM"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:44:22.865041Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:43:09.420393Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__HFBm7dt"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:48:44.113165Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:44:22.871073Z",
+          "task_id": "incident-comms-pipeline",
+          "trial_name": "incident-comms-pipeline__XiHaK6z"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:53:23.173833Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:52:13.849644Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__SBcx9MB"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:43:09.417068Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:41:44.439763Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__xV9y2cP"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:52:13.845983Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:51:03.045394Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__3qTaXFP"
+        }
+      ],
+      "exceptions": 0,
+      "failures": 6,
+      "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_high_n1",
+      "passes": 2,
+      "status": "complete",
+      "trial_dirs": 8
+    },
+    "diagnostic_gpt55_xhigh": {
+      "active_or_pending_trial_dirs": [],
+      "completed": 6,
+      "completed_tasks": [
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:12:09.429402Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:09:28.158393Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__TfXyNRk"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:58:51.139929Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:57:18.882388Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__iE27hme"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:04:44.373414Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:58:51.144330Z",
+          "task_id": "incident-comms-pipeline",
+          "trial_name": "incident-comms-pipeline__uoDfEQy"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:09:28.154792Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:07:09.536563Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__aFDptw7"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:57:18.879300Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:55:48.320013Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__6GqwR4J"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:07:09.533053Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:04:44.377578Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__xdU7ifR"
+        }
+      ],
+      "exceptions": 0,
+      "failures": 6,
+      "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_xhigh_n1",
+      "passes": 0,
+      "status": "complete",
+      "trial_dirs": 6
+    },
+    "fixed_ceiling_gpt55_medium": {
+      "active_or_pending_trial_dirs": [],
+      "completed": 47,
+      "completed_tasks": [
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:23:42.579706Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:22:18.801653Z",
+          "task_id": "access-log-to-incidents",
+          "trial_name": "access-log-to-incidents__DuePFLF"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:53:21.827484Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:51:59.471452Z",
+          "task_id": "api-pagination-consistency",
+          "trial_name": "api-pagination-consistency__uMDyG6Y"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:30:07.556547Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:28:16.022992Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__RXcY5tX"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:16:34.092893Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:15:31.299512Z",
+          "task_id": "auth-token-expiry-regression",
+          "trial_name": "auth-token-expiry-regression__THKKgxt"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:11:21.932730Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:09:50.002136Z",
+          "task_id": "billing-revenue-rollup",
+          "trial_name": "billing-revenue-rollup__pKJWmEs"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:09:49.998357Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:08:35.704033Z",
+          "task_id": "cache-invalidates-on-settings-change",
+          "trial_name": "cache-invalidates-on-settings-ch__hfMtmkT"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:45:25.984650Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:44:22.862909Z",
+          "task_id": "config-flag-ignored",
+          "trial_name": "config-flag-ignored__mU2kVKk"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:41:58.393515Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:39:54.749868Z",
+          "task_id": "config-key-rollover",
+          "trial_name": "config-key-rollover__dcD9sab"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:19:08.022121Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T18:16:45.736487Z",
+          "task_id": "customer-health-dashboard-screen",
+          "trial_name": "customer-health-dashboard-screen__zV5STBd"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:01:16.473559Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:00:06.005702Z",
+          "task_id": "date-window-inclusive",
+          "trial_name": "date-window-inclusive__LjjbeRr"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:44:22.858918Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:43:10.933762Z",
+          "task_id": "dependency-api-rename",
+          "trial_name": "dependency-api-rename__84kVtSK"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:05:33.419876Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:02:21.423593Z",
+          "task_id": "deployment-approval-reconcile",
+          "trial_name": "deployment-approval-reconcile__fJzvcgi"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:57:51.503655Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:54:12.770372Z",
+          "task_id": "dispatch-planner-split-parity",
+          "trial_name": "dispatch-planner-split-parity__Kji8kaD"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:02:21.420076Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:01:16.477902Z",
+          "task_id": "env-flags-to-json",
+          "trial_name": "env-flags-to-json__VYTBrCE"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:39:54.746108Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:39:01.980640Z",
+          "task_id": "extract-error-fields",
+          "trial_name": "extract-error-fields__RfEnieg"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:39:01.976373Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T18:37:44.261736Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__7yrNqhs"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:19:30.385637Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:16:34.096018Z",
+          "task_id": "feature-entitlements-admin-screen",
+          "trial_name": "feature-entitlements-admin-scree__rqnc3er"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:51:59.463583Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T18:49:06.609853Z",
+          "task_id": "incident-comms-pipeline",
+          "trial_name": "incident-comms-pipeline__GjL5f2R"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:37:44.257271Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:36:32.409629Z",
+          "task_id": "invoice-cli-regression-test-fix",
+          "trial_name": "invoice-cli-regression-test-fix__jPAwDx9"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:33:27.878593Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:31:00.370779Z",
+          "task_id": "invoice-multi-source-merge",
+          "trial_name": "invoice-multi-source-merge__jdkxiKg"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:32:23.007190Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:30:07.560933Z",
+          "task_id": "ledger-restatement-audit",
+          "trial_name": "ledger-restatement-audit__Moz3Te7"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:22:18.797299Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:19:08.027268Z",
+          "task_id": "ledger-schema-upgrade",
+          "trial_name": "ledger-schema-upgrade__emGDDr9"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:15:31.296210Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:14:26.809289Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__rm2MDyU"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:31:00.366254Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:29:29.975952Z",
+          "task_id": "merge-divergent-config-branches",
+          "trial_name": "merge-divergent-config-branches__xHmQTmk"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:23:04.043415Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:22:10.759433Z",
+          "task_id": "move-module-fix-imports",
+          "trial_name": "move-module-fix-imports__brNMtGW"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:22:10.754587Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:20:27.465898Z",
+          "task_id": "payout-reconcile",
+          "trial_name": "payout-reconcile__hiGYdVT"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:49:06.604582Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:48:12.423108Z",
+          "task_id": "post-build-status",
+          "trial_name": "post-build-status__XpjyjUN"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:48:12.418892Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:47:45.429313Z",
+          "task_id": "py-normalize-username",
+          "trial_name": "py-normalize-username__9mjsQgX"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:29:29.972047Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T18:28:07.177694Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__DWw6bWS"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:27:01.595473Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:23:04.047273Z",
+          "task_id": "release-train-reconcile",
+          "trial_name": "release-train-reconcile__cnrNk4Q"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:54:12.765883Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:53:21.832013Z",
+          "task_id": "rename-helper-symbol",
+          "trial_name": "rename-helper-symbol__mebBo9z"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:37:42.952318Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:32:23.011394Z",
+          "task_id": "renewal-risk-admin-screen",
+          "trial_name": "renewal-risk-admin-screen__uoMVZAM"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:08:35.700104Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:07:20.758049Z",
+          "task_id": "report-json-format",
+          "trial_name": "report-json-format__qsxqU84"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:28:16.018655Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:27:01.599996Z",
+          "task_id": "retry-error-fallback",
+          "trial_name": "retry-error-fallback__Wtw7okd"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:14:26.805507Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:12:45.424656Z",
+          "task_id": "settings-null-default",
+          "trial_name": "settings-null-default__JTwFYHD"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:20:27.458204Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:19:30.391248Z",
+          "task_id": "spec-to-release-checklist",
+          "trial_name": "spec-to-release-checklist__Db8yrN6"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:36:32.405564Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:34:55.422871Z",
+          "task_id": "split-notification-renderer",
+          "trial_name": "split-notification-renderer__nEpMScW"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:07:20.753953Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:05:33.427556Z",
+          "task_id": "status-terminal-parity",
+          "trial_name": "status-terminal-parity__TShwcYm"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:00:06.001223Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:59:06.855569Z",
+          "task_id": "strip-sort-allowlist",
+          "trial_name": "strip-sort-allowlist__2Bg3bxG"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:12:45.420943Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T19:11:21.936593Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__ZztDQ59"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:25:14.824161Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:23:42.584466Z",
+          "task_id": "support-metrics-package",
+          "trial_name": "support-metrics-package__AEL6GTR"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:47:45.424063Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:45:25.989163Z",
+          "task_id": "support-sla-business-hours",
+          "trial_name": "support-sla-business-hours__7yUXU2f"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T19:38:54.020822Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T19:37:42.957643Z",
+          "task_id": "ticket-cut-from-bug-report",
+          "trial_name": "ticket-cut-from-bug-report__zVuERcX"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:28:07.173794Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:25:14.828492Z",
+          "task_id": "ticket-state-reconcile",
+          "trial_name": "ticket-state-reconcile__AYogweM"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:34:55.418546Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:33:27.886619Z",
+          "task_id": "ticket-update-dont-duplicate",
+          "trial_name": "ticket-update-dont-duplicate__UndHLQo"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:43:10.929722Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:41:58.397705Z",
+          "task_id": "user-export-field-rename",
+          "trial_name": "user-export-field-rename__dLadyxw"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T18:59:06.851542Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T18:57:51.508924Z",
+          "task_id": "webhook-idempotency-parity",
+          "trial_name": "webhook-idempotency-parity__DR8m4W3"
+        }
+      ],
+      "exceptions": 0,
+      "failures": 8,
+      "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_medium_n1",
+      "passes": 39,
+      "status": "complete",
+      "trial_dirs": 47
+    },
+    "floor_gpt54mini_low": {
+      "active_or_pending_trial_dirs": [],
+      "completed": 141,
+      "completed_tasks": [
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:14:01.084902Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:12:47.280381Z",
+          "task_id": "access-log-to-incidents",
+          "trial_name": "access-log-to-incidents__43pSLa8"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:18:04.612713Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:16:58.945422Z",
+          "task_id": "access-log-to-incidents",
+          "trial_name": "access-log-to-incidents__eEkFnuH"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:18:05.827667Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:17:04.177515Z",
+          "task_id": "access-log-to-incidents",
+          "trial_name": "access-log-to-incidents__yyhQX4P"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:36:01.334300Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:35:04.485385Z",
+          "task_id": "api-pagination-consistency",
+          "trial_name": "api-pagination-consistency__8FsdGaj"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:39:20.139069Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:38:17.572768Z",
+          "task_id": "api-pagination-consistency",
+          "trial_name": "api-pagination-consistency__RDciMz9"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:39:17.367685Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:38:18.112659Z",
+          "task_id": "api-pagination-consistency",
+          "trial_name": "api-pagination-consistency__k6dmNWp"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:07:18.011792Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:06:17.204013Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__8Zpi5Sh"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:04:50.592956Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:03:55.841974Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__NTAqYEZ"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:05:02.326933Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T23:03:59.285132Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__QLGMLp6"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:51:18.833332Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:50:17.554421Z",
+          "task_id": "auth-token-expiry-regression",
+          "trial_name": "auth-token-expiry-regression__C7RkYJ5"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:55:26.461211Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:54:32.239469Z",
+          "task_id": "auth-token-expiry-regression",
+          "trial_name": "auth-token-expiry-regression__QsAQ9XT"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:55:23.503781Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:54:21.414281Z",
+          "task_id": "auth-token-expiry-regression",
+          "trial_name": "auth-token-expiry-regression__UMwrTzb"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:51:23.422615Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:50:12.929994Z",
+          "task_id": "billing-revenue-rollup",
+          "trial_name": "billing-revenue-rollup__2vzkSaV"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:51:47.495786Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:50:40.323090Z",
+          "task_id": "billing-revenue-rollup",
+          "trial_name": "billing-revenue-rollup__6jNMYvy"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:47:41.284039Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:46:30.625534Z",
+          "task_id": "billing-revenue-rollup",
+          "trial_name": "billing-revenue-rollup__Ah2hZNf"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:50:40.318447Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:49:12.012191Z",
+          "task_id": "cache-invalidates-on-settings-change",
+          "trial_name": "cache-invalidates-on-settings-ch__DW52hHa"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:46:30.621911Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:45:22.915899Z",
+          "task_id": "cache-invalidates-on-settings-change",
+          "trial_name": "cache-invalidates-on-settings-ch__fxJhDLc"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:50:12.926156Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:49:20.337528Z",
+          "task_id": "cache-invalidates-on-settings-change",
+          "trial_name": "cache-invalidates-on-settings-ch__vNhkD7e"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:29:14.286337Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:28:20.346353Z",
+          "task_id": "config-flag-ignored",
+          "trial_name": "config-flag-ignored__3jzfKv9"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:33:28.887081Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:32:40.051327Z",
+          "task_id": "config-flag-ignored",
+          "trial_name": "config-flag-ignored__nYDgMrx"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:33:39.345007Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:32:48.868703Z",
+          "task_id": "config-flag-ignored",
+          "trial_name": "config-flag-ignored__ujtBZZQ"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:31:23.913404Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:30:00.472207Z",
+          "task_id": "config-key-rollover",
+          "trial_name": "config-key-rollover__LeieyST"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:26:43.129613Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:25:32.807170Z",
+          "task_id": "config-key-rollover",
+          "trial_name": "config-key-rollover__TGJdZJr"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:31:05.638593Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:29:47.684311Z",
+          "task_id": "config-key-rollover",
+          "trial_name": "config-key-rollover__tvbaQ8x"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:10:42.538565Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:09:10.484556Z",
+          "task_id": "customer-health-dashboard-screen",
+          "trial_name": "customer-health-dashboard-screen__85EMi6Q"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:13:45.855752Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:12:07.549950Z",
+          "task_id": "customer-health-dashboard-screen",
+          "trial_name": "customer-health-dashboard-screen__jmrsdVq"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:13:56.538989Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:12:14.423276Z",
+          "task_id": "customer-health-dashboard-screen",
+          "trial_name": "customer-health-dashboard-screen__oZk2M8T"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:44:21.458643Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:43:16.904247Z",
+          "task_id": "date-window-inclusive",
+          "trial_name": "date-window-inclusive__QiyneSc"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:41:01.425149Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:40:08.246942Z",
+          "task_id": "date-window-inclusive",
+          "trial_name": "date-window-inclusive__SGNDdWK"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:44:54.613672Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:43:19.922340Z",
+          "task_id": "date-window-inclusive",
+          "trial_name": "date-window-inclusive__sKM2RQL"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:32:40.046970Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:31:59.021986Z",
+          "task_id": "dependency-api-rename",
+          "trial_name": "dependency-api-rename__WdaFGo4"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:32:48.864187Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:32:07.009147Z",
+          "task_id": "dependency-api-rename",
+          "trial_name": "dependency-api-rename__db7U3Lu"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:28:20.341982Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:27:42.123265Z",
+          "task_id": "dependency-api-rename",
+          "trial_name": "dependency-api-rename__z7Erc5G"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:46:39.455997Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:45:15.374996Z",
+          "task_id": "deployment-approval-reconcile",
+          "trial_name": "deployment-approval-reconcile__7ci8SiN"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:43:07.719435Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:41:43.976612Z",
+          "task_id": "deployment-approval-reconcile",
+          "trial_name": "deployment-approval-reconcile__AW9HwJx"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:46:57.827596Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:45:41.244416Z",
+          "task_id": "deployment-approval-reconcile",
+          "trial_name": "deployment-approval-reconcile__u2JQHkS"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:41:31.045387Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:40:00.790251Z",
+          "task_id": "dispatch-planner-split-parity",
+          "trial_name": "dispatch-planner-split-parity__8yyRxK2"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:41:24.066247Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:40:02.330046Z",
+          "task_id": "dispatch-planner-split-parity",
+          "trial_name": "dispatch-planner-split-parity__UEeBu4f"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:38:18.239166Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:36:46.881648Z",
+          "task_id": "dispatch-planner-split-parity",
+          "trial_name": "dispatch-planner-split-parity__cp2f2VW"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:41:43.973089Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:41:01.428414Z",
+          "task_id": "env-flags-to-json",
+          "trial_name": "env-flags-to-json__eFU5VBg"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:45:15.370264Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:44:21.463369Z",
+          "task_id": "env-flags-to-json",
+          "trial_name": "env-flags-to-json__gtNMJEA"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:45:41.240826Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:44:54.618512Z",
+          "task_id": "env-flags-to-json",
+          "trial_name": "env-flags-to-json__keJPbfL"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:30:00.468520Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:29:05.809595Z",
+          "task_id": "extract-error-fields",
+          "trial_name": "extract-error-fields__ASe9Gjh"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:25:32.802740Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:24:34.819684Z",
+          "task_id": "extract-error-fields",
+          "trial_name": "extract-error-fields__GRhBJRA"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:29:47.679401Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:28:56.804678Z",
+          "task_id": "extract-error-fields",
+          "trial_name": "extract-error-fields__XVvzJwb"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:29:05.806092Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:28:21.977596Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__PAzikdN"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:24:34.815869Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:23:34.384807Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__hNdY3Nm"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:28:56.800523Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:27:58.536421Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__kV8ES7i"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:58:27.217754Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:55:23.507863Z",
+          "task_id": "feature-entitlements-admin-screen",
+          "trial_name": "feature-entitlements-admin-scree__2tmW4xd"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:58:38.595464Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:55:26.465410Z",
+          "task_id": "feature-entitlements-admin-screen",
+          "trial_name": "feature-entitlements-admin-scree__oBJ3XtS"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:53:48.537077Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:51:18.837235Z",
+          "task_id": "feature-entitlements-admin-screen",
+          "trial_name": "feature-entitlements-admin-scree__smu7aFu"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:38:18.104545Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:36:02.253656Z",
+          "task_id": "incident-comms-pipeline",
+          "trial_name": "incident-comms-pipeline__Dcqbu5T"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:35:04.481726Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:31:57.367097Z",
+          "task_id": "incident-comms-pipeline",
+          "trial_name": "incident-comms-pipeline__JMaPGUC"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:38:17.568078Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:36:09.190667Z",
+          "task_id": "incident-comms-pipeline",
+          "trial_name": "incident-comms-pipeline__Ns6bUXd"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:28:21.974112Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:27:28.887628Z",
+          "task_id": "invoice-cli-regression-test-fix",
+          "trial_name": "invoice-cli-regression-test-fix__RxSfAkW"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:27:58.531725Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:26:57.776465Z",
+          "task_id": "invoice-cli-regression-test-fix",
+          "trial_name": "invoice-cli-regression-test-fix__bWjbC9m"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:23:34.380612Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:22:38.688560Z",
+          "task_id": "invoice-cli-regression-test-fix",
+          "trial_name": "invoice-cli-regression-test-fix__hgKXWt6"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:25:44.825852Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:23:28.288621Z",
+          "task_id": "invoice-multi-source-merge",
+          "trial_name": "invoice-multi-source-merge__GLBswfa"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:20:37.028459Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:18:33.766975Z",
+          "task_id": "invoice-multi-source-merge",
+          "trial_name": "invoice-multi-source-merge__TVT9voR"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:24:50.065161Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:22:54.429051Z",
+          "task_id": "invoice-multi-source-merge",
+          "trial_name": "invoice-multi-source-merge__qhbCvoh"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:06:04.884911Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:04:50.597365Z",
+          "task_id": "ledger-restatement-audit",
+          "trial_name": "ledger-restatement-audit__KYsgqPG"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:06:25.543157Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:05:02.331331Z",
+          "task_id": "ledger-restatement-audit",
+          "trial_name": "ledger-restatement-audit__vCksRCr"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:08:57.749969Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:07:18.015065Z",
+          "task_id": "ledger-restatement-audit",
+          "trial_name": "ledger-restatement-audit__ywiXGWK"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:12:47.275968Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:10:42.545575Z",
+          "task_id": "ledger-schema-upgrade",
+          "trial_name": "ledger-schema-upgrade__TjiKoE6"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:16:58.938750Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:13:56.544213Z",
+          "task_id": "ledger-schema-upgrade",
+          "trial_name": "ledger-schema-upgrade__VZ9FBvP"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:17:04.173181Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:13:45.860074Z",
+          "task_id": "ledger-schema-upgrade",
+          "trial_name": "ledger-schema-upgrade__ZrawCWn"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:54:32.203313Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:53:38.404922Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__XLQEvaz"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:54:21.409625Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:53:11.861004Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__qMEQPbX"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:50:17.551167Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:49:26.944619Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__tKm6i3x"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:23:28.285170Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:22:22.325428Z",
+          "task_id": "merge-divergent-config-branches",
+          "trial_name": "merge-divergent-config-branches__5QxUNAy"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:18:33.762891Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:17:36.322036Z",
+          "task_id": "merge-divergent-config-branches",
+          "trial_name": "merge-divergent-config-branches__Vi4iie7"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:22:54.424619Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:22:05.422835Z",
+          "task_id": "merge-divergent-config-branches",
+          "trial_name": "merge-divergent-config-branches__iDG9sdJ"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:01:21.387697Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:00:23.424250Z",
+          "task_id": "move-module-fix-imports",
+          "trial_name": "move-module-fix-imports__XjnL8sx"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:01:29.771936Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:00:43.500638Z",
+          "task_id": "move-module-fix-imports",
+          "trial_name": "move-module-fix-imports__gKhj2tP"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:56:49.836236Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:55:58.095194Z",
+          "task_id": "move-module-fix-imports",
+          "trial_name": "move-module-fix-imports__xTGB8dK"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:00:43.496084Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:59:24.266757Z",
+          "task_id": "payout-reconcile",
+          "trial_name": "payout-reconcile__LynSCB3"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:55:58.090563Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:54:36.289332Z",
+          "task_id": "payout-reconcile",
+          "trial_name": "payout-reconcile__W59j2R6"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:00:23.419474Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:59:17.943856Z",
+          "task_id": "payout-reconcile",
+          "trial_name": "payout-reconcile__daLy8jN"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:31:57.362742Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:31:00.217396Z",
+          "task_id": "post-build-status",
+          "trial_name": "post-build-status__MaBU5y4"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:36:09.186946Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:35:12.148677Z",
+          "task_id": "post-build-status",
+          "trial_name": "post-build-status__QQnfR2g"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:36:02.248050Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:35:05.641812Z",
+          "task_id": "post-build-status",
+          "trial_name": "post-build-status__WGCZkpb"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:35:05.636983Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:34:46.274471Z",
+          "task_id": "py-normalize-username",
+          "trial_name": "py-normalize-username__8KdZzK5"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:31:00.210695Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:30:38.048923Z",
+          "task_id": "py-normalize-username",
+          "trial_name": "py-normalize-username__GDYogwL"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:35:12.145436Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:34:51.406577Z",
+          "task_id": "py-normalize-username",
+          "trial_name": "py-normalize-username__RhUPwhc"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:22:05.418625Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:21:11.575387Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__AKW244m"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:17:36.317593Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:16:35.882026Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__JTagL7G"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:22:22.321497Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:21:38.327150Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__nAcDga8"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:02:53.169246Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:01:21.391796Z",
+          "task_id": "release-train-reconcile",
+          "trial_name": "release-train-reconcile__Q56uUJQ"
+        },
+        {
+          "exception_type": "NonZeroAgentExitCodeError",
+          "finished_at": "2026-07-06T22:05:20.483410Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:01:49.689580Z",
+          "task_id": "release-train-reconcile",
+          "trial_name": "release-train-reconcile__nPKeadC"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:03:01.248668Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:01:29.780483Z",
+          "task_id": "release-train-reconcile",
+          "trial_name": "release-train-reconcile__ovNC7Um"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:36:46.877373Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:36:01.338320Z",
+          "task_id": "rename-helper-symbol",
+          "trial_name": "rename-helper-symbol__8PsB8gv"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:40:02.325524Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:39:17.372119Z",
+          "task_id": "rename-helper-symbol",
+          "trial_name": "rename-helper-symbol__DswQgep"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:40:00.786396Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:39:20.143904Z",
+          "task_id": "rename-helper-symbol",
+          "trial_name": "rename-helper-symbol__pkw4Jhr"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:11:10.698061Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:08:57.753077Z",
+          "task_id": "renewal-risk-admin-screen",
+          "trial_name": "renewal-risk-admin-screen__22tq84K"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:08:16.367526Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:06:04.889694Z",
+          "task_id": "renewal-risk-admin-screen",
+          "trial_name": "renewal-risk-admin-screen__6mUbSXT"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:09:23.814834Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:06:25.552597Z",
+          "task_id": "renewal-risk-admin-screen",
+          "trial_name": "renewal-risk-admin-screen__LEEmB5p"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:49:20.333729Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:48:22.805929Z",
+          "task_id": "report-json-format",
+          "trial_name": "report-json-format__8jTzNd6"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:45:22.912187Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:44:31.341756Z",
+          "task_id": "report-json-format",
+          "trial_name": "report-json-format__oLDGwnt"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:49:12.007118Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:48:19.213892Z",
+          "task_id": "report-json-format",
+          "trial_name": "report-json-format__swwKVKr"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:06:17.181704Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:05:20.489396Z",
+          "task_id": "retry-error-fallback",
+          "trial_name": "retry-error-fallback__5h8uG8Z"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:03:55.837836Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:02:53.173162Z",
+          "task_id": "retry-error-fallback",
+          "trial_name": "retry-error-fallback__8KWNHo7"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:03:59.273575Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:03:01.252810Z",
+          "task_id": "retry-error-fallback",
+          "trial_name": "retry-error-fallback__v3n6QnP"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:49:26.941397Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:48:26.327794Z",
+          "task_id": "settings-null-default",
+          "trial_name": "settings-null-default__7mAvTh6"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:53:11.850823Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:52:04.206467Z",
+          "task_id": "settings-null-default",
+          "trial_name": "settings-null-default__QJ9n2AB"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:53:38.399739Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:52:36.351903Z",
+          "task_id": "settings-null-default",
+          "trial_name": "settings-null-default__udv8etZ"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:59:17.939117Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:58:27.222215Z",
+          "task_id": "spec-to-release-checklist",
+          "trial_name": "spec-to-release-checklist__EwspcJd"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:59:24.261942Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:58:38.603966Z",
+          "task_id": "spec-to-release-checklist",
+          "trial_name": "spec-to-release-checklist__MAwSEtN"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:54:36.285314Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:53:48.541806Z",
+          "task_id": "spec-to-release-checklist",
+          "trial_name": "spec-to-release-checklist__ueyLDBN"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:27:28.883219Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:26:38.982363Z",
+          "task_id": "split-notification-renderer",
+          "trial_name": "split-notification-renderer__WR6qjyi"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:22:38.684266Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:21:49.435596Z",
+          "task_id": "split-notification-renderer",
+          "trial_name": "split-notification-renderer__eHUzbpf"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:26:57.771661Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:25:44.928390Z",
+          "task_id": "split-notification-renderer",
+          "trial_name": "split-notification-renderer__fhvriBd"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:48:19.209162Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:46:39.460463Z",
+          "task_id": "status-terminal-parity",
+          "trial_name": "status-terminal-parity__8dKS8rW"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:44:31.337695Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:43:07.723469Z",
+          "task_id": "status-terminal-parity",
+          "trial_name": "status-terminal-parity__cbnAYAE"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:48:22.801624Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:46:57.834331Z",
+          "task_id": "status-terminal-parity",
+          "trial_name": "status-terminal-parity__saTv3f6"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:40:08.243764Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:39:23.615379Z",
+          "task_id": "strip-sort-allowlist",
+          "trial_name": "strip-sort-allowlist__F34Ksbx"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:43:16.900452Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:42:22.054975Z",
+          "task_id": "strip-sort-allowlist",
+          "trial_name": "strip-sort-allowlist__Gxjbku6"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:43:19.918386Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:42:34.638443Z",
+          "task_id": "strip-sort-allowlist",
+          "trial_name": "strip-sort-allowlist__fTgHXhN"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:52:04.202557Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:51:23.426446Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__5ieuqhL"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:52:36.347735Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:51:47.499790Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__azHyo6H"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:48:26.324576Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:47:41.287583Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__yTbbBwz"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:19:11.468232Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:18:04.616426Z",
+          "task_id": "support-metrics-package",
+          "trial_name": "support-metrics-package__4KboP2q"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:15:03.248207Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:14:01.089172Z",
+          "task_id": "support-metrics-package",
+          "trial_name": "support-metrics-package__7HfV6rt"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:19:15.525308Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:18:05.832492Z",
+          "task_id": "support-metrics-package",
+          "trial_name": "support-metrics-package__DP2z4WK"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:30:38.044310Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:29:14.291104Z",
+          "task_id": "support-sla-business-hours",
+          "trial_name": "support-sla-business-hours__oKJsnSS"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:34:51.403453Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:33:39.348361Z",
+          "task_id": "support-sla-business-hours",
+          "trial_name": "support-sla-business-hours__tmKdshC"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:34:46.269613Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:33:28.891390Z",
+          "task_id": "support-sla-business-hours",
+          "trial_name": "support-sla-business-hours__wNUJ7ky"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:12:07.545613Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:11:10.702117Z",
+          "task_id": "ticket-cut-from-bug-report",
+          "trial_name": "ticket-cut-from-bug-report__9AFhcgg"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:10:16.122157Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:09:23.818861Z",
+          "task_id": "ticket-cut-from-bug-report",
+          "trial_name": "ticket-cut-from-bug-report__nwAoNcc"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:09:10.481005Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:08:16.373108Z",
+          "task_id": "ticket-cut-from-bug-report",
+          "trial_name": "ticket-cut-from-bug-report__pV3EXdn"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:21:11.570133Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:19:15.529066Z",
+          "task_id": "ticket-state-reconcile",
+          "trial_name": "ticket-state-reconcile__4BX9Sow"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:16:35.878065Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:15:03.252400Z",
+          "task_id": "ticket-state-reconcile",
+          "trial_name": "ticket-state-reconcile__MTs8v8M"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:21:38.323181Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:19:11.472585Z",
+          "task_id": "ticket-state-reconcile",
+          "trial_name": "ticket-state-reconcile__ir9pAqS"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:21:49.431730Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T21:20:37.032068Z",
+          "task_id": "ticket-update-dont-duplicate",
+          "trial_name": "ticket-update-dont-duplicate__BEiTvqr"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:25:44.924150Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T22:24:50.069934Z",
+          "task_id": "ticket-update-dont-duplicate",
+          "trial_name": "ticket-update-dont-duplicate__aY6Qsfk"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:26:38.979422Z",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T20:25:44.829097Z",
+          "task_id": "ticket-update-dont-duplicate",
+          "trial_name": "ticket-update-dont-duplicate__rwh7fbj"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:32:07.006107Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:31:23.916662Z",
+          "task_id": "user-export-field-rename",
+          "trial_name": "user-export-field-rename__3WgZEUz"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:27:42.119522Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:26:43.133535Z",
+          "task_id": "user-export-field-rename",
+          "trial_name": "user-export-field-rename__9V8yBus"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:31:59.017922Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:31:05.644702Z",
+          "task_id": "user-export-field-rename",
+          "trial_name": "user-export-field-rename__AES4yfw"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T21:39:23.611766Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T21:38:18.242411Z",
+          "task_id": "webhook-idempotency-parity",
+          "trial_name": "webhook-idempotency-parity__AwpYxpq"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T20:42:34.634139Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T20:41:31.049799Z",
+          "task_id": "webhook-idempotency-parity",
+          "trial_name": "webhook-idempotency-parity__JqYAwFj"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T22:42:22.048893Z",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T22:41:24.071224Z",
+          "task_id": "webhook-idempotency-parity",
+          "trial_name": "webhook-idempotency-parity__uYVEBDy"
+        }
+      ],
+      "exceptions": 1,
+      "failures": 33,
+      "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_floor_gpt54mini_low_n3",
+      "passes": 108,
+      "status": "complete",
+      "trial_dirs": 141
+    }
+  },
+  "task_count": 47
+}

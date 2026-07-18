@@ -1,0 +1,61 @@
+{
+  "schema_version": "shallowswe.calibration_plan_audit.v0.1",
+  "plan": "shallowswe-v1-calibration-plan",
+  "snapshot_id": "shallowswe-v0.1-candidate-2026-07-04",
+  "plan_path": "configs/shallowswe-v1-calibration-plan.json",
+  "task_root": "/Users/lydakis/Developer/ShallowSWE/tasks",
+  "official_task_count": 36,
+  "planned_official_task_count": 36,
+  "valid": true,
+  "ready_to_run_without_budget_override": false,
+  "issues": [],
+  "run_group_issue_counts": {},
+  "budget_status_counts": {
+    "approval_required": 1,
+    "within_budget": 1
+  },
+  "run_groups": [
+    {
+      "id": "ceiling-admission-primary-n16",
+      "mode": "one_shot",
+      "purpose": "Pinned-ceiling task admission gate.",
+      "panel": "panels/shallowswe-ceiling-v0.1.json",
+      "row_ids": [
+        "ceiling_gpt_5_5_medium"
+      ],
+      "target_rollouts_per_task": 16,
+      "planned_attempts": 576,
+      "current_rollouts_per_task_min": 1,
+      "current_rollouts_per_task_max": 1,
+      "tasks_below_target": 36,
+      "panel_allows_fallbacks": false,
+      "budget_status": "approval_required",
+      "estimated_full_panel_cost_usd": 311.04,
+      "budget_limit_usd": 200,
+      "requires_explicit_approval": true,
+      "issues": []
+    },
+    {
+      "id": "floor-size-calibration-panel-n10",
+      "mode": "one_shot",
+      "purpose": "Measured floor sweep for small, medium, and large size assignment.",
+      "panel": "panels/shallowswe-calibration-v0.1.json",
+      "row_ids": [
+        "anchor_gemini_3_5_flash_medium",
+        "anchor_glm_5_2_high",
+        "anchor_kimi_k2_7_code_default"
+      ],
+      "target_rollouts_per_task": 10,
+      "planned_attempts": 1080,
+      "current_rollouts_per_task_min": 1,
+      "current_rollouts_per_task_max": 1,
+      "tasks_below_target": 36,
+      "panel_allows_fallbacks": false,
+      "budget_status": "within_budget",
+      "estimated_full_panel_cost_usd": 118.98,
+      "budget_limit_usd": 500,
+      "requires_explicit_approval": false,
+      "issues": []
+    }
+  ]
+}

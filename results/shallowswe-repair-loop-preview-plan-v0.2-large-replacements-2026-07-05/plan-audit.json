@@ -1,0 +1,36 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_plan_audit.v0.1",
+  "plan": "shallowswe-repair-loop-preview-n3-18-v0.2-large-replacements",
+  "snapshot_id": "shallowswe-v0.2-large-replacement-candidate-2026-07-05",
+  "plan_path": "configs/shallowswe-repair-loop-preview-n3-18-v0.2-large-replacements.json",
+  "valid": true,
+  "ready_to_launch": true,
+  "issues": [],
+  "blockers": [],
+  "task_count": 18,
+  "model_rows": 10,
+  "repair_loop_seeds_per_task_model_config": 3,
+  "estimated_total_rows": 540,
+  "cell_counts": {
+    "artifact/large": 2,
+    "artifact/medium": 2,
+    "artifact/small": 2,
+    "code/large": 2,
+    "code/medium": 2,
+    "code/small": 2,
+    "workflow/large": 2,
+    "workflow/medium": 2,
+    "workflow/small": 2
+  },
+  "verifier_submission_cap": 20,
+  "agent_step_cap": 120,
+  "per_row_dollar_cap_usd": 5.0,
+  "global_hard_stop_usd": 250.0,
+  "budget_limit_usd": 250.0,
+  "budget_estimate_path": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-repair-loop-preview-plan-v0.2-large-replacements-2026-07-05/budget-estimate.json",
+  "budget_estimates": {
+    "observed_repair_loop_pilot_average": 159.27251561999998,
+    "conservative_existing_guard": 205.76699999999997
+  },
+  "theoretical_spend_if_every_row_hits_dollar_cap_usd": 2700.0
+}

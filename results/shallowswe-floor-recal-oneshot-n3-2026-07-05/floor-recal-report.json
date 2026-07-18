@@ -1,0 +1,458 @@
+{
+  "schema_version": "shallowswe.floor_recal_report.v0.1",
+  "plan": "shallowswe-floor-recal-oneshot-n3",
+  "snapshot_id": "shallowswe-v0.1-frozen-2026-07-05",
+  "generated_at": "2026-07-05T18:55:04.757924+00:00",
+  "method": "One-shot probes (verifier_submission_cap=1) on the fixed repair-loop runner; calibration panel gemini-3.5-flash[medium], glm-5.2[high], kimi-k2.7-code; 3 seeds; bands per SPEC.md (small 70-100%, medium 30-70%, large 0-40%).",
+  "total_rows": 162,
+  "total_passes": 147,
+  "spend_usd": 14.77,
+  "infra_note": "62 rows quarantined to rows-superseded-20260705-docker-crash (Docker daemon outage) and re-run; excluded from this report.",
+  "tasks": [
+    {
+      "task_id": "access-log-to-incidents",
+      "category": "artifact",
+      "current_size": "medium",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "auth-token-expiry-regression",
+      "category": "code",
+      "current_size": "medium",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "billing-revenue-rollup",
+      "category": "artifact",
+      "current_size": "large",
+      "floor_one_shot_passes": 3,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 0.3333,
+      "assigned_band": "medium",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 0,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 0,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "cache-invalidates-on-settings-change",
+      "category": "code",
+      "current_size": "large",
+      "floor_one_shot_passes": 6,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 0.6667,
+      "assigned_band": "medium",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 2,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 2,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 2,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "config-flag-ignored",
+      "category": "workflow",
+      "current_size": "medium",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "config-key-rollover",
+      "category": "workflow",
+      "current_size": "large",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "env-flags-to-json",
+      "category": "artifact",
+      "current_size": "small",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": false,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "extract-error-fields",
+      "category": "artifact",
+      "current_size": "small",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": false,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "invoice-cli-regression-test-fix",
+      "category": "code",
+      "current_size": "small",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": false,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "merge-divergent-config-branches",
+      "category": "workflow",
+      "current_size": "large",
+      "floor_one_shot_passes": 8,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 0.8889,
+      "assigned_band": "small",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 2,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "payout-reconcile",
+      "category": "artifact",
+      "current_size": "medium",
+      "floor_one_shot_passes": 5,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 0.5556,
+      "assigned_band": "medium",
+      "relabel_required": false,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 1,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 1,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "post-build-status",
+      "category": "workflow",
+      "current_size": "small",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": false,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "retry-error-fallback",
+      "category": "code",
+      "current_size": "small",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": false,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "split-notification-renderer",
+      "category": "code",
+      "current_size": "medium",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "status-terminal-parity",
+      "category": "code",
+      "current_size": "large",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "support-metrics-package",
+      "category": "artifact",
+      "current_size": "large",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "ticket-cut-from-bug-report",
+      "category": "workflow",
+      "current_size": "small",
+      "floor_one_shot_passes": 9,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 1.0,
+      "assigned_band": "small",
+      "relabel_required": false,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 3,
+          "n": 3
+        }
+      }
+    },
+    {
+      "task_id": "ticket-update-dont-duplicate",
+      "category": "workflow",
+      "current_size": "medium",
+      "floor_one_shot_passes": 8,
+      "floor_one_shot_n": 9,
+      "floor_one_shot_rate": 0.8889,
+      "assigned_band": "small",
+      "relabel_required": true,
+      "per_model": {
+        "gemini-3.5-flash": {
+          "passes": 3,
+          "n": 3
+        },
+        "glm-5.2": {
+          "passes": 3,
+          "n": 3
+        },
+        "kimi-k2.7-code": {
+          "passes": 2,
+          "n": 3
+        }
+      }
+    }
+  ],
+  "relabels_required": 11,
+  "resulting_cell_occupancy": {
+    "artifact/small": 4,
+    "artifact/medium": 2,
+    "artifact/large": 0,
+    "code/small": 5,
+    "code/medium": 1,
+    "code/large": 0,
+    "workflow/small": 6,
+    "workflow/medium": 0,
+    "workflow/large": 0
+  },
+  "recommendation": "Apply relabels when assembling the v0.2 suite alongside new medium/large admissions from docs/medium-large-refill-candidate-cards.md. No task retains a large label; refill priority is all six large slots plus workflow/medium (empty) and code/medium (one short)."
+}

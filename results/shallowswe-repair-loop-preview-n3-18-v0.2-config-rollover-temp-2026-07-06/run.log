@@ -1,0 +1,420 @@
+running 201/540 payout-reconcile openrouter/anthropic/claude-fable-5[low] seed=1 spend=$24.3744
+running 202/540 payout-reconcile openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$24.4949
+running 203/540 payout-reconcile openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$24.5418
+running 204/540 payout-reconcile openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$24.6041
+running 205/540 payout-reconcile openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$24.7532
+running 206/540 payout-reconcile openrouter/openai/gpt-5.5[low] seed=1 spend=$24.8987
+running 207/540 payout-reconcile openrouter/openai/gpt-5.5[medium] seed=1 spend=$25.0570
+running 208/540 payout-reconcile openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$25.2752
+running 209/540 payout-reconcile openrouter/z-ai/glm-5.2[high] seed=1 spend=$25.6922
+running 210/540 payout-reconcile openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$25.7287
+running 211/540 access-log-to-incidents openrouter/anthropic/claude-fable-5[low] seed=1 spend=$25.8338
+running 212/540 access-log-to-incidents openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$25.9290
+running 213/540 access-log-to-incidents openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$25.9692
+running 214/540 access-log-to-incidents openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$26.0494
+running 215/540 access-log-to-incidents openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$26.1087
+running 216/540 access-log-to-incidents openrouter/openai/gpt-5.5[low] seed=1 spend=$26.1931
+running 217/540 access-log-to-incidents openrouter/openai/gpt-5.5[medium] seed=1 spend=$26.3419
+running 218/540 access-log-to-incidents openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$26.5415
+running 219/540 access-log-to-incidents openrouter/z-ai/glm-5.2[high] seed=1 spend=$26.8751
+running 220/540 access-log-to-incidents openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$26.8919
+running 221/540 billing-revenue-rollup openrouter/anthropic/claude-fable-5[low] seed=1 spend=$26.9243
+running 222/540 billing-revenue-rollup openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$27.0262
+running 223/540 billing-revenue-rollup openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$27.0667
+running 224/540 billing-revenue-rollup openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$27.1488
+running 225/540 billing-revenue-rollup openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$27.2541
+running 226/540 billing-revenue-rollup openrouter/openai/gpt-5.5[low] seed=1 spend=$27.4106
+running 227/540 billing-revenue-rollup openrouter/openai/gpt-5.5[medium] seed=1 spend=$27.5376
+running 228/540 billing-revenue-rollup openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$27.8133
+running 229/540 billing-revenue-rollup openrouter/z-ai/glm-5.2[high] seed=1 spend=$29.2445
+running 230/540 billing-revenue-rollup openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$29.2632
+running 231/540 support-sla-business-hours openrouter/anthropic/claude-fable-5[low] seed=1 spend=$29.3322
+running 232/540 support-sla-business-hours openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$29.5999
+running 233/540 support-sla-business-hours openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$29.7098
+running 234/540 support-sla-business-hours openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$29.8696
+running 235/540 support-sla-business-hours openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$30.0415
+running 236/540 support-sla-business-hours openrouter/openai/gpt-5.5[low] seed=1 spend=$30.2704
+running 237/540 support-sla-business-hours openrouter/openai/gpt-5.5[medium] seed=1 spend=$30.4735
+running 238/540 support-sla-business-hours openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$30.8031
+running 239/540 support-sla-business-hours openrouter/z-ai/glm-5.2[high] seed=1 spend=$31.2674
+running 240/540 support-sla-business-hours openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$31.3311
+running 241/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-fable-5[low] seed=1 spend=$31.4388
+running 242/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$31.5666
+running 243/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$31.6141
+running 244/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$31.7052
+running 245/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$31.7966
+running 246/540 invoice-cli-regression-test-fix openrouter/openai/gpt-5.5[low] seed=1 spend=$32.0346
+running 247/540 invoice-cli-regression-test-fix openrouter/openai/gpt-5.5[medium] seed=1 spend=$32.1926
+running 248/540 invoice-cli-regression-test-fix openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$32.3729
+running 249/540 invoice-cli-regression-test-fix openrouter/z-ai/glm-5.2[high] seed=1 spend=$32.5087
+running 250/540 invoice-cli-regression-test-fix openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$32.5195
+running 251/540 retry-error-fallback openrouter/anthropic/claude-fable-5[low] seed=1 spend=$32.5374
+running 252/540 retry-error-fallback openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$32.6019
+running 253/540 retry-error-fallback openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$32.6373
+running 254/540 retry-error-fallback openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$32.6982
+running 255/540 retry-error-fallback openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$32.7342
+running 256/540 retry-error-fallback openrouter/openai/gpt-5.5[low] seed=1 spend=$32.8132
+running 257/540 retry-error-fallback openrouter/openai/gpt-5.5[medium] seed=1 spend=$32.9331
+running 258/540 retry-error-fallback openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$33.1304
+running 259/540 retry-error-fallback openrouter/z-ai/glm-5.2[high] seed=1 spend=$33.2997
+running 260/540 retry-error-fallback openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$33.3113
+running 261/540 auth-token-expiry-regression openrouter/anthropic/claude-fable-5[low] seed=1 spend=$33.3256
+running 262/540 auth-token-expiry-regression openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$33.3954
+running 263/540 auth-token-expiry-regression openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$33.4262
+running 264/540 auth-token-expiry-regression openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$33.5506
+running 265/540 auth-token-expiry-regression openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$33.6619
+running 266/540 auth-token-expiry-regression openrouter/openai/gpt-5.5[low] seed=1 spend=$33.8187
+running 267/540 auth-token-expiry-regression openrouter/openai/gpt-5.5[medium] seed=1 spend=$33.9036
+running 268/540 auth-token-expiry-regression openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$34.1137
+running 269/540 auth-token-expiry-regression openrouter/z-ai/glm-5.2[high] seed=1 spend=$34.2749
+running 270/540 auth-token-expiry-regression openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$34.2912
+running 271/540 split-notification-renderer openrouter/anthropic/claude-fable-5[low] seed=1 spend=$34.3098
+running 272/540 split-notification-renderer openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$34.3825
+running 273/540 split-notification-renderer openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$34.4075
+running 274/540 split-notification-renderer openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$34.4810
+running 275/540 split-notification-renderer openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$34.5350
+running 276/540 split-notification-renderer openrouter/openai/gpt-5.5[low] seed=1 spend=$34.6223
+running 277/540 split-notification-renderer openrouter/openai/gpt-5.5[medium] seed=1 spend=$34.7760
+running 278/540 split-notification-renderer openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$34.9318
+running 279/540 split-notification-renderer openrouter/z-ai/glm-5.2[high] seed=1 spend=$35.1259
+running 280/540 split-notification-renderer openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$35.1363
+running 281/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-fable-5[low] seed=1 spend=$35.1487
+running 282/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$35.2223
+running 283/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$35.2899
+running 284/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$35.4406
+running 285/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$35.5386
+running 286/540 cache-invalidates-on-settings-change openrouter/openai/gpt-5.5[low] seed=1 spend=$35.6193
+running 287/540 cache-invalidates-on-settings-change openrouter/openai/gpt-5.5[medium] seed=1 spend=$35.7477
+running 288/540 cache-invalidates-on-settings-change openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$35.8898
+running 289/540 cache-invalidates-on-settings-change openrouter/z-ai/glm-5.2[high] seed=1 spend=$36.3475
+running 290/540 cache-invalidates-on-settings-change openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$36.3583
+running 291/540 invoice-multi-source-merge openrouter/anthropic/claude-fable-5[low] seed=1 spend=$36.3792
+running 292/540 invoice-multi-source-merge openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$36.7210
+running 293/540 invoice-multi-source-merge openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$36.8819
+running 294/540 invoice-multi-source-merge openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$37.0967
+running 295/540 invoice-multi-source-merge openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$37.3478
+running 296/540 invoice-multi-source-merge openrouter/openai/gpt-5.5[low] seed=1 spend=$37.6847
+running 297/540 invoice-multi-source-merge openrouter/openai/gpt-5.5[medium] seed=1 spend=$37.8885
+running 298/540 invoice-multi-source-merge openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$38.2590
+running 299/540 invoice-multi-source-merge openrouter/z-ai/glm-5.2[high] seed=1 spend=$38.8635
+running 300/540 invoice-multi-source-merge openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$38.9476
+running 301/540 post-build-status openrouter/anthropic/claude-fable-5[low] seed=1 spend=$39.2432
+running 302/540 post-build-status openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$39.3101
+running 303/540 post-build-status openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$39.3365
+running 304/540 post-build-status openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$39.3716
+running 305/540 post-build-status openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$39.4146
+running 306/540 post-build-status openrouter/openai/gpt-5.5[low] seed=1 spend=$39.4852
+running 307/540 post-build-status openrouter/openai/gpt-5.5[medium] seed=1 spend=$39.5656
+running 308/540 post-build-status openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$39.7281
+running 309/540 post-build-status openrouter/z-ai/glm-5.2[high] seed=1 spend=$39.8657
+running 310/540 post-build-status openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$39.8759
+running 311/540 ticket-cut-from-bug-report openrouter/anthropic/claude-fable-5[low] seed=1 spend=$39.8866
+running 312/540 ticket-cut-from-bug-report openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$39.9627
+running 313/540 ticket-cut-from-bug-report openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$39.9849
+running 314/540 ticket-cut-from-bug-report openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$40.0151
+running 315/540 ticket-cut-from-bug-report openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$40.0586
+running 316/540 ticket-cut-from-bug-report openrouter/openai/gpt-5.5[low] seed=1 spend=$40.1181
+running 317/540 ticket-cut-from-bug-report openrouter/openai/gpt-5.5[medium] seed=1 spend=$40.2164
+running 318/540 ticket-cut-from-bug-report openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$40.3209
+running 319/540 ticket-cut-from-bug-report openrouter/z-ai/glm-5.2[high] seed=1 spend=$40.4701
+running 320/540 ticket-cut-from-bug-report openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$40.4844
+running 321/540 config-flag-ignored openrouter/anthropic/claude-fable-5[low] seed=1 spend=$40.4931
+running 322/540 config-flag-ignored openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$40.5764
+running 323/540 config-flag-ignored openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$40.6026
+running 324/540 config-flag-ignored openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$40.6368
+running 325/540 config-flag-ignored openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$40.7059
+running 326/540 config-flag-ignored openrouter/openai/gpt-5.5[low] seed=1 spend=$40.8343
+running 327/540 config-flag-ignored openrouter/openai/gpt-5.5[medium] seed=1 spend=$40.9400
+running 328/540 config-flag-ignored openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$41.0955
+running 329/540 config-flag-ignored openrouter/z-ai/glm-5.2[high] seed=1 spend=$41.2565
+running 330/540 config-flag-ignored openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$41.2764
+running 331/540 ticket-update-dont-duplicate openrouter/anthropic/claude-fable-5[low] seed=1 spend=$41.2949
+running 332/540 ticket-update-dont-duplicate openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$41.4868
+running 333/540 ticket-update-dont-duplicate openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$41.5195
+running 334/540 ticket-update-dont-duplicate openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$41.6393
+running 335/540 ticket-update-dont-duplicate openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$41.6879
+running 336/540 ticket-update-dont-duplicate openrouter/openai/gpt-5.5[low] seed=1 spend=$41.7707
+running 337/540 ticket-update-dont-duplicate openrouter/openai/gpt-5.5[medium] seed=1 spend=$41.8843
+running 338/540 ticket-update-dont-duplicate openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$44.4643
+running 339/540 ticket-update-dont-duplicate openrouter/z-ai/glm-5.2[high] seed=1 spend=$44.6534
+running 340/540 ticket-update-dont-duplicate openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$44.8010
+running 341/540 merge-divergent-config-branches openrouter/anthropic/claude-fable-5[low] seed=1 spend=$44.8355
+running 342/540 merge-divergent-config-branches openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$44.9822
+running 343/540 merge-divergent-config-branches openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$45.0165
+running 344/540 merge-divergent-config-branches openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$45.0916
+running 345/540 merge-divergent-config-branches openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$45.1455
+running 346/540 merge-divergent-config-branches openrouter/openai/gpt-5.5[low] seed=1 spend=$45.4659
+running 347/540 merge-divergent-config-branches openrouter/openai/gpt-5.5[medium] seed=1 spend=$45.5879
+running 348/540 merge-divergent-config-branches openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$45.7206
+running 349/540 merge-divergent-config-branches openrouter/z-ai/glm-5.2[high] seed=1 spend=$46.0007
+running 350/540 merge-divergent-config-branches openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$46.0214
+running 351/540 config-key-rollover openrouter/anthropic/claude-fable-5[low] seed=1 spend=$46.0292
+running 352/540 config-key-rollover openrouter/anthropic/claude-sonnet-5[low] seed=1 spend=$46.2519
+running 353/540 config-key-rollover openrouter/anthropic/claude-sonnet-5[medium] seed=1 spend=$46.3419
+running 354/540 config-key-rollover openrouter/anthropic/claude-opus-4.8[low] seed=1 spend=$46.4576
+running 355/540 config-key-rollover openrouter/anthropic/claude-opus-4.8[medium] seed=1 spend=$46.5967
+running 356/540 config-key-rollover openrouter/openai/gpt-5.5[low] seed=1 spend=$46.7996
+running 357/540 config-key-rollover openrouter/openai/gpt-5.5[medium] seed=1 spend=$47.0372
+running 358/540 config-key-rollover openrouter/google/gemini-3.5-flash[medium] seed=1 spend=$47.4273
+running 359/540 config-key-rollover openrouter/z-ai/glm-5.2[high] seed=1 spend=$47.6399
+running 360/540 config-key-rollover openrouter/moonshotai/kimi-k2.7-code seed=1 spend=$47.6676
+running 361/540 env-flags-to-json openrouter/anthropic/claude-fable-5[low] seed=2 spend=$47.7046
+running 362/540 env-flags-to-json openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$47.7849
+running 363/540 env-flags-to-json openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$47.8118
+running 364/540 env-flags-to-json openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$47.8428
+running 365/540 env-flags-to-json openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$47.8862
+running 366/540 env-flags-to-json openrouter/openai/gpt-5.5[low] seed=2 spend=$47.9989
+running 367/540 env-flags-to-json openrouter/openai/gpt-5.5[medium] seed=2 spend=$48.1546
+running 368/540 env-flags-to-json openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$48.2761
+running 369/540 env-flags-to-json openrouter/z-ai/glm-5.2[high] seed=2 spend=$48.4817
+running 370/540 env-flags-to-json openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$48.4976
+running 371/540 extract-error-fields openrouter/anthropic/claude-fable-5[low] seed=2 spend=$48.5293
+running 372/540 extract-error-fields openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$48.5857
+running 373/540 extract-error-fields openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$48.6076
+running 374/540 extract-error-fields openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$48.6407
+running 375/540 extract-error-fields openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$48.6787
+running 376/540 extract-error-fields openrouter/openai/gpt-5.5[low] seed=2 spend=$48.7355
+running 377/540 extract-error-fields openrouter/openai/gpt-5.5[medium] seed=2 spend=$48.8053
+running 378/540 extract-error-fields openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$48.9112
+running 379/540 extract-error-fields openrouter/z-ai/glm-5.2[high] seed=2 spend=$49.0086
+running 380/540 extract-error-fields openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$49.0210
+running 381/540 payout-reconcile openrouter/anthropic/claude-fable-5[low] seed=2 spend=$49.0321
+running 382/540 payout-reconcile openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$49.1843
+running 383/540 payout-reconcile openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$49.2321
+running 384/540 payout-reconcile openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$49.2954
+running 385/540 payout-reconcile openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$49.3899
+running 386/540 payout-reconcile openrouter/openai/gpt-5.5[low] seed=2 spend=$49.5247
+running 387/540 payout-reconcile openrouter/openai/gpt-5.5[medium] seed=2 spend=$49.7479
+running 388/540 payout-reconcile openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$50.0083
+running 389/540 payout-reconcile openrouter/z-ai/glm-5.2[high] seed=2 spend=$50.3245
+running 390/540 payout-reconcile openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$50.3683
+running 391/540 access-log-to-incidents openrouter/anthropic/claude-fable-5[low] seed=2 spend=$50.6211
+running 392/540 access-log-to-incidents openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$50.7213
+running 393/540 access-log-to-incidents openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$50.7569
+running 394/540 access-log-to-incidents openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$50.8441
+running 395/540 access-log-to-incidents openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$50.9455
+running 396/540 access-log-to-incidents openrouter/openai/gpt-5.5[low] seed=2 spend=$51.0352
+running 397/540 access-log-to-incidents openrouter/openai/gpt-5.5[medium] seed=2 spend=$51.1600
+running 398/540 access-log-to-incidents openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$51.3100
+running 399/540 access-log-to-incidents openrouter/z-ai/glm-5.2[high] seed=2 spend=$51.7143
+running 400/540 access-log-to-incidents openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$51.7410
+running 401/540 billing-revenue-rollup openrouter/anthropic/claude-fable-5[low] seed=2 spend=$51.7586
+running 402/540 billing-revenue-rollup openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$51.8626
+running 403/540 billing-revenue-rollup openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$51.9028
+running 404/540 billing-revenue-rollup openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$51.9915
+running 405/540 billing-revenue-rollup openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$52.1041
+running 406/540 billing-revenue-rollup openrouter/openai/gpt-5.5[low] seed=2 spend=$52.2374
+running 407/540 billing-revenue-rollup openrouter/openai/gpt-5.5[medium] seed=2 spend=$52.3789
+running 408/540 billing-revenue-rollup openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$52.5530
+running 409/540 billing-revenue-rollup openrouter/z-ai/glm-5.2[high] seed=2 spend=$53.9529
+running 410/540 billing-revenue-rollup openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$53.9798
+running 411/540 support-sla-business-hours openrouter/anthropic/claude-fable-5[low] seed=2 spend=$54.0211
+running 412/540 support-sla-business-hours openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$54.3952
+running 413/540 support-sla-business-hours openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$54.4789
+running 414/540 support-sla-business-hours openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$54.6113
+running 415/540 support-sla-business-hours openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$54.7450
+running 416/540 support-sla-business-hours openrouter/openai/gpt-5.5[low] seed=2 spend=$54.9951
+running 417/540 support-sla-business-hours openrouter/openai/gpt-5.5[medium] seed=2 spend=$55.1977
+running 418/540 support-sla-business-hours openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$55.4526
+running 419/540 support-sla-business-hours openrouter/z-ai/glm-5.2[high] seed=2 spend=$55.8970
+running 420/540 support-sla-business-hours openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$55.9707
+running 421/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-fable-5[low] seed=2 spend=$56.0535
+running 422/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$56.2749
+running 423/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$56.3180
+running 424/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$56.4137
+running 425/540 invoice-cli-regression-test-fix openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$56.5099
+running 426/540 invoice-cli-regression-test-fix openrouter/openai/gpt-5.5[low] seed=2 spend=$56.6498
+running 427/540 invoice-cli-regression-test-fix openrouter/openai/gpt-5.5[medium] seed=2 spend=$56.7817
+running 428/540 invoice-cli-regression-test-fix openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$56.9165
+running 429/540 invoice-cli-regression-test-fix openrouter/z-ai/glm-5.2[high] seed=2 spend=$57.0340
+running 430/540 invoice-cli-regression-test-fix openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$57.0490
+running 431/540 retry-error-fallback openrouter/anthropic/claude-fable-5[low] seed=2 spend=$57.0967
+running 432/540 retry-error-fallback openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$57.1621
+running 433/540 retry-error-fallback openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$57.1904
+running 434/540 retry-error-fallback openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$57.2137
+running 435/540 retry-error-fallback openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$57.2519
+running 436/540 retry-error-fallback openrouter/openai/gpt-5.5[low] seed=2 spend=$57.3181
+running 437/540 retry-error-fallback openrouter/openai/gpt-5.5[medium] seed=2 spend=$57.4656
+running 438/540 retry-error-fallback openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$57.6477
+running 439/540 retry-error-fallback openrouter/z-ai/glm-5.2[high] seed=2 spend=$57.8297
+running 440/540 retry-error-fallback openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$57.8706
+running 441/540 auth-token-expiry-regression openrouter/anthropic/claude-fable-5[low] seed=2 spend=$57.8873
+running 442/540 auth-token-expiry-regression openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$57.9592
+running 443/540 auth-token-expiry-regression openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$58.0101
+running 444/540 auth-token-expiry-regression openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$58.0485
+running 445/540 auth-token-expiry-regression openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$58.0928
+running 446/540 auth-token-expiry-regression openrouter/openai/gpt-5.5[low] seed=2 spend=$58.1915
+running 447/540 auth-token-expiry-regression openrouter/openai/gpt-5.5[medium] seed=2 spend=$58.2796
+running 448/540 auth-token-expiry-regression openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$58.4000
+running 449/540 auth-token-expiry-regression openrouter/z-ai/glm-5.2[high] seed=2 spend=$58.5464
+running 450/540 auth-token-expiry-regression openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$58.5731
+running 451/540 split-notification-renderer openrouter/anthropic/claude-fable-5[low] seed=2 spend=$58.6012
+running 452/540 split-notification-renderer openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$58.6817
+running 453/540 split-notification-renderer openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$58.7068
+running 454/540 split-notification-renderer openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$58.7465
+running 455/540 split-notification-renderer openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$58.7860
+running 456/540 split-notification-renderer openrouter/openai/gpt-5.5[low] seed=2 spend=$58.8757
+running 457/540 split-notification-renderer openrouter/openai/gpt-5.5[medium] seed=2 spend=$58.9770
+running 458/540 split-notification-renderer openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$59.0820
+running 459/540 split-notification-renderer openrouter/z-ai/glm-5.2[high] seed=2 spend=$59.2224
+running 460/540 split-notification-renderer openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$59.2337
+running 461/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-fable-5[low] seed=2 spend=$59.2437
+running 462/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$59.3198
+running 463/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$59.6097
+running 464/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$59.6603
+running 465/540 cache-invalidates-on-settings-change openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$59.7665
+running 466/540 cache-invalidates-on-settings-change openrouter/openai/gpt-5.5[low] seed=2 spend=$59.8928
+running 467/540 cache-invalidates-on-settings-change openrouter/openai/gpt-5.5[medium] seed=2 spend=$60.0131
+running 468/540 cache-invalidates-on-settings-change openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$60.1619
+running 469/540 cache-invalidates-on-settings-change openrouter/z-ai/glm-5.2[high] seed=2 spend=$60.4010
+running 470/540 cache-invalidates-on-settings-change openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$60.4385
+running 471/540 invoice-multi-source-merge openrouter/anthropic/claude-fable-5[low] seed=2 spend=$60.4573
+running 472/540 invoice-multi-source-merge openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$60.8100
+running 473/540 invoice-multi-source-merge openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$60.9364
+running 474/540 invoice-multi-source-merge openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$61.1383
+running 475/540 invoice-multi-source-merge openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$61.3475
+running 476/540 invoice-multi-source-merge openrouter/openai/gpt-5.5[low] seed=2 spend=$61.6834
+running 477/540 invoice-multi-source-merge openrouter/openai/gpt-5.5[medium] seed=2 spend=$61.8783
+running 478/540 invoice-multi-source-merge openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$62.2356
+running 479/540 invoice-multi-source-merge openrouter/z-ai/glm-5.2[high] seed=2 spend=$62.6912
+running 480/540 invoice-multi-source-merge openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$62.8095
+running 481/540 post-build-status openrouter/anthropic/claude-fable-5[low] seed=2 spend=$62.9050
+running 482/540 post-build-status openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$62.9731
+running 483/540 post-build-status openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$63.0026
+running 484/540 post-build-status openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$63.0362
+running 485/540 post-build-status openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$63.0780
+running 486/540 post-build-status openrouter/openai/gpt-5.5[low] seed=2 spend=$63.1323
+running 487/540 post-build-status openrouter/openai/gpt-5.5[medium] seed=2 spend=$63.2167
+running 488/540 post-build-status openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$63.3256
+running 489/540 post-build-status openrouter/z-ai/glm-5.2[high] seed=2 spend=$63.4157
+running 490/540 post-build-status openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$63.4235
+running 491/540 ticket-cut-from-bug-report openrouter/anthropic/claude-fable-5[low] seed=2 spend=$63.4359
+running 492/540 ticket-cut-from-bug-report openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$63.5081
+running 493/540 ticket-cut-from-bug-report openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$63.5366
+running 494/540 ticket-cut-from-bug-report openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$63.5793
+running 495/540 ticket-cut-from-bug-report openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$63.6214
+running 496/540 ticket-cut-from-bug-report openrouter/openai/gpt-5.5[low] seed=2 spend=$63.6675
+running 497/540 ticket-cut-from-bug-report openrouter/openai/gpt-5.5[medium] seed=2 spend=$63.7382
+running 498/540 ticket-cut-from-bug-report openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$63.8327
+running 499/540 ticket-cut-from-bug-report openrouter/z-ai/glm-5.2[high] seed=2 spend=$63.9262
+running 500/540 ticket-cut-from-bug-report openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$63.9647
+running 501/540 config-flag-ignored openrouter/anthropic/claude-fable-5[low] seed=2 spend=$63.9703
+running 502/540 config-flag-ignored openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$64.0661
+running 503/540 config-flag-ignored openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$64.0931
+running 504/540 config-flag-ignored openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$64.1801
+running 505/540 config-flag-ignored openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$64.2527
+running 506/540 config-flag-ignored openrouter/openai/gpt-5.5[low] seed=2 spend=$64.3649
+running 507/540 config-flag-ignored openrouter/openai/gpt-5.5[medium] seed=2 spend=$64.5035
+running 508/540 config-flag-ignored openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$64.7351
+running 509/540 config-flag-ignored openrouter/z-ai/glm-5.2[high] seed=2 spend=$64.9091
+running 510/540 config-flag-ignored openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$64.9231
+running 511/540 ticket-update-dont-duplicate openrouter/anthropic/claude-fable-5[low] seed=2 spend=$64.9439
+running 512/540 ticket-update-dont-duplicate openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$65.0270
+running 513/540 ticket-update-dont-duplicate openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$65.0657
+running 514/540 ticket-update-dont-duplicate openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$65.1500
+running 515/540 ticket-update-dont-duplicate openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$65.1993
+running 516/540 ticket-update-dont-duplicate openrouter/openai/gpt-5.5[low] seed=2 spend=$65.2788
+running 517/540 ticket-update-dont-duplicate openrouter/openai/gpt-5.5[medium] seed=2 spend=$65.3842
+running 518/540 ticket-update-dont-duplicate openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$65.5338
+running 519/540 ticket-update-dont-duplicate openrouter/z-ai/glm-5.2[high] seed=2 spend=$65.7217
+running 520/540 ticket-update-dont-duplicate openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$65.7434
+running 521/540 merge-divergent-config-branches openrouter/anthropic/claude-fable-5[low] seed=2 spend=$65.7555
+running 522/540 merge-divergent-config-branches openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$65.8795
+running 523/540 merge-divergent-config-branches openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$65.9277
+running 524/540 merge-divergent-config-branches openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$66.1126
+running 525/540 merge-divergent-config-branches openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$66.1883
+running 526/540 merge-divergent-config-branches openrouter/openai/gpt-5.5[low] seed=2 spend=$66.2944
+running 527/540 merge-divergent-config-branches openrouter/openai/gpt-5.5[medium] seed=2 spend=$66.3854
+running 528/540 merge-divergent-config-branches openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$66.5608
+running 529/540 merge-divergent-config-branches openrouter/z-ai/glm-5.2[high] seed=2 spend=$67.0278
+running 530/540 merge-divergent-config-branches openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$67.0485
+running 531/540 config-key-rollover openrouter/anthropic/claude-fable-5[low] seed=2 spend=$67.1928
+running 532/540 config-key-rollover openrouter/anthropic/claude-sonnet-5[low] seed=2 spend=$67.4095
+running 533/540 config-key-rollover openrouter/anthropic/claude-sonnet-5[medium] seed=2 spend=$67.4914
+running 534/540 config-key-rollover openrouter/anthropic/claude-opus-4.8[low] seed=2 spend=$67.5989
+running 535/540 config-key-rollover openrouter/anthropic/claude-opus-4.8[medium] seed=2 spend=$67.7867
+running 536/540 config-key-rollover openrouter/openai/gpt-5.5[low] seed=2 spend=$68.0988
+running 537/540 config-key-rollover openrouter/openai/gpt-5.5[medium] seed=2 spend=$68.3197
+running 538/540 config-key-rollover openrouter/google/gemini-3.5-flash[medium] seed=2 spend=$68.6404
+running 539/540 config-key-rollover openrouter/z-ai/glm-5.2[high] seed=2 spend=$69.0000
+running 540/540 config-key-rollover openrouter/moonshotai/kimi-k2.7-code seed=2 spend=$69.0302
+{
+  "schema_version": "shallowswe.repair_loop_preview_batch.v0.1",
+  "plan": "shallowswe-repair-loop-preview-n3-18-v0.2-config-rollover-temp",
+  "snapshot_id": "shallowswe-v0.2-large-replacement-candidate-2026-07-05",
+  "audit_ready_to_launch": true,
+  "output_dir": "results/shallowswe-repair-loop-preview-n3-18-v0.2-config-rollover-temp-2026-07-06",
+  "combined_results_path": "results/shallowswe-repair-loop-preview-n3-18-v0.2-config-rollover-temp-2026-07-06/repair-loop-results.json",
+  "report_path": "results/shallowswe-repair-loop-preview-n3-18-v0.2-config-rollover-temp-2026-07-06/repair-loop-run-report.json",
+  "updated_at": "2026-07-06T17:39:26.518750+00:00",
+  "dry_run": false,
+  "parallelism": 1,
+  "total_planned_rows": 540,
+  "completed_rows": 540,
+  "remaining_rows": 0,
+  "skipped_existing_rows": 200,
+  "scored_rows": 540,
+  "successes": 539,
+  "solve_rate_so_far": 0.9981481481481481,
+  "cumulative_spend_usd": 69.081362942,
+  "global_hard_stop_usd": 250.0,
+  "remaining_budget_usd": 180.918637058,
+  "stopped": false,
+  "stop_reason": null,
+  "last_row": {
+    "model": "openrouter/moonshotai/kimi-k2.7-code",
+    "task_id": "config-key-rollover",
+    "category": "workflow",
+    "size": "large",
+    "loop": 2,
+    "passed": true,
+    "stop_reason": "passed",
+    "verifier_submissions": 1,
+    "input_tokens": 133548,
+    "output_tokens": 4476,
+    "cache_read_tokens": 116352,
+    "cache_write_tokens": 0,
+    "turns": 21,
+    "agent_steps": 21,
+    "peak_context_tokens": 9997,
+    "provider": null,
+    "inference_gateway": "openrouter",
+    "upstream_provider": "moonshotai",
+    "requested_model": "openrouter/moonshotai/kimi-k2.7-code",
+    "resolved_model": null,
+    "model_variant": null,
+    "reasoning_effort": null,
+    "reasoning_tokens": 0,
+    "temperature": null,
+    "sampling_config": {
+      "config_file": "configs/mini-swe-agent-repair-loop-preview.yaml",
+      "model_name": "openrouter/moonshotai/kimi-k2.7-code",
+      "model_kwargs": {
+        "max_tokens": 8192
+      }
+    },
+    "gateway_reported_cost_usd": 0.051119448,
+    "agent": "shallowswe-resumable-mini-swe-agent",
+    "agent_version": null,
+    "runner": "pier-private-repair-loop-pilot",
+    "runner_version": "1ad573839eb0b98830642bdac42b37988bdccd80",
+    "scaffold_prompt_hash": "530113f4566e2bd5d40a7e15ab7992f8d81d665ff31ebebc29bd2b325d506ee1",
+    "token_source": null,
+    "task_version": "config-key-rollover@local",
+    "task_suite_version": "shallowswe-v0.2-large-replacement-candidate-2026-07-05",
+    "verifier_hash": "sha256:cfa67664d301a9dc67ab5accc43152991740ff0c248adc61787b4752a181131e",
+    "environment_image_digest": "sha256:fa31247a042b257a9113fcf9aee8916dfbfd68ba8758033c74fe482c967a38ff",
+    "repo_commit_sha": "1ad573839eb0b98830642bdac42b37988bdccd80",
+    "price_sheet_version": "openrouter-2026-07-03",
+    "price_sheet_date": "2026-07-03",
+    "seed": 2,
+    "run_id": "shallowswe_repair_loop_preview_n3_18_v02_config_rollover_20260706__seed-02__config-key-rollover__mini_swe_agent_kimi_k2_7_code_default",
+    "task_visibility": "local-hidden-verifier",
+    "transcript_hash": "80477e61b5ffc7097aa95648a2cfae5fa04c0f640a11d9906bf26f083983c464",
+    "status": "scored",
+    "exclusion_reason": null,
+    "started_at": "2026-07-06T17:37:39.106285+00:00",
+    "finished_at": "2026-07-06T17:39:26.448427+00:00",
+    "schema_version": "shallowswe.repair_loop.v0.2"
+  }
+}

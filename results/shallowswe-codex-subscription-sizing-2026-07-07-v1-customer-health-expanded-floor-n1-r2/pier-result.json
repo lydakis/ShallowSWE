@@ -1,0 +1,39 @@
+{
+    "id": "4a0df845-e598-4c42-80cd-9caf04e4cc5b",
+    "started_at": "2026-07-07T04:11:54.395255",
+    "updated_at": "2026-07-07T04:14:41.566113",
+    "finished_at": "2026-07-07T04:14:41.566113",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 0,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "shallowswe-codex-subscription__gpt-5.4-mini__tasks": {
+                "n_trials": 1,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 1.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "customer-health-dashboard-screen__eUx3dPt"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
+        },
+        "n_input_tokens": 400106,
+        "n_cache_tokens": 383744,
+        "n_output_tokens": 9593,
+        "cost_usd": 0.0842208
+    }
+}

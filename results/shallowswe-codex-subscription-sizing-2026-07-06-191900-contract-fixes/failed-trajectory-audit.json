@@ -1,0 +1,154 @@
+{
+  "cache_path": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes/failed-trajectory-audit-cache.json",
+  "failed_task_count": 3,
+  "failed_trajectories": [
+    {
+      "exception_type": null,
+      "failure_signature": "AssertionError",
+      "finished_at": "2026-07-06T23:44:22.210790Z",
+      "result_exception": null,
+      "reward": 0.0,
+      "stage": "floor_gpt54mini_low",
+      "started_at": "2026-07-06T23:43:37.842950Z",
+      "task_id": "audit-log-normalization",
+      "trial_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3/audit-log-normalization__VGKwEqb",
+      "trial_name": "audit-log-normalization__VGKwEqb",
+      "verifier_reward_txt": "0",
+      "verifier_stdout_tail": [
+        "Traceback (most recent call last):",
+        "  File \"<stdin>\", line 40, in <module>",
+        "AssertionError"
+      ]
+    },
+    {
+      "exception_type": null,
+      "failure_signature": "AssertionError",
+      "finished_at": "2026-07-06T23:48:43.452351Z",
+      "result_exception": null,
+      "reward": 0.0,
+      "stage": "floor_gpt54mini_low",
+      "started_at": "2026-07-06T23:48:03.398302Z",
+      "task_id": "billing-revenue-rollup",
+      "trial_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3/billing-revenue-rollup__ffJ6hko",
+      "trial_name": "billing-revenue-rollup__ffJ6hko",
+      "verifier_reward_txt": "0",
+      "verifier_stdout_tail": [
+        "Traceback (most recent call last):",
+        "  File \"<stdin>\", line 38, in <module>",
+        "  File \"<stdin>\", line 23, in assert_json",
+        "AssertionError"
+      ]
+    },
+    {
+      "exception_type": null,
+      "failure_signature": "FileNotFoundError: [Errno 2] No such file or directory: '/app/selected_commits.txt'",
+      "finished_at": "2026-07-06T23:48:03.394401Z",
+      "result_exception": null,
+      "reward": 0.0,
+      "stage": "floor_gpt54mini_low",
+      "started_at": "2026-07-06T23:47:22.516532Z",
+      "task_id": "feature-branch-select-commits",
+      "trial_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3/feature-branch-select-commits__mzF7hDP",
+      "trial_name": "feature-branch-select-commits__mzF7hDP",
+      "verifier_reward_txt": "0",
+      "verifier_stdout_tail": [
+        "Traceback (most recent call last):",
+        "  File \"<stdin>\", line 4, in <module>",
+        "  File \"/usr/local/lib/python3.12/pathlib.py\", line 1027, in read_text",
+        "    with self.open(mode='r', encoding=encoding, errors=errors) as f:",
+        "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/usr/local/lib/python3.12/pathlib.py\", line 1013, in open",
+        "    return io.open(self, mode, buffering, encoding, errors, newline)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "FileNotFoundError: [Errno 2] No such file or directory: '/app/selected_commits.txt'"
+      ]
+    }
+  ],
+  "failed_trajectory_count": 3,
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes",
+  "schema_version": "shallowswe.failed_trajectory_audit.v0.1",
+  "summary": {
+    "failed_by_stage": {
+      "floor_gpt54mini_low": 3
+    },
+    "failed_by_task": {
+      "audit-log-normalization": 1,
+      "billing-revenue-rollup": 1,
+      "feature-branch-select-commits": 1
+    },
+    "tasks_needing_human_review": [],
+    "tasks_with_solution_sanity_pass": [
+      "audit-log-normalization",
+      "billing-revenue-rollup",
+      "feature-branch-select-commits"
+    ]
+  },
+  "tasks": {
+    "audit-log-normalization": {
+      "cache_hit": false,
+      "fingerprint": "4eeeb4b570d363e2d7917d72e5b214e0a8553b19324edab38036b45ce0706c93",
+      "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/audit-log-normalization/instruction.md",
+      "official_solution_passed": true,
+      "solution_checks": [
+        {
+          "output_tail": [
+            "__SOLUTION_EXIT__=0",
+            "__VERIFIER_EXIT__=0"
+          ],
+          "solution": "solution",
+          "solution_exit_code": 0,
+          "timed_out": false,
+          "verifier_exit_code": 0,
+          "verifier_passed": true,
+          "verifier_reward_txt": "1"
+        }
+      ],
+      "verdict": "verifier_sanity_passed",
+      "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/audit-log-normalization/tests/test.sh"
+    },
+    "billing-revenue-rollup": {
+      "cache_hit": false,
+      "fingerprint": "b7b6240f66bbc95ff45d5f72d67352ef853264941eb805ce41b9c857bda12445",
+      "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/billing-revenue-rollup/instruction.md",
+      "official_solution_passed": true,
+      "solution_checks": [
+        {
+          "output_tail": [
+            "__SOLUTION_EXIT__=0",
+            "__VERIFIER_EXIT__=0"
+          ],
+          "solution": "solution",
+          "solution_exit_code": 0,
+          "timed_out": false,
+          "verifier_exit_code": 0,
+          "verifier_passed": true,
+          "verifier_reward_txt": "1"
+        }
+      ],
+      "verdict": "verifier_sanity_passed",
+      "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/billing-revenue-rollup/tests/test.sh"
+    },
+    "feature-branch-select-commits": {
+      "cache_hit": false,
+      "fingerprint": "780c9112ecfdd45d88c0f5272817229440843cd7f91941cdca80376f51eca564",
+      "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/feature-branch-select-commits/instruction.md",
+      "official_solution_passed": true,
+      "solution_checks": [
+        {
+          "output_tail": [
+            "__SOLUTION_EXIT__=0",
+            "__VERIFIER_EXIT__=0"
+          ],
+          "solution": "solution",
+          "solution_exit_code": 0,
+          "timed_out": false,
+          "verifier_exit_code": 0,
+          "verifier_passed": true,
+          "verifier_reward_txt": "1"
+        }
+      ],
+      "verdict": "verifier_sanity_passed",
+      "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/feature-branch-select-commits/tests/test.sh"
+    }
+  }
+}

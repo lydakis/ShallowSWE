@@ -1,0 +1,37 @@
+{
+  "jobs_dir": "/private/tmp/shallowswe-pier",
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641",
+  "schema_version": "shallowswe.codex_subscription_sizing.v0.1",
+  "stages": {
+    "ceiling_high": {
+      "failed_task_count": 6,
+      "job_name": "shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_high_n1",
+      "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641/ceiling-gpt55-high-rollouts.json",
+      "status": "complete",
+      "task_count": 8
+    },
+    "ceiling_medium": {
+      "failed_task_count": 8,
+      "job_name": "shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_medium_n1",
+      "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641/ceiling-gpt55-medium-rollouts.json",
+      "status": "complete",
+      "task_count": 47
+    },
+    "ceiling_xhigh": {
+      "failed_task_count": 6,
+      "job_name": "shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_xhigh_n1",
+      "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641/ceiling-gpt55-xhigh-rollouts.json",
+      "status": "complete",
+      "task_count": 6
+    },
+    "floor_gpt54mini_low": {
+      "attempts_per_task": 3,
+      "job_name": "shallowswe_codex_sub_sizing_2026-07-06-141641_floor_gpt54mini_low_n3",
+      "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641/floor-gpt54mini-low-rollouts.json",
+      "status": "complete",
+      "task_count": 47
+    }
+  },
+  "stamp": "2026-07-06-141641",
+  "task_count": 47
+}

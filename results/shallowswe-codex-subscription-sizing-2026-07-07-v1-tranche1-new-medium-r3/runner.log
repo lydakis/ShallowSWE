@@ -1,0 +1,27 @@
+$ uv run shallowswe tasks /Users/lydakis/Developer/ShallowSWE/tasks
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-07-v1-tranche1-new-medium-r3_ceiling_gpt55_medium_n1 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 1 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.5 --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=medium --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name access-log-sessionize --include-task-name billing-proration-schedule --include-task-name notification-locale-fallback --include-task-name retry-policy-migration --include-task-name status-fanout-reconcile --include-task-name ticket-bulk-triage
+  6/6 Mean: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:08:03 0:00:00
+
+tasks • shallowswe-codex-subscription • gpt-5.5
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      6 │          0 │ 1.000 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 1.0    │     6 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 8m 3s
+Results written to 
+/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-tranche1-
+new-medium-r3_ceiling_gpt55_medium_n1/result.json
+Inspect results by running `pier view /private/tmp/shallowswe-pier`
+
+$ uv run shallowswe export-pier /private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-tranche1-new-medium-r3_ceiling_gpt55_medium_n1 --tasks-root /Users/lydakis/Developer/ShallowSWE/tasks > /Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-tranche1-new-medium-r3/ceiling-gpt55-medium-rollouts.json
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-07-v1-tranche1-new-medium-r3_floor_gpt54mini_low_n3 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 3 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.4-mini --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=low --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name access-log-sessionize --include-task-name billing-proration-schedule --include-task-name notification-locale-fallback --include-task-name retry-policy-migration --include-task-name status-fanout-reconcile --include-task-name ticket-bulk-triage
+$ uv run shallowswe tasks /Users/lydakis/Developer/ShallowSWE/tasks

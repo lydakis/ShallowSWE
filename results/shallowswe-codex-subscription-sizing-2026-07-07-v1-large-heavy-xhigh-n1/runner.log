@@ -1,0 +1,51 @@
+$ uv run shallowswe tasks /Users/lydakis/Developer/ShallowSWE/tasks
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 1 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.5 --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=xhigh --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name billing-revenue-rollup --include-task-name config-key-rollover --include-task-name customer-health-dashboard-screen --include-task-name feature-entitlements-admin-screen --include-task-name incident-comms-pipeline --include-task-name invoice-multi-source-merge --include-task-name ledger-schema-upgrade --include-task-name release-train-reconcile --include-task-name renewal-risk-admin-screen --include-task-name status-fanout-reconcile --include-task-name ticket-update-dont-duplicate
+  11/11 Mean: 0.818 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:44:44 0:00:00
+
+tasks • shallowswe-codex-subscription • gpt-5.5
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│     11 │          0 │ 0.818 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 1.0    │     9 │
+│ 0.0    │     2 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 44m 44s
+Results written to 
+/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-hea
+vy-xhigh-n1_ceiling_gpt55_xhigh_n1/result.json
+Inspect results by running `pier view /private/tmp/shallowswe-pier`
+
+$ uv run shallowswe export-pier /private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_ceiling_gpt55_xhigh_n1 --tasks-root /Users/lydakis/Developer/ShallowSWE/tasks > /Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_floor_gpt54mini_low_n1 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 1 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.4-mini --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=low --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name billing-revenue-rollup --include-task-name config-key-rollover --include-task-name customer-health-dashboard-screen --include-task-name feature-entitlements-admin-screen --include-task-name incident-comms-pipeline --include-task-name invoice-multi-source-merge --include-task-name ledger-schema-upgrade --include-task-name release-train-reconcile --include-task-name renewal-risk-admin-screen --include-task-name status-fanout-reconcile --include-task-name ticket-update-dont-duplicate
+  11/11 Mean: 0.273 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:17:57 0:00:00
+
+tasks • shallowswe-codex-subscription • gpt-5.4-mini
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│     11 │          0 │ 0.273 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 0.0    │     8 │
+│ 1.0    │     3 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 17m 57s
+Results written to 
+/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-hea
+vy-xhigh-n1_floor_gpt54mini_low_n1/result.json
+Inspect results by running `pier view /private/tmp/shallowswe-pier`
+
+$ uv run shallowswe export-pier /private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-large-heavy-xhigh-n1_floor_gpt54mini_low_n1 --tasks-root /Users/lydakis/Developer/ShallowSWE/tasks > /Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-large-heavy-xhigh-n1/floor-gpt54mini-low-rollouts.json

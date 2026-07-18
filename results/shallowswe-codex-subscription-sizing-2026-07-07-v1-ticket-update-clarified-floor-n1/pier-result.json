@@ -1,0 +1,39 @@
+{
+    "id": "6dd6b26c-f706-451d-b91e-9ceefe00f2f4",
+    "started_at": "2026-07-07T09:13:52.564363",
+    "updated_at": "2026-07-07T09:15:09.725169",
+    "finished_at": "2026-07-07T09:15:09.725169",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 0,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "shallowswe-codex-subscription__gpt-5.4-mini__tasks": {
+                "n_trials": 1,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 1.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "ticket-update-dont-duplicate__zzv99yv"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
+        },
+        "n_input_tokens": 138534,
+        "n_cache_tokens": 128128,
+        "n_output_tokens": 2782,
+        "cost_usd": 0.029933099999999997
+    }
+}

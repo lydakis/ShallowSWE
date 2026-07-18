@@ -1,0 +1,18 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_budget_estimate.v0.1",
+  "name": "shallowswe-floor-recal-oneshot-n3",
+  "generated_at": "2026-07-05T09:30:00+00:00",
+  "basis": "Observed per-row gateway costs from results/shallowswe-repair-loop-preview-n3-18-clean-2026-07-05 (post-fix clean run, seed 0): gemini-3.5-flash[medium] $0.303/row, glm-5.2[high] $0.015/row, kimi-k2.7-code $0.036/row. One-shot rows (submission cap 1) are expected to cost at or below these repair-loop rows.",
+  "estimated_total_rows": 162,
+  "rows_per_model_config": 54,
+  "estimates": {
+    "observed_clean_run_rates": {
+      "estimated_full_panel_cost_usd": 19.12,
+      "notes": "54 rows x (0.303 + 0.015 + 0.036) USD"
+    },
+    "conservative_1_5x": {
+      "estimated_full_panel_cost_usd": 28.68,
+      "notes": "1.5x margin over observed rates for one-shot trajectory variance"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": "shallowswe.development_rehearsal.v0.1",
+  "valid": true,
+  "manifest": "shallowswe-six-task-pilot-v0.3",
+  "evidence_class": "development_dry_run",
+  "release_class": "development_dry_run",
+  "rows": 114,
+  "scripted_stop_reasons": {
+    "agent_step_cap": 1,
+    "dollar_cap": 1,
+    "passed": 2,
+    "runner_exception": 1,
+    "verifier_submission_cap": 1
+  },
+  "stage4_policy_status": "development_proposal",
+  "selected_policy": {
+    "verifier_submission_cap": 2,
+    "agent_step_cap": 32,
+    "cap_disclosure": "undisclosed"
+  },
+  "confirmation_check": "rejected_6_of_8_as_expected",
+  "zero_success_cells": 1,
+  "underfilled_workload_cells": 6,
+  "official_launch_guard": "blocked_as_expected",
+  "mixed_evidence_guard": "rejected_as_expected",
+  "human_routine_review_used": false,
+  "metered_model_calls": 0,
+  "official_evidence_produced": false
+}

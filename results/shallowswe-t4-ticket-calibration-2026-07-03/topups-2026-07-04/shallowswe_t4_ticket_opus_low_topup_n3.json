@@ -1,0 +1,46 @@
+[
+  {
+    "model": "anthropic/claude-opus-4.8",
+    "task_id": "ticket-state-reconcile",
+    "category": "invoke",
+    "tier": "t4",
+    "rollout": 0,
+    "passed": false,
+    "input_tokens": 70376,
+    "output_tokens": 3361,
+    "cache_read_tokens": 59929,
+    "cache_write_tokens": 10429,
+    "turns": 9,
+    "peak_context_tokens": 12789,
+    "provider": "openrouter",
+    "inference_gateway": "openrouter",
+    "upstream_provider": "anthropic",
+    "requested_model": "anthropic/claude-opus-4.8",
+    "resolved_model": "anthropic/claude-4.8-opus-20260528",
+    "model_variant": null,
+    "reasoning_effort": "low",
+    "reasoning_tokens": 144,
+    "temperature": null,
+    "sampling_config": {
+      "model_kwargs": {
+        "drop_params": true,
+        "reasoning_effort": "low",
+        "max_tokens": 4096
+      },
+      "set_cache_control": "default_end",
+      "cost_tracking": "ignore_errors"
+    },
+    "gateway_reported_cost_usd": 0.17926075000000002,
+    "agent": "mini-swe-agent",
+    "agent_version": "2.4.4",
+    "runner": "pier",
+    "runner_version": "0.3.0",
+    "scaffold_prompt_hash": "09a0b38b96a5c6ba1581a2846dcd1f8194b966ec4b1742d312e446447b9dd55f",
+    "token_source": "pier_atif_final_metrics_reconciled",
+    "status": "scored",
+    "exclusion_reason": null,
+    "started_at": "2026-07-04T05:10:02.921750Z",
+    "finished_at": "2026-07-04T05:11:08.828901Z",
+    "schema_version": "shallowswe.result.v0.2"
+  }
+]

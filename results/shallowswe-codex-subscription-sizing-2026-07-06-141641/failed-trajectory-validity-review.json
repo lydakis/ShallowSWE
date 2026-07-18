@@ -1,0 +1,99 @@
+{
+  "schema_version": "shallowswe.failed_trajectory_validity_review.v0.1",
+  "snapshot": {
+    "failed_task_count": 18,
+    "failed_trajectory_count": 53
+  },
+  "tasks": {
+    "audit-log-normalization": {
+      "classification": "verifier_prompt_contract_issue",
+      "confidence": "high",
+      "summary": "Prompt does not specify exact output file names, JSON shape, CSV columns, or reject reason literals required by verifier."
+    },
+    "billing-revenue-rollup": {
+      "classification": "borderline_prompt_issue",
+      "confidence": "medium",
+      "summary": "Prompt names summary keys but does not say open_disputes is a count; verifier expects count, not amount."
+    },
+    "config-key-rollover": {
+      "classification": "legitimate_model_miss",
+      "confidence": "high",
+      "summary": "Prompt explicitly requires migrating env fixtures and docs to DISPATCH_VISIBILITY; failure left old key in fixture."
+    },
+    "customer-health-dashboard-screen": {
+      "classification": "legitimate_model_miss",
+      "confidence": "medium",
+      "summary": "Prompt defines metrics, risk calculation, HTML contract, routes, selectors, and tests; failure was calculation/output mismatch."
+    },
+    "deployment-approval-reconcile": {
+      "classification": "legitimate_model_miss",
+      "confidence": "medium",
+      "summary": "Prompt defines state reconciliation, blockers, ordering, audit rows, and idempotency; failure was state/audit mismatch."
+    },
+    "feature-branch-select-commits": {
+      "classification": "verifier_prompt_contract_issue",
+      "confidence": "high",
+      "summary": "Verifier requires selected_commits.txt and retry semantics that are not stated and not derivable from metadata-only commit payloads."
+    },
+    "feature-entitlements-admin-screen": {
+      "classification": "legitimate_model_miss",
+      "confidence": "medium",
+      "summary": "Prompt defines routes, selector behavior, entitlement calculation, HTML contracts, and regression tests; failure was metric/row mismatch."
+    },
+    "incident-comms-pipeline": {
+      "classification": "legitimate_model_miss",
+      "confidence": "medium",
+      "summary": "Prompt defines processing order, notification keys, call-log behavior, and idempotency; failure included extra mutation/call-log behavior."
+    },
+    "invoice-multi-source-merge": {
+      "classification": "legitimate_model_miss",
+      "confidence": "high",
+      "summary": "Prompt explicitly defines dates, precedence, rejects, schemas, sorting, and summary keys; failures were formatting/reject-precedence mistakes."
+    },
+    "ledger-schema-upgrade": {
+      "classification": "legitimate_model_miss",
+      "confidence": "high",
+      "summary": "Prompt explicitly defines exact files, schemas, ordering, reject reasons, and summary totals; failure was totals/schema mismatch."
+    },
+    "markdown-table-inventory": {
+      "classification": "verifier_prompt_contract_issue",
+      "confidence": "high",
+      "summary": "Prompt names output files but does not specify summary.json shape; verifier expects active_services and teams keys."
+    },
+    "release-branch-cherry-pick": {
+      "classification": "verifier_prompt_contract_issue",
+      "confidence": "high",
+      "summary": "Prompt explicitly names 9f1-release-note and release/1.4, while hidden verifier expects a different branch and patch ID."
+    },
+    "release-train-reconcile": {
+      "classification": "legitimate_model_miss",
+      "confidence": "medium",
+      "summary": "Prompt defines ordering, idempotency, changelog, tag, audit, and forbidden operations; failure was ordering/idempotency behavior."
+    },
+    "renewal-risk-admin-screen": {
+      "classification": "legitimate_model_miss",
+      "confidence": "high",
+      "summary": "Prompt explicitly defines stale_usage risk reason and exact fields; failure omitted stale_usage."
+    },
+    "strip-sort-allowlist": {
+      "classification": "legitimate_model_miss",
+      "confidence": "high",
+      "summary": "Prompt is small and exact; failure was script runtime failure."
+    },
+    "subscription-summary-report": {
+      "classification": "verifier_prompt_contract_issue",
+      "confidence": "high",
+      "summary": "Prompt does not specify exact summary key names; verifier expects active_accounts, churned_accounts, and mrr."
+    },
+    "ticket-state-reconcile": {
+      "classification": "borderline_strictness",
+      "confidence": "medium",
+      "summary": "Prompt implies manifest external_key spelling on canonical ticket, but not explicitly for every audit row; verifier checks exact audit external_key spelling."
+    },
+    "ticket-update-dont-duplicate": {
+      "classification": "legitimate_model_miss",
+      "confidence": "high",
+      "summary": "Prompt explicitly defines ticket count, exact call-log line, comment requirement, and priority update; failures were script runtime failures."
+    }
+  }
+}

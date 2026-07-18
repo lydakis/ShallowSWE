@@ -1,0 +1,24 @@
+{
+  "schema_version": "shallowswe.failed_trajectory_validity_review.v0.1",
+  "snapshot": {
+    "failed_task_count": 3,
+    "failed_trajectory_count": 3
+  },
+  "tasks": {
+    "audit-log-normalization": {
+      "classification": "legitimate_model_miss",
+      "confidence": "high",
+      "summary": "Prompt now requires rejects.csv line,reason and malformed_line; failure wrote row number 3 instead of malformed line text."
+    },
+    "billing-revenue-rollup": {
+      "classification": "legitimate_model_miss",
+      "confidence": "high",
+      "summary": "Prompt now clarifies open_disputes count; failure wrote recognized_revenue as a string rather than numeric JSON value."
+    },
+    "feature-branch-select-commits": {
+      "classification": "legitimate_model_miss",
+      "confidence": "high",
+      "summary": "Prompt now explicitly requires selected_commits.txt at repository root; failure wrote it under repo/."
+    }
+  }
+}

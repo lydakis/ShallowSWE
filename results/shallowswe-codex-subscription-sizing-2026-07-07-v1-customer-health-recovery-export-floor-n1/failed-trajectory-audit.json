@@ -1,0 +1,90 @@
+{
+  "cache_path": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-floor-n1/failed-trajectory-audit-cache.json",
+  "failed_task_count": 1,
+  "failed_trajectories": [
+    {
+      "exception_type": null,
+      "failure_signature": "AssertionError: 'monitoring' != 'engagement_restart'",
+      "finished_at": "2026-07-07T10:41:49.666428Z",
+      "result_exception": null,
+      "reward": 0.0,
+      "stage": "floor_gpt54mini_low",
+      "started_at": "2026-07-07T10:38:36.325771Z",
+      "task_id": "customer-health-dashboard-screen",
+      "trial_dir": "/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-07-v1-customer-health-recovery-export-floor-n1_floor_gpt54mini_low_n1/customer-health-dashboard-screen__JaKkoeU",
+      "trial_name": "customer-health-dashboard-screen__JaKkoeU",
+      "verifier_reward_txt": "0",
+      "verifier_stdout_tail": [
+        "  File \"<stdin>\", line 777, in assert_export",
+        "AssertionError: {'action_rows': [{'account': 'Drift Labs', [4946 chars]: 4}} != {'report_date': '2026-08-01', 'dashboard_ro[5642 chars]000}}",
+        "Diff is 10465 characters long. Set self.maxDiff to None to see it.",
+        "",
+        "======================================================================",
+        "FAIL: test_visible_fixture_exact (__main__.CustomerHealthVerifier.test_visible_fixture_exact)",
+        "----------------------------------------------------------------------",
+        "Traceback (most recent call last):",
+        "  File \"<stdin>\", line 822, in test_visible_fixture_exact",
+        "  File \"<stdin>\", line 783, in assert_all_routes",
+        "  File \"<stdin>\", line 771, in assert_recovery_plan",
+        "AssertionError: 'monitoring' != 'engagement_restart'",
+        "- monitoring",
+        "+ engagement_restart",
+        " : ('acct-200', 'recovery_stage')",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 4 tests in 0.779s",
+        "",
+        "FAILED (failures=2)"
+      ]
+    }
+  ],
+  "failed_trajectory_count": 1,
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-customer-health-recovery-export-floor-n1",
+  "schema_version": "shallowswe.failed_trajectory_audit.v0.1",
+  "summary": {
+    "failed_by_stage": {
+      "floor_gpt54mini_low": 1
+    },
+    "failed_by_task": {
+      "customer-health-dashboard-screen": 1
+    },
+    "tasks_needing_human_review": [],
+    "tasks_with_solution_sanity_pass": [
+      "customer-health-dashboard-screen"
+    ]
+  },
+  "tasks": {
+    "customer-health-dashboard-screen": {
+      "cache_hit": false,
+      "fingerprint": "de4126d624e0ebd971cc7f92c4e24cf5a8292f8c55c27e8cdf62cb0bfea647c3",
+      "instruction_path": "/Users/lydakis/Developer/ShallowSWE/tasks/customer-health-dashboard-screen/instruction.md",
+      "official_solution_passed": true,
+      "solution_checks": [
+        {
+          "output_tail": [
+            "__SOLUTION_EXIT__=0",
+            ".....",
+            "----------------------------------------------------------------------",
+            "Ran 3 tests in 0.225s",
+            "",
+            "OK",
+            "..",
+            "----------------------------------------------------------------------",
+            "Ran 4 tests in 0.761s",
+            "",
+            "OK",
+            "__VERIFIER_EXIT__=0"
+          ],
+          "solution": "solution",
+          "solution_exit_code": 0,
+          "timed_out": false,
+          "verifier_exit_code": 0,
+          "verifier_passed": true,
+          "verifier_reward_txt": "1"
+        }
+      ],
+      "verdict": "verifier_sanity_passed",
+      "verifier_path": "/Users/lydakis/Developer/ShallowSWE/tasks/customer-health-dashboard-screen/tests/test.sh"
+    }
+  }
+}

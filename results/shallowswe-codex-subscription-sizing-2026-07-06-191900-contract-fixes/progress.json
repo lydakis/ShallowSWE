@@ -1,0 +1,323 @@
+{
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-191900-contract-fixes",
+  "schema_version": "shallowswe.codex_subscription_progress.v0.2",
+  "stages": {
+    "diagnostic_gpt55_high": {
+      "status": "not_started"
+    },
+    "diagnostic_gpt55_xhigh": {
+      "status": "not_started"
+    },
+    "fixed_ceiling_gpt55_medium": {
+      "active_or_pending_trial_dirs": [],
+      "completed": 7,
+      "completed_tasks": [
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:37:56.340227Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:36:43.332309Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__Cq2fTv7"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:31:46.613750Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:30:14.448434Z",
+          "task_id": "billing-revenue-rollup",
+          "trial_name": "billing-revenue-rollup__BGhRA3m"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:30:14.445025Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:28:58.608253Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__sobh9oN"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:36:43.328865Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:35:49.231560Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__CVbNAt4"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:28:58.604526Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:27:16.391253Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__YAU7aLK"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:35:49.227639Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:31:46.617396Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__5Qhij4E"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:27:16.386194Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:24:15.889247Z",
+          "task_id": "ticket-state-reconcile",
+          "trial_name": "ticket-state-reconcile__JK6qacT"
+        }
+      ],
+      "exceptions": 0,
+      "failures": 0,
+      "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1",
+      "job_dirs": [
+        "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_ceiling_gpt55_medium_n1"
+      ],
+      "passes": 7,
+      "status": "complete",
+      "trial_dirs": 7
+    },
+    "floor_gpt54mini_low": {
+      "active_or_pending_trial_dirs": [],
+      "completed": 21,
+      "completed_tasks": [
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:57:07.977910Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:56:13.913591Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__QfCuwG9"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:44:22.210790Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T23:43:37.842950Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__VGKwEqb"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:50:44.822437Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:50:03.211041Z",
+          "task_id": "audit-log-normalization",
+          "trial_name": "audit-log-normalization__kRGbG6J"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:54:52.849475Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:53:58.157336Z",
+          "task_id": "billing-revenue-rollup",
+          "trial_name": "billing-revenue-rollup__8uT7tKp"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:48:43.452351Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T23:48:03.398302Z",
+          "task_id": "billing-revenue-rollup",
+          "trial_name": "billing-revenue-rollup__ffJ6hko"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:42:07.621679Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:41:23.793817Z",
+          "task_id": "billing-revenue-rollup",
+          "trial_name": "billing-revenue-rollup__uSMEbD2"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:53:58.154032Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:53:05.247496Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__LD6XYTF"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:48:03.394401Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": false,
+          "reward": 0.0,
+          "started_at": "2026-07-06T23:47:22.516532Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__mzF7hDP"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:41:23.790767Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:40:47.009602Z",
+          "task_id": "feature-branch-select-commits",
+          "trial_name": "feature-branch-select-commits__sQy8odm"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:56:13.908511Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:55:29.229981Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__RBg6XyR"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:43:37.839688Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:42:49.422934Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__SrQ4s2P"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:50:03.208152Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:49:25.322447Z",
+          "task_id": "markdown-table-inventory",
+          "trial_name": "markdown-table-inventory__cpLTjjH"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:53:05.243788Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:52:02.536085Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__HzxAH4w"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:47:22.511493Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:46:31.697435Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__XE3zqKU"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:40:47.006632Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:40:02.211350Z",
+          "task_id": "release-branch-cherry-pick",
+          "trial_name": "release-branch-cherry-pick__rB957Si"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:55:29.226705Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:54:52.852235Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__ZcaCgHm"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:49:25.318937Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:48:43.456428Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__coA2EoS"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:42:49.419614Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:42:07.627339Z",
+          "task_id": "subscription-summary-report",
+          "trial_name": "subscription-summary-report__hTzXCRX"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:40:02.207702Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:38:01.415706Z",
+          "task_id": "ticket-state-reconcile",
+          "trial_name": "ticket-state-reconcile__DukCfNP"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:46:31.694230Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:44:22.213981Z",
+          "task_id": "ticket-state-reconcile",
+          "trial_name": "ticket-state-reconcile__faP8L5m"
+        },
+        {
+          "exception_type": null,
+          "finished_at": "2026-07-06T23:52:02.532744Z",
+          "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+          "passed": true,
+          "reward": 1.0,
+          "started_at": "2026-07-06T23:50:44.825565Z",
+          "task_id": "ticket-state-reconcile",
+          "trial_name": "ticket-state-reconcile__oxKDwJw"
+        }
+      ],
+      "exceptions": 0,
+      "failures": 3,
+      "job_dir": "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3",
+      "job_dirs": [
+        "/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-191900-contract-fixes_floor_gpt54mini_low_n3"
+      ],
+      "passes": 18,
+      "status": "complete",
+      "trial_dirs": 21
+    }
+  },
+  "task_count": 7
+}

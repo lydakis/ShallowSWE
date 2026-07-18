@@ -1,0 +1,62 @@
+{
+  "schema_version": "shallowswe.one_shot_ceiling_gate.v0.1",
+  "pass_threshold": 0.75,
+  "target_rollouts": 1,
+  "accept_min_passes": 1,
+  "investigate_min_passes": 0,
+  "model_summaries": [
+    {
+      "model_config": "openai/gpt-5.5[medium]",
+      "tasks": 3,
+      "attempts": 3,
+      "passes": 2,
+      "diagnostic_pass_rate": 0.6666666666666666,
+      "decision_counts": {
+        "accept": 2,
+        "investigate": 1
+      },
+      "clears_gate": false
+    }
+  ],
+  "tasks": [
+    {
+      "model_config": "openai/gpt-5.5[medium]",
+      "task_id": "dispatch-planner-split-parity",
+      "category": "code",
+      "size": "large",
+      "attempts": 1,
+      "passes": 1,
+      "pass_rate": 1.0,
+      "pass_threshold": 0.75,
+      "target_rollouts": 1,
+      "missing_rollouts": 0,
+      "decision": "accept"
+    },
+    {
+      "model_config": "openai/gpt-5.5[medium]",
+      "task_id": "ledger-restatement-audit",
+      "category": "artifact",
+      "size": "large",
+      "attempts": 1,
+      "passes": 1,
+      "pass_rate": 1.0,
+      "pass_threshold": 0.75,
+      "target_rollouts": 1,
+      "missing_rollouts": 0,
+      "decision": "accept"
+    },
+    {
+      "model_config": "openai/gpt-5.5[medium]",
+      "task_id": "release-train-reconcile",
+      "category": "workflow",
+      "size": "large",
+      "attempts": 1,
+      "passes": 0,
+      "pass_rate": 0.0,
+      "pass_threshold": 0.75,
+      "target_rollouts": 1,
+      "missing_rollouts": 0,
+      "decision": "investigate"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+$ uv run shallowswe tasks /Users/lydakis/Developer/ShallowSWE/tasks
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_medium_n1 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 1 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.5 --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=medium --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name access-log-to-incidents --include-task-name api-pagination-consistency --include-task-name audit-log-normalization --include-task-name auth-token-expiry-regression --include-task-name billing-revenue-rollup --include-task-name cache-invalidates-on-settings-change --include-task-name config-flag-ignored --include-task-name config-key-rollover --include-task-name customer-health-dashboard-screen --include-task-name date-window-inclusive --include-task-name dependency-api-rename --include-task-name deployment-approval-reconcile --include-task-name dispatch-planner-split-parity --include-task-name env-flags-to-json --include-task-name extract-error-fields --include-task-name feature-branch-select-commits --include-task-name feature-entitlements-admin-screen --include-task-name incident-comms-pipeline --include-task-name invoice-cli-regression-test-fix --include-task-name invoice-multi-source-merge --include-task-name ledger-restatement-audit --include-task-name ledger-schema-upgrade --include-task-name markdown-table-inventory --include-task-name merge-divergent-config-branches --include-task-name move-module-fix-imports --include-task-name payout-reconcile --include-task-name post-build-status --include-task-name py-normalize-username --include-task-name release-branch-cherry-pick --include-task-name release-train-reconcile --include-task-name rename-helper-symbol --include-task-name renewal-risk-admin-screen --include-task-name report-json-format --include-task-name retry-error-fallback --include-task-name settings-null-default --include-task-name spec-to-release-checklist --include-task-name split-notification-renderer --include-task-name status-terminal-parity --include-task-name strip-sort-allowlist --include-task-name subscription-summary-report --include-task-name support-metrics-package --include-task-name support-sla-business-hours --include-task-name ticket-cut-from-bug-report --include-task-name ticket-state-reconcile --include-task-name ticket-update-dont-duplicate --include-task-name user-export-field-rename --include-task-name webhook-idempotency-parity
+  47/47 Mean: 0.830 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1:22:08 0:00:00
+
+tasks • shallowswe-codex-subscription • gpt-5.5
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│     47 │          0 │ 0.830 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 0.0    │     8 │
+│ 1.0    │    39 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 1h 22m 8s
+Results written to 
+/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_ceili
+ng_gpt55_medium_n1/result.json
+Inspect results by running `pier view /private/tmp/shallowswe-pier`
+
+$ uv run shallowswe export-pier /private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_medium_n1 --tasks-root /Users/lydakis/Developer/ShallowSWE/tasks > /Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641/ceiling-gpt55-medium-rollouts.json
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_high_n1 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 1 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.5 --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=high --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name audit-log-normalization --include-task-name customer-health-dashboard-screen --include-task-name deployment-approval-reconcile --include-task-name feature-branch-select-commits --include-task-name incident-comms-pipeline --include-task-name markdown-table-inventory --include-task-name release-branch-cherry-pick --include-task-name subscription-summary-report
+  8/8 Mean: 0.250 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:16:45 0:00:00
+
+tasks • shallowswe-codex-subscription • gpt-5.5
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      8 │          0 │ 0.250 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 1.0    │     2 │
+│ 0.0    │     6 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 16m 45s
+Results written to 
+/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_ceili
+ng_gpt55_high_n1/result.json
+Inspect results by running `pier view /private/tmp/shallowswe-pier`
+
+$ uv run shallowswe export-pier /private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_high_n1 --tasks-root /Users/lydakis/Developer/ShallowSWE/tasks > /Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641/ceiling-gpt55-high-rollouts.json
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_xhigh_n1 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 1 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.5 --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=xhigh --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name audit-log-normalization --include-task-name feature-branch-select-commits --include-task-name incident-comms-pipeline --include-task-name markdown-table-inventory --include-task-name release-branch-cherry-pick --include-task-name subscription-summary-report
+  6/6 Mean: 0.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:16:21 0:00:00
+
+tasks • shallowswe-codex-subscription • gpt-5.5
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      6 │          0 │ 0.000 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 0.0    │     6 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 16m 21s
+Results written to 
+/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_ceili
+ng_gpt55_xhigh_n1/result.json
+Inspect results by running `pier view /private/tmp/shallowswe-pier`
+
+$ uv run shallowswe export-pier /private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_ceiling_gpt55_xhigh_n1 --tasks-root /Users/lydakis/Developer/ShallowSWE/tasks > /Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641/ceiling-gpt55-xhigh-rollouts.json
+$ uv run pier run --path /Users/lydakis/Developer/ShallowSWE/tasks --job-name shallowswe_codex_sub_sizing_2026-07-06-141641_floor_gpt54mini_low_n3 --jobs-dir /private/tmp/shallowswe-pier --n-attempts 3 --n-concurrent 1 --agent-import-path shallowswe.pier_agents.codex_subscription_agent:CodexSubscriptionAgent --model openai/gpt-5.4-mini --agent-kwarg version=0.142.0 --agent-kwarg reasoning_effort=low --agent-env CODEX_FORCE_AUTH_JSON=true --env docker --yes --max-retries 1 --quiet --include-task-name access-log-to-incidents --include-task-name api-pagination-consistency --include-task-name audit-log-normalization --include-task-name auth-token-expiry-regression --include-task-name billing-revenue-rollup --include-task-name cache-invalidates-on-settings-change --include-task-name config-flag-ignored --include-task-name config-key-rollover --include-task-name customer-health-dashboard-screen --include-task-name date-window-inclusive --include-task-name dependency-api-rename --include-task-name deployment-approval-reconcile --include-task-name dispatch-planner-split-parity --include-task-name env-flags-to-json --include-task-name extract-error-fields --include-task-name feature-branch-select-commits --include-task-name feature-entitlements-admin-screen --include-task-name incident-comms-pipeline --include-task-name invoice-cli-regression-test-fix --include-task-name invoice-multi-source-merge --include-task-name ledger-restatement-audit --include-task-name ledger-schema-upgrade --include-task-name markdown-table-inventory --include-task-name merge-divergent-config-branches --include-task-name move-module-fix-imports --include-task-name payout-reconcile --include-task-name post-build-status --include-task-name py-normalize-username --include-task-name release-branch-cherry-pick --include-task-name release-train-reconcile --include-task-name rename-helper-symbol --include-task-name renewal-risk-admin-screen --include-task-name report-json-format --include-task-name retry-error-fallback --include-task-name settings-null-default --include-task-name spec-to-release-checklist --include-task-name split-notification-renderer --include-task-name status-terminal-parity --include-task-name strip-sort-allowlist --include-task-name subscription-summary-report --include-task-name support-metrics-package --include-task-name support-sla-business-hours --include-task-name ticket-cut-from-bug-report --include-task-name ticket-state-reconcile --include-task-name ticket-update-dont-duplicate --include-task-name user-export-field-rename --include-task-name webhook-idempotency-parity
+  141/141 Mean: 0.766 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2:58:01 0:00:00
+
+tasks • shallowswe-codex-subscription • gpt-5.4-mini
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃ Pass@2 ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━┩
+│    141 │          1 │ 0.766 │  0.837 │
+└────────┴────────────┴───────┴────────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 1.0    │   108 │
+│ 0.0    │    33 │
+└────────┴───────┘
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ Exception                 ┃ Count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ NonZeroAgentExitCodeError │     1 │
+└───────────────────────────┴───────┘
+
+Job Info
+Total runtime: 2h 58m 1s
+Results written to 
+/private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_floor
+_gpt54mini_low_n3/result.json
+Inspect results by running `pier view /private/tmp/shallowswe-pier`
+
+$ uv run shallowswe export-pier /private/tmp/shallowswe-pier/shallowswe_codex_sub_sizing_2026-07-06-141641_floor_gpt54mini_low_n3 --tasks-root /Users/lydakis/Developer/ShallowSWE/tasks > /Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-06-141641/floor-gpt54mini-low-rollouts.json
+$ uv run shallowswe tasks /Users/lydakis/Developer/ShallowSWE/tasks
+$ uv run shallowswe tasks /Users/lydakis/Developer/ShallowSWE/tasks

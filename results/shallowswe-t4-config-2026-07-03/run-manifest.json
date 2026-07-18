@@ -1,0 +1,32 @@
+{
+  "schema_version": "shallowswe.run_manifest.v0.1",
+  "name": "shallowswe-t4-config-2026-07-03",
+  "date": "2026-07-03",
+  "purpose": "N=1 T4 sizing sweep for the config-key-rollover shelf-edge probe.",
+  "task_ids": ["config-key-rollover"],
+  "task_status": "plumbing_probe_demote_if_saturated",
+  "panel_basis": "deepswe-v1.1-expanded-pilot plus grouped reasoning-effort execution",
+  "rollouts_per_model_config": 1,
+  "published_leaderboard_eligible": false,
+  "calibration_eligible": false,
+  "decision": "All model configs passed at N=1, so this task should not be accepted as T4 without redesign. Keep as a T4 packaging probe or demote after calibration policy is finalized.",
+  "summary": {
+    "model_config_count": 10,
+    "pass_rate_all": 1.0,
+    "derived_total_cost_usd": 1.64673784,
+    "total_tokens": 1089592,
+    "max_turns": 33
+  },
+  "pier_jobs": [
+    "/tmp/shallowswe-pier-t4/shallowswe_t4_config_low",
+    "/tmp/shallowswe-pier-t4/shallowswe_t4_config_medium",
+    "/tmp/shallowswe-pier-t4/shallowswe_t4_config_glm_high",
+    "/tmp/shallowswe-pier-t4/shallowswe_t4_config_kimi_default"
+  ],
+  "artifacts": {
+    "rollouts": "results/shallowswe-t4-config-2026-07-03/rollouts.json",
+    "aggregate_by_model": "results/shallowswe-t4-config-2026-07-03/aggregate-by-model.json",
+    "aggregate_by_task_model": "results/shallowswe-t4-config-2026-07-03/aggregate-by-task-model.json",
+    "workload_index": "results/shallowswe-t4-config-2026-07-03/workload-index.json"
+  }
+}

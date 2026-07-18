@@ -1,0 +1,4 @@
+running 6/540 env-flags-to-json openrouter/anthropic/claude-sonnet-5[medium] seed=0 spend=$0.2670
+running 7/540 env-flags-to-json openrouter/anthropic/claude-opus-4.8[medium] seed=0 spend=$0.2670
+running 76/540 retry-error-fallback openrouter/anthropic/claude-fable-5[low] seed=0 spend=$8.6635
+running 77/540 retry-error-fallback openrouter/openai/gpt-5.5[medium] seed=0 spend=$8.6635

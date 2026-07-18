@@ -1,0 +1,176 @@
+{
+  "schema_version": "shallowswe.calibration_budget.v0.1",
+  "date": "2026-07-04",
+  "policy": {
+    "ceiling_admission": "primary ceiling only; optional independent audit runs only on primary failures before task-QA eviction; no fallback or cascade",
+    "ceiling_gate": "75% one-shot; at N=16, 12/16 accepts, 11/16 investigates, <=10/16 fixes or evicts",
+    "floor_selection": "cheap candidate panel one-shot sweep; final size from selected floor pass-rate bands",
+    "expensive_run_rule": "use conservative estimate as spend guard; observed smoke estimate is diagnostic only"
+  },
+  "conservative_estimates": {
+    "ceiling_primary_n16": {
+      "schema_version": "shallowswe.budget.v0.1",
+      "panel": "shallowswe-ceiling-primary-v0.1-derived",
+      "panel_status": "calibration",
+      "task_count": 36,
+      "rollouts_per_task": 16,
+      "estimated_attempts_per_row": 576,
+      "estimated_total_attempts": 576,
+      "token_basis": {
+        "input_tokens": 150000,
+        "output_tokens": 8000,
+        "cache_read_tokens": 100000,
+        "cache_write_tokens": 0,
+        "peak_context_tokens": 2000
+      },
+      "rows": 1,
+      "priced_rows": 1,
+      "missing_price_rows": 0,
+      "priced_subset_cost_usd": 311.04,
+      "estimated_full_panel_cost_usd": 311.04,
+      "budget_limit_usd": 200,
+      "over_budget": true,
+      "row_estimates": [
+        {
+          "id": "ceiling_gpt_5_5_xhigh",
+          "model": "openai/gpt-5.5",
+          "upstream_provider": "openai",
+          "reasoning_effort": "xhigh",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.54,
+          "estimated_row_cost_usd": 311.04
+        }
+      ],
+      "missing_prices": []
+    },
+    "ceiling_full_panel_if_run_all_rows_n16_not_protocol_default": {
+      "schema_version": "shallowswe.budget.v0.1",
+      "panel": "shallowswe-ceiling-v0.1",
+      "panel_status": "calibration",
+      "task_count": 36,
+      "rollouts_per_task": 16,
+      "estimated_attempts_per_row": 576,
+      "estimated_total_attempts": 1152,
+      "token_basis": {
+        "input_tokens": 150000,
+        "output_tokens": 8000,
+        "cache_read_tokens": 100000,
+        "cache_write_tokens": 0,
+        "peak_context_tokens": 2000
+      },
+      "rows": 2,
+      "priced_rows": 2,
+      "missing_price_rows": 0,
+      "priced_subset_cost_usd": 599.04,
+      "estimated_full_panel_cost_usd": 599.04,
+      "budget_limit_usd": 200,
+      "over_budget": true,
+      "row_estimates": [
+        {
+          "id": "ceiling_gpt_5_5_xhigh",
+          "model": "openai/gpt-5.5",
+          "upstream_provider": "openai",
+          "reasoning_effort": "xhigh",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.54,
+          "estimated_row_cost_usd": 311.04
+        },
+        {
+          "id": "ceiling_audit_claude_opus_4_8_medium",
+          "model": "anthropic/claude-opus-4.8",
+          "upstream_provider": "anthropic",
+          "reasoning_effort": "medium",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.5,
+          "estimated_row_cost_usd": 288.0
+        }
+      ],
+      "missing_prices": []
+    },
+    "floor_candidate_panel_n10": {
+      "schema_version": "shallowswe.budget.v0.1",
+      "panel": "shallowswe-calibration-v0.1",
+      "panel_status": "calibration",
+      "task_count": 36,
+      "rollouts_per_task": 10,
+      "estimated_attempts_per_row": 360,
+      "estimated_total_attempts": 1080,
+      "token_basis": {
+        "input_tokens": 150000,
+        "output_tokens": 8000,
+        "cache_read_tokens": 100000,
+        "cache_write_tokens": 0,
+        "peak_context_tokens": 2000
+      },
+      "rows": 3,
+      "priced_rows": 3,
+      "missing_price_rows": 0,
+      "priced_subset_cost_usd": 118.98,
+      "estimated_full_panel_cost_usd": 118.98,
+      "budget_limit_usd": 500,
+      "over_budget": false,
+      "row_estimates": [
+        {
+          "id": "anchor_gemini_3_5_flash_medium",
+          "model": "google/gemini-3.5-flash",
+          "upstream_provider": "google",
+          "reasoning_effort": "medium",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.162,
+          "estimated_row_cost_usd": 58.32
+        },
+        {
+          "id": "anchor_glm_5_2_high",
+          "model": "z-ai/glm-5.2",
+          "upstream_provider": "z-ai",
+          "reasoning_effort": "high",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.0885,
+          "estimated_row_cost_usd": 31.86
+        },
+        {
+          "id": "anchor_kimi_k2_7_code_default",
+          "model": "moonshotai/kimi-k2.7-code",
+          "upstream_provider": "moonshotai",
+          "reasoning_effort": null,
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.08,
+          "estimated_row_cost_usd": 28.8
+        }
+      ],
+      "missing_prices": []
+    }
+  },
+  "observed_smoke_diagnostics": {
+    "primary_ceiling_n1": {
+      "source": "results/shallowswe-ceiling-smoke-gpt55-medium-n1-2026-07-04/rollouts.json",
+      "attempts": 36,
+      "passes": 25,
+      "model_config": "openai/gpt-5.5[medium]",
+      "average_tokens": {
+        "input_tokens": 42276.72222222222,
+        "output_tokens": 3704.5,
+        "cache_read_tokens": 27150.222222222223,
+        "cache_write_tokens": 0.0
+      },
+      "price_sheet_cost_per_attempt_usd": 0.20033,
+      "gateway_reported_cost_per_attempt_usd": 0.20034261111111112
+    },
+    "independent_ceiling_audit_failed_tasks_n1": {
+      "source": "results/shallowswe-ceiling-second-opinion-opus48-medium-n1-2026-07-04/rollouts.json",
+      "attempts": 11,
+      "passes": 0,
+      "model_config": "anthropic/claude-opus-4.8[medium]",
+      "average_tokens": {
+        "input_tokens": 34924.27272727273,
+        "output_tokens": 3338.818181818182,
+        "cache_read_tokens": 28009.363636363636,
+        "cache_write_tokens": 6900.0
+      },
+      "price_sheet_cost_per_attempt_usd": 0.1406795,
+      "gateway_reported_cost_per_attempt_usd": 0.14067468181818182
+    },
+    "primary_ceiling_projected_n16_from_observed_price_sheet": 115.39008000000001,
+    "primary_ceiling_projected_n16_from_gateway_reported": 115.397344
+  }
+}

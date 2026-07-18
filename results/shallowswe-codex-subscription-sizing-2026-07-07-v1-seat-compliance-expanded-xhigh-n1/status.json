@@ -1,0 +1,28 @@
+{
+  "formal_ceiling": {
+    "attempts_per_task": 1,
+    "model": "openai/gpt-5.5",
+    "model_config": "openai/gpt-5.5[extra_high]",
+    "reasoning_effort": "xhigh",
+    "role": "formal ceiling probe"
+  },
+  "jobs_dir": "/tmp/shallowswe-pier",
+  "results_dir": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-xhigh-n1",
+  "schema_version": "shallowswe.codex_subscription_sizing.v0.2",
+  "stages": {
+    "ceiling_xhigh": {
+      "attempts_per_task": 1,
+      "failed_task_count": 1,
+      "job_name": "shallowswe_codex_sub_sizing_2026-07-07-v1-seat-compliance-expanded-xhigh-n1_ceiling_gpt55_xhigh_n1",
+      "rollouts": "/Users/lydakis/Developer/ShallowSWE/results/shallowswe-codex-subscription-sizing-2026-07-07-v1-seat-compliance-expanded-xhigh-n1/ceiling-gpt55-xhigh-rollouts.json",
+      "scored_task_count": 1,
+      "status": "complete",
+      "task_count": 1
+    }
+  },
+  "stamp": "2026-07-07-v1-seat-compliance-expanded-xhigh-n1",
+  "task_count": 1,
+  "task_ids": [
+    "seat-compliance-admin-console"
+  ]
+}

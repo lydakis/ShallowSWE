@@ -1,0 +1,68 @@
+{
+  "schema_version": "shallowswe.floor_selection.v0.1",
+  "saturation_threshold": 0.85,
+  "recommended_floor_model_config": "moonshotai/kimi-k2.7-code",
+  "selection_rule": "choose the non-saturated pair with the widest task pass-rate spread; large-band count breaks ties",
+  "candidates": [
+    {
+      "model_config": "moonshotai/kimi-k2.7-code",
+      "attempts": 3,
+      "tasks": 1,
+      "overall_pass_rate": 0.0,
+      "saturated_overall": false,
+      "floor_candidate": true,
+      "task_pass_rate_min": 0.0,
+      "task_pass_rate_max": 0.0,
+      "task_pass_rate_range": 0.0,
+      "large_band_task_count": 1,
+      "size_pass_rates": {
+        "small": null,
+        "medium": null,
+        "large": 0.0
+      },
+      "category_size_pass_rates": {
+        "code/large": 0.0
+      }
+    },
+    {
+      "model_config": "google/gemini-3.5-flash",
+      "attempts": 3,
+      "tasks": 1,
+      "overall_pass_rate": 0.3333333333333333,
+      "saturated_overall": false,
+      "floor_candidate": true,
+      "task_pass_rate_min": 0.3333333333333333,
+      "task_pass_rate_max": 0.3333333333333333,
+      "task_pass_rate_range": 0.0,
+      "large_band_task_count": 1,
+      "size_pass_rates": {
+        "small": null,
+        "medium": null,
+        "large": 0.3333333333333333
+      },
+      "category_size_pass_rates": {
+        "code/large": 0.3333333333333333
+      }
+    },
+    {
+      "model_config": "z-ai/glm-5.2",
+      "attempts": 3,
+      "tasks": 1,
+      "overall_pass_rate": 0.6666666666666666,
+      "saturated_overall": false,
+      "floor_candidate": true,
+      "task_pass_rate_min": 0.6666666666666666,
+      "task_pass_rate_max": 0.6666666666666666,
+      "task_pass_rate_range": 0.0,
+      "large_band_task_count": 0,
+      "size_pass_rates": {
+        "small": null,
+        "medium": null,
+        "large": 0.6666666666666666
+      },
+      "category_size_pass_rates": {
+        "code/large": 0.6666666666666666
+      }
+    }
+  ]
+}

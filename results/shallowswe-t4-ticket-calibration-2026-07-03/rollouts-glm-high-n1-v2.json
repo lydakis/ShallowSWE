@@ -1,0 +1,45 @@
+[
+  {
+    "model": "z-ai/glm-5.2",
+    "task_id": "ticket-state-reconcile",
+    "category": "invoke",
+    "tier": "t4",
+    "rollout": 0,
+    "passed": true,
+    "input_tokens": 77946,
+    "output_tokens": 12310,
+    "cache_read_tokens": 64320,
+    "cache_write_tokens": 0,
+    "turns": 11,
+    "peak_context_tokens": 9907,
+    "provider": "openrouter",
+    "inference_gateway": "openrouter",
+    "upstream_provider": "z-ai",
+    "requested_model": "z-ai/glm-5.2",
+    "resolved_model": "z-ai/glm-5.2-20260616",
+    "model_variant": null,
+    "reasoning_effort": "high",
+    "reasoning_tokens": 9212,
+    "temperature": null,
+    "sampling_config": {
+      "model_kwargs": {
+        "drop_params": true,
+        "reasoning_effort": "high",
+        "max_tokens": 4096
+      },
+      "cost_tracking": "ignore_errors"
+    },
+    "gateway_reported_cost_usd": 0.06288455639999999,
+    "agent": "mini-swe-agent",
+    "agent_version": "2.4.4",
+    "runner": "pier",
+    "runner_version": "0.3.0",
+    "scaffold_prompt_hash": "09a0b38b96a5c6ba1581a2846dcd1f8194b966ec4b1742d312e446447b9dd55f",
+    "token_source": "pier_atif_final_metrics_reconciled",
+    "status": "scored",
+    "exclusion_reason": null,
+    "started_at": "2026-07-04T02:59:17.183834Z",
+    "finished_at": "2026-07-04T03:03:43.182828Z",
+    "schema_version": "shallowswe.result.v0.2"
+  }
+]
