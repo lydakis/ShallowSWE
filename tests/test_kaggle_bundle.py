@@ -32,12 +32,8 @@ class KaggleBundleTests(unittest.TestCase):
             _write_task(tasks_root / "generated-task")
             config = root / "mini.yaml"
             config.write_text("agent:\n  system_template: test\n")
-            pilot_manifest = root / "pilot.json"
-            pilot_manifest.write_text(json.dumps({"name": "pilot"}))
-            pilot_schedule = root / "schedule.json"
-            pilot_schedule.write_text(json.dumps({"rows": []}))
-            pilot_launch_plan = root / "launch-plan.json"
-            pilot_launch_plan.write_text(json.dumps({"units": []}))
+            run_spec = root / "run-spec.json"
+            run_spec.write_text(json.dumps(_run_spec()))
             price_sheet = root / "prices.json"
             price_sheet.write_text(json.dumps({"models": {}}))
             output = root / "bundle"
@@ -47,15 +43,13 @@ class KaggleBundleTests(unittest.TestCase):
                 output_dir=output,
                 task_ids=["generated-task"],
                 config_file=config,
-                pilot_manifest_path=pilot_manifest,
-                pilot_schedule_path=pilot_schedule,
-                pilot_launch_plan_path=pilot_launch_plan,
+                run_spec_path=run_spec,
                 price_sheet_path=price_sheet,
             )
 
             disk_manifest = json.loads((output / "manifest.json").read_text())
             self.assertEqual(manifest, disk_manifest)
-            self.assertEqual(manifest["schema_version"], "shallowswe.kaggle_bundle.v0.1")
+            self.assertEqual(manifest["schema_version"], "shallowswe.kaggle_bundle.v0.2")
             self.assertEqual(manifest["task_ids"], ["generated-task"])
             task_entry = manifest["tasks"][0]
             self.assertEqual(task_entry["task_id"], "generated-task")
@@ -65,14 +59,10 @@ class KaggleBundleTests(unittest.TestCase):
             self.assertTrue((output / "tasks" / "generated-task" / "environment").is_dir())
             self.assertTrue((output / "verifiers" / "generated-task" / "test.sh").is_file())
             self.assertTrue((output / "config" / "mini.yaml").is_file())
-            self.assertEqual(manifest["pilot_manifest"], "protocol/pilot.json")
-            self.assertEqual(manifest["pilot_schedule"], "protocol/schedule.json")
-            self.assertEqual(
-                manifest["pilot_launch_plan"],
-                "protocol/launch-plan.json",
-            )
-            self.assertEqual(manifest["price_sheet"], "protocol/prices.json")
-            self.assertTrue((output / "protocol" / "pilot.json").is_file())
+            self.assertEqual(manifest["run_spec"], "run/run-spec.json")
+            self.assertTrue(manifest["run_spec_sha256"].startswith("sha256:"))
+            self.assertEqual(manifest["price_sheet"], "pricing/prices.json")
+            self.assertTrue((output / "run" / "run-spec.json").is_file())
             self.assertFalse((output / "tasks" / "generated-task" / "solution").exists())
             self.assertFalse((output / "tasks" / "generated-task" / "tests").exists())
             materialized = root / "materialized-export"
@@ -90,6 +80,27 @@ class KaggleBundleTests(unittest.TestCase):
 
             with self.assertRaisesRegex(ValueError, "unsupported Kaggle Dockerfile instruction"):
                 materialize_task_environment(task, Path(tmp) / "workspace")
+
+    def test_export_rejects_a_run_spec_task_missing_from_the_bundle(self) -> None:
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tasks_root = root / "tasks"
+            _write_task(tasks_root / "generated-task")
+            config = root / "mini.yaml"
+            config.write_text("agent:\n  system_template: test\n")
+            spec = _run_spec()
+            spec["units"][0]["task_ids"].append("missing-task")
+            run_spec = root / "run-spec.json"
+            run_spec.write_text(json.dumps(spec))
+
+            with self.assertRaisesRegex(ValueError, "missing run-spec tasks: missing-task"):
+                export_kaggle_bundle(
+                    tasks_root=tasks_root,
+                    output_dir=root / "bundle",
+                    task_ids=["generated-task"],
+                    config_file=config,
+                    run_spec_path=run_spec,
+                )
 
 
 def _write_task(task: Path) -> Path:
@@ -137,6 +148,42 @@ timeout_sec = 120.0
     (verifier / "hidden.txt").write_text("hidden\n")
     (solution / "solve.sh").write_text("#!/usr/bin/env bash\ntrue\n")
     return task
+
+
+def _run_spec() -> dict[str, object]:
+    return {
+        "schema_version": "shallowswe.run_spec.v0.1",
+        "run_spec_id": "test-run",
+        "experiment_id": "test-experiment",
+        "task_suite_version": "test-suite",
+        "model_configs": [
+            {
+                "model_config_id": "model-id",
+                "canonical": {
+                    "requested_model": "model-name",
+                    "expected_resolved_model": "model-name",
+                },
+            }
+        ],
+        "agent_policies": [
+            {"agent_policy_id": "agent-id", "canonical": {"agent": "mini-swe-agent"}}
+        ],
+        "units": [
+            {
+                "run_unit_id": "unit-id",
+                "runner": "kaggle",
+                "model_config_id": "model-id",
+                "agent_policy_id": "agent-id",
+                "task_ids": ["generated-task"],
+                "rollout_seeds": [0],
+                "limits": {
+                    "verifier_submissions": 3,
+                    "agent_steps": 20,
+                    "wall_time_seconds": 120,
+                },
+            }
+        ],
+    }
 
 
 if __name__ == "__main__":

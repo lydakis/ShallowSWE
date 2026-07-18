@@ -1,1 +1,1 @@
-"""Pier agent integrations used by ShallowSWE pilot tooling."""
+"""Pier agent integrations used by ShallowSWE execution tooling."""

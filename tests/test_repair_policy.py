@@ -4,7 +4,7 @@ import unittest
 from dataclasses import replace
 
 from shallowswe.results import repair_loop_from_mapping
-from shallowswe.stage4_policy import build_stage4_policy
+from shallowswe.repair_policy import build_repair_policy
 
 
 def _checkpoint(submission: int, spend: float, steps: int, *, passed: bool) -> dict[str, object]:
@@ -62,8 +62,6 @@ def _row(
             "agent_steps": steps,
             "model_config_id": "mc_anchor" if role == "anchor" else f"mc_{role}",
             "agent_policy_id": "ap_anchor" if role == "anchor" else f"ap_{role}",
-            "evidence_class": "development_dry_run",
-            "release_class": "development_dry_run",
             "task_version": f"{task_id}@v1",
             "verifier_hash": f"sha256:{task_id}",
             "environment_image_digest": f"sha256:env-{task_id}",
@@ -71,43 +69,45 @@ def _row(
             "verifier_submission_cap": 16,
             "agent_step_cap": 256,
             "cap_disclosure": "undisclosed",
-            "pilot_stage": "permissive_collection",
-            "pilot_mode": "permissive_repair_loop",
-            "pilot_cohort": cohort,
+            "run_metadata": {
+                "phase": "permissive_collection",
+                "cohort": cohort,
+                "require_canonical_spend": True,
+            },
             "event_checkpoints": checkpoints,
             "canonical_list_price_equivalent_spend_usd": spend,
         }
     )
 
 
-class Stage4PolicyTests(unittest.TestCase):
+class RepairPolicyTests(unittest.TestCase):
     @staticmethod
-    def _complete_manifest(*, task_ids: list[str]) -> dict[str, object]:
+    def _complete_methodology(*, task_ids: list[str]) -> dict[str, object]:
         return {
-            "name": "dev",
+            "schema_version": "shallowswe.methodology_spec.v0.1",
+            "methodology_spec_id": "test-methodology",
             "task_ids": task_ids,
-            "model_configs": [
-                {"role": "primary_anchor", "model_config_id": "mc_anchor"},
-                {"role": "floor_low", "model_config_id": "mc_floor_low"},
-                {"role": "floor_strong", "model_config_id": "mc_floor_strong"},
-                {"role": "candidate_luna", "model_config_id": "mc_floor_low"},
-                {"role": "candidate_sol", "model_config_id": "mc_floor_strong"},
-            ],
-            "temporary_permissive_policy": {
+            "model_roles": {
+                "primary_anchor": "mc_anchor",
+                "floor_low": "mc_floor_low",
+                "floor_strong": "mc_floor_strong",
+            },
+            "allow_fallbacks": True,
+            "permissive_policy": {
                 "candidate_verifier_submission_caps": [2, 4, 6],
                 "candidate_agent_step_caps": [32, 64, 128],
                 "budget_bands_usd": [0.05, 0.10, 0.20],
             },
-            "stage4_selection_policy": {
+            "selection_policy": {
                 "success_capture_target": 0.99,
                 "reported_budget_coverage_targets": [0.75, 0.9, 1.0],
-                "selected_development_coverage_target": 0.75,
+                "selected_budget_check_coverage_target": 0.75,
                 "max_budget_band_bumps": 1,
             },
-            "trajectory_plan": {
+            "sampling": {
                 "permissive_collection": {
                     "anchor_proposal_per_task": 4,
-                    "anchor_development_check_per_task": 2,
+                    "anchor_budget_check_per_task": 2,
                     "each_floor_per_task": 3,
                 }
             },
@@ -133,7 +133,7 @@ class Stage4PolicyTests(unittest.TestCase):
                 _row(
                     task_id="task-a",
                     loop=loop,
-                    cohort="development_check",
+                    cohort="budget_check",
                     success_submission=1,
                     spend=spend,
                     steps=20,
@@ -153,42 +153,38 @@ class Stage4PolicyTests(unittest.TestCase):
                     )
                 )
 
-        manifest = {
-            "name": "dev",
-            "release_class": "protocol_validation",
-            "model_configs": [
-                {"role": "primary_anchor", "model_config_id": "mc_anchor"},
-                {"role": "floor_low", "model_config_id": "mc_floor_low"},
-                {"role": "floor_strong", "model_config_id": "mc_floor_strong"},
-            ],
-            "temporary_permissive_policy": {
+        methodology = {
+            "schema_version": "shallowswe.methodology_spec.v0.1",
+            "methodology_spec_id": "test-methodology",
+            "model_roles": {
+                "primary_anchor": "mc_anchor",
+                "floor_low": "mc_floor_low",
+                "floor_strong": "mc_floor_strong",
+            },
+            "allow_fallbacks": True,
+            "permissive_policy": {
                 "candidate_verifier_submission_caps": [2, 4, 6],
                 "candidate_agent_step_caps": [32, 64, 128],
                 "budget_bands_usd": [0.05, 0.10, 0.20],
             },
-            "stage4_selection_policy": {
+            "selection_policy": {
                 "success_capture_target": 0.99,
                 "reported_budget_coverage_targets": [0.75, 0.9, 1.0],
-                "selected_development_coverage_target": 0.75,
+                "selected_budget_check_coverage_target": 0.75,
                 "max_budget_band_bumps": 1,
             },
         }
 
-        report = build_stage4_policy(
-            rows,
-            manifest,
-            evidence_class="development_dry_run",
-            release_class="development_dry_run",
-        )
+        report = build_repair_policy(rows, methodology)
 
-        self.assertEqual(report["policy_status"], "development_proposal")
+        self.assertEqual(report["policy_status"], "analysis_output_not_execution_authority")
         self.assertEqual(report["selected_policy"]["verifier_submission_cap"], 2)
         self.assertEqual(report["selected_policy"]["agent_step_cap"], 32)
         budget = report["task_budgets"][0]
         self.assertEqual(budget["proposal_budget_usd"], 0.10)
         self.assertEqual(budget["selected_budget_usd"], 0.20)
         self.assertEqual(budget["budget_band_bumps"], 1)
-        self.assertTrue(budget["development_check_passed"])
+        self.assertTrue(budget["budget_check_passed"])
         pressure = report["pressure_diagnostics"][0]
         self.assertAlmostEqual(pressure["floor_first_submit_rate_min"], 1 / 3)
         self.assertAlmostEqual(pressure["floor_first_submit_rate_max"], 1.0)
@@ -198,7 +194,7 @@ class Stage4PolicyTests(unittest.TestCase):
             _row(
                 task_id="task-a",
                 loop=loop,
-                cohort="budget_proposal" if loop < 4 else "development_check",
+                cohort="budget_proposal" if loop < 4 else "budget_check",
                 success_submission=1,
                 spend=0.04,
                 steps=20,
@@ -220,21 +216,19 @@ class Stage4PolicyTests(unittest.TestCase):
                 )
 
         with self.assertRaisesRegex(ValueError, "incomplete permissive matrix"):
-            build_stage4_policy(
+            build_repair_policy(
                 rows[:-1],
-                self._complete_manifest(task_ids=["task-a"]),
-                evidence_class="development_dry_run",
-                release_class="development_dry_run",
+                self._complete_methodology(task_ids=["task-a"]),
             )
 
-    def test_development_fallbacks_keep_the_pipeline_runnable(self) -> None:
+    def test_declared_fallbacks_keep_the_pipeline_runnable(self) -> None:
         rows = []
         for loop in range(6):
             rows.append(
                 _row(
                     task_id="task-a",
                     loop=loop,
-                    cohort="budget_proposal" if loop < 4 else "development_check",
+                    cohort="budget_proposal" if loop < 4 else "budget_check",
                     success_submission=None,
                     spend=0.30,
                     steps=200,
@@ -254,11 +248,9 @@ class Stage4PolicyTests(unittest.TestCase):
                     )
                 )
 
-        report = build_stage4_policy(
+        report = build_repair_policy(
             rows,
-            self._complete_manifest(task_ids=["task-a"]),
-            evidence_class="development_dry_run",
-            release_class="development_dry_run",
+            self._complete_methodology(task_ids=["task-a"]),
         )
 
         self.assertEqual(report["selected_policy"]["verifier_submission_cap"], 6)
@@ -274,7 +266,7 @@ class Stage4PolicyTests(unittest.TestCase):
         self.assertEqual(report["task_budgets"][0]["selected_budget_usd"], 0.20)
         self.assertEqual(report["task_budgets"][0]["selection_status"], "budget_not_identified")
 
-    def test_rejects_official_rows_in_development_analysis(self) -> None:
+    def test_rejects_missing_methodology_schema(self) -> None:
         row = _row(
             task_id="task-a",
             loop=0,
@@ -283,38 +275,15 @@ class Stage4PolicyTests(unittest.TestCase):
             spend=0.01,
             steps=2,
         )
-        object.__setattr__(row, "evidence_class", "official_pilot")
-
-        with self.assertRaisesRegex(ValueError, "evidence_class"):
-            build_stage4_policy(
-                [row],
-                {
-                    "name": "dev",
-                    "model_configs": [
-                        {"role": "primary_anchor", "model_config_id": "mc_anchor"}
-                    ],
-                    "temporary_permissive_policy": {
-                        "candidate_verifier_submission_caps": [2],
-                        "candidate_agent_step_caps": [32],
-                        "budget_bands_usd": [0.1],
-                    },
-                    "stage4_selection_policy": {
-                        "success_capture_target": 0.99,
-                        "reported_budget_coverage_targets": [0.75, 0.9, 1.0],
-                        "selected_development_coverage_target": 0.75,
-                        "max_budget_band_bumps": 1,
-                    },
-                },
-                evidence_class="development_dry_run",
-                release_class="development_dry_run",
-            )
+        with self.assertRaisesRegex(ValueError, "methodology"):
+            build_repair_policy([row], {})
 
     def test_rejects_confirmation_rows_that_do_not_use_exact_selected_policy(self) -> None:
         rows = [
             _row(
                 task_id="task-a",
                 loop=loop,
-                cohort="budget_proposal" if loop < 4 else "development_check",
+                cohort="budget_proposal" if loop < 4 else "budget_check",
                 success_submission=1,
                 spend=0.04,
                 steps=20,
@@ -331,28 +300,31 @@ class Stage4PolicyTests(unittest.TestCase):
                     spend=0.04,
                     steps=20,
                 ),
-                pilot_stage="fresh_anchor_confirmation",
-                pilot_mode="frozen_repair_loop",
+                run_metadata={
+                    "phase": "anchor_confirmation",
+                    "cohort": "fresh_confirmation",
+                    "require_canonical_spend": True,
+                },
                 verifier_submission_cap=2,
                 agent_step_cap=64,
                 reference_task_budget_usd=0.05,
             )
             for loop in range(8)
         ]
-        manifest = {
-            "name": "dev",
-            "model_configs": [
-                {"role": "primary_anchor", "model_config_id": "mc_anchor"}
-            ],
-            "temporary_permissive_policy": {
+        methodology = {
+            "schema_version": "shallowswe.methodology_spec.v0.1",
+            "methodology_spec_id": "test-methodology",
+            "model_roles": {"primary_anchor": "mc_anchor"},
+            "allow_fallbacks": True,
+            "permissive_policy": {
                 "candidate_verifier_submission_caps": [2, 4],
                 "candidate_agent_step_caps": [32, 64],
                 "budget_bands_usd": [0.05, 0.10],
             },
-            "stage4_selection_policy": {
+            "selection_policy": {
                 "success_capture_target": 0.99,
                 "reported_budget_coverage_targets": [0.75, 0.9, 1.0],
-                "selected_development_coverage_target": 0.75,
+                "selected_budget_check_coverage_target": 0.75,
                 "max_budget_band_bumps": 1,
                 "confirmation_minimum_successes": 7,
                 "confirmation_attempts": 8,
@@ -360,11 +332,9 @@ class Stage4PolicyTests(unittest.TestCase):
         }
 
         with self.assertRaisesRegex(ValueError, "selected step guard"):
-            build_stage4_policy(
+            build_repair_policy(
                 rows + confirmation,
-                manifest,
-                evidence_class="development_dry_run",
-                release_class="development_dry_run",
+                methodology,
             )
 
 

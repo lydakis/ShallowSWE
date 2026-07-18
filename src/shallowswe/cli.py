@@ -6,6 +6,7 @@ import json
 import os
 
 from .admission import audit_task_admission
+from .analysis_bundle import write_analysis_bundle
 from .budget import TokenBasis, estimate_panel_budget, load_panel
 from .calibration import evaluate_one_shot_ceiling_gate, select_floor_pair
 from .calibration_plan import audit_calibration_plan
@@ -14,18 +15,9 @@ from .deepswe import (
     build_deepswe_comparison,
     load_deepswe_leaderboard,
 )
-from .development_rehearsal import run_development_rehearsal
-from .development_shadow import (
-    audit_development_shadow_plan,
-    write_development_shadow_plan,
-)
 from .kaggle_bundle import export_kaggle_bundle
-from .kaggle_task_source import write_bound_kaggle_task_sources
+from .kaggle_bound_source import write_bound_kaggle_task_sources
 from .pier_export import export_pier_job
-from .pilot_freeze import build_pilot_freeze_report, freeze_pilot_manifest
-from .pilot_readiness import audit_pilot_readiness
-from .pilot_launch import audit_pilot_launch_plan, write_pilot_launch_plan
-from .pilot_schedule import audit_pilot_schedule, write_pilot_schedule
 from .pier_repair_loop import (
     RESUMABLE_CODEX_SUBSCRIPTION_AGENT_IMPORT_PATH,
     RESUMABLE_MINI_SWE_AGENT_IMPORT_PATH,
@@ -33,11 +25,9 @@ from .pier_repair_loop import (
     load_env_file,
     run_pier_repair_loop,
 )
-from .repair_loop_batch import run_repair_loop_preview_batch
-from .repair_loop_pilot import audit_repair_loop_pilot_plan
-from .repair_loop_preview import audit_repair_loop_preview_plan
+from .repair_policy import write_repair_policy
 from .routine_review import build_routine_review_packet, import_routine_reviews
-from .stage4_policy import write_stage4_policy
+from .run_spec import audit_run_spec
 from .results import (
     aggregate_repair_loops,
     aggregate_results,
@@ -60,6 +50,11 @@ def main() -> None:
 
     tasks_parser = subparsers.add_parser("tasks", help="list ShallowSWE task metadata")
     tasks_parser.add_argument("root", type=Path)
+    run_spec_parser = subparsers.add_parser(
+        "run-spec",
+        help="validate a roadmap-agnostic benchmark run specification",
+    )
+    run_spec_parser.add_argument("run_spec_json", type=Path)
 
     admission_parser = subparsers.add_parser(
         "admission-audit",
@@ -101,44 +96,19 @@ def main() -> None:
         action="store_true",
         help="reuse the existing local task image instead of rebuilding it",
     )
-    pilot_schedule_parser = subparsers.add_parser(
-        "pilot-schedule",
-        help="expand and audit deterministic pilot trajectory identifiers",
+    routine_review_pack_parser = subparsers.add_parser(
+        "routine-review-pack",
+        help="export a blind independent-review packet for a task set",
     )
-    pilot_schedule_parser.add_argument("manifest_json", type=Path)
-    pilot_schedule_parser.add_argument("output_json", type=Path)
-    pilot_launch_parser = subparsers.add_parser(
-        "pilot-launch-plan",
-        help="build and audit budget-gated runner launch units from the reserved schedule",
-    )
-    pilot_launch_parser.add_argument("manifest_json", type=Path)
-    pilot_launch_parser.add_argument("schedule_json", type=Path)
-    pilot_launch_parser.add_argument("output_json", type=Path)
-    pilot_freeze_parser = subparsers.add_parser(
-        "pilot-freeze",
-        help="compute or write fail-closed pilot artifact hashes",
-    )
-    pilot_freeze_parser.add_argument("manifest_json", type=Path)
-    pilot_freeze_parser.add_argument("--runner-bundle", type=Path, required=True)
-    pilot_freeze_parser.add_argument("--price-sheet", type=Path, required=True)
-    pilot_freeze_parser.add_argument(
-        "--write",
-        action="store_true",
-        help="write hashes only when every readiness and routine-review gate passes",
-    )
-    pilot_review_pack_parser = subparsers.add_parser(
-        "pilot-review-pack",
-        help="export a blind independent-review packet for the pilot task set",
-    )
-    pilot_review_pack_parser.add_argument("manifest_json", type=Path)
-    pilot_review_pack_parser.add_argument("output_dir", type=Path)
-    pilot_review_import_parser = subparsers.add_parser(
-        "pilot-review-import",
+    routine_review_pack_parser.add_argument("manifest_json", type=Path)
+    routine_review_pack_parser.add_argument("output_dir", type=Path)
+    routine_review_import_parser = subparsers.add_parser(
+        "routine-review-import",
         help="audit or import completed hash-bound independent reviews",
     )
-    pilot_review_import_parser.add_argument("manifest_json", type=Path)
-    pilot_review_import_parser.add_argument("packet_dir", type=Path)
-    pilot_review_import_parser.add_argument("--write", action="store_true")
+    routine_review_import_parser.add_argument("manifest_json", type=Path)
+    routine_review_import_parser.add_argument("packet_dir", type=Path)
+    routine_review_import_parser.add_argument("--write", action="store_true")
 
     kaggle_pack_parser = subparsers.add_parser(
         "kaggle-pack",
@@ -155,12 +125,10 @@ def main() -> None:
     kaggle_pack_parser.add_argument(
         "--config-file",
         type=Path,
-        default=Path("configs") / "mini-swe-agent-repair-loop-preview.yaml",
+        default=Path("configs") / "mini-swe-agent-kaggle-repair-loop.yaml",
     )
     kaggle_pack_parser.add_argument("--project-root", type=Path, default=Path.cwd())
-    kaggle_pack_parser.add_argument("--pilot-manifest", type=Path)
-    kaggle_pack_parser.add_argument("--pilot-schedule", type=Path)
-    kaggle_pack_parser.add_argument("--pilot-launch-plan", type=Path)
+    kaggle_pack_parser.add_argument("--run-spec", type=Path)
     kaggle_pack_parser.add_argument("--price-sheet", type=Path)
     kaggle_pack_parser.add_argument(
         "--mini-swe-agent-source-dir",
@@ -176,7 +144,7 @@ def main() -> None:
         "kaggle-bound-sources",
         help="freeze launch-unit IDs and task names into launchable Kaggle source files",
     )
-    kaggle_sources_parser.add_argument("launch_plan_json", type=Path)
+    kaggle_sources_parser.add_argument("run_spec_json", type=Path)
     kaggle_sources_parser.add_argument("output_dir", type=Path)
     kaggle_sources_parser.add_argument(
         "--runner-source",
@@ -184,58 +152,33 @@ def main() -> None:
         default=Path("kaggle") / "shallowswe_runner.py",
     )
 
-    repair_loop_pilot_parser = subparsers.add_parser(
-        "repair-loop-pilot-plan",
-        help="audit a bounded repair-loop pilot plan",
+    repair_policy_parser = subparsers.add_parser(
+        "select-repair-policy",
+        help="select caps and task budgets from results using a methodology specification",
     )
-    repair_loop_pilot_parser.add_argument("plan_json", type=Path)
-
-    pilot_readiness_parser = subparsers.add_parser(
-        "pilot-readiness",
-        help="audit the v0.4.2 six-task pilot before official canary spend",
+    repair_policy_parser.add_argument("results_json", type=Path)
+    repair_policy_parser.add_argument("methodology_json", type=Path)
+    repair_policy_parser.add_argument("output_json", type=Path)
+    analysis_parser = subparsers.add_parser(
+        "analyze-repair-loops",
+        help="apply a methodology specification to a repair-loop result bundle",
     )
-    pilot_readiness_parser.add_argument("manifest_json", type=Path)
-    stage4_parser = subparsers.add_parser(
-        "stage4-policy",
-        help="apply deterministic Stage 4 cap and task-budget selection",
-    )
-    stage4_parser.add_argument("results_json", type=Path)
-    stage4_parser.add_argument("manifest_json", type=Path)
-    stage4_parser.add_argument("output_json", type=Path)
-    stage4_parser.add_argument("--evidence-class", required=True)
-    stage4_parser.add_argument("--release-class", required=True)
-    rehearsal_parser = subparsers.add_parser(
-        "development-rehearsal",
-        help="run the deterministic development-only end-to-end vertical slice",
-    )
-    rehearsal_parser.add_argument("manifest_json", type=Path)
-    rehearsal_parser.add_argument("output_dir", type=Path)
-    shadow_parser = subparsers.add_parser(
-        "development-shadow-plan",
-        help="build a Kaggle-exact development-only Stage 2-5 schedule and launch plan",
-    )
-    shadow_parser.add_argument("manifest_json", type=Path)
-    shadow_parser.add_argument("schedule_json", type=Path)
-    shadow_parser.add_argument("launch_plan_json", type=Path)
-
-    repair_loop_preview_parser = subparsers.add_parser(
-        "repair-loop-preview-plan",
-        help="audit a bounded repair-loop preview plan and budget hard stop",
-    )
-    repair_loop_preview_parser.add_argument("plan_json", type=Path)
+    analysis_parser.add_argument("results_json", type=Path)
+    analysis_parser.add_argument("methodology_json", type=Path)
+    analysis_parser.add_argument("output_json", type=Path)
 
     repair_loop_run_parser = subparsers.add_parser(
-        "run-repair-loop-pilot",
-        help="run one bounded repair-loop pilot row through Pier",
+        "run-repair-loop",
+        help="run one bounded repair-loop row through Pier",
     )
     repair_loop_run_parser.add_argument("task_id")
     repair_loop_run_parser.add_argument("--tasks-root", type=Path, default=Path("tasks"))
     repair_loop_run_parser.add_argument(
         "--trials-dir",
         type=Path,
-        default=Path("/tmp/shallowswe-pier-repair-loop-pilot"),
+        default=Path("/tmp/shallowswe-pier-repair-loop"),
     )
-    repair_loop_run_parser.add_argument("--job-name", default="shallowswe_repair_loop_pilot")
+    repair_loop_run_parser.add_argument("--job-name", default="shallowswe_repair_loop")
     repair_loop_run_parser.add_argument("--model", required=True)
     repair_loop_run_parser.add_argument(
         "--mini-swe-agent-source-dir",
@@ -255,6 +198,13 @@ def main() -> None:
     )
     repair_loop_run_parser.add_argument("--codex-version", default="0.142.0")
     repair_loop_run_parser.add_argument("--trajectory-id")
+    repair_loop_run_parser.add_argument("--experiment-id")
+    repair_loop_run_parser.add_argument("--run-spec-id")
+    repair_loop_run_parser.add_argument("--run-unit-id")
+    repair_loop_run_parser.add_argument(
+        "--run-metadata-json",
+        help="opaque JSON object copied into the result without affecting execution",
+    )
     repair_loop_run_parser.add_argument(
         "--price-sheet",
         type=Path,
@@ -266,52 +216,6 @@ def main() -> None:
     repair_loop_run_parser.add_argument("--wall-time-cap-seconds", type=int)
     repair_loop_run_parser.add_argument("--seed", type=int, default=0)
     repair_loop_run_parser.add_argument("--output", type=Path)
-
-    repair_loop_preview_run_parser = subparsers.add_parser(
-        "run-repair-loop-preview",
-        help="run the bounded repair-loop preview batch with a global hard stop",
-    )
-    repair_loop_preview_run_parser.add_argument("plan_json", type=Path)
-    repair_loop_preview_run_parser.add_argument("--output-dir", type=Path)
-    repair_loop_preview_run_parser.add_argument(
-        "--trials-dir",
-        type=Path,
-        default=Path("/tmp/shallowswe-pier-repair-loop-preview"),
-    )
-    repair_loop_preview_run_parser.add_argument("--job-name")
-    repair_loop_preview_run_parser.add_argument(
-        "--mini-swe-agent-source-dir",
-        type=Path,
-        default=Path.home() / "Developer" / "oss" / "mini-swe-agent",
-    )
-    repair_loop_preview_run_parser.add_argument(
-        "--config-file",
-        type=Path,
-        default=Path("configs") / "mini-swe-agent-repair-loop-preview.yaml",
-    )
-    repair_loop_preview_run_parser.add_argument("--env-file", type=Path)
-    repair_loop_preview_run_parser.add_argument(
-        "--prices",
-        action="append",
-        type=Path,
-        help="versioned model price sheet; may be supplied more than once",
-    )
-    repair_loop_preview_run_parser.add_argument(
-        "--max-rows",
-        type=int,
-        help="run only the first N scheduled rows; useful for smoke checks",
-    )
-    repair_loop_preview_run_parser.add_argument(
-        "--parallelism",
-        type=int,
-        default=1,
-        help="number of independent task/model/seed rows to run concurrently",
-    )
-    repair_loop_preview_run_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="write the schedule/report without invoking models",
-    )
 
     export_parser = subparsers.add_parser("export-pier", help="export Pier job results")
     export_parser.add_argument("job_dir", type=Path)
@@ -411,8 +315,6 @@ def main() -> None:
         help="build the category-by-pressure weighted ratio for repair-loop rows",
     )
     repair_workload_parser.add_argument("results_json", type=Path)
-    repair_workload_parser.add_argument("--evidence-class", required=True)
-    repair_workload_parser.add_argument("--release-class", required=True)
     repair_workload_parser.add_argument("--pressure-band", action="append", required=True)
     repair_workload_parser.add_argument("--target-tasks-per-cell", type=int, default=4)
     floor_parser = subparsers.add_parser(
@@ -478,6 +380,10 @@ def main() -> None:
         )
         return
 
+    if args.command == "run-spec":
+        print(json.dumps(audit_run_spec(args.run_spec_json), indent=2))
+        return
+
     if args.command == "admission-audit":
         print(json.dumps(audit_task_admission(args.root), indent=2))
         return
@@ -511,40 +417,7 @@ def main() -> None:
         print(json.dumps(reports, indent=2))
         return
 
-    if args.command == "pilot-schedule":
-        write_pilot_schedule(args.manifest_json, args.output_json)
-        print(json.dumps(audit_pilot_schedule(args.manifest_json, args.output_json), indent=2))
-        return
-
-    if args.command == "pilot-launch-plan":
-        write_pilot_launch_plan(args.manifest_json, args.schedule_json, args.output_json)
-        print(
-            json.dumps(
-                audit_pilot_launch_plan(
-                    args.manifest_json,
-                    args.schedule_json,
-                    args.output_json,
-                ),
-                indent=2,
-            )
-        )
-        return
-
-    if args.command == "pilot-freeze":
-        freeze = freeze_pilot_manifest if args.write else build_pilot_freeze_report
-        print(
-            json.dumps(
-                freeze(
-                    args.manifest_json,
-                    runner_bundle=args.runner_bundle,
-                    price_sheet=args.price_sheet,
-                ),
-                indent=2,
-            )
-        )
-        return
-
-    if args.command == "pilot-review-pack":
+    if args.command == "routine-review-pack":
         print(
             json.dumps(
                 build_routine_review_packet(args.manifest_json, args.output_dir),
@@ -553,7 +426,7 @@ def main() -> None:
         )
         return
 
-    if args.command == "pilot-review-import":
+    if args.command == "routine-review-import":
         print(
             json.dumps(
                 import_routine_reviews(
@@ -575,9 +448,7 @@ def main() -> None:
             project_root=args.project_root,
             mini_swe_agent_source_dir=args.mini_swe_agent_source_dir,
             notebook_source=args.notebook_source,
-            pilot_manifest_path=args.pilot_manifest,
-            pilot_schedule_path=args.pilot_schedule,
-            pilot_launch_plan_path=args.pilot_launch_plan,
+            run_spec_path=args.run_spec,
             price_sheet_path=args.price_sheet,
         )
         print(json.dumps(manifest, indent=2))
@@ -588,7 +459,7 @@ def main() -> None:
             json.dumps(
                 write_bound_kaggle_task_sources(
                     args.runner_source,
-                    args.launch_plan_json,
+                    args.run_spec_json,
                     args.output_dir,
                 ),
                 indent=2,
@@ -596,61 +467,33 @@ def main() -> None:
         )
         return
 
-    if args.command == "repair-loop-pilot-plan":
-        print(json.dumps(audit_repair_loop_pilot_plan(args.plan_json), indent=2))
-        return
-
-    if args.command == "pilot-readiness":
-        print(json.dumps(audit_pilot_readiness(args.manifest_json), indent=2))
-        return
-
-    if args.command == "stage4-policy":
+    if args.command == "select-repair-policy":
         print(
             json.dumps(
-                write_stage4_policy(
+                write_repair_policy(
                     args.results_json,
-                    args.manifest_json,
+                    args.methodology_json,
                     args.output_json,
-                    evidence_class=args.evidence_class,
-                    release_class=args.release_class,
                 ),
                 indent=2,
             )
         )
         return
 
-    if args.command == "development-rehearsal":
+    if args.command == "analyze-repair-loops":
         print(
             json.dumps(
-                run_development_rehearsal(args.manifest_json, args.output_dir),
-                indent=2,
-            )
-        )
-        return
-
-    if args.command == "development-shadow-plan":
-        write_development_shadow_plan(
-            args.manifest_json,
-            args.schedule_json,
-            args.launch_plan_json,
-        )
-        print(
-            json.dumps(
-                audit_development_shadow_plan(
-                    args.manifest_json,
-                    args.schedule_json,
-                    args.launch_plan_json,
+                write_analysis_bundle(
+                    args.results_json,
+                    args.methodology_json,
+                    args.output_json,
                 ),
                 indent=2,
             )
         )
         return
 
-    if args.command == "repair-loop-preview-plan":
-        print(json.dumps(audit_repair_loop_preview_plan(args.plan_json), indent=2))
-        return
-
-    if args.command == "run-repair-loop-pilot":
+    if args.command == "run-repair-loop":
         agent_env = _load_agent_env(args.env_file)
         codex_subscription = args.agent_backend == "codex-subscription"
         if codex_subscription:
@@ -703,12 +546,13 @@ def main() -> None:
             inference_gateway=("chatgpt_subscription" if codex_subscription else None),
             upstream_provider=("openai" if codex_subscription else None),
             provider_route=("chatgpt_codex" if codex_subscription else None),
-            evidence_class=("development_dry_run" if codex_subscription else None),
-            funding_pool=("codex_subscription" if codex_subscription else None),
-            release_class=("development_dry_run" if codex_subscription else None),
-            pilot_stage=("codex_development" if codex_subscription else None),
-            pilot_mode=("repair_loop_smoke" if codex_subscription else None),
             trajectory_id=args.trajectory_id,
+            experiment_id=args.experiment_id,
+            run_spec_id=args.run_spec_id,
+            run_unit_id=args.run_unit_id,
+            run_metadata=(
+                json.loads(args.run_metadata_json) if args.run_metadata_json else None
+            ),
             canonical_price=canonical_price,
             price_sheet_version=args.price_sheet.stem,
             price_sheet_date=str(price_payload.get("effective_date") or "") or None,
@@ -719,25 +563,6 @@ def main() -> None:
             args.output.write_text(output)
         else:
             print(output, end="")
-        return
-
-    if args.command == "run-repair-loop-preview":
-        agent_env = _load_agent_env(args.env_file)
-        report = run_repair_loop_preview_batch(
-            args.plan_json,
-            output_dir=args.output_dir,
-            trials_dir=args.trials_dir,
-            job_name=args.job_name,
-            mini_swe_agent_source_dir=args.mini_swe_agent_source_dir,
-            config_file=args.config_file,
-            agent_env=agent_env,
-            price_paths=args.prices or [],
-            max_rows=args.max_rows,
-            parallelism=args.parallelism,
-            dry_run=args.dry_run,
-            progress=print,
-        )
-        print(json.dumps(report, indent=2))
         return
 
     if args.command == "export-pier":
@@ -816,8 +641,6 @@ def main() -> None:
                     rows,
                     target_tasks_per_cell=args.target_tasks_per_cell,
                     pressure_bands=tuple(args.pressure_band),
-                    evidence_class=args.evidence_class,
-                    release_class=args.release_class,
                 ),
                 indent=2,
             )

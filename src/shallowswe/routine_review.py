@@ -29,7 +29,7 @@ def build_routine_review_packet(
     tasks_root = _repo_path(root, manifest.get("task_root") or "tasks")
     task_ids = [str(value) for value in manifest.get("task_ids", [])]
     if not task_ids:
-        raise ValueError("pilot manifest has no task_ids")
+        raise ValueError("task-set manifest has no task_ids")
     if output_dir.exists():
         raise ValueError(f"review packet output already exists: {output_dir}")
     output_dir.mkdir(parents=True)
@@ -38,7 +38,7 @@ def build_routine_review_packet(
     for task_id in task_ids:
         task = tasks_root / task_id
         if not task.is_dir():
-            raise ValueError(f"missing pilot task: {task_id}")
+            raise ValueError(f"missing task-set task: {task_id}")
         task_output = output_dir / "tasks" / task_id
         blind = task_output / "blind-review"
         blind.mkdir(parents=True)
@@ -75,7 +75,7 @@ def build_routine_review_packet(
 
     packet = {
         "schema_version": REVIEW_PACKET_SCHEMA_VERSION,
-        "pilot_manifest": manifest.get("name"),
+        "task_set_manifest": manifest.get("name"),
         "task_count": len(entries),
         "tasks": entries,
     }
@@ -111,7 +111,7 @@ def audit_routine_review_packet(
             issues_by_task[task_id] = issues
     return {
         "schema_version": REVIEW_PACKET_SCHEMA_VERSION,
-        "pilot_manifest": manifest.get("name"),
+        "task_set_manifest": manifest.get("name"),
         "task_count": len(task_ids),
         "ready_to_import": not issues_by_task,
         "issues_by_task": issues_by_task,

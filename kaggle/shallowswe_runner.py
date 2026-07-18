@@ -13,7 +13,7 @@ import subprocess
 import sys
 
 
-FROZEN_LAUNCH_UNIT_ID: str | None = None
+FROZEN_RUN_UNIT_ID: str | None = None
 
 
 def _find_attached_bundle_root() -> Path:
@@ -26,7 +26,10 @@ def _find_attached_bundle_root() -> Path:
             payload = json.loads(manifest.read_text())
         except (OSError, json.JSONDecodeError):
             continue
-        if payload.get("schema_version") == "shallowswe.kaggle_bundle.v0.1":
+        if payload.get("schema_version") in {
+            "shallowswe.kaggle_bundle.v0.1",
+            "shallowswe.kaggle_bundle.v0.2",
+        }:
             candidates.append(manifest.parent)
     if len(candidates) != 1:
         raise RuntimeError(
@@ -127,15 +130,13 @@ from shallowswe.kaggle_repair_loop import (  # noqa: E402
     dump_kaggle_result,
     run_kaggle_repair_loop,
 )
-from shallowswe.kaggle_registration import (  # noqa: E402
-    is_development_registration_probe,
-)
 from shallowswe.kaggle_runtime import model_proxy_api  # noqa: E402
-from shallowswe.pilot_binding import (  # noqa: E402
-    launch_matrix,
-    resolve_launch_unit,
+from shallowswe.run_spec import (  # noqa: E402
+    resolve_agent_policy,
     resolve_model_config,
-    resolve_trajectory,
+    resolve_run_unit,
+    trajectory_id,
+    unit_matrix,
 )
 from shallowswe.results import load_prices  # noqa: E402
 
@@ -152,35 +153,25 @@ PRICE_PAYLOAD = (
     if MANIFEST.get("price_sheet")
     else {}
 )
-PILOT_MANIFEST = (
-    json.loads((BUNDLE_ROOT / MANIFEST["pilot_manifest"]).read_text())
-    if MANIFEST.get("pilot_manifest")
+RUN_SPEC = (
+    json.loads((BUNDLE_ROOT / MANIFEST["run_spec"]).read_text())
+    if MANIFEST.get("run_spec")
     else None
 )
-PILOT_SCHEDULE = (
-    json.loads((BUNDLE_ROOT / MANIFEST["pilot_schedule"]).read_text())
-    if MANIFEST.get("pilot_schedule")
-    else None
-)
-PILOT_LAUNCH_PLAN = (
-    json.loads((BUNDLE_ROOT / MANIFEST["pilot_launch_plan"]).read_text())
-    if MANIFEST.get("pilot_launch_plan")
-    else None
-)
-LAUNCH_UNIT = None
-if PILOT_LAUNCH_PLAN is not None:
-    environment_launch_unit_id = os.environ.get("SHALLOWSWE_LAUNCH_UNIT_ID")
+RUN_UNIT = None
+if RUN_SPEC is not None:
+    environment_run_unit_id = os.environ.get("SHALLOWSWE_RUN_UNIT_ID")
     if (
-        environment_launch_unit_id
-        and FROZEN_LAUNCH_UNIT_ID
-        and environment_launch_unit_id != FROZEN_LAUNCH_UNIT_ID
+        environment_run_unit_id
+        and FROZEN_RUN_UNIT_ID
+        and environment_run_unit_id != FROZEN_RUN_UNIT_ID
     ):
-        raise RuntimeError("Environment launch-unit ID disagrees with frozen task source")
-    launch_unit_id = environment_launch_unit_id or FROZEN_LAUNCH_UNIT_ID
-    if os.environ.get("KAGGLE_KERNEL_RUN_TYPE") and not launch_unit_id:
-        raise RuntimeError("SHALLOWSWE_LAUNCH_UNIT_ID is required for a frozen pilot bundle")
-    if launch_unit_id:
-        LAUNCH_UNIT = resolve_launch_unit(PILOT_LAUNCH_PLAN, launch_unit_id)
+        raise RuntimeError("Environment run-unit ID disagrees with frozen task source")
+    run_unit_id = environment_run_unit_id or FROZEN_RUN_UNIT_ID
+    if os.environ.get("KAGGLE_KERNEL_RUN_TYPE") and not run_unit_id:
+        raise RuntimeError("SHALLOWSWE_RUN_UNIT_ID is required for a run-spec bundle")
+    if run_unit_id:
+        RUN_UNIT = resolve_run_unit(RUN_SPEC, run_unit_id)
 RESULTS_ROOT = Path("/kaggle/working/shallowswe-results")
 RESULTS_ROOT.mkdir(parents=True, exist_ok=True)
 
@@ -192,64 +183,38 @@ RESULTS_ROOT.mkdir(parents=True, exist_ok=True)
 def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
     if task_id not in TASK_INDEX:
         raise ValueError(f"Task is not present in the attached ShallowSWE bundle: {task_id}")
-    if LAUNCH_UNIT is not None and is_development_registration_probe(
-        registration_requested=(
-            os.environ.get("SHALLOWSWE_KAGGLE_REGISTRATION_PROBE") == "1"
-        ),
-        plan_class=(PILOT_LAUNCH_PLAN or {}).get("plan_class"),
-        launch_model=LAUNCH_UNIT.get("model"),
-        observed_model=llm.name,
-    ):
-        kbench.assertions.assert_true(
-            True,
-            expectation="Kaggle may register the development task without emitting evidence.",
-        )
-        return True
     task_entry = TASK_INDEX[task_id]
     model_entry = None
-    agent_policy_id = None
-    if PILOT_MANIFEST is not None:
-        model_configs = (
-            PILOT_MANIFEST.get("development_shadow_model_configs", [])
-            if (PILOT_LAUNCH_PLAN or {}).get("plan_class") == "development_shadow"
-            else PILOT_MANIFEST["model_configs"]
-        )
+    agent_policy = None
+    if RUN_SPEC is not None and RUN_UNIT is not None:
         model_entry = resolve_model_config(
-            model_configs,
-            requested_model=llm.name,
-            model_config_id=LAUNCH_UNIT.get("model_config_id") if LAUNCH_UNIT else None,
+            RUN_SPEC,
+            RUN_UNIT,
+            observed_model=llm.name,
         )
-        agent_policy_id = model_entry.get("agent_policy_id") or PILOT_MANIFEST["agent_policy"][
-            "agent_policy_ids_by_model_role"
-        ][model_entry["role"]]
-    trajectory = None
-    if LAUNCH_UNIT is not None:
-        if PILOT_SCHEDULE is None or model_entry is None:
-            raise RuntimeError("Frozen launch binding requires pilot schedule and model identity")
-        trajectory = resolve_trajectory(
-            LAUNCH_UNIT,
-            PILOT_SCHEDULE,
+        agent_policy = resolve_agent_policy(RUN_SPEC, RUN_UNIT)
+    registered_trajectory_id = None
+    if RUN_UNIT is not None:
+        registered_trajectory_id = trajectory_id(
+            RUN_SPEC,
+            RUN_UNIT,
             task_id=task_id,
             rollout_seed=rollout_seed,
-            model_config_id=model_entry["model_config_id"],
-            requested_model=llm.name,
         )
     run_id = (
-        trajectory["trajectory_id"]
-        if trajectory is not None
+        registered_trajectory_id
+        if registered_trajectory_id is not None
         else f"{task_id}__seed-{rollout_seed:02d}"
     )
     run_root = RESULTS_ROOT / run_id
-    launch_policy = LAUNCH_UNIT["policy"] if LAUNCH_UNIT else None
-    verifier_submission_cap = (
-        launch_policy.get("verifier_submission_cap") if launch_policy else None
-    )
-    if LAUNCH_UNIT is not None and verifier_submission_cap is None:
-        raise RuntimeError("Launch unit verifier policy is not frozen")
+    limits = RUN_UNIT["limits"] if RUN_UNIT else None
     native_llm = load_model(llm.name, api=model_proxy_api(llm.name))
-    canonical_price = PRICE_CATALOG.get(llm.name)
-    if LAUNCH_UNIT is not None and canonical_price is None:
-        raise RuntimeError(f"Frozen price sheet does not contain model: {llm.name}")
+    price_model = (
+        model_entry["canonical"].get("price_model") if model_entry is not None else llm.name
+    )
+    canonical_price = PRICE_CATALOG.get(price_model)
+    if RUN_UNIT is not None and canonical_price is None:
+        raise RuntimeError(f"Run price sheet does not contain model: {price_model}")
     row = run_kaggle_repair_loop(
         llm=native_llm,
         task_path=BUNDLE_ROOT / task_entry["task_path"],
@@ -260,38 +225,39 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
         model_name=llm.name,
         config_file=BUNDLE_ROOT / MANIFEST["mini_swe_agent_config"],
         max_verifier_submissions=(
-            int(verifier_submission_cap)
-            if verifier_submission_cap is not None
+            int(limits["verifier_submissions"])
+            if limits is not None
             else int(os.environ.get("SHALLOWSWE_MAX_VERIFIER_SUBMISSIONS", "3"))
         ),
+        agent_step_cap=(int(limits["agent_steps"]) if limits is not None else None),
         dollar_cap_usd=(
-            float(launch_policy["safety_dollar_cap_usd"])
-            if launch_policy and launch_policy.get("safety_dollar_cap_usd") is not None
+            float(limits["dollar_usd"])
+            if limits and limits.get("dollar_usd") is not None
             else float(os.environ["SHALLOWSWE_DOLLAR_CAP_USD"])
-            if os.environ.get("SHALLOWSWE_DOLLAR_CAP_USD") and LAUNCH_UNIT is None
+            if os.environ.get("SHALLOWSWE_DOLLAR_CAP_USD") and RUN_UNIT is None
             else None
         ),
-        wall_time_cap_seconds=int(
-            os.environ.get("SHALLOWSWE_WALL_TIME_CAP_SECONDS", "2400")
+        wall_time_cap_seconds=(
+            int(limits["wall_time_seconds"])
+            if limits is not None
+            else int(os.environ.get("SHALLOWSWE_WALL_TIME_CAP_SECONDS", "2400"))
         ),
         reasoning_effort=(
-            LAUNCH_UNIT["reasoning_effort"]
-            if LAUNCH_UNIT
+            model_entry["canonical"].get("reasoning_effort")
+            if model_entry
             else os.environ.get("SHALLOWSWE_REASONING_EFFORT") or None
         ),
         temperature=float(os.environ.get("SHALLOWSWE_TEMPERATURE", "0")),
         seed=rollout_seed,
         task_suite_version=os.environ.get(
             "SHALLOWSWE_TASK_SUITE_VERSION",
-            "shallowswe-kaggle-smoke-v0.1",
+            RUN_SPEC["task_suite_version"] if RUN_SPEC else "shallowswe-kaggle-smoke-v0.1",
         ),
         repo_commit_sha=os.environ.get("SHALLOWSWE_REPO_COMMIT_SHA") or None,
         model_config_id=model_entry.get("model_config_id") if model_entry else None,
         model_config_canonical_json=model_entry.get("canonical") if model_entry else None,
-        agent_policy_id=agent_policy_id,
-        agent_policy_canonical_json=(
-            PILOT_MANIFEST["agent_policy"]["canonical"] if PILOT_MANIFEST else None
-        ),
+        agent_policy_id=agent_policy.get("agent_policy_id") if agent_policy else None,
+        agent_policy_canonical_json=agent_policy.get("canonical") if agent_policy else None,
         provider_route=(
             model_entry["canonical"]["provider_route"] if model_entry else "kaggle_model_proxy"
         ),
@@ -299,33 +265,18 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
             model_entry["canonical"].get("model_context_limit_tokens") if model_entry else None
         ),
         cache_policy=model_entry["canonical"].get("cache_policy") if model_entry else None,
-        evidence_class=(
-            LAUNCH_UNIT["evidence_class"]
-            if LAUNCH_UNIT
-            else os.environ.get("SHALLOWSWE_EVIDENCE_CLASS") or None
-        ),
-        funding_pool=(
-            LAUNCH_UNIT["funding_pool"]
-            if LAUNCH_UNIT
-            else os.environ.get("SHALLOWSWE_FUNDING_POOL") or None
-        ),
         price_sheet_version=(Path(MANIFEST["price_sheet"]).stem if MANIFEST.get("price_sheet") else None),
         price_sheet_date=str(PRICE_PAYLOAD.get("effective_date") or "") or None,
         routine_review_version=os.environ.get("SHALLOWSWE_ROUTINE_REVIEW_VERSION") or None,
-        trajectory_id=trajectory.get("trajectory_id") if trajectory else None,
-        launch_unit_id=LAUNCH_UNIT.get("launch_unit_id") if LAUNCH_UNIT else None,
-        pilot_stage=LAUNCH_UNIT.get("stage") if LAUNCH_UNIT else None,
-        pilot_mode=LAUNCH_UNIT.get("mode") if LAUNCH_UNIT else None,
-        pilot_cohort=trajectory.get("cohort") if trajectory else None,
-        release_class=(
-            LAUNCH_UNIT["release_class"]
-            if LAUNCH_UNIT
-            else os.environ.get("SHALLOWSWE_RELEASE_CLASS") or "protocol_validation"
-        ),
+        trajectory_id=registered_trajectory_id,
+        experiment_id=RUN_SPEC.get("experiment_id") if RUN_SPEC else None,
+        run_spec_id=RUN_SPEC.get("run_spec_id") if RUN_SPEC else None,
+        run_unit_id=RUN_UNIT.get("run_unit_id") if RUN_UNIT else None,
+        run_metadata=dict(RUN_UNIT.get("metadata") or {}) if RUN_UNIT else None,
         canonical_price=canonical_price,
     )
     (run_root / "repair-loop-result.json").write_text(dump_kaggle_result(row))
-    if LAUNCH_UNIT is not None:
+    if RUN_UNIT is not None:
         expected_resolved = model_entry["canonical"].get("expected_resolved_model")
         if row.resolved_model is None:
             raise RuntimeError("Official ShallowSWE row is missing resolved-model identity")
@@ -347,8 +298,8 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
 
 # %%
 if os.environ.get("KAGGLE_KERNEL_RUN_TYPE"):
-    if LAUNCH_UNIT is not None:
-        task_ids, seeds = launch_matrix(LAUNCH_UNIT)
+    if RUN_UNIT is not None:
+        task_ids, seeds = unit_matrix(RUN_UNIT)
     else:
         selected_tasks = os.environ.get("SHALLOWSWE_TASK_IDS")
         task_ids = (

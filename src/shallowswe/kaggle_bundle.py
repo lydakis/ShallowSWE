@@ -13,7 +13,7 @@ import tempfile
 from .mini_swe_config import effective_scaffold_prompt_hash, load_effective_mini_swe_config
 
 
-KAGGLE_BUNDLE_SCHEMA_VERSION = "shallowswe.kaggle_bundle.v0.1"
+KAGGLE_BUNDLE_SCHEMA_VERSION = "shallowswe.kaggle_bundle.v0.2"
 SUPPORTED_BASE_IMAGE = "python:3.12-slim"
 
 
@@ -26,9 +26,7 @@ def export_kaggle_bundle(
     project_root: Path | None = None,
     mini_swe_agent_source_dir: Path | None = None,
     notebook_source: Path | None = None,
-    pilot_manifest_path: Path | None = None,
-    pilot_schedule_path: Path | None = None,
-    pilot_launch_plan_path: Path | None = None,
+    run_spec_path: Path | None = None,
     price_sheet_path: Path | None = None,
 ) -> dict[str, Any]:
     selected_task_ids = sorted(dict.fromkeys(str(task_id) for task_id in task_ids))
@@ -94,25 +92,39 @@ def export_kaggle_bundle(
         ),
         "source_of_truth": "tasks/",
     }
-    protocol_inputs = {
-        "pilot_manifest": pilot_manifest_path,
-        "pilot_schedule": pilot_schedule_path,
-        "pilot_launch_plan": pilot_launch_plan_path,
-        "price_sheet": price_sheet_path,
-    }
-    if any(value is not None for value in protocol_inputs.values()):
-        if pilot_manifest_path is None:
-            raise ValueError("pilot_manifest_path is required with protocol artifacts")
-        protocol_dir = output_dir / "protocol"
-        protocol_dir.mkdir()
-        for key, source in protocol_inputs.items():
-            if source is None:
-                continue
-            if not source.is_file():
-                raise ValueError(f"missing {key}: {source}")
-            destination = protocol_dir / source.name
-            shutil.copy2(source, destination)
-            manifest[key] = f"protocol/{destination.name}"
+    if run_spec_path is not None:
+        from .run_spec import load_run_spec, run_spec_sha256
+
+        run_spec = load_run_spec(run_spec_path)
+        referenced_task_ids = {
+            task_id for unit in run_spec["units"] for task_id in unit["task_ids"]
+        }
+        missing_task_ids = sorted(referenced_task_ids - set(selected_task_ids))
+        if missing_task_ids:
+            raise ValueError(
+                "Kaggle bundle is missing run-spec tasks: " + ", ".join(missing_task_ids)
+            )
+        non_kaggle_units = [
+            unit["run_unit_id"] for unit in run_spec["units"] if unit["runner"] != "kaggle"
+        ]
+        if non_kaggle_units:
+            raise ValueError(
+                "Kaggle bundle requires runner='kaggle': " + ", ".join(non_kaggle_units)
+            )
+        run_dir = output_dir / "run"
+        run_dir.mkdir()
+        destination = run_dir / "run-spec.json"
+        shutil.copy2(run_spec_path, destination)
+        manifest["run_spec"] = "run/run-spec.json"
+        manifest["run_spec_sha256"] = run_spec_sha256(run_spec)
+    if price_sheet_path is not None:
+        if not price_sheet_path.is_file():
+            raise ValueError(f"missing price_sheet: {price_sheet_path}")
+        pricing_dir = output_dir / "pricing"
+        pricing_dir.mkdir()
+        destination = pricing_dir / price_sheet_path.name
+        shutil.copy2(price_sheet_path, destination)
+        manifest["price_sheet"] = f"pricing/{destination.name}"
     runtime_values = (project_root, mini_swe_agent_source_dir, notebook_source)
     if any(value is not None for value in runtime_values):
         if any(value is None for value in runtime_values):

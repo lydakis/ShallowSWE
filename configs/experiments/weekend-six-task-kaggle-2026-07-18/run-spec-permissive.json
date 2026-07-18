@@ -1,0 +1,72 @@
+{
+  "schema_version": "shallowswe.run_spec.v0.1",
+  "run_spec_id": "weekend-six-task-kaggle-permissive-v0.1",
+  "experiment_id": "weekend-six-task-kaggle-2026-07-18",
+  "task_suite_version": "shallowswe-six-task-kaggle-shakedown-v0.1",
+  "model_configs": [
+    {
+      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+      "canonical": {"requested_model": "gpt-5.6-sol", "expected_resolved_model": "gpt-5.6-sol", "price_model": "openai/gpt-5.6-sol", "provider_route": "kaggle_model_proxy", "reasoning_effort": "high", "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_replicate"}, "cache_policy": "intra_run_priced_cross_run_disabled"}
+    },
+    {
+      "model_config_id": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
+      "canonical": {"requested_model": "gpt-5.6-luna", "expected_resolved_model": "gpt-5.6-luna", "price_model": "openai/gpt-5.6-luna", "provider_route": "kaggle_model_proxy", "reasoning_effort": "low", "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_replicate"}, "cache_policy": "intra_run_priced_cross_run_disabled"}
+    },
+    {
+      "model_config_id": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365",
+      "canonical": {"requested_model": "gpt-5.6-sol", "expected_resolved_model": "gpt-5.6-sol", "price_model": "openai/gpt-5.6-sol", "provider_route": "kaggle_model_proxy", "reasoning_effort": "low", "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_replicate"}, "cache_policy": "intra_run_priced_cross_run_disabled"}
+    }
+  ],
+  "agent_policies": [
+    {
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "canonical": {"runner": "kaggle", "runner_version": "kaggle-benchmarks==0.6.1", "agent": "mini-swe-agent", "agent_version": "mini-swe-agent==2.4.4@8c3cfaee0ddb37c8325426990ff179c96690a1cf", "scaffold_prompt_hash": "sha256:937691ea72ef93dbb1fb6a01f4507eccb5a7c0dee7417a3908a9f57537f4b7b4", "max_output_tokens": 8192, "tool_protocol": "shallowswe-kaggle-native-tools-v1", "continuation_policy": "same_conversation_and_filesystem", "sandbox_interface": "kaggle-chroot-seccomp-hidden-verifier", "feedback_policy": "shallowswe-coarse-feedback-v1", "config_path": "configs/mini-swe-agent-kaggle-repair-loop.yaml"}
+    }
+  ],
+  "units": [
+    {
+      "run_unit_id": "permissive-anchor-budget-proposal",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-permissive-anchor-proposal",
+      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "task_ids": ["env-flags-to-json", "access-log-to-incidents", "invoice-cli-regression-test-fix", "invoice-multi-source-merge", "config-flag-ignored", "merge-divergent-config-branches"],
+      "rollout_seeds": [2000, 2001, 2002, 2003],
+      "limits": {"verifier_submissions": 16, "agent_steps": 256, "dollar_usd": 5.0, "wall_time_seconds": 2400},
+      "metadata": {"phase": "permissive_collection", "cohort": "budget_proposal", "model_role": "primary_anchor", "require_canonical_spend": true}
+    },
+    {
+      "run_unit_id": "permissive-anchor-budget-check",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-permissive-anchor-budget-check",
+      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "task_ids": ["env-flags-to-json", "access-log-to-incidents", "invoice-cli-regression-test-fix", "invoice-multi-source-merge", "config-flag-ignored", "merge-divergent-config-branches"],
+      "rollout_seeds": [2100, 2101],
+      "limits": {"verifier_submissions": 16, "agent_steps": 256, "dollar_usd": 5.0, "wall_time_seconds": 2400},
+      "metadata": {"phase": "permissive_collection", "cohort": "budget_check", "model_role": "primary_anchor", "require_canonical_spend": true}
+    },
+    {
+      "run_unit_id": "permissive-floor-low",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-permissive-floor-low",
+      "model_config_id": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "task_ids": ["env-flags-to-json", "access-log-to-incidents", "invoice-cli-regression-test-fix", "invoice-multi-source-merge", "config-flag-ignored", "merge-divergent-config-branches"],
+      "rollout_seeds": [2200, 2201, 2202],
+      "limits": {"verifier_submissions": 16, "agent_steps": 256, "dollar_usd": 5.0, "wall_time_seconds": 2400},
+      "metadata": {"phase": "permissive_collection", "cohort": "floor_panel", "model_role": "floor_low", "require_canonical_spend": true}
+    },
+    {
+      "run_unit_id": "permissive-floor-strong",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-permissive-floor-strong",
+      "model_config_id": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365",
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "task_ids": ["env-flags-to-json", "access-log-to-incidents", "invoice-cli-regression-test-fix", "invoice-multi-source-merge", "config-flag-ignored", "merge-divergent-config-branches"],
+      "rollout_seeds": [2300, 2301, 2302],
+      "limits": {"verifier_submissions": 16, "agent_steps": 256, "dollar_usd": 5.0, "wall_time_seconds": 2400},
+      "metadata": {"phase": "permissive_collection", "cohort": "floor_panel", "model_role": "floor_strong", "require_canonical_spend": true}
+    }
+  ]
+}

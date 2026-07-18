@@ -39,7 +39,7 @@ class ResultExampleTests(unittest.TestCase):
 
 
 class ResultAggregationTests(unittest.TestCase):
-    def test_migrated_repair_rows_fail_closed_on_mixed_evidence(self) -> None:
+    def test_migrated_repair_rows_fail_closed_on_mixed_experiments(self) -> None:
         common = {
             "model": "small",
             "task_id": "example",
@@ -53,7 +53,6 @@ class ResultAggregationTests(unittest.TestCase):
             "turns": 1,
             "model_config_id": "mc_test",
             "agent_policy_id": "ap_test",
-            "release_class": "protocol_validation",
             "task_version": "example@v1",
             "verifier_hash": "sha256:verifier",
             "environment_image_digest": "sha256:environment",
@@ -62,17 +61,17 @@ class ResultAggregationTests(unittest.TestCase):
             "agent_step_cap": 128,
         }
         rows = [
-            repair_loop_from_mapping({**common, "loop": 0, "evidence_class": "official_pilot"}),
+            repair_loop_from_mapping({**common, "loop": 0, "experiment_id": "experiment-a"}),
             repair_loop_from_mapping(
-                {**common, "loop": 1, "evidence_class": "development_dry_run"}
+                {**common, "loop": 1, "experiment_id": "experiment-b"}
             ),
         ]
 
         report = audit_repair_loop_evidence(rows)
 
         self.assertFalse(report["valid"])
-        self.assertIn("mixed_evidence_class", report["issues"])
-        with self.assertRaisesRegex(ValueError, "mixed_evidence_class"):
+        self.assertIn("mixed_experiment_id", report["issues"])
+        with self.assertRaisesRegex(ValueError, "mixed_experiment_id"):
             aggregate_repair_loops(rows, group_by=("model_config_id",))
 
     def test_migrated_repair_rows_fail_closed_on_task_contract_drift(self) -> None:
@@ -352,6 +351,10 @@ class ResultAggregationTests(unittest.TestCase):
                 "agent_policy_id": "ap_test",
                 "agent_policy_canonical_json": {"runner": "kaggle"},
                 "provider_route": "kaggle/openai",
+                "experiment_id": "experiment-a",
+                "run_spec_id": "run-spec-a",
+                "run_unit_id": "run-unit-a",
+                "run_metadata": {"phase": "score"},
                 "evidence_class": "official_pilot",
                 "funding_pool": "kaggle_grant",
                 "reference_task_budget_usd": 0.5,
@@ -368,6 +371,10 @@ class ResultAggregationTests(unittest.TestCase):
 
         self.assertEqual(row.model_config_id, "mc_test")
         self.assertEqual(row.agent_policy_id, "ap_test")
+        self.assertEqual(row.experiment_id, "experiment-a")
+        self.assertEqual(row.run_spec_id, "run-spec-a")
+        self.assertEqual(row.run_unit_id, "run-unit-a")
+        self.assertEqual(row.run_metadata, {"phase": "score"})
         self.assertEqual(row.evidence_class, "official_pilot")
         self.assertEqual(row.funding_pool, "kaggle_grant")
         self.assertEqual(row.reference_task_budget_usd, 0.5)

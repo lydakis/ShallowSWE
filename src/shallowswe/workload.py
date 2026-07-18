@@ -22,8 +22,6 @@ def build_repair_loop_workload_index(
     *,
     target_tasks_per_cell: int = 4,
     pressure_bands: tuple[str, ...] = ("low", "medium", "high"),
-    evidence_class: str,
-    release_class: str,
 ) -> dict[str, object]:
     """Build the v0.4.2 category-by-pressure weighted ratio for repair-loop rows."""
 
@@ -34,10 +32,6 @@ def build_repair_loop_workload_index(
     row_list = list(rows)
     if not row_list:
         raise ValueError("repair-loop workload index requires rows")
-    if {row.evidence_class for row in row_list} != {evidence_class}:
-        raise ValueError(f"workload evidence_class must be exactly {evidence_class!r}")
-    if {row.release_class for row in row_list} != {release_class}:
-        raise ValueError(f"workload release_class must be exactly {release_class!r}")
     evidence_report = audit_repair_loop_evidence(
         row_list,
         group_by=("model_config_id", "agent_policy_id"),
@@ -204,8 +198,6 @@ def build_repair_loop_workload_index(
 
     return {
         "schema_version": REPAIR_LOOP_WORKLOAD_INDEX_SCHEMA_VERSION,
-        "evidence_class": evidence_class,
-        "release_class": release_class,
         "weighting": {
             "scheme": "equal_category_equal_pressure_equal_declared_task",
             "categories": list(CATEGORY_ORDER),

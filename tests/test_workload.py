@@ -48,8 +48,6 @@ class WorkloadIndexTests(unittest.TestCase):
             "turns": 1,
             "model_config_id": "mc_model",
             "agent_policy_id": "ap_model",
-            "evidence_class": "development_dry_run",
-            "release_class": "development_dry_run",
             "task_suite_version": "suite-v1",
             "price_sheet_version": "prices-v1",
             "verifier_submission_cap": 4,
@@ -92,8 +90,6 @@ class WorkloadIndexTests(unittest.TestCase):
             rows,
             target_tasks_per_cell=2,
             pressure_bands=("lower", "elevated"),
-            evidence_class="development_dry_run",
-            release_class="development_dry_run",
         )
         model = index["models"][0]
 
@@ -122,8 +118,6 @@ class WorkloadIndexTests(unittest.TestCase):
                 "turns": 1,
                 "model_config_id": "mc_a",
                 "agent_policy_id": "ap_a",
-                "evidence_class": "development_dry_run",
-                "release_class": "development_dry_run",
                 "task_version": "task-a@v1",
                 "verifier_hash": "sha256:task-a",
                 "pressure_band": "lower",
@@ -143,8 +137,6 @@ class WorkloadIndexTests(unittest.TestCase):
                 [base, drifted],
                 target_tasks_per_cell=2,
                 pressure_bands=("lower", "elevated"),
-                evidence_class="development_dry_run",
-                release_class="development_dry_run",
             )
 
     def test_default_index_equalizes_categories_tiers_and_observed_tasks(self) -> None:

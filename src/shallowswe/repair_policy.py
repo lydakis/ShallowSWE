@@ -7,71 +7,34 @@ import hashlib
 import json
 
 from .identity import canonical_json
-from .results import RepairLoopResult, audit_repair_loop_evidence
+from .results import RepairLoopResult
 
 
-STAGE4_POLICY_SCHEMA_VERSION = "shallowswe.stage4_policy.v0.1"
+REPAIR_POLICY_SCHEMA_VERSION = "shallowswe.repair_policy.v0.1"
 
 
-def build_stage4_policy(
+def build_repair_policy(
     rows: Iterable[RepairLoopResult],
-    manifest: dict[str, Any],
-    *,
-    evidence_class: str,
-    release_class: str,
+    methodology: dict[str, Any],
 ) -> dict[str, Any]:
-    """Apply the preregistered Stage 4 truncation and budget-selection machinery.
-
-    The caller must name the exact evidence and release classes. This makes a development
-    rehearsal incapable of producing an official policy artifact by omission or default.
-    """
+    """Select repair-loop caps and task budgets from an explicit analysis specification."""
 
     row_list = list(rows)
     if not row_list:
-        raise ValueError("Stage 4 requires at least one repair-loop row")
-    _require_exact_class(row_list, "evidence_class", evidence_class)
-    _require_exact_class(row_list, "release_class", release_class)
-    evidence_report = audit_repair_loop_evidence(
-        row_list,
-        group_by=("model_config_id", "agent_policy_id", "pilot_stage", "pilot_mode"),
-    )
-    if not evidence_report["valid"]:
-        raise ValueError(
-            "Stage 4 evidence is not internally poolable: "
-            + ", ".join(str(issue) for issue in evidence_report["issues"])
-        )
-
-    development_proposal = (
-        evidence_class == "development_dry_run" or release_class == "development_dry_run"
-    )
-    shadow_config_rows = manifest.get("development_shadow_model_configs", [])
-    shadow_model_ids = {
-        str(row.get("model_config_id"))
-        for row in shadow_config_rows
-        if isinstance(row, dict) and row.get("model_config_id")
-    }
-    uses_shadow_plan = development_proposal and any(
-        row.model_config_id in shadow_model_ids for row in row_list
-    )
-    config_rows = (
-        shadow_config_rows
-        if uses_shadow_plan
-        else manifest.get("model_configs", [])
-    )
+        raise ValueError("repair-policy selection requires at least one repair-loop row")
+    if methodology.get("schema_version") != "shallowswe.methodology_spec.v0.1":
+        raise ValueError("unsupported methodology specification")
     configs = {
-        str(config["role"]): str(config["model_config_id"])
-        for config in config_rows
-        if isinstance(config, dict)
-        and config.get("role")
-        and config.get("model_config_id")
-        and config["role"] in {"primary_anchor", "floor_low", "floor_strong"}
+        str(role): str(identifier)
+        for role, identifier in (methodology.get("model_roles") or {}).items()
+        if role in {"primary_anchor", "floor_low", "floor_strong"}
     }
     anchor_id = configs.get("primary_anchor")
     if not anchor_id:
-        raise ValueError("manifest does not identify the primary anchor")
+        raise ValueError("methodology specification does not identify the primary anchor")
 
-    temporary = manifest.get("temporary_permissive_policy") or {}
-    selection = manifest.get("stage4_selection_policy") or {}
+    temporary = methodology.get("permissive_policy") or {}
+    selection = methodology.get("selection_policy") or {}
     submission_candidates = _positive_sorted_ints(
         temporary.get("candidate_verifier_submission_caps"),
         "candidate_verifier_submission_caps",
@@ -89,8 +52,8 @@ def build_stage4_policy(
         "success_capture_target",
     )
     coverage_target = _probability(
-        selection.get("selected_development_coverage_target"),
-        "selected_development_coverage_target",
+        selection.get("selected_budget_check_coverage_target"),
+        "selected_budget_check_coverage_target",
     )
     reported_coverage_targets = [
         _probability(value, "reported_budget_coverage_targets")
@@ -100,26 +63,22 @@ def build_stage4_policy(
         raise ValueError("reported_budget_coverage_targets must not be empty")
     max_bumps = int(selection.get("max_budget_band_bumps", -1))
     if max_bumps != 1:
-        raise ValueError("Stage 4 pilot machinery requires exactly one allowed budget-band bump")
+        raise ValueError("repair-policy selection requires exactly one allowed budget-band bump")
 
     stage3 = [
         row
         for row in row_list
-        if row.pilot_stage == "permissive_collection" and row.is_scored
+        if _metadata(row, "phase") == "permissive_collection" and row.is_scored
     ]
     anchor_rows = [row for row in stage3 if row.model_config_id == anchor_id]
     if not anchor_rows:
-        raise ValueError("Stage 4 found no scored permissive primary-anchor rows")
+        raise ValueError("repair-policy selection found no scored permissive anchor rows")
     for row in stage3:
         _validated_verifier_checkpoints(row, require_canonical=_requires_canonical(row))
-    trajectory_plan = (
-        manifest.get("development_shadow_trajectory_plan")
-        if uses_shadow_plan
-        else manifest.get("trajectory_plan")
-    )
+    trajectory_plan = methodology.get("sampling")
     _require_permissive_matrix(
         stage3,
-        task_ids=[str(task_id) for task_id in manifest.get("task_ids", [])],
+        task_ids=[str(task_id) for task_id in methodology.get("task_ids", [])],
         configs=configs,
         trajectory_plan=trajectory_plan,
     )
@@ -128,7 +87,7 @@ def build_stage4_policy(
     submission_table = _capture_table(anchor_rows, submission_candidates)
     selected_k = _smallest_meeting_target(submission_table, capture_target)
     if selected_k is None:
-        if not development_proposal:
+        if not bool(methodology.get("allow_fallbacks")):
             raise ValueError("no candidate verifier-submission cap meets the success-capture target")
         selected_k = max(submission_candidates)
         submission_selection_status = "selection_target_unmet"
@@ -137,7 +96,7 @@ def build_stage4_policy(
     step_table = _capture_table(anchor_rows, step_candidates, verifier_submission_cap=selected_k)
     selected_steps = _smallest_meeting_target(step_table, capture_target)
     if selected_steps is None:
-        if not development_proposal:
+        if not bool(methodology.get("allow_fallbacks")):
             raise ValueError("no candidate agent-step cap meets the success-capture target")
         selected_steps = max(step_candidates)
         step_selection_status = "selection_target_unmet"
@@ -151,7 +110,7 @@ def build_stage4_policy(
         reported_coverage_targets=reported_coverage_targets,
         verifier_submission_cap=selected_k,
         agent_step_cap=selected_steps,
-        allow_fallback=development_proposal,
+        allow_fallback=bool(methodology.get("allow_fallbacks")),
     )
     pressure = _pressure_diagnostics(
         stage3,
@@ -174,21 +133,14 @@ def build_stage4_policy(
         expected_attempts=int(selection.get("confirmation_attempts", 8)),
     )
     spend_bases = sorted({_row_spend_basis(row) for row in anchor_rows})
-    policy_status = (
-        "development_proposal"
-        if development_proposal
-        else "official_candidate_not_frozen"
-    )
     payload: dict[str, Any] = {
-        "schema_version": STAGE4_POLICY_SCHEMA_VERSION,
-        "manifest": manifest.get("name"),
-        "policy_status": policy_status,
-        "evidence_class": evidence_class,
-        "release_class": release_class,
+        "schema_version": REPAIR_POLICY_SCHEMA_VERSION,
+        "methodology_spec_id": methodology.get("methodology_spec_id"),
+        "policy_status": "analysis_output_not_execution_authority",
         "spend_bases": spend_bases,
         "selection_constants": {
             "success_capture_target": capture_target,
-            "selected_development_coverage_target": coverage_target,
+            "selected_budget_check_coverage_target": coverage_target,
             "reported_budget_coverage_targets": reported_coverage_targets,
             "max_budget_band_bumps": max_bumps,
         },
@@ -205,35 +157,24 @@ def build_stage4_policy(
         "pressure_diagnostics": pressure,
         "pressure_taxonomies": _pressure_taxonomies(pressure),
         "confirmation_diagnostics": confirmation,
-        "evidence_audit": evidence_report,
-        "official_launch_eligible": False,
-        "official_launch_blocker": (
-            "development_evidence_cannot_freeze_official_policy"
-            if policy_status == "development_proposal"
-            else "official_policy_requires_explicit_freeze_after_review"
-        ),
+        "execution_authority": False,
     }
-    payload["stage4_policy_sha256"] = (
+    payload["repair_policy_sha256"] = (
         f"sha256:{hashlib.sha256(canonical_json(payload).encode()).hexdigest()}"
     )
     return payload
 
 
-def write_stage4_policy(
+def write_repair_policy(
     rows_path: Path,
-    manifest_path: Path,
+    methodology_path: Path,
     output_path: Path,
-    *,
-    evidence_class: str,
-    release_class: str,
 ) -> dict[str, Any]:
     from .results import load_repair_loops
 
-    report = build_stage4_policy(
+    report = build_repair_policy(
         load_repair_loops(rows_path),
-        json.loads(manifest_path.read_text()),
-        evidence_class=evidence_class,
-        release_class=release_class,
+        json.loads(methodology_path.read_text()),
     )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(report, indent=2) + "\n")
@@ -288,8 +229,8 @@ def _require_permissive_matrix(
         expected[(task_id, "primary_anchor", "budget_proposal")] = int(
             plan.get("anchor_proposal_per_task") or 0
         )
-        expected[(task_id, "primary_anchor", "development_check")] = int(
-            plan.get("anchor_development_check_per_task") or 0
+        expected[(task_id, "primary_anchor", "budget_check")] = int(
+            plan.get("anchor_budget_check_per_task") or 0
         )
         for role in ("floor_low", "floor_strong"):
             expected[(task_id, role, None)] = int(plan.get("each_floor_per_task") or 0)
@@ -299,7 +240,7 @@ def _require_permissive_matrix(
     for row in rows:
         role = role_by_id.get(row.model_config_id)
         if role == "primary_anchor":
-            key = (row.task_id, role, row.pilot_cohort)
+            key = (row.task_id, role, _metadata(row, "cohort"))
         elif role in {"floor_low", "floor_strong"}:
             key = (row.task_id, role, None)
         else:
@@ -320,7 +261,7 @@ def _require_confirmation_matrix(
     anchor_id: str,
     trajectory_plan: Any,
 ) -> None:
-    observed = [row for row in rows if row.pilot_stage == "fresh_anchor_confirmation"]
+    observed = [row for row in rows if _metadata(row, "phase") == "anchor_confirmation"]
     if not observed or not isinstance(trajectory_plan, dict):
         return
     plan = trajectory_plan.get("fresh_anchor_confirmation")
@@ -361,13 +302,13 @@ def _select_task_budgets(
         by_task[row.task_id].append(row)
     budgets = []
     for task_id, task_rows in sorted(by_task.items()):
-        proposal = [row for row in task_rows if row.pilot_cohort == "budget_proposal"]
-        development_check = [
-            row for row in task_rows if row.pilot_cohort == "development_check"
+        proposal = [row for row in task_rows if _metadata(row, "cohort") == "budget_proposal"]
+        budget_check = [
+            row for row in task_rows if _metadata(row, "cohort") == "budget_check"
         ]
-        if not proposal or not development_check:
+        if not proposal or not budget_check:
             raise ValueError(
-                f"task {task_id} requires budget_proposal and development_check cohorts"
+                f"task {task_id} requires budget_proposal and budget_check cohorts"
             )
         coverage_table = [
             {
@@ -378,13 +319,13 @@ def _select_task_budgets(
                     verifier_submission_cap=verifier_submission_cap,
                     agent_step_cap=agent_step_cap,
                 ),
-                "development_check_coverage": _coverage(
-                    development_check,
+                "budget_check_coverage": _coverage(
+                    budget_check,
                     band,
                     verifier_submission_cap=verifier_submission_cap,
                     agent_step_cap=agent_step_cap,
                 ),
-                "full_development_coverage": _coverage(
+                "full_permissive_coverage": _coverage(
                     task_rows,
                     band,
                     verifier_submission_cap=verifier_submission_cap,
@@ -410,7 +351,7 @@ def _select_task_budgets(
                     "proposal_budget_usd": None,
                     "selected_budget_usd": budget_bands[-1],
                     "budget_band_bumps": 0,
-                    "development_check_passed": False,
+                    "budget_check_passed": False,
                     "selection_status": "budget_not_identified",
                     "proposal_budget_by_coverage_target": {
                         str(target): next(
@@ -428,12 +369,12 @@ def _select_task_budgets(
             )
             continue
         selected_index = proposal_index
-        if coverage_table[selected_index]["development_check_coverage"] < coverage_target:
+        if coverage_table[selected_index]["budget_check_coverage"] < coverage_target:
             selected_index = min(selected_index + 1, len(coverage_table) - 1)
         within_schedule = selected_index < len(coverage_table)
         check_passed = (
             within_schedule
-            and coverage_table[selected_index]["development_check_coverage"] >= coverage_target
+            and coverage_table[selected_index]["budget_check_coverage"] >= coverage_target
         )
         budgets.append(
             {
@@ -443,9 +384,9 @@ def _select_task_budgets(
                     coverage_table[selected_index]["budget_usd"] if within_schedule else None
                 ),
                 "budget_band_bumps": selected_index - proposal_index if within_schedule else 1,
-                "development_check_passed": check_passed,
+                "budget_check_passed": check_passed,
                 "selection_status": (
-                    "development_confirmed" if check_passed else "development_check_failed"
+                    "budget_confirmed" if check_passed else "budget_check_failed"
                 ),
                 "proposal_budget_by_coverage_target": {
                     str(target): next(
@@ -563,7 +504,7 @@ def _confirmation_diagnostics(
     confirmation = [
         row
         for row in rows
-        if row.pilot_stage == "fresh_anchor_confirmation"
+        if _metadata(row, "phase") == "anchor_confirmation"
         and row.model_config_id == anchor_id
         and row.is_scored
     ]
@@ -702,7 +643,7 @@ def _validated_verifier_checkpoints(
         for checkpoint in checkpoints
     ):
         raise ValueError(
-            f"official row {row.task_id}/{row.loop} lacks cumulative canonical spend"
+            f"row {row.task_id}/{row.loop} lacks required cumulative canonical spend"
         )
     if row.passed != any(checkpoint.get("result_class") == "passed" for checkpoint in checkpoints):
         raise ValueError(f"row {row.task_id}/{row.loop} pass state disagrees with checkpoints")
@@ -725,12 +666,12 @@ def _row_spend_basis(row: RepairLoopResult) -> str:
     return (
         "canonical_list_price_equivalent"
         if all(checkpoint.get("cumulative_canonical_spend_usd") is not None for checkpoint in checkpoints)
-        else "gateway_reported_development_only"
+        else "gateway_reported"
     )
 
 
 def _requires_canonical(row: RepairLoopResult) -> bool:
-    return row.evidence_class == "official_pilot" or row.release_class == "protocol_validation"
+    return bool(_metadata(row, "require_canonical_spend"))
 
 
 def _require_stable_task_contracts(rows: list[RepairLoopResult]) -> None:
@@ -747,13 +688,11 @@ def _require_stable_task_contracts(rows: list[RepairLoopResult]) -> None:
         ):
             values = {getattr(row, field) for row in task_rows}
             if len(values) > 1:
-                raise ValueError(f"Stage 4 task {task_id} has mixed {field}")
+                raise ValueError(f"repair-policy task {task_id} has mixed {field}")
 
 
-def _require_exact_class(rows: list[RepairLoopResult], field: str, expected: str) -> None:
-    values = {getattr(row, field) for row in rows}
-    if values != {expected}:
-        raise ValueError(f"Stage 4 requires {field}={expected!r}; found {sorted(map(str, values))}")
+def _metadata(row: RepairLoopResult, key: str) -> Any:
+    return (row.run_metadata or {}).get(key)
 
 
 def _positive_sorted_ints(value: Any, field: str) -> list[int]:

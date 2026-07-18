@@ -135,6 +135,11 @@ class RepairLoopResult:
     seed: int | None = None
     run_id: str | None = None
     trajectory_id: str | None = None
+    experiment_id: str | None = None
+    run_spec_id: str | None = None
+    run_unit_id: str | None = None
+    run_metadata: dict[str, Any] | None = None
+    # Legacy roadmap fields remain readable so historical result artifacts do not break.
     launch_unit_id: str | None = None
     pilot_stage: str | None = None
     pilot_mode: str | None = None
@@ -381,6 +386,10 @@ def repair_loop_from_mapping(row: dict[str, object]) -> RepairLoopResult:
         seed=_optional_int(row.get("seed")),
         run_id=_optional_str(row.get("run_id")),
         trajectory_id=_optional_str(row.get("trajectory_id")),
+        experiment_id=_optional_str(row.get("experiment_id")),
+        run_spec_id=_optional_str(row.get("run_spec_id")),
+        run_unit_id=_optional_str(row.get("run_unit_id")),
+        run_metadata=_optional_dict(row.get("run_metadata")),
         launch_unit_id=_optional_str(row.get("launch_unit_id")),
         pilot_stage=_optional_str(row.get("pilot_stage")),
         pilot_mode=_optional_str(row.get("pilot_mode")),
@@ -775,15 +784,12 @@ def _default_repair_loop_grouping(rows: list[RepairLoopResult]) -> tuple[str, ..
         return (
             "model_config_id",
             "agent_policy_id",
-            "evidence_class",
-            "release_class",
+            "experiment_id",
             "task_suite_version",
             "price_sheet_version",
             "verifier_submission_cap",
             "agent_step_cap",
             "cap_disclosure",
-            "pilot_stage",
-            "pilot_mode",
             "category",
             "size",
         )
@@ -814,17 +820,13 @@ def audit_repair_loop_evidence(
 
     issues: list[str] = []
     required = ["model_config_id", "agent_policy_id"]
-    provenance_fields = ("evidence_class", "release_class", "task_version", "verifier_hash")
+    provenance_fields = ("task_version", "verifier_hash")
     if any(any(getattr(row, field) is not None for field in provenance_fields) for row in migrated):
         required.extend(provenance_fields)
     for field in required:
         if any(getattr(row, field) is None for row in migrated):
             issues.append(f"missing_{field}")
-    official = [
-        row
-        for row in migrated
-        if row.evidence_class == "official_pilot" or row.release_class == "protocol_validation"
-    ]
+    registered = [row for row in migrated if row.run_spec_id or row.run_unit_id]
     for field in (
         "requested_model",
         "resolved_model",
@@ -835,21 +837,18 @@ def audit_repair_loop_evidence(
         "canonical_list_price_equivalent_spend_usd",
         "event_checkpoints",
     ):
-        if any(getattr(row, field) is None for row in official):
-            issues.append(f"missing_official_{field}")
-
+        if any(getattr(row, field) is None for row in registered):
+            issues.append(f"missing_registered_{field}")
     cohort_fields = (
         "model_config_id",
         "agent_policy_id",
-        "evidence_class",
-        "release_class",
+        "experiment_id",
+        "run_spec_id",
         "task_suite_version",
         "price_sheet_version",
         "verifier_submission_cap",
         "agent_step_cap",
         "cap_disclosure",
-        "pilot_stage",
-        "pilot_mode",
     )
     grouped: dict[tuple[object, ...], list[RepairLoopResult]] = defaultdict(list)
     for row in migrated:

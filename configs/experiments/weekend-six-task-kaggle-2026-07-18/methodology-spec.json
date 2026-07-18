@@ -1,0 +1,38 @@
+{
+  "schema_version": "shallowswe.methodology_spec.v0.1",
+  "methodology_spec_id": "weekend-six-task-kaggle-shakedown-v0.1",
+  "row_selector": {"experiment_id": "weekend-six-task-kaggle-2026-07-18"},
+  "group_by": ["model_config_id", "agent_policy_id"],
+  "select_repair_policy": true,
+  "allow_fallbacks": true,
+  "task_ids": ["env-flags-to-json", "access-log-to-incidents", "invoice-cli-regression-test-fix", "invoice-multi-source-merge", "config-flag-ignored", "merge-divergent-config-branches"],
+  "model_roles": {
+    "primary_anchor": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+    "floor_low": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
+    "floor_strong": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365"
+  },
+  "permissive_policy": {
+    "candidate_verifier_submission_caps": [2, 4, 6, 8, 12, 16],
+    "candidate_agent_step_caps": [32, 64, 128, 256],
+    "budget_bands_usd": [0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
+  },
+  "selection_policy": {
+    "success_capture_target": 0.99,
+    "reported_budget_coverage_targets": [0.75, 0.9, 1.0],
+    "selected_budget_check_coverage_target": 0.75,
+    "max_budget_band_bumps": 1,
+    "confirmation_minimum_successes": 7,
+    "confirmation_attempts": 8
+  },
+  "sampling": {
+    "permissive_collection": {
+      "anchor_proposal_per_task": 4,
+      "anchor_budget_check_per_task": 2,
+      "each_floor_per_task": 3
+    },
+    "anchor_confirmation": {
+      "task_ids": ["env-flags-to-json", "access-log-to-incidents", "invoice-cli-regression-test-fix", "invoice-multi-source-merge", "config-flag-ignored", "merge-divergent-config-branches"],
+      "anchor_per_task": 8
+    }
+  }
+}

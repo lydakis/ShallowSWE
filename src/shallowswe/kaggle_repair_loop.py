@@ -59,6 +59,7 @@ def run_kaggle_repair_loop(
     model_name: str,
     config_file: Path,
     max_verifier_submissions: int = 3,
+    agent_step_cap: int | None = None,
     dollar_cap_usd: float | None = None,
     wall_time_cap_seconds: int | None = None,
     reasoning_effort: str | None = None,
@@ -73,16 +74,13 @@ def run_kaggle_repair_loop(
     provider_route: str = "kaggle_model_proxy",
     context_limit: int | None = None,
     cache_policy: str | None = None,
-    evidence_class: str | None = None,
-    funding_pool: str | None = None,
     price_sheet_version: str | None = None,
     routine_review_version: str | None = None,
     trajectory_id: str | None = None,
-    launch_unit_id: str | None = None,
-    pilot_stage: str | None = None,
-    pilot_mode: str | None = None,
-    pilot_cohort: str | None = None,
-    release_class: str = "protocol_validation",
+    experiment_id: str | None = None,
+    run_spec_id: str | None = None,
+    run_unit_id: str | None = None,
+    run_metadata: dict[str, Any] | None = None,
     canonical_price: ModelPrice | None = None,
     environment_factory: EnvironmentFactory | None = None,
     verifier_runner: VerifierRunner | None = None,
@@ -93,6 +91,8 @@ def run_kaggle_repair_loop(
     )
     if dollar_cap_usd is not None and dollar_cap_usd <= 0:
         raise ValueError("dollar_cap_usd must be positive")
+    if agent_step_cap is not None and agent_step_cap <= 0:
+        raise ValueError("agent_step_cap must be positive")
 
     shallow_task = load_task(task_path)
     started_at = datetime.now(timezone.utc)
@@ -131,6 +131,7 @@ def run_kaggle_repair_loop(
             "mode": "yolo",
             "confirm_exit": False,
             "output_path": trajectory_path,
+            **({"step_limit": agent_step_cap} if agent_step_cap is not None else {}),
             **(
                 {"cost_limit": dollar_cap_usd}
                 if dollar_cap_usd is not None
@@ -250,10 +251,10 @@ def run_kaggle_repair_loop(
         seed=seed,
         run_id=run_id,
         trajectory_id=trajectory_id,
-        launch_unit_id=launch_unit_id,
-        pilot_stage=pilot_stage,
-        pilot_mode=pilot_mode,
-        pilot_cohort=pilot_cohort,
+        experiment_id=experiment_id,
+        run_spec_id=run_spec_id,
+        run_unit_id=run_unit_id,
+        run_metadata=run_metadata,
         task_visibility="kaggle-chroot-seccomp-hidden-verifier",
         transcript_hash=_file_hash(trajectory_path),
         model_config_id=model_config_id,
@@ -266,8 +267,6 @@ def run_kaggle_repair_loop(
             int(model_kwargs["max_tokens"]) if model_kwargs.get("max_tokens") is not None else None
         ),
         cache_policy=cache_policy,
-        evidence_class=evidence_class,
-        funding_pool=funding_pool,
         actual_model_spend_usd=usage["gateway_reported_cost_usd"],
         canonical_list_price_equivalent_spend_usd=canonical_spend,
         verifier_submission_cap=max_verifier_submissions,
@@ -275,7 +274,6 @@ def run_kaggle_repair_loop(
         cap_disclosure="undisclosed",
         routine_review_version=routine_review_version,
         censoring_status=("right_censored" if stop_reason in CAP_HIT_STOP_REASONS else "observed"),
-        release_class=release_class,
         event_checkpoints=backend.event_checkpoints,
         status=status,
         exclusion_reason=exclusion_reason,

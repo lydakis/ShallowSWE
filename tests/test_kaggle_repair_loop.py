@@ -89,6 +89,7 @@ class KaggleRepairLoopTests(unittest.TestCase):
                     model_name="test/model",
                     config_file=config,
                     max_verifier_submissions=3,
+                    agent_step_cap=10,
                     seed=7,
                     model_config_id="mc_test",
                     model_config_canonical_json={"requested_model": "test/model"},
@@ -96,8 +97,10 @@ class KaggleRepairLoopTests(unittest.TestCase):
                     agent_policy_canonical_json={"runner": "kaggle"},
                     context_limit=1000,
                     cache_policy="disabled",
-                    evidence_class="official_pilot",
-                    funding_pool="kaggle_grant",
+                    experiment_id="test-experiment",
+                    run_spec_id="test-spec",
+                    run_unit_id="test-unit",
+                    run_metadata={"phase": "test"},
                     price_sheet_version="test-prices",
                     routine_review_version="review-v1",
                     canonical_price=ModelPrice(1.0, None, 1.0),
@@ -118,8 +121,10 @@ class KaggleRepairLoopTests(unittest.TestCase):
             self.assertEqual(row.agent_policy_id, "ap_test")
             self.assertEqual(row.verifier_submission_cap, 3)
             self.assertEqual(row.agent_step_cap, 10)
-            self.assertEqual(row.evidence_class, "official_pilot")
-            self.assertEqual(row.funding_pool, "kaggle_grant")
+            self.assertEqual(row.experiment_id, "test-experiment")
+            self.assertEqual(row.run_spec_id, "test-spec")
+            self.assertEqual(row.run_unit_id, "test-unit")
+            self.assertEqual(row.run_metadata, {"phase": "test"})
             self.assertEqual(row.censoring_status, "observed")
             self.assertIsNotNone(row.canonical_list_price_equivalent_spend_usd)
             self.assertIsNotNone(row.event_checkpoints)
