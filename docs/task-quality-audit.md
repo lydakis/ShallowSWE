@@ -118,15 +118,14 @@ The audit command reports three distinct states:
 - `executed_quality_evidence_complete`: current hash-bound reference, alternate, and control runs pass;
 - `routine_review_complete`: a current independent construct review accepts the task.
 
-Generate executed evidence on macOS with Apple `container`:
+Generate executed evidence with Docker:
 
 ```sh
-container system start --enable-kernel-install
 uv run shallowswe execute-task-quality tasks --task-id <task-id>
 ```
 
-Apple `container` is local deterministic QA only. Kaggle remains the canonical official pilot
-runner, and Pier/Harbor remains the portability runner.
+Docker provides local deterministic QA. Kaggle remains the canonical official pilot runner, and
+Pier/Harbor remains the portability runner.
 
 The report includes:
 

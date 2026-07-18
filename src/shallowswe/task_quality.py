@@ -27,7 +27,8 @@ INVESTIGATOR_REVIEW_CANDIDATES = (
 )
 EXECUTION_EVIDENCE_CANDIDATES = ("quality/executions.json",)
 ROUTINE_REVIEW_CANDIDATES = ("quality/routine-review.json",)
-TASK_QUALITY_EXECUTION_SCHEMA_VERSION = "shallowswe.task_quality_execution.v0.1"
+LEGACY_TASK_QUALITY_EXECUTION_SCHEMA_VERSION = "shallowswe.task_quality_execution.v0.1"
+TASK_QUALITY_EXECUTION_SCHEMA_VERSION = "shallowswe.task_quality_execution.v0.2"
 ROUTINE_REVIEW_SCHEMA_VERSION = "shallowswe.routine_review.v0.1"
 ROUTINE_REVIEW_RUBRIC_FIELDS = (
     "realism",
@@ -212,7 +213,11 @@ def _load_execution_evidence(path: Path, negative_controls: list[dict[str, Any]]
         return {"path": relative, "valid": False, "issues": ["execution_evidence_invalid"]}
 
     issues: list[str] = []
-    if payload.get("schema_version") != TASK_QUALITY_EXECUTION_SCHEMA_VERSION:
+    execution_schema = payload.get("schema_version")
+    if execution_schema not in {
+        LEGACY_TASK_QUALITY_EXECUTION_SCHEMA_VERSION,
+        TASK_QUALITY_EXECUTION_SCHEMA_VERSION,
+    }:
         issues.append("execution_evidence_schema_mismatch")
     if payload.get("task_id") != path.name:
         issues.append("execution_evidence_task_id_mismatch")
@@ -230,8 +235,13 @@ def _load_execution_evidence(path: Path, negative_controls: list[dict[str, Any]]
     valid_runs = [run for run in runs if _valid_execution_run(run)]
     if len(valid_runs) != len(runs):
         issues.append("execution_evidence_invalid_run")
+    pristine_runs = [run for run in valid_runs if run["kind"] == "pristine_submission"]
     reference_runs = [run for run in valid_runs if run["kind"] == "reference_solution"]
     alternate_runs = [run for run in valid_runs if run["kind"] == "alternate_solution"]
+    if execution_schema == TASK_QUALITY_EXECUTION_SCHEMA_VERSION and (
+        len(pristine_runs) != 1 or pristine_runs[0]["exit_code"] == 0
+    ):
+        issues.append("execution_evidence_pristine_submission_not_rejected")
     if len(reference_runs) < 3 or any(run["exit_code"] != 0 for run in reference_runs):
         issues.append("execution_evidence_reference_runs_incomplete")
     if len({run.get("artifact_sha256") for run in reference_runs}) != 1:
@@ -254,7 +264,13 @@ def _load_execution_evidence(path: Path, negative_controls: list[dict[str, Any]]
 def _valid_execution_run(run: Any) -> bool:
     return (
         isinstance(run, dict)
-        and run.get("kind") in {"reference_solution", "alternate_solution", "negative_control"}
+        and run.get("kind")
+        in {
+            "pristine_submission",
+            "reference_solution",
+            "alternate_solution",
+            "negative_control",
+        }
         and isinstance(run.get("attempt"), int)
         and isinstance(run.get("exit_code"), int)
         and run.get("clean_sandbox") is True

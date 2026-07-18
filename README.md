@@ -32,8 +32,8 @@ reference budget, and structural scope.
 - Kaggle is the primary official pilot backend. Pier/Harbor remains the parallel portability and
   local-reproduction backend. Codex subscription runs are development-only. `tasks/` is the single
   authored source for every runner.
-- Apple `container` is the preferred clean-sandbox backend for local deterministic task QA on
-  supported macOS hosts. It does not replace Kaggle as the official funded runner.
+- Docker is the clean-sandbox backend for local deterministic task QA. It does not replace Kaggle
+  as the official funded runner.
 - `docs/kaggle-runner.md` documents packaging, isolation, parity, live conformance, and operations.
 
 ## Quick Checks
@@ -107,7 +107,7 @@ ceiling phase is intentionally marked that way under the conservative July 4 est
 Build and execute task-quality evidence before calibration. The first command audits declarations,
 hash-bound executions, and independent routine-review records. The second runs three reference
 replicates, one alternate solution, and every declared negative control in fresh network-disabled
-Apple containers:
+Docker containers:
 
 ```sh
 uv run shallowswe task-quality tasks

@@ -27,7 +27,7 @@ selection semantics are recorded without reusing a frozen run manifest.
 | Runner or surface | Role | Evidence class |
 |---|---|---|
 | Local deterministic execution | Task QA, isolation, schema, and controller conformance | Non-model QA |
-| Apple `container` | Fresh network-disabled task-quality probes | Non-model QA |
+| Docker | Fresh network-disabled task-quality probes | Non-model QA |
 | Codex subscription | Development triage and defect discovery | Development only |
 | Kaggle | Canonical funded six-task pilot | Official metered pilot evidence |
 | Pier/Harbor | Portability, local reproduction, and backend parity | Eligible model evidence under the shared contract |

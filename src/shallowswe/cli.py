@@ -82,11 +82,16 @@ def main() -> None:
     )
     execute_task_quality_parser = subparsers.add_parser(
         "execute-task-quality",
-        help="execute reference, alternate, and negative-control probes in Apple containers",
+        help="execute reference, alternate, and negative-control probes in Docker",
     )
     execute_task_quality_parser.add_argument("root", type=Path)
     execute_task_quality_parser.add_argument("--task-id", action="append", required=True)
     execute_task_quality_parser.add_argument("--reference-runs", type=int, default=3)
+    execute_task_quality_parser.add_argument(
+        "--reuse-image",
+        action="store_true",
+        help="reuse the existing local task image instead of rebuilding it",
+    )
     pilot_schedule_parser = subparsers.add_parser(
         "pilot-schedule",
         help="expand and audit deterministic pilot trajectory identifiers",
@@ -436,6 +441,7 @@ def main() -> None:
             execute_task_quality(
                 args.root / task_id,
                 reference_runs=args.reference_runs,
+                reuse_image=args.reuse_image,
             )
             for task_id in args.task_id
         ]

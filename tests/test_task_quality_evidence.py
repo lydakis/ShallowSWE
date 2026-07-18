@@ -5,7 +5,11 @@ from tempfile import TemporaryDirectory
 import json
 import unittest
 
-from shallowswe.task_quality import build_task_quality_report, quality_artifact_hashes
+from shallowswe.task_quality import (
+    TASK_QUALITY_EXECUTION_SCHEMA_VERSION,
+    build_task_quality_report,
+    quality_artifact_hashes,
+)
 
 
 class ExecutedTaskQualityEvidenceTests(unittest.TestCase):
@@ -89,6 +93,18 @@ calibration_status = "candidate"
 def _write_execution_evidence(task: Path, hashes: dict[str, str]) -> None:
     runs = [
         {
+            "kind": "pristine_submission",
+            "attempt": 1,
+            "exit_code": 1,
+            "clean_sandbox": True,
+            "command": "tests/test.sh",
+            "output_sha256": "sha256:pristine-output",
+            "artifact_sha256": "sha256:pristine-artifact",
+        }
+    ]
+    runs.extend(
+        [
+        {
             "kind": "reference_solution",
             "attempt": attempt,
             "exit_code": 0,
@@ -98,7 +114,8 @@ def _write_execution_evidence(task: Path, hashes: dict[str, str]) -> None:
             "artifact_sha256": "sha256:artifact",
         }
         for attempt in range(1, 4)
-    ]
+        ]
+    )
     runs.extend(
         [
             {
@@ -125,10 +142,10 @@ def _write_execution_evidence(task: Path, hashes: dict[str, str]) -> None:
     (task / "quality" / "executions.json").write_text(
         json.dumps(
             {
-                "schema_version": "shallowswe.task_quality_execution.v0.1",
+                "schema_version": TASK_QUALITY_EXECUTION_SCHEMA_VERSION,
                 "task_id": task.name,
                 "runtime": {
-                    "backend": "apple_container",
+                    "backend": "docker",
                     "version": "1.0.0",
                     "platform": "linux/arm64",
                 },
