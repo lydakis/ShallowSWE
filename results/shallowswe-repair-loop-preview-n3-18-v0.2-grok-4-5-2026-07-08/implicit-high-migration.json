@@ -1,0 +1,13 @@
+{
+  "schema_version": "shallowswe.reasoning_effort_migration.v0.1",
+  "model": "openrouter/x-ai/grok-4.5",
+  "effective_reasoning_effort": "high",
+  "completed_rows": 54,
+  "request_state": "implicit_provider_default",
+  "basis": {
+    "frozen_panel": "panels/shallowswe-grok-4-5-preview.json explicitly identifies the model configuration as high effort.",
+    "run_time_default": "OpenRouter's Grok 4.5 default reasoning effort at run time was high.",
+    "user_confirmation": "The benchmark owner confirmed that the omitted request parameter resolved to high."
+  },
+  "migration_policy": "Set the top-level reasoning_effort field to high on the 54 Grok rows and the run report's last-row summary. Preserve sampling_config.model_kwargs without an explicit effort field to show that the request relied on the provider default."
+}

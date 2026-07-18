@@ -1,0 +1,161 @@
+{
+  "schema_version": "shallowswe.repair_loop_preview_budget.v0.1",
+  "plan": "shallowswe-repair-loop-preview-n3-18-v0.2-grok-4-5",
+  "plan_path": "configs/shallowswe-repair-loop-preview-n3-18-v0.2-grok-4-5.json",
+  "task_count": 18,
+  "model_rows": 11,
+  "repair_loop_seeds_per_task_model_config": 3,
+  "estimated_total_rows": 594,
+  "caps": {
+    "single_model_run_invariant": true,
+    "no_fallbacks": true,
+    "requires_conversation_continuation": true,
+    "requires_filesystem_continuation": true,
+    "verifier_submission_cap": 20,
+    "agent_step_cap": 120,
+    "wall_time_cap_seconds": 2400,
+    "dollar_cap_usd": 5.0,
+    "allowed_feedback_classes": [
+      "generic_failure",
+      "runtime_error",
+      "missing_required_artifact",
+      "output_mismatch"
+    ]
+  },
+  "budget_gate": {
+    "max_budget_usd": 250.0,
+    "global_hard_stop_usd": 250.0,
+    "estimate_artifact": "results/shallowswe-repair-loop-preview-plan-v0.2-grok-4-5-2026-07-08/budget-estimate.json",
+    "requires_explicit_approval_if_over_budget": true
+  },
+  "theoretical_spend_if_every_row_hits_dollar_cap_usd": 2970.0,
+  "estimates": {
+    "observed_540_row_average": {
+      "schema_version": "shallowswe.budget.v0.1",
+      "panel": "deepswe-v1.1-expanded-pilot-plus-grok-4-5",
+      "panel_status": "preview_extension",
+      "task_count": 18,
+      "rollouts_per_task": 3,
+      "estimated_attempts_per_row": 54,
+      "estimated_total_attempts": 594,
+      "token_basis": {
+        "input_tokens": 71444,
+        "output_tokens": 4513,
+        "cache_read_tokens": 52870,
+        "cache_write_tokens": 0,
+        "peak_context_tokens": 7676
+      },
+      "rows": 11,
+      "priced_rows": 11,
+      "missing_price_rows": 0,
+      "priced_subset_cost_usd": 105.91212672,
+      "estimated_full_panel_cost_usd": 105.91212672,
+      "budget_limit_usd": 250.0,
+      "over_budget": false,
+      "row_estimates": [
+        {
+          "id": "mini_swe_agent_claude_fable_5_low",
+          "model": "anthropic/claude-fable-5",
+          "upstream_provider": "anthropic",
+          "reasoning_effort": "low",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.46426,
+          "estimated_row_cost_usd": 25.07004
+        },
+        {
+          "id": "mini_swe_agent_claude_sonnet_5_low",
+          "model": "anthropic/claude-sonnet-5",
+          "upstream_provider": "anthropic",
+          "reasoning_effort": "low",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.139278,
+          "estimated_row_cost_usd": 7.521012000000001
+        },
+        {
+          "id": "mini_swe_agent_claude_sonnet_5_medium",
+          "model": "anthropic/claude-sonnet-5",
+          "upstream_provider": "anthropic",
+          "reasoning_effort": "medium",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.139278,
+          "estimated_row_cost_usd": 7.521012000000001
+        },
+        {
+          "id": "mini_swe_agent_claude_opus_4_8_low",
+          "model": "anthropic/claude-opus-4.8",
+          "upstream_provider": "anthropic",
+          "reasoning_effort": "low",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.23213,
+          "estimated_row_cost_usd": 12.53502
+        },
+        {
+          "id": "mini_swe_agent_claude_opus_4_8_medium",
+          "model": "anthropic/claude-opus-4.8",
+          "upstream_provider": "anthropic",
+          "reasoning_effort": "medium",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.23213,
+          "estimated_row_cost_usd": 12.53502
+        },
+        {
+          "id": "mini_swe_agent_gpt_5_5_low",
+          "model": "openai/gpt-5.5",
+          "upstream_provider": "openai",
+          "reasoning_effort": "low",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.254695,
+          "estimated_row_cost_usd": 13.75353
+        },
+        {
+          "id": "mini_swe_agent_gpt_5_5_medium",
+          "model": "openai/gpt-5.5",
+          "upstream_provider": "openai",
+          "reasoning_effort": "medium",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.254695,
+          "estimated_row_cost_usd": 13.75353
+        },
+        {
+          "id": "mini_swe_agent_gemini_3_5_flash_medium",
+          "model": "google/gemini-3.5-flash",
+          "upstream_provider": "google",
+          "reasoning_effort": "medium",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.0764085,
+          "estimated_row_cost_usd": 4.126059000000001
+        },
+        {
+          "id": "mini_swe_agent_glm_5_2_high",
+          "model": "z-ai/glm-5.2",
+          "upstream_provider": "z-ai",
+          "reasoning_effort": "high",
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.04032942,
+          "estimated_row_cost_usd": 2.17778868
+        },
+        {
+          "id": "mini_swe_agent_kimi_k2_7_code_default",
+          "model": "moonshotai/kimi-k2.7-code",
+          "upstream_provider": "moonshotai",
+          "reasoning_effort": null,
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.03747076,
+          "estimated_row_cost_usd": 2.02342104
+        },
+        {
+          "id": "mini_swe_agent_grok_4_5_default",
+          "model": "x-ai/grok-4.5",
+          "upstream_provider": "x-ai",
+          "reasoning_effort": null,
+          "status": "priced",
+          "estimated_cost_per_attempt_usd": 0.090661,
+          "estimated_row_cost_usd": 4.895694000000001
+        }
+      ],
+      "missing_prices": []
+    }
+  },
+  "incremental_grok_expected_cost_usd": 4.895694000000001,
+  "incremental_grok_expected_rows": 54
+}

@@ -47,5 +47,17 @@ results/*
 !results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-2026-07-17/retry-ledger/**/*.json
 !results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-max-2026-07-17/
 !results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-max-2026-07-17/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-grok-4-5-2026-07-08/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-grok-4-5-2026-07-08/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-grok-4-5-2026-07-08/rows/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-grok-4-5-2026-07-08/rows/*.json
+!results/shallowswe-repair-loop-preview-plan-v0.2-grok-4-5-2026-07-08/
+!results/shallowswe-repair-loop-preview-plan-v0.2-grok-4-5-2026-07-08/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low-2026-07-09/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low-2026-07-09/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low-2026-07-09/rows/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-gpt-5-6-low-2026-07-09/rows/*.json
+!results/shallowswe-repair-loop-preview-plan-v0.2-gpt-5-6-low-2026-07-09/
+!results/shallowswe-repair-loop-preview-plan-v0.2-gpt-5-6-low-2026-07-09/*.json
 artifacts/
 tmp/
