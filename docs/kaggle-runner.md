@@ -1,117 +1,83 @@
 # Kaggle Runner
 
-Kaggle is the primary backend for official ShallowSWE pilot evidence. Pier/Harbor remains the
-parallel local-reproduction and portability backend. Codex/Pier may handle development triage, but
-Codex subscription trajectories are not official calibration evidence. Both repair-loop backends
-consume the canonical `tasks/` tree and the shared controller in `repair_loop_protocol.py`; runner
-role and evidence class follow `docs/protocol-governance.md`.
+Kaggle is the primary funded execution backend. The runner is a generic deployment entrypoint: it
+consumes a generated task bundle and one roadmap-agnostic `RunSpec`, executes the bounded repair
+loop, and emits normalized result artifacts. It does not decide what an experiment means.
 
-## Parity Contract
+## Contract
 
-The methodology is backend-independent:
+Each row binds one task, model configuration, agent policy, rollout seed, and set of limits. The
+runner preserves:
 
-- One canonical task packet under `tasks/<task-id>/`.
-- The same effective mini-swe-agent prompt/config hash.
-- The same pinned mini-swe-agent fork commit.
-- One resumable agent instance and one persistent task workspace per row.
-- Hidden verifier submissions through the same result classes.
-- Only sanitized feedback is returned to the agent.
-- The same verifier-submission, step, cost, and wall-time guards.
-- The same active repair-loop result schema and token/accounting contract.
+- one resumable agent and persistent workspace;
+- hidden verifier isolation and sanitized feedback;
+- exact verifier-submission, agent-step, dollar, and wall-time limits;
+- native provider tool-call transport;
+- event-level usage, cost, and verifier checkpoints;
+- requested and resolved model identity;
+- final workspace, trajectory, verifier diagnostics, and normalized result; and
+- opaque experiment metadata without branching on it.
 
-Kaggle and Pier do not have byte-identical provider transports. The Kaggle runner preserves native
-structured function calls and results for every provider. Google models use Kaggle's provider-native
-GenAI route so Gemini thought signatures survive sequential tool calls; other providers use
-Kaggle's OpenAI-compatible route. Output-token caps are translated from `max_tokens` to
-`max_output_tokens` on the GenAI route. The controller, command, workspace, verifier, feedback
-class, and stop rules remain shared. Results should claim methodology parity, not byte-for-byte
-transcript parity. Backend provenance remains mandatory, but runner or gateway differences alone
-do not prevent pooling when the canonical model, task, agent policy, controls, and continuation
-contract match. Known behavioral or identity mismatches remain separate.
+There is no model fallback. Unknown units, tasks, models, seeds, prices, or identities fail closed.
 
-## Bundle Boundary
+## Bundle
 
-`shallowswe kaggle-pack` exports a private Kaggle dataset bundle from the canonical repository:
+`shallowswe kaggle-pack` generates private deployment data from `tasks/`:
 
 ```text
 manifest.json
-tasks/<task-id>/          # instruction, metadata, agent-visible environment source
-verifiers/<task-id>/      # hidden verifier, not visible inside the agent chroot
-config/                   # mini-swe-agent override
+tasks/<task-id>/          # agent-visible task source
+verifiers/<task-id>/      # hidden verifier
+config/                   # agent configuration
+run/run-spec.json         # exact execution facts
+pricing/                  # dated canonical price basis
 wheels/                   # pinned ShallowSWE and mini-swe-agent runtime
-notebook/                 # production entrypoint and runtime requirements
+notebook/                 # generic Kaggle entrypoint
 ```
 
-The exporter fails closed on Dockerfile instructions it cannot reproduce. The current task set uses
-the supported `python:3.12-slim`, `WORKDIR`, `ENV`, `COPY`, and deterministic fixture-generator
-subset. `tasks/` remains the only authored source; the Kaggle dataset is generated deployment data.
-
-Build a smoke bundle:
+Build the current canary bundle:
 
 ```sh
-uv run shallowswe kaggle-pack tmp/kaggle-smoke-bundle \
-  --task-id py-normalize-username \
+uv run shallowswe kaggle-pack /tmp/shallowswe-kaggle-canary \
+  --task-id env-flags-to-json \
+  --task-id invoice-multi-source-merge \
   --tasks-root tasks \
-  --config-file configs/mini-swe-agent-repair-loop-preview.yaml \
+  --config-file configs/mini-swe-agent-kaggle-repair-loop.yaml \
+  --run-spec configs/experiments/weekend-six-task-kaggle-2026-07-18/run-spec-canary.json \
+  --price-sheet prices/openrouter-2026-07-09.json \
   --mini-swe-agent-source-dir /Users/lydakis/Developer/oss/mini-swe-agent
 ```
 
-Repeat `--task-id` for a panel or the accepted task set. Review `manifest.json`, especially task,
-environment, verifier, prompt, and runtime hashes, before publishing a dataset version.
+Inspect `manifest.json`, `run/run-spec.json`, task hashes, verifier hashes, wheel names, and the
+price sheet before publishing a dataset version.
 
-For the protocol-validation pilot, also attach `--pilot-manifest`, `--pilot-schedule`,
-`--pilot-launch-plan`, and `--price-sheet`. Generate one hash-bound source per launchable unit with
-`shallowswe kaggle-bound-sources`. An optional `SHALLOWSWE_LAUNCH_UNIT_ID` must match the ID frozen
-into that source. The runner resolves the frozen ID against the attached launch plan and
-derives the task matrix, rollout seeds, model and agent identities, caps, funding pool, evidence
-class, and pre-registered trajectory IDs. A model, task, or seed that does not resolve to exactly
-one scheduled row fails before execution.
+Generate one hash-bound Kaggle source per run unit:
 
-## Kaggle Isolation
+```sh
+uv run shallowswe kaggle-bound-sources \
+  configs/experiments/weekend-six-task-kaggle-2026-07-18/run-spec-canary.json \
+  /tmp/shallowswe-kaggle-canary-sources
+```
 
-The live Kaggle runtime blocks user namespaces, so Bubblewrap and PRoot plus inherited seccomp are
-not usable. The production runner instead uses primitives verified in a private Kaggle probe:
+Each generated source freezes `FROZEN_RUN_UNIT_ID` and its Kaggle task name. An optional
+`SHALLOWSWE_RUN_UNIT_ID` must agree with the frozen value.
 
-- a real kernel `chroot` with only the task workspace and a minimal runtime;
-- a root-owned, uv-managed Python 3.12 tree and real Bash;
-- commands executed as UID/GID 65534;
-- a seccomp filter installed before `chroot` that denies socket creation for the entire command
-  process tree;
-- no `/proc`, Kaggle input mount, credentials, notebook environment, or verifier in the agent root;
-- `/tests` and `/logs/verifier` copied into the chroot only for a verifier submission, then removed
-  before the agent can continue.
+## Isolation
 
-The runner performs a fail-closed preflight before the first model call. It verifies Python 3.12,
-network denial, and absence of `/kaggle/input`. A failed preflight is excluded as runner
-infrastructure and consumes no model turns.
+The Kaggle runtime uses a kernel `chroot` and seccomp because user namespaces are unavailable:
 
-## Private Kaggle Artifacts
+- only the task workspace and minimal runtime enter the agent root;
+- commands run as UID/GID 65534;
+- socket creation is denied for the command process tree;
+- `/proc`, Kaggle inputs, credentials, and verifier files are absent during agent turns;
+- verifier files enter the chroot only during a verifier submission and are then removed; and
+- a fail-closed preflight checks Python, network denial, and input-mount absence before model use.
 
-The infrastructure was validated on Kaggle with private artifacts:
+A preflight failure is runner infrastructure, not a scored model failure.
 
-- Dataset: `glydakis/shallowswe-kaggle-bundle`.
-- Environment probe: `glydakis/shallowswe-kaggle-environment-probe` version 8.
-- Production runner: `glydakis/shallowswe-repair-loop-v2` version 1.
-- Deterministic conformance task: `glydakis/shallowswe-repair-loop-conformance` version 2.
+## Publish and Run
 
-The conformance run passed in three agent turns with two hidden-verifier submissions. Submission one
-failed, the same agent received only `Verification failed. Continue working.`, submission two
-passed, and the raw diagnostic was absent from the trajectory. The normalized row was scored with
-`stop_reason = "passed"` and `task_visibility = "kaggle-chroot-seccomp-hidden-verifier"`.
-
-The production task also exercised live Kaggle model transport and sandbox commands. The default
-Gemini smoke reached a scored agent-step cap without submitting, while Claude Haiku, GPT-OSS,
-DeepSeek, and Qwen attempts were excluded because Kaggle returned provider 429/503 errors before
-their first response. Those rows are provider-capacity evidence, not benchmark results.
-
-Kaggle's model proxy may omit `total_cost_nanodollars` for a response. When it does, the runner
-cannot enforce the row's dollar cap from gateway cost metadata. The step cap and wall-time cap still
-bound the run, and the normalized result retains the proxy-reported usage that was available. Treat
-the dollar cap as an additional guard on Kaggle, not the only funded-run budget boundary.
-
-## Operating Flow
-
-Authenticate and initialize the model proxy environment without committing credentials:
+Authenticate without committing credentials:
 
 ```sh
 kaggle auth login
@@ -119,52 +85,44 @@ kaggle benchmarks init -y --env-file /tmp/shallowswe-kaggle.env \
   --example-file /tmp/shallowswe-kaggle-example.py
 ```
 
-Create or version a private bundle dataset with `kaggle datasets create` or
-`kaggle datasets version`, then wait until `kaggle datasets list --mine` reports the new
-`lastUpdated` value before pushing a task. Kaggle task creation attaches the latest fully published
-dataset version, not an upload still being processed.
-
-Push or run the production task:
+Create or version the private bundle dataset, then wait until Kaggle reports the new published
+version. Push each bound source using its generated task name:
 
 ```sh
 set -a
 source /tmp/shallowswe-kaggle.env
 set +a
 
-kaggle benchmarks tasks push shallowswe-repair-loop-v2 \
-  -f kaggle/shallowswe_runner.py \
+kaggle benchmarks tasks push <task-name> \
+  -f /tmp/shallowswe-kaggle-canary-sources/<task-name>.py \
   -d glydakis/shallowswe-kaggle-bundle \
   --wait
 
-kaggle benchmarks tasks run shallowswe-repair-loop-v2 \
-  -m '<kaggle-model-slug>' \
-  --wait
+kaggle benchmarks tasks run <task-name> -m '<exact-kaggle-model-slug>' --wait
 ```
 
-For a frozen pilot or development shadow, push the generated bound source instead of the generic
-runner:
+Never print, commit, or bundle the Kaggle token or model-proxy environment. The harness contains no
+default-model registration workaround and must never invoke Gemini 3 Flash. Gemini 3.5 Flash is a
+different configured model and is only eligible when named by an exact run spec.
 
-```sh
-uv run shallowswe kaggle-bound-sources \
-  configs/shallowswe-six-task-pilot-v0.3-development-shadow-launch-plan.json \
-  /tmp/shallowswe-bound-sources
+## Download and Reconcile
 
-kaggle benchmarks tasks push <kaggle-task-name> \
-  -f /tmp/shallowswe-bound-sources/<kaggle-task-name>.py \
-  -d glydakis/shallowswe-development-shadow-v0-1-bundle \
-  --wait
-```
+Download every task run with `kaggle benchmarks tasks download`. Preserve the normalized
+`repair-loop-result.json`, raw task-run record, trajectory, checkpoints, verifier diagnostics, final
+workspace, retry count, and provider error.
 
-The development-only registration workaround is disabled unless
-`SHALLOWSWE_KAGGLE_REGISTRATION_PROBE=1` is explicitly present for the registration invocation.
-Never set that sentinel for evaluation runs: without it, a default-model mismatch is treated as a
-real frozen-identity failure.
+Only rows with `status != excluded` are scored. Provider 429/503 failures before the first model
+response are infrastructure exclusions. Missing gateway dollar metadata does not disable the step,
+wall-time, or batch hard stops; it must remain visible in the result.
 
-If Benchmarks task commands do not inherit cached OAuth, export a short-lived token for that shell
-with `KAGGLE_API_TOKEN="$(kaggle auth print-access-token)"`. Never print, commit, or place the model
-proxy environment or Kaggle token in the bundle.
+After each launch unit, reconcile:
 
-Download model-run records with `kaggle benchmarks tasks download`. Kernel creation output also
-contains `shallowswe-results/<run-id>/repair-loop-result.json`, the mini-swe trajectory, runner-only
-verifier diagnostics, and the final workspace. Only scored rows belong in published aggregates;
-retry excluded infrastructure rows under the protocol rules.
+1. requested and resolved model identity;
+2. expected versus downloaded trajectory count;
+3. scored versus excluded rows and retries;
+4. gateway and canonical cost fields;
+5. Kaggle quota draw and batch hard stop; and
+6. complete artifact presence.
+
+Analysis happens separately with `shallowswe analyze-repair-loops` and an explicit
+`MethodologySpec`.

@@ -122,7 +122,7 @@ Workflow is load-bearing for ShallowSWE's positioning: as work gets decomposed i
 
 Initial size labels are authoring hypotheses. Calibration data can move a task up or down.
 
-Size calibration uses the protocol in `docs/calibration-protocol.md`. Author labels are hypotheses;
+Size calibration uses the frozen methodology. Author labels are hypotheses;
 the final size is assigned by cheap first-submit behavior after the task clears the pre-registered
 ceiling one-shot gate. Published snapshots use fresh repair-loop seeds for scoring.
 

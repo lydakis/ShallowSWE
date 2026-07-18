@@ -21,7 +21,7 @@ cannot execute because of the agent's changes, or the final state violates task 
 
 Provider, network, credential, credit, model-resolution, provider-dispatch, and
 verifier-infrastructure failures are excluded and retried under the result-status policy in
-`docs/methodology.md`.
+`docs/archive/legacy-methodology/methodology.md`.
 
 ## Reward Contract
 
@@ -159,7 +159,8 @@ Before a task can enter calibration:
    - No hidden assertion requires a private implementation detail.
 
 6. Run calibration.
-   - Use `docs/calibration-protocol.md`, not a single control model or author intuition.
+   - Use the frozen methodology; the older implementation is recorded in
+     `docs/archive/legacy-methodology/calibration-protocol.md`.
    - The pinned ceiling must clear the pre-registered one-shot gate before floor failures are
      interpretable.
    - The selected floor-probe configuration assigns size by one-shot behavior.

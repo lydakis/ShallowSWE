@@ -27,6 +27,19 @@ The run should force every important production path to operate on Kaggle:
 The pipeline should continue through known research deficiencies. It should stop only for safety,
 identity, isolation, accounting, or platform failures that make the output unusable or unsafe.
 
+## Execution Boundary
+
+This plan controls sequencing, labels, and go/no-go decisions. The harness does not. The current
+executable inputs are:
+
+- `configs/experiments/weekend-six-task-kaggle-2026-07-18/run-spec-canary.json`;
+- `configs/experiments/weekend-six-task-kaggle-2026-07-18/run-spec-permissive.json`; and
+- `configs/experiments/weekend-six-task-kaggle-2026-07-18/methodology-spec.json`.
+
+The canary and permissive specs freeze 16 and 72 trajectories respectively. Confirmation and
+candidate-panel run specs must be generated after policy selection because their exact caps and
+task budgets are not known yet. No placeholder limit may enter the harness.
+
 ## Definition of Done
 
 The weekend goal is complete when:
@@ -214,7 +227,8 @@ shakedown unless they reveal a task or infrastructure defect.
 
 ### Stage 3: Provisional policy selection
 
-Run the real Stage 4 machinery over the permissive rows. Select:
+Run `shallowswe select-repair-policy` with the frozen methodology specification over the
+permissive rows. Select:
 
 - verifier-submission cap `K`;
 - pooled agent-step guard;
@@ -269,6 +283,9 @@ Report the fresh GPT-5.6 Sol high calibration anchor alongside three fresh candi
 | Cheap frontier | `gpt-5.6-luna` | GPT-5.6 Luna low | 53/54 eventual, 52/54 first-check, about $0.020 mean row cost, and 6.3 mean turns. |
 | Clean stronger baseline | `gpt-5.6-sol` | GPT-5.6 Sol low | 54/54 eventual and first-check, about $0.151 mean row cost, and 6.8 mean turns. |
 | Repair-heavy cost tail | `gemini-3.5-flash` | Gemini 3.5 Flash medium | 54/54 eventual but 49/54 first-check, about $0.309 mean row cost, 24.9 mean turns, and a $1.33 p95 row cost. |
+
+Gemini 3 Flash is prohibited and must receive zero usage. It is not a registration default,
+preflight model, backup, or fallback. Gemini 3.5 Flash is a separate exact configuration.
 
 This is deliberately not a prestige leaderboard. Luna and Sol provide a controlled same-generation
 price and behavior contrast. Sol high versus Sol low adds a controlled same-model effort contrast.

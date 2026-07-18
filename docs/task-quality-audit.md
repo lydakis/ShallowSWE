@@ -125,7 +125,7 @@ Generate executed evidence with Docker:
 uv run shallowswe execute-task-quality tasks --task-id <task-id>
 ```
 
-Docker provides local deterministic QA. Kaggle remains the canonical official pilot runner, and
+Docker provides local deterministic QA. Kaggle remains the primary funded execution backend, and
 Pier/Harbor remains the portability runner.
 
 The report includes:

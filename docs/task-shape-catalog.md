@@ -13,7 +13,7 @@ Every shape must satisfy three invariants when instantiated:
 1. **Realism**: reads like a normal work packet someone would hand to an engineer or sub-agent.
 2. **Programmatic verifier**: tests behavior, not implementation. No model judges in the scoring path.
 3. **Calibration**: repair-loop solve rate, turns, verifier submissions, cap hits, tokens,
-   measured cost, and CPSC are measured under `docs/calibration-protocol.md` before a task is
+   measured cost, and CPSC are measured under the frozen methodology before a task is
    accepted into a snapshot.
 
 Complexity means more touch points, state, sequencing, or regression surface. It never means hidden

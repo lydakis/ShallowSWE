@@ -108,7 +108,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--plan",
         type=Path,
-        default=Path("configs/shallowswe-repair-loop-preview-n3-18.json"),
+        default=Path(
+            "configs/archive/repair-loop-preview/shallowswe-repair-loop-preview-n3-18.json"
+        ),
     )
     parser.add_argument(
         "--prices",

@@ -351,9 +351,9 @@ Verifier:
 ## Size Bands
 
 ShallowSWE sizes should be calibrated by observed behavior, but initial authoring needs bands. Do
-not define sizes by one control model, a price sheet, or patch size. Use
-`docs/calibration-protocol.md`: select a floor-probe configuration by measured dynamic range, pin a frontier
-ceiling, then assign size by floor one-shot behavior plus repair-loop effort signals.
+not define sizes by one control model, a price sheet, or patch size. The historical floor-probe
+implementation is retained in `docs/archive/legacy-methodology/calibration-protocol.md`; current
+assignments follow the frozen methodology and use one-shot behavior plus repair-loop effort signals.
 
 ### Small
 

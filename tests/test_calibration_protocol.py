@@ -11,9 +11,8 @@ from shallowswe.task_metadata import is_official_calibration_status
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CURRENT_DOCS = [
     REPO_ROOT / "README.md",
-    REPO_ROOT / "SPEC.md",
-    REPO_ROOT / "docs" / "methodology.md",
-    REPO_ROOT / "docs" / "pilot-plan.md",
+    REPO_ROOT / "docs" / "protocol-governance.md",
+    REPO_ROOT / "docs" / "kaggle-runner.md",
     REPO_ROOT / "docs" / "pier-integration.md",
     REPO_ROOT / "docs" / "task-selection-rubric.md",
     REPO_ROOT / "docs" / "task-shape-catalog.md",
@@ -24,7 +23,9 @@ CURRENT_DOCS = [
 
 class CalibrationProtocolTests(unittest.TestCase):
     def test_protocol_defines_v2_calibration_contract(self) -> None:
-        text = (REPO_ROOT / "docs" / "calibration-protocol.md").read_text()
+        text = (
+            REPO_ROOT / "docs" / "archive" / "legacy-methodology" / "calibration-protocol.md"
+        ).read_text()
 
         for expected in [
             "Pinned ceiling",
@@ -137,8 +138,10 @@ class CalibrationProtocolTests(unittest.TestCase):
         self.assertNotIn("16/16", rule)
 
     def test_public_spec_names_single_model_scoring_contract(self) -> None:
-        spec = (REPO_ROOT / "SPEC.md").read_text()
-        methodology = (REPO_ROOT / "docs" / "methodology.md").read_text()
+        spec = (REPO_ROOT / "docs" / "archive" / "legacy-methodology" / "SPEC.md").read_text()
+        methodology = (
+            REPO_ROOT / "docs" / "archive" / "legacy-methodology" / "methodology.md"
+        ).read_text()
         normalized_spec = " ".join(spec.split())
 
         for expected in [
