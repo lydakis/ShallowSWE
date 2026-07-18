@@ -30,8 +30,8 @@ reference budget, and structural scope.
 - `docs/calibration-log.md` records size-calibration runs and admission decisions.
 - `docs/pilot-plan.md` records the pre-v0.4.2 build plan and is not a launch manifest.
 - Kaggle is the primary official pilot backend. Pier/Harbor remains the parallel portability and
-  local-reproduction backend. Codex subscription runs are development-only. `tasks/` is the single
-  authored source for every runner.
+  local-reproduction backend. Codex subscription runs use the isolated `development_dry_run`
+  evidence and release classes. `tasks/` is the single authored source for every runner.
 - Docker is the clean-sandbox backend for local deterministic task QA. It does not replace Kaggle
   as the official funded runner.
 - `docs/kaggle-runner.md` documents packaging, isolation, parity, live conformance, and operations.
@@ -78,9 +78,9 @@ uv run shallowswe compare-deepswe /tmp/shallowswe-workload-index.json \
   > /tmp/shallowswe-deepswe-comparison.json
 ```
 
-The workload index contains `task_weights`, per-model/task `cells`, and precomputed default
-`models`. A UI can recompute custom baskets client-side by changing category/size weights and
-applying them to the cell metrics.
+The legacy one-shot workload index contains category/size cells. Report-grade repair-loop analysis
+uses `repair-loop-workload-index`, which applies the category/pressure weighted-ratio formula,
+retains zero-success cells, and exposes underfilled declared coverage rather than imputing it.
 
 Estimate a panel before running it. The July 3 expanded publish pilot includes GLM 5.2 at high
 effort, Fable at low effort, low and medium rows for GPT-5.5, Claude Opus 4.8, and Claude Sonnet 5,
@@ -132,6 +132,33 @@ uv run shallowswe pilot-launch-plan \
   configs/shallowswe-six-task-pilot-v0.3-schedule.json \
   configs/shallowswe-six-task-pilot-v0.3-launch-plan.json
 uv run shallowswe pilot-readiness configs/shallowswe-six-task-pilot-v0.3.json
+```
+
+Before independent review or metered model use, exercise the whole development-only path with
+deterministic events:
+
+```sh
+uv run shallowswe development-rehearsal \
+  configs/shallowswe-six-task-pilot-v0.3.json \
+  results/development-rehearsal-v0.1
+```
+
+The rehearsal emits repair-loop rows, a deterministic Stage 4 policy proposal, a
+category/pressure workload index, and a summary report. It cannot unlock official launch units or
+create routine-review evidence.
+
+For a funded pre-review rehearsal on the exact Kaggle runner, generate a separate development
+shadow. It uses disjoint seeds and trajectory IDs, forces development-only evidence, and expands
+the complete 190-row weekend shakedown through fresh confirmation and candidate scoring:
+
+```sh
+uv run shallowswe development-shadow-plan \
+  configs/shallowswe-six-task-pilot-v0.3.json \
+  configs/shallowswe-six-task-pilot-v0.3-development-shadow-schedule.json \
+  configs/shallowswe-six-task-pilot-v0.3-development-shadow-launch-plan.json
+uv run shallowswe kaggle-bound-sources \
+  configs/shallowswe-six-task-pilot-v0.3-development-shadow-launch-plan.json \
+  /tmp/shallowswe-development-shadow-bound-sources
 ```
 
 After independent routine review, build the final Kaggle bundle with `--pilot-manifest`,

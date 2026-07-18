@@ -60,8 +60,9 @@ Repeat `--task-id` for a panel or the accepted task set. Review `manifest.json`,
 environment, verifier, prompt, and runtime hashes, before publishing a dataset version.
 
 For the protocol-validation pilot, also attach `--pilot-manifest`, `--pilot-schedule`,
-`--pilot-launch-plan`, and `--price-sheet`. Official pilot bundles require
-`SHALLOWSWE_LAUNCH_UNIT_ID`. The runner resolves that ID against the attached launch plan and
+`--pilot-launch-plan`, and `--price-sheet`. Generate one hash-bound source per launchable unit with
+`shallowswe kaggle-bound-sources`. An optional `SHALLOWSWE_LAUNCH_UNIT_ID` must match the ID frozen
+into that source. The runner resolves the frozen ID against the attached launch plan and
 derives the task matrix, rollout seeds, model and agent identities, caps, funding pool, evidence
 class, and pre-registered trajectory IDs. A model, task, or seed that does not resolve to exactly
 one scheduled row fails before execution.
@@ -139,6 +140,25 @@ kaggle benchmarks tasks run shallowswe-repair-loop-v2 \
   -m '<kaggle-model-slug>' \
   --wait
 ```
+
+For a frozen pilot or development shadow, push the generated bound source instead of the generic
+runner:
+
+```sh
+uv run shallowswe kaggle-bound-sources \
+  configs/shallowswe-six-task-pilot-v0.3-development-shadow-launch-plan.json \
+  /tmp/shallowswe-bound-sources
+
+kaggle benchmarks tasks push <kaggle-task-name> \
+  -f /tmp/shallowswe-bound-sources/<kaggle-task-name>.py \
+  -d glydakis/shallowswe-development-shadow-v0-1-bundle \
+  --wait
+```
+
+The development-only registration workaround is disabled unless
+`SHALLOWSWE_KAGGLE_REGISTRATION_PROBE=1` is explicitly present for the registration invocation.
+Never set that sentinel for evaluation runs: without it, a default-model mismatch is treated as a
+real frozen-identity failure.
 
 If Benchmarks task commands do not inherit cached OAuth, export a short-lived token for that shell
 with `KAGGLE_API_TOKEN="$(kaggle auth print-access-token)"`. Never print, commit, or place the model

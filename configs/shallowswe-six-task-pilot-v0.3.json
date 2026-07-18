@@ -26,7 +26,8 @@
     "portability_runner": "pier_harbor",
     "development_runner": "codex_subscription",
     "official_evidence_class": "official_pilot",
-    "development_evidence_class": "development",
+    "development_evidence_class": "development_dry_run",
+    "development_release_class": "development_dry_run",
     "pool_unequal_agent_policies": false
   },
   "model_configs": [
@@ -122,6 +123,224 @@
       "config_path": "configs/mini-swe-agent-pilot-permissive.yaml"
     }
   },
+  "development_model_configs": [
+    {
+      "role": "primary_anchor",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_a073691f2cac714c3beb86a0f195bfdfc5fe1f39b92cfcef94d1d53204cbf933",
+      "availability_evidence": "Codex subscription canary, observed 2026-07-18",
+      "canonical": {
+        "requested_model": "openai/gpt-5.5",
+        "expected_resolved_model": "gpt-5.5",
+        "inference_gateway": "chatgpt_subscription",
+        "upstream_provider": "openai",
+        "provider_route": "chatgpt_codex",
+        "reasoning_effort": "high",
+        "sampling_config": {
+          "temperature": null,
+          "seed_policy": "codex_subscription_not_seed_controllable"
+        },
+        "context_policy": "codex_cli_managed",
+        "cache_policy": "codex_cli_managed"
+      }
+    },
+    {
+      "role": "floor_low",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_d86a4f2e3691861229e851068258f01ea0dc395c54bb68e5796699285bdfccfe",
+      "availability_evidence": "Codex subscription development alias",
+      "canonical": {
+        "requested_model": "openai/gpt-5.4-mini",
+        "expected_resolved_model": "gpt-5.4-mini",
+        "inference_gateway": "chatgpt_subscription",
+        "upstream_provider": "openai",
+        "provider_route": "chatgpt_codex",
+        "reasoning_effort": "low",
+        "sampling_config": {
+          "temperature": null,
+          "seed_policy": "codex_subscription_not_seed_controllable"
+        },
+        "context_policy": "codex_cli_managed",
+        "cache_policy": "codex_cli_managed"
+      }
+    },
+    {
+      "role": "floor_strong",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_a3252cf2823640215eb40a3e2b7c45f76fe4c399fbb44c0654cac34ff616896d",
+      "availability_evidence": "Codex subscription development alias",
+      "canonical": {
+        "requested_model": "openai/gpt-5.4",
+        "expected_resolved_model": "gpt-5.4",
+        "inference_gateway": "chatgpt_subscription",
+        "upstream_provider": "openai",
+        "provider_route": "chatgpt_codex",
+        "reasoning_effort": "low",
+        "sampling_config": {
+          "temperature": null,
+          "seed_policy": "codex_subscription_not_seed_controllable"
+        },
+        "context_policy": "codex_cli_managed",
+        "cache_policy": "codex_cli_managed"
+      }
+    }
+  ],
+  "development_agent_policy": {
+    "status": "frozen",
+    "agent_policy_ids_by_model_role": {
+      "primary_anchor": "ap_sha256_e5b5ec3d49d61e78531868c8e0c13e70073ba55594f17fa151c688866a3ed8d8",
+      "floor_low": "ap_sha256_bc4d7b7f014951142bba05e2cd58dedbcf810df317e054b59723f88874eb6407",
+      "floor_strong": "ap_sha256_01564367b1ea54fe8ed423790f3c7466e425a658b62f3d64e3e6e9042b4f99f5"
+    },
+    "canonical": {
+      "runner": "pier",
+      "runner_version": "pier-private-repair-loop-pilot",
+      "agent": "shallowswe-resumable-codex-subscription",
+      "agent_version": "codex==0.142.0",
+      "scaffold_prompt_hash": null,
+      "agent_step_limit": null,
+      "tool_protocol": "codex-unified-exec",
+      "continuation_policy": "codex_exec_resume_last_same_session_and_filesystem",
+      "sandbox_interface": "pier-docker-hidden-verifier",
+      "feedback_policy": "shallowswe-coarse-feedback-v1",
+      "config_path": "configs/mini-swe-agent-calibration.yaml"
+    }
+  },
+  "development_shadow_model_configs": [
+    {
+      "role": "primary_anchor",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "availability_evidence": "Kaggle model catalog, observed 2026-07-18",
+      "canonical": {
+        "requested_model": "gpt-5.6-sol",
+        "expected_resolved_model": "gpt-5.6-sol",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "high",
+        "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_trajectory_replicate"},
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "role": "floor_low",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
+      "agent_policy_id": "ap_sha256_18d5a541466f2eab0c50f3f5203c73108beb6611ded846629b56733219245c73",
+      "availability_evidence": "Kaggle model catalog, observed 2026-07-18",
+      "canonical": {
+        "requested_model": "gpt-5.6-luna",
+        "expected_resolved_model": "gpt-5.6-luna",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "low",
+        "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_trajectory_replicate"},
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "role": "floor_strong",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365",
+      "agent_policy_id": "ap_sha256_05389686ca1f9383ffe4f57a13fe1bf90887d0c4e3a2bc53330437bcebbb9349",
+      "availability_evidence": "Kaggle model catalog, observed 2026-07-18",
+      "canonical": {
+        "requested_model": "gpt-5.6-sol",
+        "expected_resolved_model": "gpt-5.6-sol",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "low",
+        "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_trajectory_replicate"},
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "role": "candidate_luna",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
+      "agent_policy_id": "ap_sha256_18d5a541466f2eab0c50f3f5203c73108beb6611ded846629b56733219245c73",
+      "availability_evidence": "Kaggle model catalog, observed 2026-07-18",
+      "canonical": {
+        "requested_model": "gpt-5.6-luna",
+        "expected_resolved_model": "gpt-5.6-luna",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "low",
+        "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_trajectory_replicate"},
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "role": "candidate_sol",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365",
+      "agent_policy_id": "ap_sha256_05389686ca1f9383ffe4f57a13fe1bf90887d0c4e3a2bc53330437bcebbb9349",
+      "availability_evidence": "Kaggle model catalog, observed 2026-07-18",
+      "canonical": {
+        "requested_model": "gpt-5.6-sol",
+        "expected_resolved_model": "gpt-5.6-sol",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "low",
+        "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_trajectory_replicate"},
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "role": "candidate_gemini",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_d1f9e497c30a476336932616ecbdba3ba1881b0950112a189d48fede4f2349ad",
+      "agent_policy_id": "ap_sha256_c66ef724a41b0c26d9361d4595935d3f540309b65c74f4df33e215a763bfed98",
+      "availability_evidence": "Kaggle model catalog, observed 2026-07-18",
+      "canonical": {
+        "requested_model": "gemini-3.5-flash",
+        "expected_resolved_model": "gemini-3.5-flash",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "google",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "medium",
+        "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_trajectory_replicate"},
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "role": "backup_terra",
+      "status": "frozen",
+      "model_config_id": "mc_sha256_4684fafcbf2993b0d96b75b2b0f6d4e198dad505664b07437738b448b76014ee",
+      "agent_policy_id": "ap_sha256_d601ba934b01c922024fdaf7b419a2487d846e7af1077933c02ba9aeff0a72f4",
+      "availability_evidence": "Kaggle model catalog, observed 2026-07-18",
+      "canonical": {
+        "requested_model": "gpt-5.6-terra",
+        "expected_resolved_model": "gpt-5.6-terra",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "low",
+        "sampling_config": {"temperature": 0.0, "seed_policy": "reserved_trajectory_replicate"},
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    }
+  ],
   "temporary_permissive_policy": {
     "verifier_submission_limit": 16,
     "agent_step_limit": 256,
@@ -131,6 +350,15 @@
     "budget_bands_usd": [0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0],
     "cap_disclosure": "undisclosed"
   },
+  "stage4_selection_policy": {
+    "success_capture_target": 0.99,
+    "reported_budget_coverage_targets": [0.75, 0.9, 1.0],
+    "selected_development_coverage_target": 0.75,
+    "max_budget_band_bumps": 1,
+    "pressure_taxonomies": [2, 3],
+    "confirmation_minimum_successes": 7,
+    "confirmation_attempts": 8
+  },
   "pilot_measurement_policy": {
     "first_submit_source": "permissive_repair_loop_prefix",
     "standalone_one_shot_stage": false,
@@ -139,7 +367,7 @@
   },
   "trajectory_plan": {
     "codex_development": {
-      "evidence_class": "development",
+      "evidence_class": "development_dry_run",
       "funding_pool": "codex_subscription",
       "total": 66
     },
@@ -169,6 +397,53 @@
       "minimum_successes_per_task": 7,
       "total": 24
     }
+  },
+  "development_shadow_trajectory_plan": {
+    "kaggle_canary": {
+      "task_ids": ["env-flags-to-json", "invoice-multi-source-merge"],
+      "total": 16
+    },
+    "permissive_collection": {
+      "task_ids": [
+        "env-flags-to-json",
+        "access-log-to-incidents",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "config-flag-ignored",
+        "merge-divergent-config-branches"
+      ],
+      "anchor_proposal_per_task": 4,
+      "anchor_development_check_per_task": 2,
+      "each_floor_per_task": 3,
+      "total": 72
+    },
+    "fresh_anchor_confirmation": {
+      "task_ids": [
+        "env-flags-to-json",
+        "access-log-to-incidents",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "config-flag-ignored",
+        "merge-divergent-config-branches"
+      ],
+      "anchor_per_task": 8,
+      "minimum_successes_per_task": 7,
+      "total": 48
+    },
+    "preliminary_scoring": {
+      "task_ids": [
+        "env-flags-to-json",
+        "access-log-to-incidents",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "config-flag-ignored",
+        "merge-divergent-config-branches"
+      ],
+      "model_roles": ["candidate_luna", "candidate_sol", "candidate_gemini"],
+      "replicates_per_task_model": 3,
+      "total": 54
+    },
+    "total": 190
   },
   "funding_gate": {
     "core_kaggle_limit_usd": 200.0,

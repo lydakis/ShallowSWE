@@ -1,5 +1,13 @@
 # Kaggle Benchmarks Probe - 2026-07-08
 
+## Funding Status Update - 2026-07-18
+
+Kaggle has funded the ShallowSWE pilot. The project owner has confirmed that the grant-backed
+quota is active on the Kaggle profile at **$200/day and $1,000/month**. This allocation is visible
+and validated on the account, but it has not yet been exercised through a report-grade ShallowSWE
+run. The `$10/day` and `$100/month` values below describe the account state observed during the
+July 8 probe and are no longer the current funding constraint.
+
 ## Summary
 
 Kaggle Benchmarks can run ShallowSWE-style calibration probes, including seeded

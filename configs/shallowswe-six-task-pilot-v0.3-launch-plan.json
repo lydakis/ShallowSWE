@@ -1,20 +1,22 @@
 {
   "schema_version": "shallowswe.pilot_launch_plan.v0.1",
+  "plan_class": "official_pilot",
   "manifest": "shallowswe-six-task-pilot-v0.3",
-  "schedule_sha256": "sha256:781423c06afbfe188bc0209c53401147436117d2f27aee43e9e782a671694d15",
+  "schedule_sha256": "sha256:175fc7d7233d69534779a727c9ec0e9fd1eecaf378fcb722e60bd8d51fb34c08",
   "units": [
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "codex_development",
       "model_role": "floor_low",
       "mode": "one_shot",
-      "launch_unit_id": "plu_sha256_30c14d8f7fbdd1a1d50d4e236d0487c631391ddb370c94df56af1a0568e8d553",
+      "launch_unit_id": "plu_sha256_9a5496e63500c5eee2aa86aaf15540223215d770f894ca42c6d6a9c6ebb9fb3a",
       "runner": "codex_subscription",
       "kaggle_task_name": null,
-      "model": "gpt-5.4-mini-2026-03-17",
+      "model": "openai/gpt-5.4-mini",
       "reasoning_effort": "low",
-      "model_config_id": "mc_sha256_ad6eaac9bd25958f20b0006a32b23c8ca0bd7d5babf7f3e2ff33d18c7388c83e",
-      "agent_policy_id": "ap_sha256_70d6d8c151932196e5efda7454f847b157c9df1320e2763b81a4298d6f426ba3",
+      "model_config_id": "mc_sha256_d86a4f2e3691861229e851068258f01ea0dc395c54bb68e5796699285bdfccfe",
+      "agent_policy_id": "ap_sha256_bc4d7b7f014951142bba05e2cd58dedbcf810df317e054b59723f88874eb6407",
       "task_ids": [
         "access-log-to-incidents",
         "config-flag-ignored",
@@ -25,34 +27,34 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "config-flag-ignored": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "env-flags-to-json": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "invoice-cli-regression-test-fix": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "invoice-multi-source-merge": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "merge-divergent-config-branches": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ]
       },
       "trajectory_ids": [
@@ -82,22 +84,24 @@
         "safety_dollar_cap_usd": 5.0,
         "cap_disclosure": "undisclosed"
       },
-      "evidence_class": "development",
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
       "funding_pool": "codex_subscription",
       "launch_status": "development_ready"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "codex_development",
       "model_role": "floor_low",
       "mode": "repair_loop_smoke",
-      "launch_unit_id": "plu_sha256_3db2e664cb402f25ecbc48a80f503c8bbb61b46cd6099c84b7ed4459114d99df",
+      "launch_unit_id": "plu_sha256_c1def5ed2293de01524eb0ea6253a50ac123036608c3218d1af25f0089f3424f",
       "runner": "codex_subscription",
       "kaggle_task_name": null,
-      "model": "gpt-5.4-mini-2026-03-17",
+      "model": "openai/gpt-5.4-mini",
       "reasoning_effort": "low",
-      "model_config_id": "mc_sha256_ad6eaac9bd25958f20b0006a32b23c8ca0bd7d5babf7f3e2ff33d18c7388c83e",
-      "agent_policy_id": "ap_sha256_70d6d8c151932196e5efda7454f847b157c9df1320e2763b81a4298d6f426ba3",
+      "model_config_id": "mc_sha256_d86a4f2e3691861229e851068258f01ea0dc395c54bb68e5796699285bdfccfe",
+      "agent_policy_id": "ap_sha256_bc4d7b7f014951142bba05e2cd58dedbcf810df317e054b59723f88874eb6407",
       "task_ids": [
         "access-log-to-incidents",
         "config-flag-ignored",
@@ -108,22 +112,22 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0
+          1000
         ],
         "config-flag-ignored": [
-          0
+          1000
         ],
         "env-flags-to-json": [
-          0
+          1000
         ],
         "invoice-cli-regression-test-fix": [
-          0
+          1000
         ],
         "invoice-multi-source-merge": [
-          0
+          1000
         ],
         "merge-divergent-config-branches": [
-          0
+          1000
         ]
       },
       "trajectory_ids": [
@@ -141,22 +145,24 @@
         "safety_dollar_cap_usd": 5.0,
         "cap_disclosure": "undisclosed"
       },
-      "evidence_class": "development",
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
       "funding_pool": "codex_subscription",
       "launch_status": "development_ready"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "codex_development",
       "model_role": "floor_strong",
       "mode": "one_shot",
-      "launch_unit_id": "plu_sha256_d5a318b2d8f9b1f258b0b646da64796371ae88ebeed811ca31419563aaa79324",
+      "launch_unit_id": "plu_sha256_8f4f561795a0265daa5e1e4b215e45124951fb402b0f851fcfb085f7c533f885",
       "runner": "codex_subscription",
       "kaggle_task_name": null,
-      "model": "gpt-5.4-2026-03-05",
+      "model": "openai/gpt-5.4",
       "reasoning_effort": "low",
-      "model_config_id": "mc_sha256_2692d5776209c84868afabb2a51931becbb80469d0ab84148e16f3540add2872",
-      "agent_policy_id": "ap_sha256_e94ae3701c132571fc7a35a6e70afb1ba3e5201e346d2a7384f0e71103b55e8a",
+      "model_config_id": "mc_sha256_a3252cf2823640215eb40a3e2b7c45f76fe4c399fbb44c0654cac34ff616896d",
+      "agent_policy_id": "ap_sha256_01564367b1ea54fe8ed423790f3c7466e425a658b62f3d64e3e6e9042b4f99f5",
       "task_ids": [
         "access-log-to-incidents",
         "config-flag-ignored",
@@ -167,34 +173,34 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "config-flag-ignored": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "env-flags-to-json": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "invoice-cli-regression-test-fix": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "invoice-multi-source-merge": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ],
         "merge-divergent-config-branches": [
-          0,
-          1,
-          2
+          1000,
+          1001,
+          1002
         ]
       },
       "trajectory_ids": [
@@ -224,22 +230,24 @@
         "safety_dollar_cap_usd": 5.0,
         "cap_disclosure": "undisclosed"
       },
-      "evidence_class": "development",
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
       "funding_pool": "codex_subscription",
       "launch_status": "development_ready"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "codex_development",
       "model_role": "floor_strong",
       "mode": "repair_loop_smoke",
-      "launch_unit_id": "plu_sha256_5af5796f2bde52aca0097bb2dbda7ad4a7964b4b9445ec0a9003b6dd7f3857de",
+      "launch_unit_id": "plu_sha256_f55a0d021bce6ab44fae579e740c8dbc789fb4028178f82f9c39014d40d2263f",
       "runner": "codex_subscription",
       "kaggle_task_name": null,
-      "model": "gpt-5.4-2026-03-05",
+      "model": "openai/gpt-5.4",
       "reasoning_effort": "low",
-      "model_config_id": "mc_sha256_2692d5776209c84868afabb2a51931becbb80469d0ab84148e16f3540add2872",
-      "agent_policy_id": "ap_sha256_e94ae3701c132571fc7a35a6e70afb1ba3e5201e346d2a7384f0e71103b55e8a",
+      "model_config_id": "mc_sha256_a3252cf2823640215eb40a3e2b7c45f76fe4c399fbb44c0654cac34ff616896d",
+      "agent_policy_id": "ap_sha256_01564367b1ea54fe8ed423790f3c7466e425a658b62f3d64e3e6e9042b4f99f5",
       "task_ids": [
         "access-log-to-incidents",
         "config-flag-ignored",
@@ -250,22 +258,22 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0
+          1000
         ],
         "config-flag-ignored": [
-          0
+          1000
         ],
         "env-flags-to-json": [
-          0
+          1000
         ],
         "invoice-cli-regression-test-fix": [
-          0
+          1000
         ],
         "invoice-multi-source-merge": [
-          0
+          1000
         ],
         "merge-divergent-config-branches": [
-          0
+          1000
         ]
       },
       "trajectory_ids": [
@@ -283,22 +291,24 @@
         "safety_dollar_cap_usd": 5.0,
         "cap_disclosure": "undisclosed"
       },
-      "evidence_class": "development",
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
       "funding_pool": "codex_subscription",
       "launch_status": "development_ready"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "codex_development",
       "model_role": "primary_anchor",
       "mode": "one_shot",
-      "launch_unit_id": "plu_sha256_f451cec5425aa587c3e77f65f2989de77d931af8c301806d1b8130bb12193795",
+      "launch_unit_id": "plu_sha256_5554228d2811775ca81daa7880ba83176027e3ba946df10faf6984da70d24984",
       "runner": "codex_subscription",
       "kaggle_task_name": null,
-      "model": "gpt-5.5-2026-04-23",
+      "model": "openai/gpt-5.5",
       "reasoning_effort": "high",
-      "model_config_id": "mc_sha256_8112cf1a49180bda3b036a7dc8e0dff6dfbccfe1914bc61f069f72d9219c3653",
-      "agent_policy_id": "ap_sha256_88a9e1193316f8cd537490eff46074e39e5a920010245f1708187f401b1ab4bf",
+      "model_config_id": "mc_sha256_a073691f2cac714c3beb86a0f195bfdfc5fe1f39b92cfcef94d1d53204cbf933",
+      "agent_policy_id": "ap_sha256_e5b5ec3d49d61e78531868c8e0c13e70073ba55594f17fa151c688866a3ed8d8",
       "task_ids": [
         "access-log-to-incidents",
         "config-flag-ignored",
@@ -309,28 +319,28 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0,
-          1
+          1000,
+          1001
         ],
         "config-flag-ignored": [
-          0,
-          1
+          1000,
+          1001
         ],
         "env-flags-to-json": [
-          0,
-          1
+          1000,
+          1001
         ],
         "invoice-cli-regression-test-fix": [
-          0,
-          1
+          1000,
+          1001
         ],
         "invoice-multi-source-merge": [
-          0,
-          1
+          1000,
+          1001
         ],
         "merge-divergent-config-branches": [
-          0,
-          1
+          1000,
+          1001
         ]
       },
       "trajectory_ids": [
@@ -354,22 +364,24 @@
         "safety_dollar_cap_usd": 5.0,
         "cap_disclosure": "undisclosed"
       },
-      "evidence_class": "development",
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
       "funding_pool": "codex_subscription",
       "launch_status": "development_ready"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "codex_development",
       "model_role": "primary_anchor",
       "mode": "repair_loop_smoke",
-      "launch_unit_id": "plu_sha256_919efdd9509b8c2c87fe8727a6d3d7dad8843ed680c9c27a4ee74b1f5fc96eb6",
+      "launch_unit_id": "plu_sha256_3b9e5bcdfe1c72756a6b7ee2b6487efb2a2337f87e59434a6bd4e08631a2c9e6",
       "runner": "codex_subscription",
       "kaggle_task_name": null,
-      "model": "gpt-5.5-2026-04-23",
+      "model": "openai/gpt-5.5",
       "reasoning_effort": "high",
-      "model_config_id": "mc_sha256_8112cf1a49180bda3b036a7dc8e0dff6dfbccfe1914bc61f069f72d9219c3653",
-      "agent_policy_id": "ap_sha256_88a9e1193316f8cd537490eff46074e39e5a920010245f1708187f401b1ab4bf",
+      "model_config_id": "mc_sha256_a073691f2cac714c3beb86a0f195bfdfc5fe1f39b92cfcef94d1d53204cbf933",
+      "agent_policy_id": "ap_sha256_e5b5ec3d49d61e78531868c8e0c13e70073ba55594f17fa151c688866a3ed8d8",
       "task_ids": [
         "access-log-to-incidents",
         "config-flag-ignored",
@@ -380,22 +392,22 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0
+          1000
         ],
         "config-flag-ignored": [
-          0
+          1000
         ],
         "env-flags-to-json": [
-          0
+          1000
         ],
         "invoice-cli-regression-test-fix": [
-          0
+          1000
         ],
         "invoice-multi-source-merge": [
-          0
+          1000
         ],
         "merge-divergent-config-branches": [
-          0
+          1000
         ]
       },
       "trajectory_ids": [
@@ -413,16 +425,18 @@
         "safety_dollar_cap_usd": 5.0,
         "cap_disclosure": "undisclosed"
       },
-      "evidence_class": "development",
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
       "funding_pool": "codex_subscription",
       "launch_status": "development_ready"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "kaggle_canary",
       "model_role": "floor_low",
       "mode": "permissive_repair_loop",
-      "launch_unit_id": "plu_sha256_f408945481a68e422c6559ec8aae8bf0de83a8f863eef444e45ebe097145a3df",
+      "launch_unit_id": "plu_sha256_b843fa0041c41bbe1719278bb0d23846032522725fe7f79302408869898136c4",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-pilot-v0-3-kaggle-canary-floor-low-permissive-repair-loop",
       "model": "gpt-5.4-mini-2026-03-17",
@@ -435,12 +449,12 @@
       ],
       "rollout_seeds_by_task": {
         "env-flags-to-json": [
-          0,
-          1
+          2000,
+          2001
         ],
         "invoice-multi-source-merge": [
-          0,
-          1
+          2000,
+          2001
         ]
       },
       "trajectory_ids": [
@@ -457,15 +471,17 @@
         "cap_disclosure": "undisclosed"
       },
       "evidence_class": "official_pilot",
+      "release_class": "protocol_validation",
       "funding_pool": "kaggle_grant",
       "launch_status": "blocked_by_pilot_readiness"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "kaggle_canary",
       "model_role": "floor_strong",
       "mode": "permissive_repair_loop",
-      "launch_unit_id": "plu_sha256_dc9560997f288aff7f9db14f24f78b821251318d5f82a5e5d93a10f1a7671b17",
+      "launch_unit_id": "plu_sha256_f914e7c386e9d4fc037211e4c3f9fdad4237fbfed39e4fd9a814ca7b14f57e75",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-pilot-v0-3-kaggle-canary-floor-strong-permissive-repair-loop",
       "model": "gpt-5.4-2026-03-05",
@@ -478,12 +494,12 @@
       ],
       "rollout_seeds_by_task": {
         "env-flags-to-json": [
-          0,
-          1
+          2000,
+          2001
         ],
         "invoice-multi-source-merge": [
-          0,
-          1
+          2000,
+          2001
         ]
       },
       "trajectory_ids": [
@@ -500,15 +516,17 @@
         "cap_disclosure": "undisclosed"
       },
       "evidence_class": "official_pilot",
+      "release_class": "protocol_validation",
       "funding_pool": "kaggle_grant",
       "launch_status": "blocked_by_pilot_readiness"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "kaggle_canary",
       "model_role": "primary_anchor",
       "mode": "one_shot",
-      "launch_unit_id": "plu_sha256_448f83c054bf1f877b91538c62d08062a316a3d5b7cd439f405cfbff7433acf3",
+      "launch_unit_id": "plu_sha256_4b90f81491c5109ceda52fb9ed2012e703a9885ddf2616316335ab7e9fb43aa3",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-pilot-v0-3-kaggle-canary-primary-anchor-one-shot",
       "model": "gpt-5.5-2026-04-23",
@@ -521,12 +539,12 @@
       ],
       "rollout_seeds_by_task": {
         "env-flags-to-json": [
-          0,
-          1
+          2000,
+          2001
         ],
         "invoice-multi-source-merge": [
-          0,
-          1
+          2000,
+          2001
         ]
       },
       "trajectory_ids": [
@@ -543,15 +561,17 @@
         "cap_disclosure": "undisclosed"
       },
       "evidence_class": "official_pilot",
+      "release_class": "protocol_validation",
       "funding_pool": "kaggle_grant",
       "launch_status": "blocked_by_pilot_readiness"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "kaggle_canary",
       "model_role": "primary_anchor",
       "mode": "permissive_repair_loop",
-      "launch_unit_id": "plu_sha256_d46ecede90d3e256fde0bb13147edabfc8d1d58edaccde83ad4e38d356259718",
+      "launch_unit_id": "plu_sha256_bc13b53309cbec6d800f7f9ab9a8722a2d565e9f56dd6d2dcc49b40575d0f5d9",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-pilot-v0-3-kaggle-canary-primary-anchor-permissive-repair-loop",
       "model": "gpt-5.5-2026-04-23",
@@ -564,12 +584,12 @@
       ],
       "rollout_seeds_by_task": {
         "env-flags-to-json": [
-          0,
-          1
+          2000,
+          2001
         ],
         "invoice-multi-source-merge": [
-          0,
-          1
+          2000,
+          2001
         ]
       },
       "trajectory_ids": [
@@ -586,15 +606,17 @@
         "cap_disclosure": "undisclosed"
       },
       "evidence_class": "official_pilot",
+      "release_class": "protocol_validation",
       "funding_pool": "kaggle_grant",
       "launch_status": "blocked_by_pilot_readiness"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "permissive_collection",
       "model_role": "floor_low",
       "mode": "permissive_repair_loop",
-      "launch_unit_id": "plu_sha256_f3398139a26bde002ffa623e4db00ab2fb58dab8a73960b7909b579928556e9e",
+      "launch_unit_id": "plu_sha256_11b87fc3e565bf88a20d41988a4a306da2a973436a1ffb0f19cd78f2c66a4352",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-pilot-v0-3-permissive-collection-floor-low-permissive-repair-loop",
       "model": "gpt-5.4-mini-2026-03-17",
@@ -611,34 +633,34 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "config-flag-ignored": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "env-flags-to-json": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "invoice-cli-regression-test-fix": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "invoice-multi-source-merge": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "merge-divergent-config-branches": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ]
       },
       "trajectory_ids": [
@@ -669,15 +691,17 @@
         "cap_disclosure": "undisclosed"
       },
       "evidence_class": "official_pilot",
+      "release_class": "protocol_validation",
       "funding_pool": "kaggle_grant",
       "launch_status": "blocked_by_pilot_readiness"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "permissive_collection",
       "model_role": "floor_strong",
       "mode": "permissive_repair_loop",
-      "launch_unit_id": "plu_sha256_de519e822d8b47ce58558321143d3b34962c96b79d022519a173d2b665641178",
+      "launch_unit_id": "plu_sha256_33c8a75a8d6debaef196e9c84dee5b3fc26436506002a785dda647902b044652",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-pilot-v0-3-permissive-collection-floor-strong-permissive-repair-loop",
       "model": "gpt-5.4-2026-03-05",
@@ -694,34 +718,34 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "config-flag-ignored": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "env-flags-to-json": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "invoice-cli-regression-test-fix": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "invoice-multi-source-merge": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ],
         "merge-divergent-config-branches": [
-          0,
-          1,
-          2
+          3000,
+          3001,
+          3002
         ]
       },
       "trajectory_ids": [
@@ -752,15 +776,17 @@
         "cap_disclosure": "undisclosed"
       },
       "evidence_class": "official_pilot",
+      "release_class": "protocol_validation",
       "funding_pool": "kaggle_grant",
       "launch_status": "blocked_by_pilot_readiness"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "permissive_collection",
       "model_role": "primary_anchor",
       "mode": "permissive_repair_loop",
-      "launch_unit_id": "plu_sha256_be7deabae6cd851eacb7cb943831dc7e6dabfb42cd3602e6f3192a15b4819260",
+      "launch_unit_id": "plu_sha256_479ff6a94032ec1072135faf1c3d5ade36f5c6ffde4ee10106b383ec1f2db98c",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-pilot-v0-3-permissive-collection-primary-anchor-permissive-repair-loop",
       "model": "gpt-5.5-2026-04-23",
@@ -777,52 +803,52 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
+          3000,
+          3001,
+          3002,
+          3003,
+          3004,
+          3005
         ],
         "config-flag-ignored": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
+          3000,
+          3001,
+          3002,
+          3003,
+          3004,
+          3005
         ],
         "env-flags-to-json": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
+          3000,
+          3001,
+          3002,
+          3003,
+          3004,
+          3005
         ],
         "invoice-cli-regression-test-fix": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
+          3000,
+          3001,
+          3002,
+          3003,
+          3004,
+          3005
         ],
         "invoice-multi-source-merge": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
+          3000,
+          3001,
+          3002,
+          3003,
+          3004,
+          3005
         ],
         "merge-divergent-config-branches": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
+          3000,
+          3001,
+          3002,
+          3003,
+          3004,
+          3005
         ]
       },
       "trajectory_ids": [
@@ -871,15 +897,17 @@
         "cap_disclosure": "undisclosed"
       },
       "evidence_class": "official_pilot",
+      "release_class": "protocol_validation",
       "funding_pool": "kaggle_grant",
       "launch_status": "blocked_by_pilot_readiness"
     },
     {
       "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "official_pilot",
       "stage": "fresh_anchor_confirmation",
       "model_role": "primary_anchor",
       "mode": "frozen_repair_loop",
-      "launch_unit_id": "plu_sha256_260783bdbd765da0d42803bd200803067147a4862b46dc8815fa58eed8b22322",
+      "launch_unit_id": "plu_sha256_c0e79faaed50e44456064a608adda9460a24cff332bf5386c9672262a9947ce4",
       "runner": "kaggle",
       "kaggle_task_name": "shallowswe-pilot-v0-3-fresh-anchor-confirmation-primary-anchor-frozen-repair-loop",
       "model": "gpt-5.5-2026-04-23",
@@ -893,34 +921,34 @@
       ],
       "rollout_seeds_by_task": {
         "access-log-to-incidents": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7
+          4000,
+          4001,
+          4002,
+          4003,
+          4004,
+          4005,
+          4006,
+          4007
         ],
         "invoice-multi-source-merge": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7
+          4000,
+          4001,
+          4002,
+          4003,
+          4004,
+          4005,
+          4006,
+          4007
         ],
         "merge-divergent-config-branches": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7
+          4000,
+          4001,
+          4002,
+          4003,
+          4004,
+          4005,
+          4006,
+          4007
         ]
       },
       "trajectory_ids": [
@@ -957,6 +985,7 @@
         "cap_disclosure": "undisclosed"
       },
       "evidence_class": "official_pilot",
+      "release_class": "protocol_validation",
       "funding_pool": "kaggle_grant",
       "launch_status": "blocked_by_stage4_policy_freeze"
     }
@@ -964,6 +993,7 @@
   "launch_unit_count": 14,
   "trajectory_count": 178,
   "official_trajectory_count": 112,
+  "development_trajectory_count": 66,
   "official_launch_gate": "pilot-readiness ready_for_official_canary=true",
-  "launch_plan_sha256": "sha256:bd64ae654f74d796f84f763a3f45756c21d6d11f8374ff0ac5e82677056f6e05"
+  "launch_plan_sha256": "sha256:2fbd4affb4c8654524623eace5a66fa140326e10019e8275e045d416e8277cb6"
 }

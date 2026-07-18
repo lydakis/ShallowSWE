@@ -156,7 +156,8 @@ Do not start official model spend until all six tasks are locally runnable and a
 ### Stage 1 - Codex development triage
 
 **Funding:** Codex Pro subscription.
-**Evidence class:** development only unless exact official equivalence is proven.
+**Evidence and release class:** `development_dry_run` only. These rows are never eligible for
+official pooling, even if the harness later proves equivalent.
 
 Recommended development allowance:
 
@@ -165,6 +166,11 @@ Recommended development allowance:
 - one repair-loop smoke per task and model role.
 
 This is 66 model trajectories. Stop earlier when a prompt, verifier, resume, identity, or accounting defect appears. Use Codex to make mistakes cheaply; do not spend Kaggle funds discovering basic packaging problems.
+
+The reserved seed namespaces are disjoint: 1000-series development, 2000-series canary,
+3000-series permissive collection, and 4000-series fresh confirmation. A development trajectory
+cannot be reused as fresh evidence by retaining its seed or trajectory ID. Model reviews may inform
+implementation debugging, but they do not populate or replace the independent routine-work review.
 
 ### Stage 2 - two-task Kaggle canary
 
@@ -204,6 +210,11 @@ Use generous temporary limits, provisionally:
 
 No limit is disclosed to the agent. Record cumulative spend, submissions, steps, first successful verification, and stop cause after every model call and verification event.
 
+Each result row carries ordered `event_checkpoints`. Every agent-submission and verifier-result
+event records cumulative token counters, scaffold steps, gateway-reported spend, and canonical
+spend when available. Official Stage 4 analysis fails closed when cumulative canonical spend is
+missing. Gateway-reported checkpoint spend is accepted only for the development rehearsal.
+
 Candidate retrospective policies:
 
 - `K`: 2, 4, 6, 8, 12;
@@ -231,7 +242,30 @@ Using only identified retrospective truncations:
 5. permit at most one adjacent development-stage budget-band increase;
 6. pre-register fresh-confirmation rules before Stage 5.
 
+For the protocol-validation machinery, the deterministic selector uses a 99% capture target for
+both `K` and the pooled step guard. It reports budget coverage at 75%, 90%, and 100%, uses 75% as
+the explicitly provisional 4+2 development split target, and permits exactly one adjacent band
+increase. These constants exercise the pipeline. They are not promoted into the report-grade
+methodology without the pilot evidence and the human construct gate.
+
 Because the pilot is selecting provisional constants, it reports results under several candidate coverage targets rather than pretending that one small-sample target is natural. The 4+2 split remains a diagnostic. A practical machinery check is at least 7/8 fresh anchor successes within the selected policy and budget on each preregistered confirmation task. Full budget selection and task-wide confirmation are v1 freeze procedures demonstrated by this pilot, not satisfied by it.
+
+### Development-only full-stack rehearsal
+
+Before any independent routine-work review is imported or any Kaggle funding is used, run:
+
+```sh
+uv run shallowswe development-rehearsal \
+  configs/shallowswe-six-task-pilot-v0.3.json \
+  results/development-rehearsal-v0.1
+```
+
+The rehearsal uses deterministic synthetic events and makes zero metered model calls. It exercises
+direct success, successful repair, submission exhaustion, dollar exhaustion, step exhaustion,
+infrastructure exclusion, a rejected 6/8 confirmation result, a zero-success workload cell, an
+underfilled declared basket, mixed-evidence rejection, and blocked official launch status. Its
+Stage 4 artifact is always `development_proposal` with `official_launch_eligible: false`. It does
+not create or infer a routine-review artifact.
 
 ### Stage 5 - targeted fresh anchor confirmation and `R_t`
 

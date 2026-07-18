@@ -1,0 +1,886 @@
+{
+  "schema_version": "shallowswe.pilot_launch_plan.v0.1",
+  "plan_class": "development_shadow",
+  "manifest": "shallowswe-six-task-pilot-v0.3-development-shadow-v0.1",
+  "schedule_sha256": "sha256:31f4e10d62747b0341a34273450f265360226a318e7e4b1b580f209f6968afd8",
+  "units": [
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "kaggle_canary",
+      "model_role": "floor_low",
+      "mode": "permissive_repair_loop",
+      "launch_unit_id": "plu_sha256_b13dc3e96ed65e9f721ac1f1ad309865081c9a714c7d876e3357692fca7a304e",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-kaggle-canary-floor-low-permissive-repair-loop",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "low",
+      "model_config_id": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
+      "agent_policy_id": "ap_sha256_18d5a541466f2eab0c50f3f5203c73108beb6611ded846629b56733219245c73",
+      "task_ids": [
+        "env-flags-to-json",
+        "invoice-multi-source-merge"
+      ],
+      "rollout_seeds_by_task": {
+        "env-flags-to-json": [
+          5000,
+          5001
+        ],
+        "invoice-multi-source-merge": [
+          5000,
+          5001
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_02c76c84161fcb485e1436f8731c85722d4d2d7af85e111717df57929accb8dc",
+        "pt_sha256_60c14312ee203c1fee8888dba2c27b0259ade3dc1084134da777cbad56682375",
+        "pt_sha256_78e8241bf7ff6b89ba4899509db994926f4af742b8896d0c03fde0341844f4be",
+        "pt_sha256_b61cd23469e314f10aac613dcc4034ea673270dde87a1b84fcd00041d6baf7d0"
+      ],
+      "expected_trajectories": 4,
+      "policy": {
+        "verifier_submission_cap": 16,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": 5.0,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "development_ready"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "kaggle_canary",
+      "model_role": "floor_strong",
+      "mode": "permissive_repair_loop",
+      "launch_unit_id": "plu_sha256_ac34ffd0f3647a81e4557ded4c5381d50e2ce0d5865bc570cddade4541102e3d",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-kaggle-canary-floor-strong-permissive-repair-loop",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "model_config_id": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365",
+      "agent_policy_id": "ap_sha256_05389686ca1f9383ffe4f57a13fe1bf90887d0c4e3a2bc53330437bcebbb9349",
+      "task_ids": [
+        "env-flags-to-json",
+        "invoice-multi-source-merge"
+      ],
+      "rollout_seeds_by_task": {
+        "env-flags-to-json": [
+          5000,
+          5001
+        ],
+        "invoice-multi-source-merge": [
+          5000,
+          5001
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_41d6a5c7a9120c374ed5535b8dd5bd0f8c1cf103df7585de4951ec84575350c5",
+        "pt_sha256_d20d084421f7cf6a974fc41f3b8431ecaff515ba45002673d8494578522fa512",
+        "pt_sha256_f777c5bf7121c91a5067c60a44d5678daeabd22b3bc54be3b1b7a213df4bab1f",
+        "pt_sha256_fa40d292f5c3723607199e162ce3da124ad85da1067d04f603f0f758e1e32b12"
+      ],
+      "expected_trajectories": 4,
+      "policy": {
+        "verifier_submission_cap": 16,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": 5.0,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "development_ready"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "kaggle_canary",
+      "model_role": "primary_anchor",
+      "mode": "one_shot",
+      "launch_unit_id": "plu_sha256_48b2156630f5ca4294bfaf1c8619a691d535aa95539d90e9833d7cee53dc2af5",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-kaggle-canary-primary-anchor-one-shot",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "task_ids": [
+        "env-flags-to-json",
+        "invoice-multi-source-merge"
+      ],
+      "rollout_seeds_by_task": {
+        "env-flags-to-json": [
+          5000,
+          5001
+        ],
+        "invoice-multi-source-merge": [
+          5000,
+          5001
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_0cbbed578fd652eeef8e1d151ef8ce1fd19be18d1600ad01d1ad5e7c8a61cc00",
+        "pt_sha256_3841148f280c794a520abd7606d17c353d5d0987c0a792bf6e84f83fe28d23ef",
+        "pt_sha256_86e70c3f7dc6d0435424bc110e7c88affb4512511eeeadca6a5d5f7855fe6efc",
+        "pt_sha256_b84bc0cc9dc5d46e28497c862d743cc702710e530d1902236cc8fc7894fae491"
+      ],
+      "expected_trajectories": 4,
+      "policy": {
+        "verifier_submission_cap": 1,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": 5.0,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "development_ready"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "kaggle_canary",
+      "model_role": "primary_anchor",
+      "mode": "permissive_repair_loop",
+      "launch_unit_id": "plu_sha256_f24b928db0d9ac031ad7d269d9d6a86985262a301b8a5b7052643fcf6942605b",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-kaggle-canary-primary-anchor-permissive-repair-loop",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "task_ids": [
+        "env-flags-to-json",
+        "invoice-multi-source-merge"
+      ],
+      "rollout_seeds_by_task": {
+        "env-flags-to-json": [
+          5000,
+          5001
+        ],
+        "invoice-multi-source-merge": [
+          5000,
+          5001
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_525e6ea7cfaa12901119dda0035fcbbc25673c7e4e49172965dee97b641cd455",
+        "pt_sha256_88c2e1543ac6ec3e6406331959ff79da505024e5b4605b9fedfd3a77f1808282",
+        "pt_sha256_b644901e9bb7fecd5f9ff50d323d2ae98c80708f4f2f6bd2ce21c57a5abb3217",
+        "pt_sha256_ed8f4db3a535dc9b9a36829ea7945879da33defe896cbcdcc4e99805297aa038"
+      ],
+      "expected_trajectories": 4,
+      "policy": {
+        "verifier_submission_cap": 16,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": 5.0,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "development_ready"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "permissive_collection",
+      "model_role": "floor_low",
+      "mode": "permissive_repair_loop",
+      "launch_unit_id": "plu_sha256_daa6c4bcee409c6fde7a7bc05d7867fe26ae6875a423c37b99730b425d023acd",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-permissive-collection-floor-low-permissive-repair-loop",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "low",
+      "model_config_id": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
+      "agent_policy_id": "ap_sha256_18d5a541466f2eab0c50f3f5203c73108beb6611ded846629b56733219245c73",
+      "task_ids": [
+        "access-log-to-incidents",
+        "config-flag-ignored",
+        "env-flags-to-json",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "merge-divergent-config-branches"
+      ],
+      "rollout_seeds_by_task": {
+        "access-log-to-incidents": [
+          6000,
+          6001,
+          6002
+        ],
+        "config-flag-ignored": [
+          6000,
+          6001,
+          6002
+        ],
+        "env-flags-to-json": [
+          6000,
+          6001,
+          6002
+        ],
+        "invoice-cli-regression-test-fix": [
+          6000,
+          6001,
+          6002
+        ],
+        "invoice-multi-source-merge": [
+          6000,
+          6001,
+          6002
+        ],
+        "merge-divergent-config-branches": [
+          6000,
+          6001,
+          6002
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_1539b2de50625ff2c0a6c3628d4fc3bef0300159bf9534365c8469d50c6b0ad2",
+        "pt_sha256_1972cc3196e0c03b9a16f700b347a2c537cdf68963466e295cbe118fbeb300cf",
+        "pt_sha256_272d68791960348dcea6602520e401225a3d8ad90293e39fe7f925829419304a",
+        "pt_sha256_2fb33fd2545eca189c0c43d60b83ee87d68eef824149a6e67612c06141112d19",
+        "pt_sha256_3a188456fd3e5d89788091868ba105b3c7a26e2153c5380e390d8042d9bf3b94",
+        "pt_sha256_653dcc3e20c9eae5ba27f3ce59181fc0fc67cc36c776cc51ce27bdaeeec5000b",
+        "pt_sha256_674a43f90993efff4cf28c1de6615ba98e5f7ca49b4d8083fd5c705fcc7250f0",
+        "pt_sha256_6929a7ddd95c2770c6d667001486c9ce94f8b4416198063a168cc89dc13737dd",
+        "pt_sha256_69f02a08febc00c18cbeecb3ff02c2e9a1a6bbf1a7bb85d3fbcb955c151f9a9a",
+        "pt_sha256_79571f533535ba01820fb6b27ff262b8d277a7db4267c3a9f6c0d5f864df621c",
+        "pt_sha256_983e11415f342407a3d5c66876e49550b1844946e79ebe2b0523f96f7d06c136",
+        "pt_sha256_989c304db093dcee778c9d56d59cf442dd2cd0ec548be274601735a8afbf92c6",
+        "pt_sha256_a12a6b768db8daf3ec0c4e13e2358dbebf71f17726fc3d82d8ef4adb4ae55bbc",
+        "pt_sha256_a15ed3607c85a198c63cd87222e255ed64475850d1178febea3acdd731dba30e",
+        "pt_sha256_a9e11d5b39cfa02192efe74e800e9f60228de545f431da6d2cfd1202b1f684c6",
+        "pt_sha256_af9b8ca1e0215ef78e5bba28fd1853387c89c7ecfcca6f233235078eef76f9b9",
+        "pt_sha256_d3b53dc5873570f9787aa6a17afe4663a644c224fc18c753dc429cc93f9e045d",
+        "pt_sha256_f3c95097348e94dd534409ba8aa98803f5c98463e985bd193cee2d5bb3f21980"
+      ],
+      "expected_trajectories": 18,
+      "policy": {
+        "verifier_submission_cap": 16,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": 5.0,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "blocked_by_development_canary"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "permissive_collection",
+      "model_role": "floor_strong",
+      "mode": "permissive_repair_loop",
+      "launch_unit_id": "plu_sha256_d6584134f18a370d193081c8d5b52f69a55f4a7166ada514509bd44cf774d242",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-permissive-collection-floor-strong-permissive-repair-loop",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "model_config_id": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365",
+      "agent_policy_id": "ap_sha256_05389686ca1f9383ffe4f57a13fe1bf90887d0c4e3a2bc53330437bcebbb9349",
+      "task_ids": [
+        "access-log-to-incidents",
+        "config-flag-ignored",
+        "env-flags-to-json",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "merge-divergent-config-branches"
+      ],
+      "rollout_seeds_by_task": {
+        "access-log-to-incidents": [
+          6000,
+          6001,
+          6002
+        ],
+        "config-flag-ignored": [
+          6000,
+          6001,
+          6002
+        ],
+        "env-flags-to-json": [
+          6000,
+          6001,
+          6002
+        ],
+        "invoice-cli-regression-test-fix": [
+          6000,
+          6001,
+          6002
+        ],
+        "invoice-multi-source-merge": [
+          6000,
+          6001,
+          6002
+        ],
+        "merge-divergent-config-branches": [
+          6000,
+          6001,
+          6002
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_11f03d0ef8c962c0cad3d59b6534e1cddc9fbf0af4aefa4381939e7ed7c8f54a",
+        "pt_sha256_269c96b39f650fb5af648c7045b5a7c017652d23833acfeb84f1f6a7981177e0",
+        "pt_sha256_2ee41d0d8a50283b880c192b5dc0e3ea8110631cd19a3b2fa95536da3c05bc8c",
+        "pt_sha256_44af175a7ecfcc509a40861360a2fd230cb15e645be05c82f0fdc47f89f52360",
+        "pt_sha256_5ff82a2e1158054c71a69a35a6f5f1ea14351deb07246cc584c10583162ff9c0",
+        "pt_sha256_66090a156286de95face2321c4e40917d702eb82ceae70fdde91bc0a5383720d",
+        "pt_sha256_8e64a64948cb7df266ecce53686ba1b549a7063b47c30f1aa6bc376d29aae361",
+        "pt_sha256_9d27f10429d5f90fe7ba564f00c692342aaca5a9c0afa12c49fa32434616f3da",
+        "pt_sha256_9d8fb8d41e4834748d557dabf4e4a4e823a477dccddde3f9f7681ed7a6576f1f",
+        "pt_sha256_a0d68361fff63940e62a10c0e14a4fb82ca59e84191473316363600ca2dde146",
+        "pt_sha256_a12d48195d860e7b9235995154ba936c74103e1c719e09c8be62c55f0671928e",
+        "pt_sha256_a79897ee172d887a94a9d24962bb74bfbbecd48bc6306f591d009d1c1a2374c5",
+        "pt_sha256_aa07247eeced52eaf0a6a49c62688571126befbaf978f94b0658b60d27e9dcc1",
+        "pt_sha256_aaf2738ce72e49ca09543e95ac01af5ad250f37ab8590a324c7fb82339e746bc",
+        "pt_sha256_b7db999f71401f24596fc49f4dd862eeb8fecdc0208ca2ee295ebbd514470caf",
+        "pt_sha256_d3093814a7943661ed66f20e631c3ec2bf5edf18119d0ef614c7c7a75d1eaf91",
+        "pt_sha256_f75002f5bdc8c8aa76f364e3f84385b149fae04013daba080f7f11b242d54e7a",
+        "pt_sha256_f85a30bd4543b0e74eab26a912394e456c960c21ef3b93575229b771c03015e7"
+      ],
+      "expected_trajectories": 18,
+      "policy": {
+        "verifier_submission_cap": 16,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": 5.0,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "blocked_by_development_canary"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "permissive_collection",
+      "model_role": "primary_anchor",
+      "mode": "permissive_repair_loop",
+      "launch_unit_id": "plu_sha256_e965c1528fb2a6fb1e3dab4e2b0aeba254d8afe9243ab3ec3eb12b91c7d55eeb",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-permissive-collection-primary-anchor-permissive-repair-loop",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "task_ids": [
+        "access-log-to-incidents",
+        "config-flag-ignored",
+        "env-flags-to-json",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "merge-divergent-config-branches"
+      ],
+      "rollout_seeds_by_task": {
+        "access-log-to-incidents": [
+          6000,
+          6001,
+          6002,
+          6003,
+          6004,
+          6005
+        ],
+        "config-flag-ignored": [
+          6000,
+          6001,
+          6002,
+          6003,
+          6004,
+          6005
+        ],
+        "env-flags-to-json": [
+          6000,
+          6001,
+          6002,
+          6003,
+          6004,
+          6005
+        ],
+        "invoice-cli-regression-test-fix": [
+          6000,
+          6001,
+          6002,
+          6003,
+          6004,
+          6005
+        ],
+        "invoice-multi-source-merge": [
+          6000,
+          6001,
+          6002,
+          6003,
+          6004,
+          6005
+        ],
+        "merge-divergent-config-branches": [
+          6000,
+          6001,
+          6002,
+          6003,
+          6004,
+          6005
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_0242b37401f5bc01c0631eb2f2cce30b22a39dcfcb2cb9e8d1480002cde7cefd",
+        "pt_sha256_0299bcb8e39f00ca56c012569df45e7a209ab6248da2865bd31d88a8053ed4d5",
+        "pt_sha256_090c356d0987e1167823d7c459e82e4d0f75f544e9b48456e4706ab6d4179d17",
+        "pt_sha256_0a8c7bc3e5a68e2ba8718b3bfb209cce8431bc6b615a2b799ffffa022995d023",
+        "pt_sha256_1b58f7de5cd6b3c60d463407631df98dca3bb8adc75d65e6a8fd1410c13b7e67",
+        "pt_sha256_1f571771290d8bc1d3c7f96f0561e4f310d1aa964f8f018e96e59baa0779af58",
+        "pt_sha256_24edbf1393774338c7acd3298725a78900f6cfab03a9d46881d971a6e78fad92",
+        "pt_sha256_34479b88cae713f6e4b39a8f7855b7fd13321b2199b729d6eeff36fed5341d9a",
+        "pt_sha256_34d202b131efa5aa56bd58cc64e343746de82b9ede70b278765007286620297e",
+        "pt_sha256_3b01268fe456359a9c403666bd1abc06209993f74e9e97cca29ff41ac11f31ca",
+        "pt_sha256_430ed372f0123e431b049894821ed6cea7fc941b33bf139676a56e1a45678e05",
+        "pt_sha256_49a97cda64b8dd48333fa74ceef048efa6407975672f1d85ab7c21cf2b6f8b1b",
+        "pt_sha256_4a61947f05f7814ac195014f72ae0f34ff4a74899503c4224aa5bf1683ff63b2",
+        "pt_sha256_536734b7151b1b9583fc3f040cf02bb431a9f07b855c2c5a03a0db913526bf0a",
+        "pt_sha256_5b32f8d6a9a935a80c3ba815311f45cd60ddc2d03df93b5154ab74dad1d41be6",
+        "pt_sha256_60fe2e0fdc53655261b9ffe8581abd0b4bc93a17bf6bd426b09908644377b187",
+        "pt_sha256_6f3022ac14373f35772d4eed2e95a954e15b70b9acf7801197e1a66d66a3655c",
+        "pt_sha256_8df23537bc70ab977288f2892daf930c1b01f4bd083cffe7c94da161e94a9184",
+        "pt_sha256_9221d4b9ad731c081ef950055062f26cf20defbe38304e08c37104c1b7ec3070",
+        "pt_sha256_931bd30b11491a28f7a549d9927ce5b2aa60f65435dca0ce2cd3b4d1d8b2e9be",
+        "pt_sha256_98747984c9c79cc8f633aaddeb03cf56fb66ad7bf0575f31330e5ecbc85aa778",
+        "pt_sha256_99244211ed7d789780d96810306778a972ab3e09679c71249774f690a8348a2d",
+        "pt_sha256_a55f189e7167533139c6fd6927196706d9313f0099245742c59b91a29dad69ec",
+        "pt_sha256_abdc59defaba7cf3bb458425ad383c9f491aaf64e74763afafacba0b4e91073c",
+        "pt_sha256_b89683827f77d3bbbef88f90795dc8a11bbed1b5d168c3b6c3ed24ed3ad7fe71",
+        "pt_sha256_b9e3a967a4d51b6c64bf1330577f6a33add7edaeaf2f470cbeb784be8301a3ec",
+        "pt_sha256_bd8d124b7600719f6a2aaec1a96d9b84257743f516566360f52223f0aa2ff25c",
+        "pt_sha256_c88453d42a671052f8af9846c608b425413e96e06c00d447a8954cb912c4e674",
+        "pt_sha256_c8b5b8178bf76dc7231a0fa450b6a461b8d4882162cc620025f11f4b2e104929",
+        "pt_sha256_cca6ad75b9997e38295cea8c6f1c394cbb58f98c7395e1587961cf6fa93c139e",
+        "pt_sha256_cd9624c7d89c56ea7af8275c349cf7c4802e4f0cead7cb2b33be60d6cd0e1a1e",
+        "pt_sha256_d05ec59add90a4c55976211201afa673d3931d124417e11c9afc35207b6d649f",
+        "pt_sha256_d5b6a099026938187f897e9faeb94cca8d9ad48e5acbc8e3ff9c1a31043d956e",
+        "pt_sha256_dbbff6ae56964a17d037de04ad1dd8cc3a72a231faaddf6bb86ce5c27b130718",
+        "pt_sha256_de38bee7ae4706027b7e4072e89c396b06a832123256a74f352484e084349949",
+        "pt_sha256_f9feac6b18e19cc67af48da4692e648658366d8babbdd1f5d78cccfeb18e6c3b"
+      ],
+      "expected_trajectories": 36,
+      "policy": {
+        "verifier_submission_cap": 16,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": 5.0,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "blocked_by_development_canary"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "fresh_anchor_confirmation",
+      "model_role": "primary_anchor",
+      "mode": "frozen_repair_loop",
+      "launch_unit_id": "plu_sha256_28230a28c48e2f1ee46e8aeb77f3635eef63c20caf1e4353448db62c39cab5a6",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-fresh-anchor-confirmation-primary-anchor-frozen-repair-loop",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "model_config_id": "mc_sha256_15c821220a79c1fb953f550d692f1ed4885a7153741871a20e1d21effd1246e6",
+      "agent_policy_id": "ap_sha256_22657453884659792adb2d69eac97d9e4f7a7d1483a9ea1fa72b5a225ead5913",
+      "task_ids": [
+        "access-log-to-incidents",
+        "config-flag-ignored",
+        "env-flags-to-json",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "merge-divergent-config-branches"
+      ],
+      "rollout_seeds_by_task": {
+        "access-log-to-incidents": [
+          7000,
+          7001,
+          7002,
+          7003,
+          7004,
+          7005,
+          7006,
+          7007
+        ],
+        "config-flag-ignored": [
+          7000,
+          7001,
+          7002,
+          7003,
+          7004,
+          7005,
+          7006,
+          7007
+        ],
+        "env-flags-to-json": [
+          7000,
+          7001,
+          7002,
+          7003,
+          7004,
+          7005,
+          7006,
+          7007
+        ],
+        "invoice-cli-regression-test-fix": [
+          7000,
+          7001,
+          7002,
+          7003,
+          7004,
+          7005,
+          7006,
+          7007
+        ],
+        "invoice-multi-source-merge": [
+          7000,
+          7001,
+          7002,
+          7003,
+          7004,
+          7005,
+          7006,
+          7007
+        ],
+        "merge-divergent-config-branches": [
+          7000,
+          7001,
+          7002,
+          7003,
+          7004,
+          7005,
+          7006,
+          7007
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_067c3aef0c7378b296f9893bbd4f936c118b10cee30ed0e21e372af957c94be2",
+        "pt_sha256_0948dfb22271b9c6f2612b2e8e906ff1631917ad6afc0e092cbd1b6a246c1592",
+        "pt_sha256_19cfa3b661380c51b7aaa455e88f4f18dd06144a533f6a7a23fb4b885a4f8e86",
+        "pt_sha256_1d044cb19d9b7d4d847bb459a0e681ab38a8ea1c11d374b2e6754379110fd712",
+        "pt_sha256_1f154de309da3a7b414a18db1b87d66b1d5ff3e32ca8ec936f95eee596ea9fa0",
+        "pt_sha256_1fcc2e1100151a609ea7668dfde74d9888dd11e7b5b92813932688493f6709bb",
+        "pt_sha256_261869dc9609c3eaad2a777614812b65f444b225e5118fddf54a7a0bcb980094",
+        "pt_sha256_34b430ddccf70990a739981961dad2802732b99fe3714bbc7152f4fe1e3db3e0",
+        "pt_sha256_381c04116e155f8c807ceef62caf46349476bb7e85615759922c2198de849095",
+        "pt_sha256_3cb9ba82fe21a74dce6a83494875974eb3c220abd895bb2b6c58904fe5db88b2",
+        "pt_sha256_3fe06bde61aedf1d546043fb373a924a68089dc812cbfe7ab24785ae7f9e7e5f",
+        "pt_sha256_40bd9e358203bf0eed58c701c007972f15230679d9af85cb1a34f74ad9a4bc60",
+        "pt_sha256_42aa34b065fc17a8a0d9ccfaa567963c556417dfbca0a067d493d8541cbfcb43",
+        "pt_sha256_42c622fd3109b5094c3f9a8f3c0f078ad09fc34be490e146ffef36fc7a041b2c",
+        "pt_sha256_4f1e5cde47df6a8424cdccf2be40e88cb9972441fde877da6fa863f72b078dcc",
+        "pt_sha256_5a26d7430266a9a3f47d60e11f73088ea66465e1f87bbec6482d3f168f64bff9",
+        "pt_sha256_5b7ad6d4f0d5d3eeb1b241c8c8ffeffb099902810f405a24d979c0089ff6e2d3",
+        "pt_sha256_660ef43f3df92c35cb0302870f535696e87465d8b66657ba18302eb3fbdc278e",
+        "pt_sha256_67063f7476469fc659e00bc9f9ea860abb0e858e19d1b5a7b4c4af05ca2ef94f",
+        "pt_sha256_67bf36235b420a5a7d1becad2753125334f41c4773cca809a3d63d202e5a2d78",
+        "pt_sha256_68dc8053792ff4f55618f8a0004835287e1c378854c2166900d53a48667629aa",
+        "pt_sha256_699d9bbdcedf8a68e1efbc69d93a21c08203cec7dc7ad4e5f1341ac53faea574",
+        "pt_sha256_6d46e67ca1c70c6e323a0b10e107f84f29e0b11f699433de248ebfbc1ac45e02",
+        "pt_sha256_6f99e5b75471abd60341ce477942ef2a358e3c19919c875a9d68ab94e3d0f660",
+        "pt_sha256_721b86c0bf1c9d23cff62368f233f0d17b00429c14e67233298b0653467a7466",
+        "pt_sha256_73c77814c05578e3a99c312dc2d8e199f2c88b8ae3baf8f7f1df2f06430a2444",
+        "pt_sha256_785bedcd79af9c194960b74c002158beba14adcea2469cded53c2b4f1e9053ff",
+        "pt_sha256_7b25d41cdfee980f57230cfc1aed7d6c9ea584657364850871352b6661e11f91",
+        "pt_sha256_85193714552de02d2a57ce88994976d51678c3f2dbf017ca4048faf4ee0e5c5c",
+        "pt_sha256_86d5f2ae53355d8487a2459cf2229895e100ecd9c33e4cbbfcadfd66c47b9c15",
+        "pt_sha256_93cd8519fa8662a328359da54e5f8a61c4c7279d9a95cf6811191c22ba0fa16a",
+        "pt_sha256_9a68863ad7ab1bacee6731df9aec65c8aefd3244b5e6ad3153b9149f63e11cee",
+        "pt_sha256_9bbd699d5203d78d45d4669b56bdd1eeb6807ff67cc665306ec15701e78efb74",
+        "pt_sha256_ab7ee348fddc221bc30958129cb1e03513b93ca89b0deb5ed64a27f4571365f7",
+        "pt_sha256_b75940102e1836189dc37e053be14fcda3ecfa7f26e1537a4b4f57c1774b8a06",
+        "pt_sha256_babb70851d41af97b791e06425c8049bb870d4ca464df390b742d9e3f8878e8b",
+        "pt_sha256_bfb986a9517d2ca7dc78233edf3155a6b6dcbd0beaf39953d1c9c2419e9d9001",
+        "pt_sha256_c05cdb4a85f7894a625af332a0577aab85bde21c885bc2cb915096f19dcef4d4",
+        "pt_sha256_c5cf542b6fbe99cfb27aa499b50080afdb61d6779b4912135980393d75f41465",
+        "pt_sha256_c6dda973b002a513d7d6d0b8d4027cc835929bdb08fdbf484c0e04339b597299",
+        "pt_sha256_d328d092ea37c31fd677f38241499bb2c7f9a1bfe11d539b0b2e7e04d93a8f06",
+        "pt_sha256_d3a6375d349560213f8112161b47ff119497a926a10a0a1d38cce512a7047aea",
+        "pt_sha256_d6175460abc1410d6ab3082c85ba6f5cf3b8d0ae5146253bd1258fd562b5d843",
+        "pt_sha256_dd3d13760a41c98c2eb18d9b2884854adaafb7ddf34aff0d6c825b282a0795b3",
+        "pt_sha256_df7b9263a72ae96e0ff1c387938a287010bfc901312342873d05fc1c79e107bc",
+        "pt_sha256_e4fa78aec3d65d8914b58a9ffb1d0e1d50182f99ab3aa598ee8afd613f000169",
+        "pt_sha256_ea6c16eb58538aba73a6deda744289686ed8e6d652636dd6ec70ef5daaa504c3",
+        "pt_sha256_fa17f34f7d76e5aa7ae5fde7faa2debc2b2ef0b00e9a480c4e2885eedbdf31bd"
+      ],
+      "expected_trajectories": 48,
+      "policy": {
+        "verifier_submission_cap": null,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": null,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "blocked_by_stage4_policy_freeze"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "preliminary_scoring",
+      "model_role": "candidate_gemini",
+      "mode": "frozen_repair_loop",
+      "launch_unit_id": "plu_sha256_f13e4e71be9bdf62f4b854052112173b3e879cb5bae4196298298245f8732e90",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-preliminary-scoring-candidate-gemini-frozen-repair-loop",
+      "model": "gemini-3.5-flash",
+      "reasoning_effort": "medium",
+      "model_config_id": "mc_sha256_d1f9e497c30a476336932616ecbdba3ba1881b0950112a189d48fede4f2349ad",
+      "agent_policy_id": "ap_sha256_c66ef724a41b0c26d9361d4595935d3f540309b65c74f4df33e215a763bfed98",
+      "task_ids": [
+        "access-log-to-incidents",
+        "config-flag-ignored",
+        "env-flags-to-json",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "merge-divergent-config-branches"
+      ],
+      "rollout_seeds_by_task": {
+        "access-log-to-incidents": [
+          8000,
+          8001,
+          8002
+        ],
+        "config-flag-ignored": [
+          8000,
+          8001,
+          8002
+        ],
+        "env-flags-to-json": [
+          8000,
+          8001,
+          8002
+        ],
+        "invoice-cli-regression-test-fix": [
+          8000,
+          8001,
+          8002
+        ],
+        "invoice-multi-source-merge": [
+          8000,
+          8001,
+          8002
+        ],
+        "merge-divergent-config-branches": [
+          8000,
+          8001,
+          8002
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_07259259d49ea1ddc4990b38f3374ca353152c2f24244167aa8c1665ee92cfc2",
+        "pt_sha256_1226b27b1efd7f971d2a1a1ed42c8053792dca39aafb7246a31de0f67c6853fc",
+        "pt_sha256_13a51abf922201ec2d2cf9684b5a4c39202508f47f8a2182cd9ae4e982c3fdc2",
+        "pt_sha256_13b12cd2f4ec0c5084420c5a37f080dece2d950f656883867f17f73da30481ff",
+        "pt_sha256_15efd5d08a96d8a51b7ce1163a7c7c435ab5c6dd1b803a61c0a7019015810add",
+        "pt_sha256_16db6eb5062428d754f084f0e736377c25a899eb9f88ca4594070415f27deb17",
+        "pt_sha256_1dd54215240fac625736d41d2448ee41db73886145cf2604e2257d6dc3fc9edb",
+        "pt_sha256_35da578f59914c4dd3b5624202844bc07b4a863f6a138b488633662f12135b34",
+        "pt_sha256_54937e99d4190653a5e9e8ea796c36b610063e724827c7843d1794d44fd57a38",
+        "pt_sha256_59f0db98377c613b0ec26969b3f901ab86b2bbf0456f22bb997c6fc596e5b1cc",
+        "pt_sha256_7b76abdbf277c31e3ccdb2da297b7a07ae4a01009ebc77aa0c6e91b6e871e513",
+        "pt_sha256_7e8211d46c43965ba19df2bd8d99b878d948289f969397d8f33bba806f487e0e",
+        "pt_sha256_89959fb9a18e63128437a97b0e144817a028ed25f38d08566bd8e938bb667407",
+        "pt_sha256_9b823d52eef7aaeaca8e487a65feb65c52f2c5d3ebac5e4c7176536addae63cc",
+        "pt_sha256_a764523a126f250669899b10beb5ddfd4bb7f00842112604383f7035cf7dd012",
+        "pt_sha256_b1046222af2d53d1811599608edd3ba37df3a637b30fb65c8e04237fbbec1f72",
+        "pt_sha256_cee94e71704b3494833245cfbce0cabfd90bad437dd997afa69f37de9657ca53",
+        "pt_sha256_ef1ca72625f761bb16ec7570ba3f5bfcb617a85258d5c5508d39463feaaca820"
+      ],
+      "expected_trajectories": 18,
+      "policy": {
+        "verifier_submission_cap": null,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": null,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "blocked_by_fresh_anchor_confirmation"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "preliminary_scoring",
+      "model_role": "candidate_luna",
+      "mode": "frozen_repair_loop",
+      "launch_unit_id": "plu_sha256_dad6cd2bd1c248b0c576c1728ca7c477770d01ad3e3ecb9f488ec910f2d8985a",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-preliminary-scoring-candidate-luna-frozen-repair-loop",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "low",
+      "model_config_id": "mc_sha256_46e30f0e940845206206619faefcc6840332c47d2ea81b7b70e9d8d83f3dddae",
+      "agent_policy_id": "ap_sha256_18d5a541466f2eab0c50f3f5203c73108beb6611ded846629b56733219245c73",
+      "task_ids": [
+        "access-log-to-incidents",
+        "config-flag-ignored",
+        "env-flags-to-json",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "merge-divergent-config-branches"
+      ],
+      "rollout_seeds_by_task": {
+        "access-log-to-incidents": [
+          8000,
+          8001,
+          8002
+        ],
+        "config-flag-ignored": [
+          8000,
+          8001,
+          8002
+        ],
+        "env-flags-to-json": [
+          8000,
+          8001,
+          8002
+        ],
+        "invoice-cli-regression-test-fix": [
+          8000,
+          8001,
+          8002
+        ],
+        "invoice-multi-source-merge": [
+          8000,
+          8001,
+          8002
+        ],
+        "merge-divergent-config-branches": [
+          8000,
+          8001,
+          8002
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_0684fc1ae62602bcc1738b48e807f74d2302b466146e6511fcf4c38457ad766c",
+        "pt_sha256_0b6a52c911655843b5bbc3cca8acc63ec2d362d6b25ed7dd1ce8f8e2911f4925",
+        "pt_sha256_139280430a5f81b197e2cfca398bd0cfa6239fe13eba4f811530d6643f18f2bc",
+        "pt_sha256_32d03c2ce45985937cd5b42f85b6b744d44d72eb16d873d37fb2a143aada731d",
+        "pt_sha256_408d0ba538bc335a88251fa92256bbebecff1e4f0b6c0c11ff0466bc28dcf23f",
+        "pt_sha256_64f69b28393abd1cb2b8a668b68ea1236652faf636dc57c75c478816b57572cf",
+        "pt_sha256_7ce43ce56f15472b9758b228fa1fa3628a4e29001410754138679cceb2293f30",
+        "pt_sha256_7df715a1ddf6ce9e53a6d2fb0a2193682eded290165bcb7ca9cbb812f3741fe6",
+        "pt_sha256_875e21116b9af63e15fc93af9fef3d59db09891ca325c33f4d1921e03b40f122",
+        "pt_sha256_96af22de3f01cf1229218cbfe9054b0ccb818da4e2560857abba4e4a1d71e144",
+        "pt_sha256_9a0a5b71b09bf1cfd6e43be4846fb9b37eedb8cbb852ffd6ad47da9e52204eeb",
+        "pt_sha256_aa5bdddda7fd1d097455cfbb0c4a15a48d296f87960098bf11f9c69c98cefb5c",
+        "pt_sha256_aba7f8582180007e780f5316395e02e5294c50ed94f133427801244c105e49ff",
+        "pt_sha256_ba53700ac2375e3b2595c4568a58b205efb7230350e517d42d62df23eb1d466a",
+        "pt_sha256_c186ffb6c5aec6e3a6f554b67e18f0727d746ca19f02eb483726ebbd379078cf",
+        "pt_sha256_cd4dea9d0201cba0f9a535cde85a3c2fb427f1e175fc14a105df7253d8147159",
+        "pt_sha256_e7f574d7e569dcbd1e3ac8a7778ba4d886e2b8b61f9d10c8dac69cba1650f7ee",
+        "pt_sha256_ff6b6983a349c2250de85552644a086e5858e9aa3ca18bc622da1c7b8572af4a"
+      ],
+      "expected_trajectories": 18,
+      "policy": {
+        "verifier_submission_cap": null,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": null,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "blocked_by_fresh_anchor_confirmation"
+    },
+    {
+      "manifest": "shallowswe-six-task-pilot-v0.3",
+      "plan_class": "development_shadow",
+      "stage": "preliminary_scoring",
+      "model_role": "candidate_sol",
+      "mode": "frozen_repair_loop",
+      "launch_unit_id": "plu_sha256_00c3cab56815d81d5b27d62e6ca6b10fea4be9b030879b9adf370e1c01f64431",
+      "runner": "kaggle",
+      "kaggle_task_name": "shallowswe-development-shadow-v0-1-preliminary-scoring-candidate-sol-frozen-repair-loop",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "model_config_id": "mc_sha256_ebaa5f7edce4c908ec84505ce142e3e40b3e46ea83944cb640afd3f3f86b8365",
+      "agent_policy_id": "ap_sha256_05389686ca1f9383ffe4f57a13fe1bf90887d0c4e3a2bc53330437bcebbb9349",
+      "task_ids": [
+        "access-log-to-incidents",
+        "config-flag-ignored",
+        "env-flags-to-json",
+        "invoice-cli-regression-test-fix",
+        "invoice-multi-source-merge",
+        "merge-divergent-config-branches"
+      ],
+      "rollout_seeds_by_task": {
+        "access-log-to-incidents": [
+          8000,
+          8001,
+          8002
+        ],
+        "config-flag-ignored": [
+          8000,
+          8001,
+          8002
+        ],
+        "env-flags-to-json": [
+          8000,
+          8001,
+          8002
+        ],
+        "invoice-cli-regression-test-fix": [
+          8000,
+          8001,
+          8002
+        ],
+        "invoice-multi-source-merge": [
+          8000,
+          8001,
+          8002
+        ],
+        "merge-divergent-config-branches": [
+          8000,
+          8001,
+          8002
+        ]
+      },
+      "trajectory_ids": [
+        "pt_sha256_11a2aa0f4a8506efc7d90015de13f3225d3c333b83ff39f01874438450b37a8c",
+        "pt_sha256_11c377c0c47f34e32c2d9ad8f96399cf24f3de5495ce5c0f52b88d2ee4e780df",
+        "pt_sha256_126e8de879010d7f3777362852665bb85c4276c71914889f31b4146cec481014",
+        "pt_sha256_16d7c52130669761bb635a7f2e5a662c636b80961df81235924fa7a13f5d80e1",
+        "pt_sha256_1df906c467790971a6e11f2826fd7ac187511089f3ce9dab586ca859a71750d0",
+        "pt_sha256_272306e363485e7098dc7ab98d0dd54a447caea1006c0b2f7f0488d6d0941639",
+        "pt_sha256_2fec2ebff62bfa96b899949046fd3e23ad6da94ab338a403bb19423187d0b437",
+        "pt_sha256_42b22936aa7536e460c792b482f92505e830e77c59138670b605a15cecd0a514",
+        "pt_sha256_621540e2a6453ce1a16285e95cae8165964572c0ee5074cc63359d5e8b7130ff",
+        "pt_sha256_65a750b9401d8115aa1b29129320a6a7ba5fca0c8b580af2d37c47838c6e66bf",
+        "pt_sha256_6ca3e37fd73c5c29a755f137643e283618d4928caafe2374f8edd49cfa781b13",
+        "pt_sha256_6fc0a6cc91e2897ca63c8d252ef10ae6fe8a45b6abe9cd877ff74e69e9b1c1d2",
+        "pt_sha256_7bec73ec85ea63fb0549db96f6063946d66da5e00a8015d3305da4a5f2a56063",
+        "pt_sha256_a703c7d2c5c266ffedf4899a5b90e5b14996ca4668b5e628ee65667300cf7a3b",
+        "pt_sha256_b2cbb64272b58b179c8c200e8240cff8e97f04ad2ee46abdbe4926f64b1dcf6e",
+        "pt_sha256_bcf6a4dc9664d9345121d46028cc8e1f219760168ffc2db4b0b9263993ffccec",
+        "pt_sha256_e2334be622c87b9702d09e24c4ba6c85495189995fa95d12ae017985dcd2e09d",
+        "pt_sha256_ffb321b4c56201c5605bbd25ac0369c4c084ab2d82ffbb97e1b8a72296853656"
+      ],
+      "expected_trajectories": 18,
+      "policy": {
+        "verifier_submission_cap": null,
+        "agent_step_cap": 256,
+        "safety_dollar_cap_usd": null,
+        "cap_disclosure": "undisclosed"
+      },
+      "evidence_class": "development_dry_run",
+      "release_class": "development_dry_run",
+      "funding_pool": "kaggle_grant_development",
+      "launch_status": "blocked_by_fresh_anchor_confirmation"
+    }
+  ],
+  "launch_unit_count": 11,
+  "trajectory_count": 190,
+  "official_trajectory_count": 0,
+  "development_trajectory_count": 190,
+  "official_launch_gate": "not_applicable_development_shadow",
+  "launch_plan_sha256": "sha256:65cb1499601d3b9a4aa7d9f1ab218bba2c61771ed750ef298d25d4858f49894b",
+  "source_manifest": "shallowswe-six-task-pilot-v0.3"
+}
