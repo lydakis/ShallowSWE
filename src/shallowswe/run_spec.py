@@ -107,6 +107,10 @@ def validate_run_spec(spec: dict[str, Any]) -> None:
         metadata = unit.get("metadata", {})
         if not isinstance(metadata, dict):
             raise ValueError(f"run unit {identifier} metadata must be an object")
+        accounting = unit.get("accounting", {})
+        if not isinstance(accounting, dict):
+            raise ValueError(f"run unit {identifier} accounting must be an object")
+        _validate_accounting(accounting, unit=unit, unit_id=identifier)
 
     expected_hash = spec.get("run_spec_sha256")
     if expected_hash is not None and expected_hash != run_spec_sha256(spec):
@@ -155,6 +159,53 @@ def resolve_agent_policy(spec: dict[str, Any], unit: dict[str, Any]) -> dict[str
     if len(matches) != 1:
         raise RuntimeError(f"Run unit has no unique agent policy: {unit['run_unit_id']}")
     return matches[0]
+
+
+def validate_result_execution_identity(
+    row: Any,
+    spec: dict[str, Any],
+    unit: dict[str, Any],
+) -> None:
+    """Validate observed execution identity without interpreting methodology metadata."""
+    validate_run_spec(spec)
+    model_rows = {
+        entry["model_config_id"]: entry for entry in spec["model_configs"]
+    }
+    policy_rows = {
+        entry["agent_policy_id"]: entry for entry in spec["agent_policies"]
+    }
+    model_entry = model_rows[unit["model_config_id"]]
+    policy_entry = policy_rows[unit["agent_policy_id"]]
+    model = model_entry["canonical"]
+    policy = policy_entry["canonical"]
+    mismatches = []
+    expected = {
+        "model": model.get("requested_model"),
+        "requested_model": model.get("requested_model"),
+        "resolved_model": model.get("expected_resolved_model"),
+        "model_config_id": model_entry["model_config_id"],
+        "model_config_canonical_json": model,
+        "agent_policy_id": policy_entry["agent_policy_id"],
+        "agent_policy_canonical_json": policy,
+    }
+    for field, expected_value in expected.items():
+        if getattr(row, field, None) != expected_value:
+            mismatches.append(field)
+    for field in ("provider_route", "reasoning_effort"):
+        if field in model and getattr(row, field, None) != model[field]:
+            mismatches.append(field)
+    sampling = model.get("sampling_config") or {}
+    if "temperature" in sampling:
+        observed_temperature = getattr(row, "temperature", None)
+        if observed_temperature is None or abs(
+            float(observed_temperature) - float(sampling["temperature"])
+        ) > 1e-12:
+            mismatches.append("temperature")
+    if mismatches:
+        raise ValueError(
+            "result execution identity does not match RunSpec: "
+            + ", ".join(sorted(mismatches))
+        )
 
 
 def resolve_execution_sampling(
@@ -215,3 +266,68 @@ def _positive_int(limits: dict[str, Any], field: str, unit_id: str) -> None:
     value = limits.get(field)
     if not isinstance(value, int) or value <= 0:
         raise ValueError(f"run unit {unit_id} requires positive limits.{field}")
+
+
+def _validate_accounting(
+    accounting: dict[str, Any],
+    *,
+    unit: dict[str, Any],
+    unit_id: str,
+) -> None:
+    if not accounting:
+        return
+    required_price_sheet = accounting.get("required_price_sheet_version")
+    if required_price_sheet is not None and (
+        not isinstance(required_price_sheet, str) or not required_price_sheet
+    ):
+        raise ValueError(
+            f"run unit {unit_id} requires non-empty accounting.required_price_sheet_version"
+        )
+    task_contract_fields = (
+        "expected_task_version",
+        "expected_verifier_hash",
+        "expected_environment_image_digest",
+    )
+    if any(accounting.get(field) is not None for field in task_contract_fields) and any(
+        not isinstance(accounting.get(field), str) or not accounting[field]
+        for field in task_contract_fields
+    ):
+        raise ValueError(
+            f"run unit {unit_id} requires a complete expected task contract"
+        )
+    budget = accounting.get("reference_task_budget_usd")
+    if budget is not None:
+        if float(budget) <= 0:
+            raise ValueError(f"run unit {unit_id} requires a positive reference task budget")
+        if len(unit["task_ids"]) != 1:
+            raise ValueError(
+                f"run unit {unit_id} must bind one task when carrying a reference task budget"
+            )
+        runtime_cap = unit["limits"].get("dollar_usd")
+        if runtime_cap is None or abs(float(runtime_cap) - float(budget)) > 1e-12:
+            raise ValueError(
+                f"run unit {unit_id} reference task budget must equal limits.dollar_usd"
+            )
+    for field in (
+        "reference_anchor_replacement_cost_usd",
+        "reference_anchor_replacement_cost_ci_low_usd",
+        "reference_anchor_replacement_cost_ci_high_usd",
+    ):
+        value = accounting.get(field)
+        if value is not None and float(value) < 0:
+            raise ValueError(f"run unit {unit_id} requires non-negative accounting.{field}")
+    attempts = accounting.get("anchor_confirmation_attempts")
+    successes = accounting.get("anchor_confirmation_successes")
+    if attempts is not None and (not isinstance(attempts, int) or attempts <= 0):
+        raise ValueError(
+            f"run unit {unit_id} requires positive accounting.anchor_confirmation_attempts"
+        )
+    if successes is not None and (
+        not isinstance(successes, int)
+        or successes < 0
+        or attempts is None
+        or successes > attempts
+    ):
+        raise ValueError(
+            f"run unit {unit_id} has invalid accounting.anchor_confirmation_successes"
+        )

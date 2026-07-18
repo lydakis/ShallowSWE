@@ -17,7 +17,7 @@ def build_repair_policy(
     rows: Iterable[RepairLoopResult],
     methodology: dict[str, Any],
 ) -> dict[str, Any]:
-    """Select repair-loop caps and task budgets from an explicit analysis specification."""
+    """Freeze policy from permissive rows without incorporating later-phase outcomes."""
 
     row_list = list(rows)
     if not row_list:
@@ -82,7 +82,10 @@ def build_repair_policy(
         configs=configs,
         trajectory_plan=trajectory_plan,
     )
-    _require_stable_task_contracts(row_list)
+    task_contracts = _task_contracts(
+        stage3,
+        expected_tasks=[str(task_id) for task_id in methodology.get("task_ids", [])],
+    )
 
     submission_table = _capture_table(anchor_rows, submission_candidates)
     selected_k = _smallest_meeting_target(submission_table, capture_target)
@@ -118,26 +121,16 @@ def build_repair_policy(
         verifier_submission_cap=selected_k,
         agent_step_cap=selected_steps,
     )
-    _require_confirmation_matrix(
-        row_list,
-        anchor_id=anchor_id,
-        trajectory_plan=trajectory_plan,
-    )
-    confirmation = _confirmation_diagnostics(
-        row_list,
-        anchor_id=anchor_id,
-        task_budgets=task_budgets,
-        verifier_submission_cap=selected_k,
-        agent_step_cap=selected_steps,
-        minimum_successes=int(selection.get("confirmation_minimum_successes", 7)),
-        expected_attempts=int(selection.get("confirmation_attempts", 8)),
-    )
     spend_bases = sorted({_row_spend_basis(row) for row in anchor_rows})
+    price_sheet_versions = {row.price_sheet_version for row in anchor_rows}
+    if None in price_sheet_versions or len(price_sheet_versions) != 1:
+        raise ValueError("permissive anchor rows require one complete price-sheet identity")
     payload: dict[str, Any] = {
         "schema_version": REPAIR_POLICY_SCHEMA_VERSION,
         "methodology_spec_id": methodology.get("methodology_spec_id"),
         "policy_status": "analysis_output_not_execution_authority",
         "spend_bases": spend_bases,
+        "price_sheet_version": str(next(iter(price_sheet_versions))),
         "selection_constants": {
             "success_capture_target": capture_target,
             "selected_budget_check_coverage_target": coverage_target,
@@ -154,9 +147,9 @@ def build_repair_policy(
         "submission_cap_diagnostics": submission_table,
         "step_cap_diagnostics": step_table,
         "task_budgets": task_budgets,
+        "task_contracts": task_contracts,
         "pressure_diagnostics": pressure,
         "pressure_taxonomies": _pressure_taxonomies(pressure),
-        "confirmation_diagnostics": confirmation,
         "execution_authority": False,
     }
     payload["repair_policy_sha256"] = (
@@ -253,30 +246,6 @@ def _require_permissive_matrix(
         raise ValueError(
             f"incomplete permissive matrix: missing={missing}, unexpected={extra}"
         )
-
-
-def _require_confirmation_matrix(
-    rows: list[RepairLoopResult],
-    *,
-    anchor_id: str,
-    trajectory_plan: Any,
-) -> None:
-    observed = [row for row in rows if _metadata(row, "phase") == "anchor_confirmation"]
-    if not observed or not isinstance(trajectory_plan, dict):
-        return
-    plan = trajectory_plan.get("anchor_confirmation")
-    if not isinstance(plan, dict):
-        return
-    task_ids = [str(value) for value in plan.get("task_ids", [])]
-    expected_attempts = int(plan.get("anchor_per_task") or 0)
-    actual = Counter(
-        row.task_id
-        for row in observed
-        if row.is_scored and row.model_config_id == anchor_id
-    )
-    expected = Counter({task_id: expected_attempts for task_id in task_ids})
-    if actual != expected or len(observed) != sum(expected.values()):
-        raise ValueError("incomplete anchor-confirmation matrix")
 
 
 def _smallest_meeting_target(table: list[dict[str, Any]], target: float) -> int | None:
@@ -486,71 +455,6 @@ def _pressure_taxonomies(diagnostics: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def _confirmation_diagnostics(
-    rows: list[RepairLoopResult],
-    *,
-    anchor_id: str,
-    task_budgets: list[dict[str, Any]],
-    verifier_submission_cap: int,
-    agent_step_cap: int,
-    minimum_successes: int,
-    expected_attempts: int,
-) -> list[dict[str, Any]]:
-    budget_by_task = {
-        str(row["task_id"]): row["selected_budget_usd"]
-        for row in task_budgets
-        if row["selected_budget_usd"] is not None
-    }
-    confirmation = [
-        row
-        for row in rows
-        if _metadata(row, "phase") == "anchor_confirmation"
-        and row.model_config_id == anchor_id
-        and row.is_scored
-    ]
-    by_task: dict[str, list[RepairLoopResult]] = defaultdict(list)
-    for row in confirmation:
-        by_task[row.task_id].append(row)
-    output = []
-    for task_id, task_rows in sorted(by_task.items()):
-        budget = budget_by_task.get(task_id)
-        if any(row.verifier_submission_cap != verifier_submission_cap for row in task_rows):
-            raise ValueError(f"confirmation task {task_id} does not use the selected K")
-        if any(row.agent_step_cap != agent_step_cap for row in task_rows):
-            raise ValueError(f"confirmation task {task_id} does not use the selected step guard")
-        if budget is not None and any(
-            row.reference_task_budget_usd is None
-            or abs(float(row.reference_task_budget_usd) - budget) > 1e-12
-            for row in task_rows
-        ):
-            raise ValueError(f"confirmation task {task_id} does not use the selected budget")
-        successes = (
-            sum(
-                1
-                for row in task_rows
-                if _succeeds_within(
-                    row,
-                    verifier_submission_cap=verifier_submission_cap,
-                    agent_step_cap=agent_step_cap,
-                    budget_usd=budget,
-                )
-            )
-            if budget is not None
-            else 0
-        )
-        output.append(
-            {
-                "task_id": task_id,
-                "attempts": len(task_rows),
-                "expected_attempts": expected_attempts,
-                "successes": successes,
-                "minimum_successes": minimum_successes,
-                "confirmed": len(task_rows) == expected_attempts and successes >= minimum_successes,
-            }
-        )
-    return output
-
-
 def _coverage(
     rows: list[RepairLoopResult],
     budget_usd: float,
@@ -674,21 +578,36 @@ def _requires_canonical(row: RepairLoopResult) -> bool:
     return bool(_metadata(row, "require_canonical_spend"))
 
 
-def _require_stable_task_contracts(rows: list[RepairLoopResult]) -> None:
-    by_model_task: dict[tuple[str | None, str], list[RepairLoopResult]] = defaultdict(list)
+def _task_contracts(
+    rows: list[RepairLoopResult],
+    *,
+    expected_tasks: list[str],
+) -> list[dict[str, str]]:
+    by_task: dict[str, list[RepairLoopResult]] = defaultdict(list)
     for row in rows:
-        by_model_task[(row.model_config_id, row.task_id)].append(row)
-    for (_model_id, task_id), task_rows in by_model_task.items():
-        for field in (
-            "task_version",
-            "verifier_hash",
-            "environment_image_digest",
-            "price_sheet_version",
-            "routine_review_version",
-        ):
-            values = {getattr(row, field) for row in task_rows}
-            if len(values) > 1:
-                raise ValueError(f"repair-policy task {task_id} has mixed {field}")
+        by_task[row.task_id].append(row)
+    expected_tasks = expected_tasks or sorted(by_task)
+    if set(by_task) != set(expected_tasks):
+        raise ValueError("repair-policy task contracts do not cover the declared task set")
+    contracts = []
+    for task_id in expected_tasks:
+        task_rows = by_task[task_id]
+        values = {
+            (row.task_version, row.verifier_hash, row.environment_image_digest)
+            for row in task_rows
+        }
+        if len(values) != 1 or any(value is None for value in next(iter(values))):
+            raise ValueError(f"repair-policy task {task_id} lacks one immutable task contract")
+        task_version, verifier_hash, environment_image_digest = next(iter(values))
+        contracts.append(
+            {
+                "task_id": task_id,
+                "task_version": str(task_version),
+                "verifier_hash": str(verifier_hash),
+                "environment_image_digest": str(environment_image_digest),
+            }
+        )
+    return contracts
 
 
 def _metadata(row: RepairLoopResult, key: str) -> Any:

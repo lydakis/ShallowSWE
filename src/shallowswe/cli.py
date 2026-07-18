@@ -25,6 +25,12 @@ from .pier_repair_loop import (
     load_env_file,
     run_pier_repair_loop,
 )
+from .policy_transition import (
+    build_anchor_replacement_costs,
+    build_confirmation_run_spec,
+    build_scoring_run_spec,
+    write_json_artifact,
+)
 from .repair_policy import write_repair_policy
 from .routine_review import build_routine_review_packet, import_routine_reviews
 from .run_spec import audit_run_spec
@@ -159,6 +165,36 @@ def main() -> None:
     repair_policy_parser.add_argument("results_json", type=Path)
     repair_policy_parser.add_argument("methodology_json", type=Path)
     repair_policy_parser.add_argument("output_json", type=Path)
+    confirmation_spec_parser = subparsers.add_parser(
+        "materialize-confirmation-run-spec",
+        help="materialize fresh anchor confirmation units from a selected repair policy",
+    )
+    confirmation_spec_parser.add_argument("base_run_spec_json", type=Path)
+    confirmation_spec_parser.add_argument("repair_policy_json", type=Path)
+    confirmation_spec_parser.add_argument("methodology_json", type=Path)
+    confirmation_spec_parser.add_argument("output_json", type=Path)
+    confirmation_spec_parser.add_argument("--run-spec-id", required=True)
+    confirmation_spec_parser.add_argument("--seed-start", type=int, required=True)
+    replacement_cost_parser = subparsers.add_parser(
+        "calculate-anchor-replacement-costs",
+        help="calculate task-level replacement costs from fresh anchor confirmation rows",
+    )
+    replacement_cost_parser.add_argument("confirmation_results_json", type=Path)
+    replacement_cost_parser.add_argument("base_run_spec_json", type=Path)
+    replacement_cost_parser.add_argument("confirmation_run_spec_json", type=Path)
+    replacement_cost_parser.add_argument("repair_policy_json", type=Path)
+    replacement_cost_parser.add_argument("methodology_json", type=Path)
+    replacement_cost_parser.add_argument("output_json", type=Path)
+    scoring_spec_parser = subparsers.add_parser(
+        "materialize-scoring-run-spec",
+        help="materialize candidate scoring units under the frozen task policies",
+    )
+    scoring_spec_parser.add_argument("base_run_spec_json", type=Path)
+    scoring_spec_parser.add_argument("panel_json", type=Path)
+    scoring_spec_parser.add_argument("repair_policy_json", type=Path)
+    scoring_spec_parser.add_argument("replacement_costs_json", type=Path)
+    scoring_spec_parser.add_argument("methodology_json", type=Path)
+    scoring_spec_parser.add_argument("output_json", type=Path)
     analysis_parser = subparsers.add_parser(
         "analyze-repair-loops",
         help="apply a methodology specification to a repair-loop result bundle",
@@ -166,6 +202,7 @@ def main() -> None:
     analysis_parser.add_argument("results_json", type=Path)
     analysis_parser.add_argument("methodology_json", type=Path)
     analysis_parser.add_argument("output_json", type=Path)
+    analysis_parser.add_argument("--scoring-run-spec", type=Path)
 
     repair_loop_run_parser = subparsers.add_parser(
         "run-repair-loop",
@@ -474,10 +511,49 @@ def main() -> None:
                     args.results_json,
                     args.methodology_json,
                     args.output_json,
+                    scoring_run_spec_path=args.scoring_run_spec,
                 ),
                 indent=2,
             )
         )
+        return
+
+    if args.command == "materialize-confirmation-run-spec":
+        spec = build_confirmation_run_spec(
+            _load_json_object(args.base_run_spec_json),
+            _load_json_object(args.repair_policy_json),
+            _load_json_object(args.methodology_json),
+            run_spec_id=args.run_spec_id,
+            seed_start=args.seed_start,
+        )
+        write_json_artifact(args.output_json, spec)
+        print(json.dumps(spec, indent=2))
+        return
+
+    if args.command == "calculate-anchor-replacement-costs":
+        artifact = build_anchor_replacement_costs(
+            load_repair_loops(args.confirmation_results_json),
+            _load_json_object(args.repair_policy_json),
+            _load_json_object(args.methodology_json),
+            base_run_spec=_load_json_object(args.base_run_spec_json),
+            confirmation_run_spec=_load_json_object(
+                args.confirmation_run_spec_json
+            ),
+        )
+        write_json_artifact(args.output_json, artifact)
+        print(json.dumps(artifact, indent=2))
+        return
+
+    if args.command == "materialize-scoring-run-spec":
+        spec = build_scoring_run_spec(
+            _load_json_object(args.base_run_spec_json),
+            _load_json_object(args.panel_json),
+            _load_json_object(args.repair_policy_json),
+            _load_json_object(args.replacement_costs_json),
+            _load_json_object(args.methodology_json),
+        )
+        write_json_artifact(args.output_json, spec)
+        print(json.dumps(spec, indent=2))
         return
 
     if args.command == "analyze-repair-loops":
@@ -687,6 +763,13 @@ def _load_price_catalog(price_paths: list[Path] | None):
     if not price_paths:
         return None
     return merge_prices(*(load_prices(price_path) for price_path in price_paths))
+
+
+def _load_json_object(path: Path) -> dict[str, object]:
+    payload = json.loads(path.read_text())
+    if not isinstance(payload, dict):
+        raise ValueError(f"expected a JSON object: {path}")
+    return payload
 
 
 def _load_agent_env(env_file: Path | None) -> dict[str, str]:

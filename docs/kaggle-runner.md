@@ -124,5 +124,6 @@ After each launch unit, reconcile:
 5. Kaggle quota draw and batch hard stop; and
 6. complete artifact presence.
 
-Analysis happens separately with `shallowswe analyze-repair-loops` and an explicit
-`MethodologySpec`.
+Analysis happens separately with `shallowswe analyze-repair-loops`, an explicit
+`MethodologySpec`, and the exact materialized scoring RunSpec. The analyzer rejects incomplete,
+duplicate, mixed, or out-of-matrix scoring trajectories before aggregation.

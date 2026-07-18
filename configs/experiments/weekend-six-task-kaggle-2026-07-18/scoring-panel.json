@@ -1,0 +1,70 @@
+{
+  "schema_version": "shallowswe.scoring_panel.v0.1",
+  "run_spec_id": "weekend-six-task-kaggle-scoring-v0.1",
+  "rollout_seeds": [5000, 5001, 5002],
+  "wall_time_seconds": 2400,
+  "model_configs": [
+    {
+      "model_config_id": "mc_sha256_9d6dd46a64579d29947f62e3cbddbc8b3bdd176dd700a085b219eb443f7767c4",
+      "canonical": {
+        "requested_model": "gpt-5.6-luna",
+        "expected_resolved_model": "gpt-5.6-luna",
+        "price_model": "openai/gpt-5.6-luna",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "low",
+        "sampling_config": {
+          "temperature": 0.0,
+          "seed_policy": "reserved_replicate"
+        },
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "model_config_id": "mc_sha256_fa72cb881ec0f93ec6f129633fc6525b93af76cf5403e6181292af0abd29046f",
+      "canonical": {
+        "requested_model": "gpt-5.6-sol",
+        "expected_resolved_model": "gpt-5.6-sol",
+        "price_model": "openai/gpt-5.6-sol",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "openai",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "low",
+        "sampling_config": {
+          "temperature": 0.0,
+          "seed_policy": "reserved_replicate"
+        },
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    },
+    {
+      "model_config_id": "mc_sha256_3565d85820a9557ab8762cb105ab94f1c518a96dee76dc36aa7efed523053c79",
+      "canonical": {
+        "requested_model": "gemini-3.5-flash",
+        "expected_resolved_model": "gemini-3.5-flash",
+        "price_model": "google/gemini-3.5-flash",
+        "inference_gateway": "kaggle_benchmarks_0.6.1",
+        "upstream_provider": "google",
+        "provider_route": "kaggle_model_proxy",
+        "reasoning_effort": "medium",
+        "sampling_config": {
+          "temperature": 0.0,
+          "seed_policy": "reserved_replicate"
+        },
+        "context_policy": "kaggle_proxy_managed",
+        "harness_max_output_tokens": 8192,
+        "cache_policy": "intra_run_priced_cross_run_disabled"
+      }
+    }
+  ],
+  "model_roles": {
+    "candidate_luna": "mc_sha256_9d6dd46a64579d29947f62e3cbddbc8b3bdd176dd700a085b219eb443f7767c4",
+    "candidate_sol": "mc_sha256_fa72cb881ec0f93ec6f129633fc6525b93af76cf5403e6181292af0abd29046f",
+    "candidate_gemini": "mc_sha256_3565d85820a9557ab8762cb105ab94f1c518a96dee76dc36aa7efed523053c79"
+  }
+}

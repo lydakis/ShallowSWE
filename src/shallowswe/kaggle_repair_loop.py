@@ -81,7 +81,9 @@ def run_kaggle_repair_loop(
     run_spec_id: str | None = None,
     run_unit_id: str | None = None,
     run_metadata: dict[str, Any] | None = None,
+    result_accounting: dict[str, Any] | None = None,
     canonical_price: ModelPrice | None = None,
+    proxy_api: str | None = None,
     environment_factory: EnvironmentFactory | None = None,
     verifier_runner: VerifierRunner | None = None,
 ) -> RepairLoopResult:
@@ -93,6 +95,34 @@ def run_kaggle_repair_loop(
         raise ValueError("dollar_cap_usd must be positive")
     if agent_step_cap is not None and agent_step_cap <= 0:
         raise ValueError("agent_step_cap must be positive")
+    accounting = dict(result_accounting or {})
+    required_price_sheet = accounting.get("required_price_sheet_version")
+    if required_price_sheet is not None and price_sheet_version != required_price_sheet:
+        raise ValueError(
+            "runtime price sheet does not match frozen accounting policy: "
+            f"{price_sheet_version!r} != {required_price_sheet!r}"
+        )
+
+    task_contract = {
+        "task_version": _task_contract_hash(task_path, verifier_dir),
+        "verifier_hash": tree_sha256(verifier_dir),
+        "environment_image_digest": tree_sha256(task_path / "environment"),
+    }
+    expected_contract = {
+        "task_version": accounting.get("expected_task_version"),
+        "verifier_hash": accounting.get("expected_verifier_hash"),
+        "environment_image_digest": accounting.get(
+            "expected_environment_image_digest"
+        ),
+    }
+    if any(value is not None for value in expected_contract.values()):
+        if any(not isinstance(value, str) or not value for value in expected_contract.values()):
+            raise ValueError("runtime requires a complete frozen task contract")
+        if expected_contract != task_contract:
+            raise ValueError(
+                "runtime task contract does not match frozen accounting policy: "
+                f"{task_contract!r} != {expected_contract!r}"
+            )
 
     shallow_task = load_task(task_path)
     started_at = datetime.now(timezone.utc)
@@ -118,7 +148,12 @@ def run_kaggle_repair_loop(
             "reasoning": reasoning_effort,
         }
     )
-    model = KaggleBenchmarksModel(llm=llm, **model_config)
+    model = KaggleBenchmarksModel(
+        llm=llm,
+        canonical_price=canonical_price,
+        proxy_api=proxy_api,
+        **model_config,
+    )
     command_timeout = int((config.get("environment") or {}).get("timeout") or 30)
     selected_environment_factory = environment_factory or _secure_environment
     environment = selected_environment_factory(workspace_dir, command_timeout)
@@ -206,6 +241,21 @@ def run_kaggle_repair_loop(
         "gateway_reported_cost_usd": None,
     }
     canonical_spend = _canonical_usage_cost(usage, canonical_price)
+    reference_budget = accounting.get("reference_task_budget_usd")
+    replacement_cost = accounting.get("reference_anchor_replacement_cost_usd")
+    reference_charge = (
+        canonical_spend
+        if passed
+        else float(reference_budget)
+        if reference_budget is not None
+        else None
+    )
+    escalation_charge = (
+        canonical_spend
+        + (0.0 if passed else float(replacement_cost))
+        if canonical_spend is not None and (passed or replacement_cost is not None)
+        else None
+    )
     return RepairLoopResult(
         model=model_name,
         task_id=shallow_task.task_id,
@@ -242,10 +292,10 @@ def run_kaggle_repair_loop(
         requested_model=model_name,
         resolved_model=model.resolved_model,
         reasoning_effort=reasoning_effort,
-        task_version=_task_contract_hash(task_path, verifier_dir),
+        task_version=task_contract["task_version"],
         task_suite_version=task_suite_version,
-        verifier_hash=tree_sha256(verifier_dir),
-        environment_image_digest=tree_sha256(task_path / "environment"),
+        verifier_hash=task_contract["verifier_hash"],
+        environment_image_digest=task_contract["environment_image_digest"],
         repo_commit_sha=repo_commit_sha,
         price_sheet_version=price_sheet_version,
         seed=seed,
@@ -267,11 +317,69 @@ def run_kaggle_repair_loop(
             int(model_kwargs["max_tokens"]) if model_kwargs.get("max_tokens") is not None else None
         ),
         cache_policy=cache_policy,
+        reference_task_budget_usd=_accounting_float(
+            accounting,
+            "reference_task_budget_usd",
+        ),
+        reference_budget_version=_accounting_str(accounting, "reference_budget_version"),
+        reference_budget_band=_accounting_str(accounting, "reference_budget_band"),
+        reference_budget_coverage_target=_accounting_float(
+            accounting,
+            "reference_budget_coverage_target",
+        ),
+        reference_budget_proposal_attempts=_accounting_int(
+            accounting,
+            "reference_budget_proposal_attempts",
+        ),
+        reference_budget_development_check_attempts=_accounting_int(
+            accounting,
+            "reference_budget_development_check_attempts",
+        ),
+        reference_budget_band_bumps=_accounting_int(
+            accounting,
+            "reference_budget_band_bumps",
+        ),
+        primary_anchor_model_config_id=_accounting_str(
+            accounting,
+            "primary_anchor_model_config_id",
+        ),
+        anchor_price_sheet_version=_accounting_str(
+            accounting,
+            "anchor_price_sheet_version",
+        ),
+        reference_anchor_replacement_cost_usd=_accounting_float(
+            accounting,
+            "reference_anchor_replacement_cost_usd",
+        ),
+        anchor_confirmation_attempts=_accounting_int(
+            accounting,
+            "anchor_confirmation_attempts",
+        ),
+        anchor_confirmation_successes=_accounting_int(
+            accounting,
+            "anchor_confirmation_successes",
+        ),
         actual_model_spend_usd=usage["gateway_reported_cost_usd"],
         canonical_list_price_equivalent_spend_usd=canonical_spend,
+        reference_budget_charged_spend_usd=reference_charge,
+        realized_charged_spend_usd=canonical_spend,
+        escalation_charged_spend_usd=escalation_charge,
+        failure_charge_applied_usd=(
+            float(reference_budget)
+            if not passed and reference_budget is not None
+            else 0.0
+            if passed and reference_budget is not None
+            else None
+        ),
+        budget_overrun_usd=(
+            max(0.0, canonical_spend - float(reference_budget))
+            if canonical_spend is not None and reference_budget is not None
+            else None
+        ),
         verifier_submission_cap=max_verifier_submissions,
         agent_step_cap=int(agent_config.get("step_limit") or 0) or None,
         cap_disclosure="undisclosed",
+        pressure_band=_accounting_str(accounting, "pressure_band"),
         routine_review_version=routine_review_version,
         censoring_status=("right_censored" if stop_reason in CAP_HIT_STOP_REASONS else "observed"),
         event_checkpoints=backend.event_checkpoints,
@@ -280,6 +388,21 @@ def run_kaggle_repair_loop(
         started_at=started_at.isoformat(),
         finished_at=finished_at.isoformat(),
     )
+
+
+def _accounting_float(accounting: dict[str, Any], field: str) -> float | None:
+    value = accounting.get(field)
+    return float(value) if value is not None else None
+
+
+def _accounting_int(accounting: dict[str, Any], field: str) -> int | None:
+    value = accounting.get(field)
+    return int(value) if value is not None else None
+
+
+def _accounting_str(accounting: dict[str, Any], field: str) -> str | None:
+    value = accounting.get(field)
+    return str(value) if value is not None else None
 
 
 class _KaggleRepairLoopBackend:

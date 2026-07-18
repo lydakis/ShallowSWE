@@ -18,6 +18,7 @@ from pydantic import BaseModel, ConfigDict
 from kaggle_benchmarks.tools.base import ToolInvocationResult
 
 from .repair_loop_protocol import VerifierClass, VerifierOutcome
+from .results import ModelPrice, usage_cost_usd
 
 
 _CHROOT_TEMPLATE_LOCK = threading.Lock()
@@ -42,15 +43,27 @@ DEFAULT_FORMAT_ERROR_TEMPLATE = (
 )
 
 
-def model_proxy_api(model_name: str) -> str:
+def model_proxy_api(
+    model_name: str,
+    *,
+    upstream_provider: str | None = None,
+) -> str:
     """Select the provider-native Kaggle Model Proxy API for tool continuation."""
+    if upstream_provider is not None:
+        return "genai" if upstream_provider.lower() == "google" else "openai"
     return "genai" if model_name.startswith("google/") else "openai"
 
 
-def model_kwargs_for_proxy(model_name: str, model_kwargs: dict[str, Any]) -> dict[str, Any]:
+def model_kwargs_for_proxy(
+    model_name: str,
+    model_kwargs: dict[str, Any],
+    *,
+    proxy_api: str | None = None,
+) -> dict[str, Any]:
     """Translate the common output-token cap to the selected provider-native API."""
     normalized = dict(model_kwargs)
-    if model_proxy_api(model_name) == "genai" and "max_tokens" in normalized:
+    selected_api = proxy_api or model_proxy_api(model_name)
+    if selected_api == "genai" and "max_tokens" in normalized:
         normalized.setdefault("max_output_tokens", normalized.pop("max_tokens"))
     return normalized
 
@@ -71,12 +84,21 @@ class KaggleBenchmarksModelConfig(BaseModel):
 class KaggleBenchmarksModel:
     """mini-swe-agent model adapter over the active Kaggle Benchmarks chat."""
 
-    def __init__(self, *, llm: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        llm: Any,
+        canonical_price: ModelPrice | None = None,
+        proxy_api: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         self.llm = llm
+        self.canonical_price = canonical_price
         self.config = KaggleBenchmarksModelConfig(**kwargs)
         self.config.model_kwargs = model_kwargs_for_proxy(
             self.config.model_name,
             self.config.model_kwargs,
+            proxy_api=proxy_api,
         )
         self._synced_message_count = 0
         self._resolved_model_names: set[str] = set()
@@ -96,19 +118,36 @@ class KaggleBenchmarksModel:
         actions, raw_tool_calls = self._parse_actions(response.tool_calls)
         usage = response.usage
         cost_nanodollars = usage.total_cost_nanodollars
-        cost_usd = (cost_nanodollars / 1_000_000_000) if cost_nanodollars is not None else 0.0
+        gateway_cost_usd = (
+            cost_nanodollars / 1_000_000_000 if cost_nanodollars is not None else 0.0
+        )
+        canonical_cost_usd = (
+            usage_cost_usd(
+                input_tokens=int(usage.input_tokens or 0),
+                output_tokens=int(usage.output_tokens or 0),
+                cache_read_tokens=0,
+                cache_write_tokens=0,
+                price=self.canonical_price,
+            )
+            if self.canonical_price is not None
+            else gateway_cost_usd
+        )
         return {
             "role": "assistant",
             "content": response.text,
             "tool_calls": raw_tool_calls,
             "extra": {
                 "actions": actions,
-                "cost": cost_usd,
+                # mini-swe-agent uses this field for its runtime cost guard. Keep
+                # it on the same canonical basis used to select task budget B_t.
+                "cost": canonical_cost_usd,
                 "timestamp": time.time(),
                 "usage": {
                     "input_tokens": usage.input_tokens or 0,
                     "output_tokens": usage.output_tokens or 0,
-                    "cost": cost_usd,
+                    # Preserve Kaggle's reported invoice separately for result
+                    # accounting and price-basis comparisons.
+                    "cost": gateway_cost_usd,
                 },
                 **(
                     {"reasoning_traces": response.reasoning_traces}

@@ -182,6 +182,7 @@ class RepairPolicyTests(unittest.TestCase):
         report = build_repair_policy(rows, methodology)
 
         self.assertEqual(report["policy_status"], "analysis_output_not_execution_authority")
+        self.assertEqual(report["price_sheet_version"], "dev-prices-v1")
         self.assertEqual(report["selected_policy"]["verifier_submission_cap"], 2)
         self.assertEqual(report["selected_policy"]["agent_step_cap"], 32)
         budget = report["task_budgets"][0]
@@ -282,66 +283,7 @@ class RepairPolicyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "methodology"):
             build_repair_policy([row], {})
 
-    def test_rejects_confirmation_rows_that_do_not_use_exact_selected_policy(self) -> None:
-        rows = [
-            _row(
-                task_id="task-a",
-                loop=loop,
-                cohort="budget_proposal" if loop < 4 else "budget_check",
-                success_submission=1,
-                spend=0.04,
-                steps=20,
-            )
-            for loop in range(6)
-        ]
-        confirmation = [
-            replace(
-                _row(
-                    task_id="task-a",
-                    loop=loop,
-                    cohort="fresh_confirmation",
-                    success_submission=1,
-                    spend=0.04,
-                    steps=20,
-                ),
-                run_metadata={
-                    "phase": "anchor_confirmation",
-                    "cohort": "fresh_confirmation",
-                    "require_canonical_spend": True,
-                },
-                verifier_submission_cap=2,
-                agent_step_cap=64,
-                reference_task_budget_usd=0.05,
-            )
-            for loop in range(8)
-        ]
-        methodology = {
-            "schema_version": "shallowswe.methodology_spec.v0.1",
-            "methodology_spec_id": "test-methodology",
-            "model_roles": {"primary_anchor": "mc_anchor"},
-            "allow_fallbacks": True,
-            "permissive_policy": {
-                "candidate_verifier_submission_caps": [2, 4],
-                "candidate_agent_step_caps": [32, 64],
-                "budget_bands_usd": [0.05, 0.10],
-            },
-            "selection_policy": {
-                "success_capture_target": 0.99,
-                "reported_budget_coverage_targets": [0.75, 0.9, 1.0],
-                "selected_budget_check_coverage_target": 0.75,
-                "max_budget_band_bumps": 1,
-                "confirmation_minimum_successes": 7,
-                "confirmation_attempts": 8,
-            },
-        }
-
-        with self.assertRaisesRegex(ValueError, "selected step guard"):
-            build_repair_policy(
-                rows + confirmation,
-                methodology,
-            )
-
-    def test_rejects_incomplete_anchor_confirmation_matrix(self) -> None:
+    def test_policy_identity_is_stable_after_confirmation_rows_are_appended(self) -> None:
         rows = [
             _row(
                 task_id="task-a",
@@ -371,25 +313,39 @@ class RepairPolicyTests(unittest.TestCase):
                 _row(
                     task_id="task-a",
                     loop=loop,
-                    cohort="anchor_confirmation",
+                    cohort="fresh_confirmation",
                     success_submission=1,
                     spend=0.04,
                     steps=20,
                 ),
                 run_metadata={
                     "phase": "anchor_confirmation",
-                    "cohort": "anchor_confirmation",
+                    "cohort": "fresh_confirmation",
                     "require_canonical_spend": True,
                 },
+                verifier_submission_cap=2,
+                agent_step_cap=64,
+                reference_task_budget_usd=0.05,
             )
-            for loop in range(7)
+            for loop in range(8)
         ]
+        methodology = self._complete_methodology(task_ids=["task-a"])
 
-        with self.assertRaisesRegex(ValueError, "incomplete anchor-confirmation matrix"):
-            build_repair_policy(
-                rows + confirmation,
-                self._complete_methodology(task_ids=["task-a"]),
-            )
+        before = build_repair_policy(rows, methodology)
+        after = build_repair_policy(rows + confirmation, methodology)
+
+        self.assertEqual(after, before)
+        self.assertEqual(
+            before["task_contracts"],
+            [
+                {
+                    "task_id": "task-a",
+                    "task_version": "task-a@v1",
+                    "verifier_hash": "sha256:task-a",
+                    "environment_image_digest": "sha256:env-task-a",
+                }
+            ],
+        )
 
 
 if __name__ == "__main__":

@@ -42,6 +42,21 @@ class _ScriptedLLM(LLMChat):
 
 
 class KaggleRepairLoopTests(unittest.TestCase):
+    def test_rejects_runtime_price_sheet_that_differs_from_frozen_policy(self) -> None:
+        with self.assertRaisesRegex(ValueError, "runtime price sheet"):
+            run_kaggle_repair_loop(
+                llm=None,
+                task_path=Path("missing-task"),
+                verifier_dir=Path("missing-verifier"),
+                workspace_dir=Path("missing-workspace"),
+                artifacts_dir=Path("missing-artifacts"),
+                run_id="mismatch",
+                model_name="test/model",
+                config_file=Path("missing-config"),
+                price_sheet_version="prices-v2",
+                result_accounting={"required_price_sheet_version": "prices-v1"},
+            )
+
     def test_secure_environment_preflight_fails_closed(self) -> None:
         class FailedEnvironment:
             def execute(self, action):
@@ -50,6 +65,28 @@ class KaggleRepairLoopTests(unittest.TestCase):
 
         with self.assertRaisesRegex(RuntimeError, "sandbox preflight failed"):
             _preflight_secure_environment(FailedEnvironment())  # type: ignore[arg-type]
+
+    def test_rejects_runtime_task_that_differs_from_frozen_contract(self) -> None:
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = _write_task(root / "task")
+
+            with self.assertRaisesRegex(ValueError, "runtime task contract"):
+                run_kaggle_repair_loop(
+                    llm=None,
+                    task_path=task,
+                    verifier_dir=task / "tests",
+                    workspace_dir=root / "workspace",
+                    artifacts_dir=root / "artifacts",
+                    run_id="contract-mismatch",
+                    model_name="test/model",
+                    config_file=root / "missing-config",
+                    result_accounting={
+                        "expected_task_version": "sha256:wrong",
+                        "expected_verifier_hash": "sha256:wrong",
+                        "expected_environment_image_digest": "sha256:wrong",
+                    },
+                )
 
     def test_run_uses_canonical_task_and_sanitized_continuation(self) -> None:
         with TemporaryDirectory() as tmp:
@@ -101,6 +138,15 @@ class KaggleRepairLoopTests(unittest.TestCase):
                     run_spec_id="test-spec",
                     run_unit_id="test-unit",
                     run_metadata={"phase": "test"},
+                    result_accounting={
+                        "reference_task_budget_usd": 0.05,
+                        "required_price_sheet_version": "test-prices",
+                        "reference_budget_version": "sha256:policy",
+                        "reference_anchor_replacement_cost_usd": 0.02,
+                        "anchor_confirmation_attempts": 8,
+                        "anchor_confirmation_successes": 8,
+                        "pressure_band": "low",
+                    },
                     price_sheet_version="test-prices",
                     routine_review_version="review-v1",
                     canonical_price=ModelPrice(1.0, None, 1.0),
@@ -125,6 +171,14 @@ class KaggleRepairLoopTests(unittest.TestCase):
             self.assertEqual(row.run_spec_id, "test-spec")
             self.assertEqual(row.run_unit_id, "test-unit")
             self.assertEqual(row.run_metadata, {"phase": "test"})
+            self.assertEqual(row.reference_task_budget_usd, 0.05)
+            self.assertEqual(row.reference_anchor_replacement_cost_usd, 0.02)
+            self.assertEqual(row.anchor_confirmation_attempts, 8)
+            self.assertEqual(row.anchor_confirmation_successes, 8)
+            self.assertEqual(row.pressure_band, "low")
+            self.assertIsNotNone(row.reference_budget_charged_spend_usd)
+            self.assertIsNotNone(row.realized_charged_spend_usd)
+            self.assertIsNotNone(row.escalation_charged_spend_usd)
             self.assertEqual(row.censoring_status, "observed")
             self.assertIsNotNone(row.canonical_list_price_equivalent_spend_usd)
             self.assertIsNotNone(row.event_checkpoints)
@@ -168,6 +222,13 @@ class KaggleRepairLoopTests(unittest.TestCase):
                     model_name="test/model",
                     config_file=config,
                     max_verifier_submissions=1,
+                    canonical_price=ModelPrice(1.0, None, 1.0),
+                    price_sheet_version="test-prices",
+                    result_accounting={
+                        "required_price_sheet_version": "test-prices",
+                        "reference_task_budget_usd": 0.05,
+                        "reference_anchor_replacement_cost_usd": 0.02,
+                    },
                     environment_factory=lambda path, timeout: LocalEnvironment(
                         cwd=str(path), timeout=timeout
                     ),
@@ -178,6 +239,10 @@ class KaggleRepairLoopTests(unittest.TestCase):
 
             self.assertEqual(row.stop_reason, "verifier_submission_cap")
             self.assertEqual(row.censoring_status, "right_censored")
+            self.assertEqual(row.reference_budget_charged_spend_usd, 0.05)
+            self.assertAlmostEqual(row.realized_charged_spend_usd or 0.0, 0.000012)
+            self.assertAlmostEqual(row.escalation_charged_spend_usd or 0.0, 0.020012)
+            self.assertEqual(row.failure_charge_applied_usd, 0.05)
 
 
 def _write_task(task: Path) -> Path:

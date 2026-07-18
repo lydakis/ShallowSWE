@@ -11,8 +11,10 @@ from shallowswe.run_spec import (
     resolve_run_unit,
     trajectory_id,
     unit_matrix,
+    validate_result_execution_identity,
     validate_run_spec,
 )
+from shallowswe.results import repair_loop_from_mapping
 
 
 class RunSpecTests(unittest.TestCase):
@@ -139,10 +141,59 @@ class RunSpecTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "agent_policy_id does not match"):
             validate_run_spec(self.spec)
 
+    def test_rejects_task_budget_that_does_not_match_runtime_cap(self) -> None:
+        self.spec["units"][0]["task_ids"] = ["task-a"]
+        self.spec["units"][0]["accounting"] = {
+            "reference_task_budget_usd": 4.0,
+        }
+
+        with self.assertRaisesRegex(ValueError, "reference task budget"):
+            validate_run_spec(self.spec)
+
+    def test_rejects_incomplete_expected_task_contract(self) -> None:
+        self.spec["units"][0]["accounting"] = {
+            "expected_task_version": "task-a@v1",
+        }
+
+        with self.assertRaisesRegex(ValueError, "expected task contract"):
+            validate_run_spec(self.spec)
+
     def test_schema_accepts_a_transport_name_without_interpreting_it(self) -> None:
         self.spec["units"][0]["runner"] = "pier"
 
         validate_run_spec(self.spec)
+
+    def test_result_identity_validation_rejects_resolved_model_mismatch(self) -> None:
+        unit = self.spec["units"][0]
+        model = self.spec["model_configs"][0]
+        policy = self.spec["agent_policies"][0]
+        row = repair_loop_from_mapping(
+            {
+                "model": "gpt-5.6-sol",
+                "task_id": "task-a",
+                "category": "code",
+                "size": "small",
+                "loop": 4000,
+                "seed": 4000,
+                "passed": True,
+                "stop_reason": "passed",
+                "verifier_submissions": 1,
+                "input_tokens": 1,
+                "output_tokens": 1,
+                "turns": 1,
+                "requested_model": "gpt-5.6-sol",
+                "resolved_model": "wrong-snapshot",
+                "reasoning_effort": "low",
+                "temperature": 0.0,
+                "model_config_id": unit["model_config_id"],
+                "model_config_canonical_json": model["canonical"],
+                "agent_policy_id": unit["agent_policy_id"],
+                "agent_policy_canonical_json": policy["canonical"],
+            }
+        )
+
+        with self.assertRaisesRegex(ValueError, "resolved_model"):
+            validate_result_execution_identity(row, self.spec, unit)
 
     def test_audit_reports_derived_trajectory_count(self) -> None:
         from pathlib import Path

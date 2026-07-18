@@ -66,7 +66,8 @@ Analyze normalized repair-loop rows with an exogenous methodology specification:
 uv run shallowswe analyze-repair-loops \
   /tmp/shallowswe-repair-loop-results.json \
   configs/experiments/weekend-six-task-kaggle-2026-07-18/methodology-spec.json \
-  /tmp/shallowswe-analysis-bundle.json
+  /tmp/shallowswe-analysis-bundle.json \
+  --scoring-run-spec /tmp/shallowswe-scoring-run-spec.json
 ```
 
 See `docs/kaggle-runner.md` for bundle inspection, Kaggle publication, execution, artifact download,

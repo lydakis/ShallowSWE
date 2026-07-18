@@ -18,6 +18,7 @@ from shallowswe.kaggle_runtime import (
     model_proxy_api,
 )
 from shallowswe.pier_repair_loop import _raw_usage_totals_from_trajectory
+from shallowswe.results import ModelPrice
 
 
 class _ScriptedLLM(LLMChat):
@@ -87,6 +88,10 @@ class KaggleRuntimeTests(unittest.TestCase):
 
     def test_google_models_use_genai_model_proxy_api(self) -> None:
         self.assertEqual(model_proxy_api("google/gemini-3.5-flash"), "genai")
+        self.assertEqual(
+            model_proxy_api("gemini-3.5-flash", upstream_provider="google"),
+            "genai",
+        )
         self.assertEqual(model_proxy_api("openai/gpt-5.5-2026-04-23"), "openai")
         self.assertEqual(
             model_kwargs_for_proxy(
@@ -94,6 +99,24 @@ class KaggleRuntimeTests(unittest.TestCase):
             ),
             {"max_output_tokens": 256, "top_p": 0.9},
         )
+        self.assertEqual(
+            model_kwargs_for_proxy(
+                "gemini-3.5-flash",
+                {"max_tokens": 256},
+                proxy_api="genai",
+            ),
+            {"max_output_tokens": 256},
+        )
+
+    def test_model_adapter_uses_explicit_proxy_api_for_unqualified_kaggle_name(self) -> None:
+        model = KaggleBenchmarksModel(
+            llm=_ScriptedLLM([]),
+            model_name="gemini-3.5-flash",
+            proxy_api="genai",
+            model_kwargs={"max_tokens": 256},
+        )
+
+        self.assertEqual(model.config.model_kwargs, {"max_output_tokens": 256})
 
     def test_model_adapter_runs_and_resumes_the_same_mini_swe_agent(self) -> None:
         with TemporaryDirectory() as tmp:
@@ -107,7 +130,11 @@ class KaggleRuntimeTests(unittest.TestCase):
                     "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT",
                 ]
             )
-            model = KaggleBenchmarksModel(llm=llm, model_name="test/model")
+            model = KaggleBenchmarksModel(
+                llm=llm,
+                model_name="test/model",
+                canonical_price=ModelPrice(100.0, None, 200.0),
+            )
             environment = LocalEnvironment(cwd=str(root))
             agent = InteractiveAgent(
                 model,
@@ -148,6 +175,7 @@ class KaggleRuntimeTests(unittest.TestCase):
             self.assertEqual(usage["input_tokens"], 40)
             self.assertEqual(usage["output_tokens"], 20)
             self.assertAlmostEqual(usage["gateway_reported_cost_usd"], 0.012)
+            self.assertAlmostEqual(agent.cost, 0.008)
 
     def test_chroot_command_drops_privileges_and_inherits_network_filter(self) -> None:
         with TemporaryDirectory() as tmp:

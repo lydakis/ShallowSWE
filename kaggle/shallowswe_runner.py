@@ -6,6 +6,7 @@
 
 # %%
 from pathlib import Path
+from dataclasses import replace
 import json
 import os
 import shutil
@@ -138,8 +139,9 @@ from shallowswe.run_spec import (  # noqa: E402
     resolve_run_unit,
     trajectory_id,
     unit_matrix,
+    validate_result_execution_identity,
 )
-from shallowswe.results import load_prices  # noqa: E402
+from shallowswe.results import EXCLUDED_STATUS, load_prices  # noqa: E402
 
 
 MANIFEST = json.loads((BUNDLE_ROOT / "manifest.json").read_text())
@@ -209,7 +211,16 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
     )
     run_root = RESULTS_ROOT / run_id
     limits = RUN_UNIT["limits"] if RUN_UNIT else None
-    native_llm = load_model(llm.name, api=model_proxy_api(llm.name))
+    upstream_provider = (
+        model_entry["canonical"].get("upstream_provider")
+        if model_entry is not None
+        else None
+    )
+    proxy_api = model_proxy_api(
+        llm.name,
+        upstream_provider=upstream_provider,
+    )
+    native_llm = load_model(llm.name, api=proxy_api)
     price_model = (
         model_entry["canonical"].get("price_model") if model_entry is not None else llm.name
     )
@@ -280,18 +291,26 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
         run_spec_id=RUN_SPEC.get("run_spec_id") if RUN_SPEC else None,
         run_unit_id=RUN_UNIT.get("run_unit_id") if RUN_UNIT else None,
         run_metadata=dict(RUN_UNIT.get("metadata") or {}) if RUN_UNIT else None,
+        result_accounting=dict(RUN_UNIT.get("accounting") or {}) if RUN_UNIT else None,
         canonical_price=canonical_price,
+        proxy_api=proxy_api,
     )
-    (run_root / "repair-loop-result.json").write_text(dump_kaggle_result(row))
     if RUN_UNIT is not None:
-        expected_resolved = model_entry["canonical"].get("expected_resolved_model")
-        if row.resolved_model is None:
-            raise RuntimeError("Official ShallowSWE row is missing resolved-model identity")
-        if row.resolved_model != expected_resolved:
-            raise RuntimeError(
-                "Official ShallowSWE resolved-model mismatch: "
-                f"expected {expected_resolved!r}, got {row.resolved_model!r}"
+        try:
+            validate_result_execution_identity(row, RUN_SPEC, RUN_UNIT)
+        except ValueError as error:
+            row = replace(
+                row,
+                passed=False,
+                stop_reason="execution_identity_mismatch",
+                status=EXCLUDED_STATUS,
+                exclusion_reason="runner_execution_identity_mismatch",
             )
+            (run_root / "repair-loop-result.json").write_text(
+                dump_kaggle_result(row)
+            )
+            raise RuntimeError(str(error)) from error
+    (run_root / "repair-loop-result.json").write_text(dump_kaggle_result(row))
     if not row.is_scored:
         raise RuntimeError(
             f"Excluded ShallowSWE runner failure: {row.stop_reason} ({row.exclusion_reason})"
