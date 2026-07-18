@@ -14,13 +14,21 @@ from .deepswe import (
     build_deepswe_comparison,
     load_deepswe_leaderboard,
 )
+from .development_rehearsal import run_development_rehearsal
+from .development_shadow import (
+    audit_development_shadow_plan,
+    write_development_shadow_plan,
+)
 from .kaggle_bundle import export_kaggle_bundle
+from .kaggle_task_source import write_bound_kaggle_task_sources
 from .pier_export import export_pier_job
 from .pilot_freeze import build_pilot_freeze_report, freeze_pilot_manifest
 from .pilot_readiness import audit_pilot_readiness
 from .pilot_launch import audit_pilot_launch_plan, write_pilot_launch_plan
 from .pilot_schedule import audit_pilot_schedule, write_pilot_schedule
 from .pier_repair_loop import (
+    RESUMABLE_CODEX_SUBSCRIPTION_AGENT_IMPORT_PATH,
+    RESUMABLE_MINI_SWE_AGENT_IMPORT_PATH,
     dump_repair_loop_rows,
     load_env_file,
     run_pier_repair_loop,
@@ -29,6 +37,7 @@ from .repair_loop_batch import run_repair_loop_preview_batch
 from .repair_loop_pilot import audit_repair_loop_pilot_plan
 from .repair_loop_preview import audit_repair_loop_preview_plan
 from .routine_review import build_routine_review_packet, import_routine_reviews
+from .stage4_policy import write_stage4_policy
 from .results import (
     aggregate_repair_loops,
     aggregate_results,
@@ -42,7 +51,7 @@ from .task_funnel import audit_task_funnel
 from .task_metadata import discover_tasks
 from .task_quality import build_task_quality_report
 from .task_quality_execution import execute_task_quality
-from .workload import build_workload_index
+from .workload import build_repair_loop_workload_index, build_workload_index
 
 
 def main() -> None:
@@ -163,6 +172,17 @@ def main() -> None:
         type=Path,
         default=Path("kaggle") / "shallowswe_runner.py",
     )
+    kaggle_sources_parser = subparsers.add_parser(
+        "kaggle-bound-sources",
+        help="freeze launch-unit IDs and task names into launchable Kaggle source files",
+    )
+    kaggle_sources_parser.add_argument("launch_plan_json", type=Path)
+    kaggle_sources_parser.add_argument("output_dir", type=Path)
+    kaggle_sources_parser.add_argument(
+        "--runner-source",
+        type=Path,
+        default=Path("kaggle") / "shallowswe_runner.py",
+    )
 
     repair_loop_pilot_parser = subparsers.add_parser(
         "repair-loop-pilot-plan",
@@ -175,6 +195,28 @@ def main() -> None:
         help="audit the v0.4.2 six-task pilot before official canary spend",
     )
     pilot_readiness_parser.add_argument("manifest_json", type=Path)
+    stage4_parser = subparsers.add_parser(
+        "stage4-policy",
+        help="apply deterministic Stage 4 cap and task-budget selection",
+    )
+    stage4_parser.add_argument("results_json", type=Path)
+    stage4_parser.add_argument("manifest_json", type=Path)
+    stage4_parser.add_argument("output_json", type=Path)
+    stage4_parser.add_argument("--evidence-class", required=True)
+    stage4_parser.add_argument("--release-class", required=True)
+    rehearsal_parser = subparsers.add_parser(
+        "development-rehearsal",
+        help="run the deterministic development-only end-to-end vertical slice",
+    )
+    rehearsal_parser.add_argument("manifest_json", type=Path)
+    rehearsal_parser.add_argument("output_dir", type=Path)
+    shadow_parser = subparsers.add_parser(
+        "development-shadow-plan",
+        help="build a Kaggle-exact development-only Stage 2-5 schedule and launch plan",
+    )
+    shadow_parser.add_argument("manifest_json", type=Path)
+    shadow_parser.add_argument("schedule_json", type=Path)
+    shadow_parser.add_argument("launch_plan_json", type=Path)
 
     repair_loop_preview_parser = subparsers.add_parser(
         "repair-loop-preview-plan",
@@ -206,6 +248,18 @@ def main() -> None:
         default=Path("configs") / "mini-swe-agent-calibration.yaml",
     )
     repair_loop_run_parser.add_argument("--reasoning-effort")
+    repair_loop_run_parser.add_argument(
+        "--agent-backend",
+        choices=("mini-swe-agent", "codex-subscription"),
+        default="mini-swe-agent",
+    )
+    repair_loop_run_parser.add_argument("--codex-version", default="0.142.0")
+    repair_loop_run_parser.add_argument("--trajectory-id")
+    repair_loop_run_parser.add_argument(
+        "--price-sheet",
+        type=Path,
+        default=Path("prices") / "openai-2026-07-06.json",
+    )
     repair_loop_run_parser.add_argument("--env-file", type=Path)
     repair_loop_run_parser.add_argument("--max-verifier-submissions", type=int, default=3)
     repair_loop_run_parser.add_argument("--dollar-cap-usd", type=float)
@@ -352,6 +406,15 @@ def main() -> None:
         default=4,
         help="declared v1 task count per category-size cell",
     )
+    repair_workload_parser = subparsers.add_parser(
+        "repair-loop-workload-index",
+        help="build the category-by-pressure weighted ratio for repair-loop rows",
+    )
+    repair_workload_parser.add_argument("results_json", type=Path)
+    repair_workload_parser.add_argument("--evidence-class", required=True)
+    repair_workload_parser.add_argument("--release-class", required=True)
+    repair_workload_parser.add_argument("--pressure-band", action="append", required=True)
+    repair_workload_parser.add_argument("--target-tasks-per-cell", type=int, default=4)
     floor_parser = subparsers.add_parser(
         "select-floor",
         help="summarize floor-selection rollouts and recommend the measured floor pair",
@@ -520,6 +583,19 @@ def main() -> None:
         print(json.dumps(manifest, indent=2))
         return
 
+    if args.command == "kaggle-bound-sources":
+        print(
+            json.dumps(
+                write_bound_kaggle_task_sources(
+                    args.runner_source,
+                    args.launch_plan_json,
+                    args.output_dir,
+                ),
+                indent=2,
+            )
+        )
+        return
+
     if args.command == "repair-loop-pilot-plan":
         print(json.dumps(audit_repair_loop_pilot_plan(args.plan_json), indent=2))
         return
@@ -528,12 +604,78 @@ def main() -> None:
         print(json.dumps(audit_pilot_readiness(args.manifest_json), indent=2))
         return
 
+    if args.command == "stage4-policy":
+        print(
+            json.dumps(
+                write_stage4_policy(
+                    args.results_json,
+                    args.manifest_json,
+                    args.output_json,
+                    evidence_class=args.evidence_class,
+                    release_class=args.release_class,
+                ),
+                indent=2,
+            )
+        )
+        return
+
+    if args.command == "development-rehearsal":
+        print(
+            json.dumps(
+                run_development_rehearsal(args.manifest_json, args.output_dir),
+                indent=2,
+            )
+        )
+        return
+
+    if args.command == "development-shadow-plan":
+        write_development_shadow_plan(
+            args.manifest_json,
+            args.schedule_json,
+            args.launch_plan_json,
+        )
+        print(
+            json.dumps(
+                audit_development_shadow_plan(
+                    args.manifest_json,
+                    args.schedule_json,
+                    args.launch_plan_json,
+                ),
+                indent=2,
+            )
+        )
+        return
+
     if args.command == "repair-loop-preview-plan":
         print(json.dumps(audit_repair_loop_preview_plan(args.plan_json), indent=2))
         return
 
     if args.command == "run-repair-loop-pilot":
         agent_env = _load_agent_env(args.env_file)
+        codex_subscription = args.agent_backend == "codex-subscription"
+        if codex_subscription:
+            agent_env = {
+                key: value
+                for key, value in agent_env.items()
+                if key not in {"OPENAI_API_KEY", "CODEX_API_KEY"}
+            }
+            agent_env["CODEX_FORCE_AUTH_JSON"] = "true"
+        price_payload = json.loads(args.price_sheet.read_text())
+        canonical_price = load_prices(args.price_sheet).get(args.model)
+        if codex_subscription and canonical_price is None:
+            raise ValueError(
+                f"frozen price sheet {args.price_sheet} does not contain {args.model}"
+            )
+        agent_kwargs = None
+        if codex_subscription:
+            agent_kwargs = {
+                "version": args.codex_version,
+                **(
+                    {"reasoning_effort": args.reasoning_effort}
+                    if args.reasoning_effort
+                    else {}
+                ),
+            }
         row = run_pier_repair_loop(
             task_path=args.tasks_root / args.task_id,
             trials_dir=args.trials_dir,
@@ -547,6 +689,29 @@ def main() -> None:
             wall_time_cap_seconds=args.wall_time_cap_seconds,
             reasoning_effort=args.reasoning_effort,
             seed=args.seed,
+            agent_import_path=(
+                RESUMABLE_CODEX_SUBSCRIPTION_AGENT_IMPORT_PATH
+                if codex_subscription
+                else RESUMABLE_MINI_SWE_AGENT_IMPORT_PATH
+            ),
+            agent_kwargs=agent_kwargs,
+            trajectory_filename=(
+                "trajectory.json"
+                if codex_subscription
+                else "mini-swe-agent.trajectory.json"
+            ),
+            inference_gateway=("chatgpt_subscription" if codex_subscription else None),
+            upstream_provider=("openai" if codex_subscription else None),
+            provider_route=("chatgpt_codex" if codex_subscription else None),
+            evidence_class=("development_dry_run" if codex_subscription else None),
+            funding_pool=("codex_subscription" if codex_subscription else None),
+            release_class=("development_dry_run" if codex_subscription else None),
+            pilot_stage=("codex_development" if codex_subscription else None),
+            pilot_mode=("repair_loop_smoke" if codex_subscription else None),
+            trajectory_id=args.trajectory_id,
+            canonical_price=canonical_price,
+            price_sheet_version=args.price_sheet.stem,
+            price_sheet_date=str(price_payload.get("effective_date") or "") or None,
         )
         output = dump_repair_loop_rows([row])
         if args.output:
@@ -637,6 +802,22 @@ def main() -> None:
                     rows,
                     prices=prices,
                     target_tasks_per_cell=args.target_tasks_per_cell,
+                ),
+                indent=2,
+            )
+        )
+        return
+
+    if args.command == "repair-loop-workload-index":
+        rows = load_repair_loops(args.results_json)
+        print(
+            json.dumps(
+                build_repair_loop_workload_index(
+                    rows,
+                    target_tasks_per_cell=args.target_tasks_per_cell,
+                    pressure_bands=tuple(args.pressure_band),
+                    evidence_class=args.evidence_class,
+                    release_class=args.release_class,
                 ),
                 indent=2,
             )

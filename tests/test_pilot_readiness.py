@@ -91,6 +91,19 @@ class PilotReadinessTests(unittest.TestCase):
             report["issues"],
         )
 
+    def test_rejects_nonisolated_development_evidence_and_stage4_drift(self) -> None:
+        manifest = json.loads(MANIFEST.read_text())
+        manifest["runner_contract"]["development_evidence_class"] = "development"
+        manifest["stage4_selection_policy"]["success_capture_target"] = 0.95
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "manifest.json"
+            path.write_text(json.dumps(manifest))
+
+            report = audit_pilot_readiness(path, repo_root=REPO_ROOT)
+
+        self.assertIn("development_evidence_class_must_be_isolated", report["issues"])
+        self.assertIn("invalid_stage4_success_capture_target", report["issues"])
+
 
 if __name__ == "__main__":
     unittest.main()

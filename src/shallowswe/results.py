@@ -10,7 +10,7 @@ from .task_metadata import normalize_category, normalize_size
 
 
 RESULT_SCHEMA_VERSION = "shallowswe.result.v0.4"
-REPAIR_LOOP_SCHEMA_VERSION = "shallowswe.repair_loop.v0.3"
+REPAIR_LOOP_SCHEMA_VERSION = "shallowswe.repair_loop.v0.4"
 SCORED_STATUS = "scored"
 EXCLUDED_STATUS = "excluded"
 CAP_HIT_STOP_REASONS = frozenset(
@@ -138,6 +138,7 @@ class RepairLoopResult:
     launch_unit_id: str | None = None
     pilot_stage: str | None = None
     pilot_mode: str | None = None
+    pilot_cohort: str | None = None
     task_visibility: str | None = None
     transcript_hash: str | None = None
     model_config_id: str | None = None
@@ -181,6 +182,7 @@ class RepairLoopResult:
     censoring_status: str | None = None
     release_class: str | None = None
     declared_coverage_weight: float | None = None
+    event_checkpoints: list[dict[str, Any]] | None = None
     status: str = SCORED_STATUS
     exclusion_reason: str | None = None
     started_at: str | None = None
@@ -382,6 +384,7 @@ def repair_loop_from_mapping(row: dict[str, object]) -> RepairLoopResult:
         launch_unit_id=_optional_str(row.get("launch_unit_id")),
         pilot_stage=_optional_str(row.get("pilot_stage")),
         pilot_mode=_optional_str(row.get("pilot_mode")),
+        pilot_cohort=_optional_str(row.get("pilot_cohort")),
         task_visibility=_optional_str(row.get("task_visibility")),
         transcript_hash=_optional_str(row.get("transcript_hash")),
         model_config_id=_optional_str(row.get("model_config_id")),
@@ -447,6 +450,7 @@ def repair_loop_from_mapping(row: dict[str, object]) -> RepairLoopResult:
         censoring_status=_optional_str(row.get("censoring_status")),
         release_class=_optional_str(row.get("release_class")),
         declared_coverage_weight=_optional_float(row.get("declared_coverage_weight")),
+        event_checkpoints=_optional_dict_list(row.get("event_checkpoints")),
         status=str(row.get("status") or SCORED_STATUS),
         exclusion_reason=_optional_str(row.get("exclusion_reason")),
         started_at=_optional_str(row.get("started_at")),
@@ -583,6 +587,12 @@ def aggregate_repair_loops(
     row_list = list(rows)
     if group_by is None:
         group_by = _default_repair_loop_grouping(row_list)
+    evidence_report = audit_repair_loop_evidence(row_list, group_by=group_by)
+    if not evidence_report["valid"]:
+        raise ValueError(
+            "repair-loop evidence identities are not poolable: "
+            + ", ".join(str(issue) for issue in evidence_report["issues"])
+        )
     grouped: dict[tuple[object, ...], list[RepairLoopResult]] = defaultdict(list)
     for row in row_list:
         grouped[tuple(getattr(row, field) for field in group_by)].append(row)
@@ -762,16 +772,147 @@ def aggregate_repair_loops(
 
 def _default_repair_loop_grouping(rows: list[RepairLoopResult]) -> tuple[str, ...]:
     if rows and all(row.model_config_id and row.agent_policy_id for row in rows):
-        return ("model_config_id", "agent_policy_id", "category", "size")
+        return (
+            "model_config_id",
+            "agent_policy_id",
+            "evidence_class",
+            "release_class",
+            "task_suite_version",
+            "price_sheet_version",
+            "verifier_submission_cap",
+            "agent_step_cap",
+            "cap_disclosure",
+            "pilot_stage",
+            "pilot_mode",
+            "category",
+            "size",
+        )
     return ("model_config", "category", "size")
+
+
+def audit_repair_loop_evidence(
+    rows: Iterable[RepairLoopResult],
+    *,
+    group_by: tuple[str, ...] = (),
+) -> dict[str, object]:
+    """Reject silent pooling across execution or task-contract identities.
+
+    Legacy preview rows have no immutable IDs and remain readable. Once a row carries migrated
+    model/policy IDs, missing or mixed provenance is treated as an analysis error.
+    """
+
+    row_list = list(rows)
+    migrated = [row for row in row_list if row.model_config_id or row.agent_policy_id]
+    if not migrated:
+        return {
+            "schema_version": "shallowswe.repair_loop_evidence_audit.v0.1",
+            "valid": True,
+            "issues": [],
+            "rows": len(row_list),
+            "migrated_rows": 0,
+        }
+
+    issues: list[str] = []
+    required = ["model_config_id", "agent_policy_id"]
+    provenance_fields = ("evidence_class", "release_class", "task_version", "verifier_hash")
+    if any(any(getattr(row, field) is not None for field in provenance_fields) for row in migrated):
+        required.extend(provenance_fields)
+    for field in required:
+        if any(getattr(row, field) is None for row in migrated):
+            issues.append(f"missing_{field}")
+    official = [
+        row
+        for row in migrated
+        if row.evidence_class == "official_pilot" or row.release_class == "protocol_validation"
+    ]
+    for field in (
+        "requested_model",
+        "resolved_model",
+        "provider_route",
+        "price_sheet_version",
+        "verifier_submission_cap",
+        "agent_step_cap",
+        "canonical_list_price_equivalent_spend_usd",
+        "event_checkpoints",
+    ):
+        if any(getattr(row, field) is None for row in official):
+            issues.append(f"missing_official_{field}")
+
+    cohort_fields = (
+        "model_config_id",
+        "agent_policy_id",
+        "evidence_class",
+        "release_class",
+        "task_suite_version",
+        "price_sheet_version",
+        "verifier_submission_cap",
+        "agent_step_cap",
+        "cap_disclosure",
+        "pilot_stage",
+        "pilot_mode",
+    )
+    grouped: dict[tuple[object, ...], list[RepairLoopResult]] = defaultdict(list)
+    for row in migrated:
+        key = tuple(getattr(row, field) for field in group_by)
+        grouped[key].append(row)
+    for group in grouped.values():
+        for field in cohort_fields:
+            values = {getattr(row, field) for row in group}
+            if len(values) > 1:
+                issues.append(f"mixed_{field}")
+
+        by_task: dict[str, list[RepairLoopResult]] = defaultdict(list)
+        for row in group:
+            by_task[row.task_id].append(row)
+        for task_rows in by_task.values():
+            for field in (
+                "task_version",
+                "verifier_hash",
+                "environment_image_digest",
+                "routine_review_version",
+                "pressure_band",
+            ):
+                values = {getattr(row, field) for row in task_rows}
+                if len(values) > 1:
+                    issues.append(f"mixed_{field}")
+
+    return {
+        "schema_version": "shallowswe.repair_loop_evidence_audit.v0.1",
+        "valid": not issues,
+        "issues": sorted(set(issues)),
+        "rows": len(row_list),
+        "migrated_rows": len(migrated),
+    }
 
 
 def rollout_cost_usd(row: UsageRow, prices: PriceCatalog) -> float:
     price = _price_for_row(row, prices)
-    input_rate, cached_rate, output_rate = _rates_for_row(row, price)
-    cache_read = max(0, row.cache_read_tokens)
-    cache_write = max(0, row.cache_write_tokens)
-    uncached_input = max(0, row.input_tokens - cache_read - cache_write)
+    return usage_cost_usd(
+        input_tokens=row.input_tokens,
+        output_tokens=row.output_tokens,
+        cache_read_tokens=row.cache_read_tokens,
+        cache_write_tokens=row.cache_write_tokens,
+        peak_context_tokens=row.peak_context_tokens,
+        price=price,
+    )
+
+
+def usage_cost_usd(
+    *,
+    input_tokens: int,
+    output_tokens: int,
+    cache_read_tokens: int,
+    cache_write_tokens: int,
+    price: ModelPrice,
+    peak_context_tokens: int | None = None,
+) -> float:
+    input_rate, cached_rate, output_rate = _rates_for_usage(
+        price,
+        peak_context_tokens=peak_context_tokens,
+    )
+    cache_read = max(0, cache_read_tokens)
+    cache_write = max(0, cache_write_tokens)
+    uncached_input = max(0, input_tokens - cache_read - cache_write)
 
     cache_write_rate = (
         price.cache_write_per_1m
@@ -782,7 +923,7 @@ def rollout_cost_usd(row: UsageRow, prices: PriceCatalog) -> float:
         uncached_input * input_rate
         + cache_read * cached_rate
         + cache_write * cache_write_rate
-        + row.output_tokens * output_rate
+        + output_tokens * output_rate
     ) / 1_000_000
 
 
@@ -869,10 +1010,18 @@ def _price_matches_gateway(row: UsageRow, price: ModelPrice) -> bool:
 
 
 def _rates_for_row(row: UsageRow, price: ModelPrice) -> tuple[float, float, float]:
+    return _rates_for_usage(price, peak_context_tokens=row.peak_context_tokens)
+
+
+def _rates_for_usage(
+    price: ModelPrice,
+    *,
+    peak_context_tokens: int | None,
+) -> tuple[float, float, float]:
     use_long_context = (
         price.long_context_threshold_tokens is not None
-        and row.peak_context_tokens is not None
-        and row.peak_context_tokens > price.long_context_threshold_tokens
+        and peak_context_tokens is not None
+        and peak_context_tokens > price.long_context_threshold_tokens
     )
     if use_long_context:
         input_rate = price.long_context_input_per_1m or price.input_per_1m
@@ -910,6 +1059,14 @@ def _optional_int(value: Any) -> int | None:
 
 def _optional_dict(value: object | None) -> dict[str, Any] | None:
     return dict(value) if isinstance(value, dict) else None
+
+
+def _optional_dict_list(value: object | None) -> list[dict[str, Any]] | None:
+    if not isinstance(value, list):
+        return None
+    if not all(isinstance(item, dict) for item in value):
+        raise ValueError("event_checkpoints must be a list of objects")
+    return [dict(item) for item in value]
 
 
 def _optional_str_list(value: object | None) -> list[str] | None:

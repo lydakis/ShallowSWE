@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 import json
 import unittest
 
@@ -20,16 +21,30 @@ from shallowswe.pier_repair_loop import _raw_usage_totals_from_trajectory
 
 
 class _ScriptedLLM(LLMChat):
-    def __init__(self, commands: list[str]) -> None:
+    def __init__(
+        self,
+        commands: list[str],
+        *,
+        resolved_model: str | None = "test/model-snapshot",
+    ) -> None:
         super().__init__(name="scripted", support_temperature=True)
         self.commands = list(commands)
         self.seen_roles: list[list[str]] = []
+        self.resolved_model = resolved_model
 
     def invoke(self, messages, system, tools=None, **kwargs):
         del system, kwargs
         self.seen_roles.append([message.sender.role for message in messages])
         self.assert_tools = tools
         command = self.commands.pop(0)
+        metadata = {
+            "input_tokens": 10,
+            "output_tokens": 5,
+            "input_tokens_cost_nanodollars": 1_000_000,
+            "output_tokens_cost_nanodollars": 2_000_000,
+        }
+        if self.resolved_model is not None:
+            metadata["resolved_model"] = self.resolved_model
         return LLMResponse(
             content=f"Running {command}",
             tool_calls=[
@@ -41,16 +56,35 @@ class _ScriptedLLM(LLMChat):
                     },
                 }
             ],
-            meta={
-                "input_tokens": 10,
-                "output_tokens": 5,
-                "input_tokens_cost_nanodollars": 1_000_000,
-                "output_tokens_cost_nanodollars": 2_000_000,
-            },
+            meta=metadata,
         )
 
 
+class _ProviderResponseLLM(_ScriptedLLM):
+    def __init__(self) -> None:
+        super().__init__(["true"], resolved_model=None)
+        self.client = SimpleNamespace(
+            chat=SimpleNamespace(
+                completions=SimpleNamespace(
+                    create=lambda **_kwargs: SimpleNamespace(model="provider/model-snapshot")
+                )
+            )
+        )
+
+    def invoke(self, *args: object, **kwargs: object) -> LLMResponse:
+        self.client.chat.completions.create()
+        return super().invoke(*args, **kwargs)
+
+
 class KaggleRuntimeTests(unittest.TestCase):
+    def test_captures_resolved_model_from_raw_provider_response(self) -> None:
+        llm = _ProviderResponseLLM()
+        model = KaggleBenchmarksModel(llm=llm, model_name="requested/model-alias")
+
+        model.query([{"role": "user", "content": "inspect the repository"}])
+
+        self.assertEqual(model.resolved_model, "provider/model-snapshot")
+
     def test_google_models_use_genai_model_proxy_api(self) -> None:
         self.assertEqual(model_proxy_api("google/gemini-3.5-flash"), "genai")
         self.assertEqual(model_proxy_api("openai/gpt-5.5-2026-04-23"), "openai")
@@ -96,6 +130,7 @@ class KaggleRuntimeTests(unittest.TestCase):
             self.assertEqual((root / "first.txt").read_text(), "first")
             self.assertEqual((root / "repaired.txt").read_text(), "repaired")
             self.assertEqual(len(llm.commands), 0)
+            self.assertEqual(model.resolved_model, "test/model-snapshot")
             self.assertTrue(llm.assert_tools)
             visible = [message for message in chat.messages if message.is_visible_to_llm]
             roles = [message.sender.role for message in visible]

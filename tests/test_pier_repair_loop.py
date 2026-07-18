@@ -10,8 +10,12 @@ import unittest
 from pier.models.agent.context import AgentContext
 
 from shallowswe.pier_repair_loop import (
+    _agent_exit_status,
+    _agent_step_cap_for_backend,
+    _atif_usage_totals_from_trajectory,
     _classify_agent_exit,
     _classify_runner_exception,
+    _canonical_usage_cost,
     _dollar_cap_hit,
     _final_usage_totals,
     _hide_verifier_artifacts,
@@ -22,9 +26,82 @@ from shallowswe.pier_repair_loop import (
     _tree_sha256,
     _verify_submission,
 )
+from shallowswe.results import ModelPrice
 
 
 class PierRepairLoopTests(unittest.TestCase):
+    def test_canonical_usage_cost_prices_cached_and_uncached_tokens(self) -> None:
+        cost = _canonical_usage_cost(
+            {
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "cache_read_tokens": 40,
+                "cache_write_tokens": 0,
+            },
+            ModelPrice(
+                input_per_1m=5.0,
+                cached_input_per_1m=0.5,
+                output_per_1m=30.0,
+            ),
+        )
+
+        self.assertAlmostEqual(cost, (60 * 5.0 + 40 * 0.5 + 20 * 30.0) / 1_000_000)
+    def test_codex_atif_trajectory_marks_a_completed_submission(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            trajectory = Path(tmp) / "trajectory.json"
+            trajectory.write_text(json.dumps({"schema_version": "ATIF-v1.7"}))
+
+            self.assertEqual(_agent_exit_status(trajectory), "Submitted")
+
+    def test_codex_atif_usage_reads_cumulative_final_metrics(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            trajectory = Path(tmp) / "trajectory.json"
+            trajectory.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "ATIF-v1.7",
+                        "final_metrics": {
+                            "total_prompt_tokens": 120,
+                            "total_completion_tokens": 30,
+                            "total_cached_tokens": 80,
+                            "total_cost_usd": 0.42,
+                            "total_steps": 9,
+                            "extra": {"reasoning_output_tokens": 7},
+                        },
+                    }
+                )
+            )
+
+            totals = _atif_usage_totals_from_trajectory(trajectory)
+
+        self.assertEqual(
+            totals,
+            {
+                "input_tokens": 120,
+                "output_tokens": 30,
+                "cache_read_tokens": 80,
+                "cache_write_tokens": 0,
+                "reasoning_tokens": 7,
+                "gateway_reported_cost_usd": 0.42,
+                "agent_steps": 9,
+            },
+        )
+
+    def test_codex_backend_does_not_report_mini_swe_step_cap(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            config = Path(tmp) / "config.yaml"
+            config.write_text("agent:\n  step_limit: 20\n")
+
+            self.assertIsNone(
+                _agent_step_cap_for_backend(
+                    agent_import_path=(
+                        "shallowswe.pier_agents.resumable_codex_subscription_agent:"
+                        "ResumableCodexSubscriptionAgent"
+                    ),
+                    config_file=config,
+                )
+            )
+
     def test_hide_verifier_artifacts_empties_tests_and_verifier_logs(self) -> None:
         calls = []
 

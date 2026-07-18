@@ -59,6 +59,9 @@ def audit_pilot_readiness(
     policy_report = _audit_permissive_policy(manifest.get("temporary_permissive_policy"))
     issues.extend(policy_report["issues"])
 
+    stage4_report = _audit_stage4_selection_policy(manifest.get("stage4_selection_policy"))
+    issues.extend(stage4_report["issues"])
+
     measurement_report = _audit_measurement_policy(manifest.get("pilot_measurement_policy"))
     issues.extend(measurement_report["issues"])
 
@@ -187,6 +190,10 @@ def _audit_runner_contract(raw: Any) -> dict[str, Any]:
         issues.append("official_runner_must_be_kaggle")
     if raw.get("development_runner") != "codex_subscription":
         issues.append("development_runner_must_be_codex_subscription")
+    if raw.get("development_evidence_class") != "development_dry_run":
+        issues.append("development_evidence_class_must_be_isolated")
+    if raw.get("development_release_class") != "development_dry_run":
+        issues.append("development_release_class_must_be_isolated")
     if raw.get("pool_unequal_agent_policies") is not False:
         issues.append("unequal_agent_policy_pooling_not_forbidden")
     return {"issues": issues}
@@ -256,6 +263,27 @@ def _audit_permissive_policy(raw: Any) -> dict[str, Any]:
         issues.append("step_candidates_not_strictly_inside_limit")
     if raw.get("cap_disclosure") != "undisclosed":
         issues.append("caps_must_be_undisclosed")
+    return {"issues": issues}
+
+
+def _audit_stage4_selection_policy(raw: Any) -> dict[str, Any]:
+    if not isinstance(raw, dict):
+        return {"issues": ["missing_stage4_selection_policy"]}
+    issues = []
+    if float(raw.get("success_capture_target") or 0.0) != 0.99:
+        issues.append("invalid_stage4_success_capture_target")
+    if raw.get("reported_budget_coverage_targets") != [0.75, 0.9, 1.0]:
+        issues.append("invalid_stage4_reported_coverage_targets")
+    if float(raw.get("selected_development_coverage_target") or 0.0) != 0.75:
+        issues.append("invalid_stage4_development_coverage_target")
+    if int(raw.get("max_budget_band_bumps") or 0) != 1:
+        issues.append("invalid_stage4_budget_band_bumps")
+    if raw.get("pressure_taxonomies") != [2, 3]:
+        issues.append("invalid_stage4_pressure_taxonomies")
+    if int(raw.get("confirmation_minimum_successes") or 0) != 7:
+        issues.append("invalid_stage4_confirmation_minimum")
+    if int(raw.get("confirmation_attempts") or 0) != 8:
+        issues.append("invalid_stage4_confirmation_attempts")
     return {"issues": issues}
 
 

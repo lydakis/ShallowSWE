@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import unittest
+from dataclasses import replace
 
-from shallowswe.results import ModelPrice, row_from_mapping
-from shallowswe.workload import build_workload_index
+from shallowswe.results import ModelPrice, repair_loop_from_mapping, row_from_mapping
+from shallowswe.workload import build_repair_loop_workload_index, build_workload_index
 
 
 def _row(
@@ -35,6 +36,117 @@ def _row(
 
 
 class WorkloadIndexTests(unittest.TestCase):
+    def test_repair_loop_index_uses_category_pressure_ratio_and_exposes_underfill(self) -> None:
+        common = {
+            "model": "model",
+            "category": "code",
+            "size": "small",
+            "stop_reason": "passed",
+            "verifier_submissions": 1,
+            "input_tokens": 1,
+            "output_tokens": 0,
+            "turns": 1,
+            "model_config_id": "mc_model",
+            "agent_policy_id": "ap_model",
+            "evidence_class": "development_dry_run",
+            "release_class": "development_dry_run",
+            "task_suite_version": "suite-v1",
+            "price_sheet_version": "prices-v1",
+            "verifier_submission_cap": 4,
+            "agent_step_cap": 64,
+            "cap_disclosure": "undisclosed",
+        }
+        rows = [
+            repair_loop_from_mapping(
+                {
+                    **common,
+                    "task_id": "low-a",
+                    "loop": 0,
+                    "passed": True,
+                    "pressure_band": "lower",
+                    "task_version": "low-a@v1",
+                    "verifier_hash": "sha256:low-a",
+                    "canonical_list_price_equivalent_spend_usd": 1.0,
+                    "reference_task_budget_usd": 2.0,
+                    "reference_anchor_replacement_cost_usd": 3.0,
+                }
+            ),
+            repair_loop_from_mapping(
+                {
+                    **common,
+                    "task_id": "high-a",
+                    "loop": 0,
+                    "passed": False,
+                    "stop_reason": "verifier_submission_cap",
+                    "pressure_band": "elevated",
+                    "task_version": "high-a@v1",
+                    "verifier_hash": "sha256:high-a",
+                    "canonical_list_price_equivalent_spend_usd": 4.0,
+                    "reference_task_budget_usd": 2.0,
+                    "reference_anchor_replacement_cost_usd": 3.0,
+                }
+            ),
+        ]
+
+        index = build_repair_loop_workload_index(
+            rows,
+            target_tasks_per_cell=2,
+            pressure_bands=("lower", "elevated"),
+            evidence_class="development_dry_run",
+            release_class="development_dry_run",
+        )
+        model = index["models"][0]
+
+        self.assertAlmostEqual(index["weighting"]["declared_coverage_weight"], 1 / 6)
+        self.assertIsNone(model["basket_reference_budget_cpsc"])
+        self.assertAlmostEqual(model["partial_basket_reference_budget_cpsc"], 3.0)
+        self.assertAlmostEqual(model["partial_basket_realized_cpsc"], 5.0)
+        self.assertAlmostEqual(model["partial_basket_escalation_cpsc"], 8.0)
+        self.assertIsNone(model["weighted_solve_rate"])
+        self.assertAlmostEqual(model["partial_weighted_solve_rate"], 0.5)
+        self.assertEqual(len(index["underfilled_cells"]), 6)
+
+    def test_repair_loop_index_rejects_cross_model_pressure_drift(self) -> None:
+        base = repair_loop_from_mapping(
+            {
+                "model": "model-a",
+                "task_id": "task-a",
+                "category": "code",
+                "size": "small",
+                "loop": 0,
+                "passed": True,
+                "stop_reason": "passed",
+                "verifier_submissions": 1,
+                "input_tokens": 1,
+                "output_tokens": 0,
+                "turns": 1,
+                "model_config_id": "mc_a",
+                "agent_policy_id": "ap_a",
+                "evidence_class": "development_dry_run",
+                "release_class": "development_dry_run",
+                "task_version": "task-a@v1",
+                "verifier_hash": "sha256:task-a",
+                "pressure_band": "lower",
+                "canonical_list_price_equivalent_spend_usd": 0.1,
+            }
+        )
+        drifted = replace(
+            base,
+            model="model-b",
+            model_config_id="mc_b",
+            agent_policy_id="ap_b",
+            pressure_band="elevated",
+        )
+
+        with self.assertRaisesRegex(ValueError, "mixed pressure_band"):
+            build_repair_loop_workload_index(
+                [base, drifted],
+                target_tasks_per_cell=2,
+                pressure_bands=("lower", "elevated"),
+                evidence_class="development_dry_run",
+                release_class="development_dry_run",
+            )
+
     def test_default_index_equalizes_categories_tiers_and_observed_tasks(self) -> None:
         prices = {
             "model": ModelPrice(

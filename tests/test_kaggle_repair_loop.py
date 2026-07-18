@@ -15,6 +15,7 @@ from shallowswe.kaggle_repair_loop import (
 )
 from shallowswe.kaggle_runtime import HiddenVerifierResult
 from shallowswe.repair_loop_protocol import VerifierOutcome
+from shallowswe.results import ModelPrice
 
 
 class _ScriptedLLM(LLMChat):
@@ -99,6 +100,7 @@ class KaggleRepairLoopTests(unittest.TestCase):
                     funding_pool="kaggle_grant",
                     price_sheet_version="test-prices",
                     routine_review_version="review-v1",
+                    canonical_price=ModelPrice(1.0, None, 1.0),
                     environment_factory=lambda path, timeout: LocalEnvironment(
                         cwd=str(path), timeout=timeout
                     ),
@@ -119,6 +121,20 @@ class KaggleRepairLoopTests(unittest.TestCase):
             self.assertEqual(row.evidence_class, "official_pilot")
             self.assertEqual(row.funding_pool, "kaggle_grant")
             self.assertEqual(row.censoring_status, "observed")
+            self.assertIsNotNone(row.canonical_list_price_equivalent_spend_usd)
+            self.assertIsNotNone(row.event_checkpoints)
+            assert row.event_checkpoints is not None
+            self.assertEqual(
+                [checkpoint["event_type"] for checkpoint in row.event_checkpoints],
+                ["agent_submission", "verifier_result", "agent_submission", "verifier_result"],
+            )
+            self.assertEqual(row.event_checkpoints[-1]["result_class"], "passed")
+            self.assertTrue(
+                all(
+                    checkpoint["cumulative_canonical_spend_usd"] is not None
+                    for checkpoint in row.event_checkpoints
+                )
+            )
             self.assertEqual(verifier_calls, 2)
             self.assertTrue((artifacts / "mini-swe-agent.trajectory.json").is_file())
             self.assertTrue((artifacts / "verifier-diagnostics.jsonl").is_file())
@@ -127,6 +143,36 @@ class KaggleRepairLoopTests(unittest.TestCase):
             ]
             self.assertIn("Verification failed: output mismatch.", user_messages)
             self.assertFalse(any("secret expected value" in message for message in user_messages))
+
+    def test_submission_cap_is_right_censored(self) -> None:
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = _write_task(root / "task")
+            config = root / "config.yaml"
+            config.write_text("agent:\n  step_limit: 10\n")
+            llm = _ScriptedLLM(["echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT"])
+
+            with kbench.chats.new("submission-cap"):
+                row = run_kaggle_repair_loop(
+                    llm=llm,
+                    task_path=task,
+                    verifier_dir=task / "tests",
+                    workspace_dir=root / "workspace",
+                    artifacts_dir=root / "artifacts",
+                    run_id="submission-cap",
+                    model_name="test/model",
+                    config_file=config,
+                    max_verifier_submissions=1,
+                    environment_factory=lambda path, timeout: LocalEnvironment(
+                        cwd=str(path), timeout=timeout
+                    ),
+                    verifier_runner=lambda: HiddenVerifierResult(
+                        VerifierOutcome("output_mismatch"), "hidden"
+                    ),
+                )
+
+            self.assertEqual(row.stop_reason, "verifier_submission_cap")
+            self.assertEqual(row.censoring_status, "right_censored")
 
 
 def _write_task(task: Path) -> Path:

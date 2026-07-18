@@ -16,6 +16,7 @@ class PilotLaunchPlanTests(unittest.TestCase):
         plan = build_pilot_launch_plan(MANIFEST, SCHEDULE)
 
         self.assertEqual(plan["trajectory_count"], 178)
+        self.assertEqual(plan["plan_class"], "official_pilot")
         self.assertEqual(plan["official_trajectory_count"], 112)
         self.assertEqual(plan["launch_unit_count"], 14)
         anchor = next(
@@ -39,6 +40,18 @@ class PilotLaunchPlanTests(unittest.TestCase):
                 "invoice-multi-source-merge",
                 "merge-divergent-config-branches",
             ],
+        )
+        development_anchor = next(
+            unit
+            for unit in plan["units"]
+            if unit["stage"] == "codex_development"
+            and unit["model_role"] == "primary_anchor"
+            and unit["mode"] == "repair_loop_smoke"
+        )
+        self.assertEqual(development_anchor["model"], "openai/gpt-5.5")
+        self.assertNotEqual(
+            development_anchor["model_config_id"],
+            anchor["model_config_id"],
         )
 
 

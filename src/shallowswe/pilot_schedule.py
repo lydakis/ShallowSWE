@@ -9,6 +9,12 @@ from .identity import agent_policy_id, canonical_json, model_config_id
 
 
 PILOT_SCHEDULE_SCHEMA_VERSION = "shallowswe.pilot_schedule.v0.1"
+STAGE_SEED_OFFSETS = {
+    "codex_development": 1000,
+    "kaggle_canary": 2000,
+    "permissive_collection": 3000,
+    "fresh_anchor_confirmation": 4000,
+}
 
 
 def build_pilot_schedule(manifest_path: Path) -> dict[str, Any]:
@@ -16,8 +22,15 @@ def build_pilot_schedule(manifest_path: Path) -> dict[str, Any]:
     task_ids = [str(value) for value in manifest["task_ids"]]
     canary_ids = [str(value) for value in manifest["canary_task_ids"]]
     confirmation_ids = [str(value) for value in manifest["confirmation_task_ids"]]
-    role_configs = {str(row["role"]): row["canonical"] for row in manifest["model_configs"]}
-    policy = manifest["agent_policy"]["canonical"]
+    official_role_configs = {
+        str(row["role"]): row["canonical"] for row in manifest["model_configs"]
+    }
+    development_role_configs = {
+        str(row["role"]): row["canonical"]
+        for row in manifest.get("development_model_configs", [])
+    }
+    official_policy = manifest["agent_policy"]["canonical"]
+    development_policy = (manifest.get("development_agent_policy") or {}).get("canonical")
     rows: list[dict[str, Any]] = []
 
     def add(
@@ -32,6 +45,11 @@ def build_pilot_schedule(manifest_path: Path) -> dict[str, Any]:
         cohort: str | None = None,
         replicate_offset: int = 0,
     ) -> None:
+        development = stage == "codex_development"
+        role_configs = development_role_configs if development else official_role_configs
+        policy = development_policy if development else official_policy
+        if role not in role_configs or not isinstance(policy, dict):
+            raise ValueError(f"manifest lacks {stage}/{role} technical identity")
         model_id = model_config_id(role_configs[role])
         policy_id = agent_policy_id(policy, model_config_id=model_id)
         for task_id in tasks:
@@ -49,10 +67,16 @@ def build_pilot_schedule(manifest_path: Path) -> dict[str, Any]:
                     {
                         **identity,
                         "trajectory_id": _trajectory_id(identity),
-                        "rollout_seed": replicate - 1,
+                        "rollout_seed": STAGE_SEED_OFFSETS[stage] + replicate - 1,
                         "model_config_id": model_id,
                         "agent_policy_id": policy_id,
                         "evidence_class": evidence_class,
+                        "release_class": (
+                            manifest["runner_contract"]["development_release_class"]
+                            if evidence_class
+                            == manifest["runner_contract"]["development_evidence_class"]
+                            else manifest["release_class"]
+                        ),
                         "funding_pool": funding_pool,
                     }
                 )
@@ -68,7 +92,7 @@ def build_pilot_schedule(manifest_path: Path) -> dict[str, Any]:
             role,
             "one_shot",
             one_shot_replicates,
-            evidence_class="development",
+            evidence_class=manifest["runner_contract"]["development_evidence_class"],
             funding_pool="codex_subscription",
         )
         add(
@@ -77,7 +101,7 @@ def build_pilot_schedule(manifest_path: Path) -> dict[str, Any]:
             role,
             "repair_loop_smoke",
             1,
-            evidence_class="development",
+            evidence_class=manifest["runner_contract"]["development_evidence_class"],
             funding_pool="codex_subscription",
         )
 
@@ -206,4 +230,11 @@ def _trajectory_id(identity: dict[str, Any]) -> str:
 def _has_pending_identity(manifest: dict[str, Any]) -> bool:
     if manifest.get("agent_policy", {}).get("status") != "frozen":
         return True
-    return any(row.get("status") != "frozen" for row in manifest.get("model_configs", []))
+    if any(row.get("status") != "frozen" for row in manifest.get("model_configs", [])):
+        return True
+    if manifest.get("development_agent_policy", {}).get("status") != "frozen":
+        return True
+    return any(
+        row.get("status") != "frozen"
+        for row in manifest.get("development_model_configs", [])
+    )

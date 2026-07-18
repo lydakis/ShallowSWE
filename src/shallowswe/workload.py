@@ -3,11 +3,229 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Iterable
 
-from .results import PriceCatalog, RolloutResult, aggregate_results
+from .results import (
+    PriceCatalog,
+    RepairLoopResult,
+    RolloutResult,
+    aggregate_results,
+    audit_repair_loop_evidence,
+)
 from .task_metadata import CATEGORY_ORDER, SIZE_ORDER
 
 
 WORKLOAD_INDEX_SCHEMA_VERSION = "shallowswe.workload_index.v0.3"
+REPAIR_LOOP_WORKLOAD_INDEX_SCHEMA_VERSION = "shallowswe.repair_loop_workload_index.v0.1"
+
+
+def build_repair_loop_workload_index(
+    rows: Iterable[RepairLoopResult],
+    *,
+    target_tasks_per_cell: int = 4,
+    pressure_bands: tuple[str, ...] = ("low", "medium", "high"),
+    evidence_class: str,
+    release_class: str,
+) -> dict[str, object]:
+    """Build the v0.4.2 category-by-pressure weighted ratio for repair-loop rows."""
+
+    if target_tasks_per_cell <= 0:
+        raise ValueError("target_tasks_per_cell must be positive")
+    if not pressure_bands or len(set(pressure_bands)) != len(pressure_bands):
+        raise ValueError("pressure_bands must be a non-empty unique sequence")
+    row_list = list(rows)
+    if not row_list:
+        raise ValueError("repair-loop workload index requires rows")
+    if {row.evidence_class for row in row_list} != {evidence_class}:
+        raise ValueError(f"workload evidence_class must be exactly {evidence_class!r}")
+    if {row.release_class for row in row_list} != {release_class}:
+        raise ValueError(f"workload release_class must be exactly {release_class!r}")
+    evidence_report = audit_repair_loop_evidence(
+        row_list,
+        group_by=("model_config_id", "agent_policy_id"),
+    )
+    if not evidence_report["valid"]:
+        raise ValueError(
+            "repair-loop workload evidence is not poolable: "
+            + ", ".join(str(issue) for issue in evidence_report["issues"])
+        )
+    invalid_pressure = sorted(
+        {row.pressure_band for row in row_list if row.pressure_band not in pressure_bands},
+        key=str,
+    )
+    if invalid_pressure:
+        raise ValueError(f"rows contain unsupported pressure bands: {invalid_pressure}")
+    task_contracts: dict[str, set[tuple[str, str]]] = defaultdict(set)
+    for row in row_list:
+        task_contracts[row.task_id].add((row.category, str(row.pressure_band)))
+    for task_id, contracts in sorted(task_contracts.items()):
+        if len(contracts) > 1:
+            categories = {category for category, _pressure in contracts}
+            field = "category" if len(categories) > 1 else "pressure_band"
+            raise ValueError(f"task {task_id} has mixed {field} across model cohorts")
+
+    task_keys = sorted(
+        {(row.category, str(row.pressure_band), row.task_id) for row in row_list},
+        key=lambda value: (
+            _category_rank(value[0]),
+            pressure_bands.index(value[1]),
+            value[2],
+        ),
+    )
+    declared_task_weight = 1 / (
+        len(CATEGORY_ORDER) * len(pressure_bands) * target_tasks_per_cell
+    )
+    observed_counts: dict[tuple[str, str], int] = defaultdict(int)
+    for category, pressure, _task_id in task_keys:
+        observed_counts[(category, pressure)] += 1
+    overfilled = [
+        f"{category}/{pressure}"
+        for (category, pressure), count in observed_counts.items()
+        if count > target_tasks_per_cell
+    ]
+    if overfilled:
+        raise ValueError(
+            "declared repair-loop basket has overfilled cells: " + ", ".join(overfilled)
+        )
+    underfilled_cells = [
+        {
+            "category": category,
+            "pressure_band": pressure,
+            "observed_tasks": observed_counts[(category, pressure)],
+            "target_tasks": target_tasks_per_cell,
+            "missing_tasks": max(
+                0,
+                target_tasks_per_cell - observed_counts[(category, pressure)],
+            ),
+        }
+        for category in CATEGORY_ORDER
+        for pressure in pressure_bands
+        if observed_counts[(category, pressure)] < target_tasks_per_cell
+    ]
+    task_weights = [
+        {
+            "task_id": task_id,
+            "category": category,
+            "pressure_band": pressure,
+            "declared_weight": declared_task_weight,
+        }
+        for category, pressure, task_id in task_keys
+    ]
+    declared_coverage_weight = min(1.0, len(task_keys) * declared_task_weight)
+
+    grouped: dict[tuple[str, str, str], list[RepairLoopResult]] = defaultdict(list)
+    for row in row_list:
+        grouped[(str(row.model_config_id), str(row.agent_policy_id), row.task_id)].append(row)
+    cells: list[dict[str, object]] = []
+    for (model_id, policy_id, task_id), task_rows in sorted(grouped.items()):
+        scored = [row for row in task_rows if row.is_scored]
+        if not scored:
+            continue
+        successes = sum(1 for row in scored if row.passed)
+        canonical = [row.canonical_list_price_equivalent_spend_usd for row in scored]
+        realized_mean = (
+            sum(float(value) for value in canonical if value is not None) / len(scored)
+            if all(value is not None for value in canonical)
+            else None
+        )
+        reference_charges = [
+            (
+                row.canonical_list_price_equivalent_spend_usd
+                if row.passed
+                else row.reference_task_budget_usd
+            )
+            for row in scored
+        ]
+        escalation_charges = [
+            (
+                float(row.canonical_list_price_equivalent_spend_usd or 0.0)
+                + (0.0 if row.passed else float(row.reference_anchor_replacement_cost_usd or 0.0))
+                if row.canonical_list_price_equivalent_spend_usd is not None
+                and (row.passed or row.reference_anchor_replacement_cost_usd is not None)
+                else None
+            )
+            for row in scored
+        ]
+        first = scored[0]
+        cells.append(
+            {
+                "model_config_id": model_id,
+                "agent_policy_id": policy_id,
+                "model": first.model,
+                "task_id": task_id,
+                "category": first.category,
+                "pressure_band": first.pressure_band,
+                "attempts": len(scored),
+                "excluded_attempts": len(task_rows) - len(scored),
+                "successes": successes,
+                "solve_rate": successes / len(scored),
+                "mean_realized_charge_usd": realized_mean,
+                "mean_reference_budget_charge_usd": _complete_mean(reference_charges),
+                "mean_escalation_charge_usd": _complete_mean(escalation_charges),
+                "declared_weight": declared_task_weight,
+            }
+        )
+
+    model_groups: dict[tuple[str, str], list[dict[str, object]]] = defaultdict(list)
+    for cell in cells:
+        model_groups[(str(cell["model_config_id"]), str(cell["agent_policy_id"]))].append(cell)
+    models = []
+    for (model_id, policy_id), model_cells in sorted(model_groups.items()):
+        coverage_weight = len(model_cells) * declared_task_weight
+        weighted_success = _declared_weighted_sum(model_cells, "solve_rate")
+        summary: dict[str, object] = {
+            "model_config_id": model_id,
+            "agent_policy_id": policy_id,
+            "model": model_cells[0]["model"],
+            "task_count": len(model_cells),
+            "declared_coverage_weight": coverage_weight,
+            "missing_declared_weight": max(0.0, 1.0 - coverage_weight),
+            "weighted_solve_rate": (
+                weighted_success if _weights_match(coverage_weight, 1.0) else None
+            ),
+            "partial_weighted_solve_rate": (
+                weighted_success / coverage_weight
+                if weighted_success is not None and coverage_weight > 0
+                else None
+            ),
+        }
+        for variant, charge_field in (
+            ("reference_budget", "mean_reference_budget_charge_usd"),
+            ("realized", "mean_realized_charge_usd"),
+            ("escalation", "mean_escalation_charge_usd"),
+        ):
+            numerator = _declared_weighted_sum(model_cells, charge_field)
+            denominator = weighted_success
+            partial = _ratio_or_none(numerator, denominator)
+            complete = _weights_match(coverage_weight, 1.0) and all(
+                _is_number(cell.get(charge_field)) for cell in model_cells
+            )
+            summary[f"partial_basket_{variant}_cpsc"] = partial
+            summary[f"basket_{variant}_cpsc"] = partial if complete else None
+        models.append(summary)
+
+    return {
+        "schema_version": REPAIR_LOOP_WORKLOAD_INDEX_SCHEMA_VERSION,
+        "evidence_class": evidence_class,
+        "release_class": release_class,
+        "weighting": {
+            "scheme": "equal_category_equal_pressure_equal_declared_task",
+            "categories": list(CATEGORY_ORDER),
+            "pressure_bands": list(pressure_bands),
+            "target_tasks_per_category_pressure": target_tasks_per_cell,
+            "declared_task_weight": declared_task_weight,
+            "declared_coverage_weight": declared_coverage_weight,
+            "partial_basket": not _weights_match(declared_coverage_weight, 1.0),
+        },
+        "recompute_contract": {
+            "formula": "sum(w_t * mean_charge_mt) / sum(w_t * mean_success_mt)",
+            "zero_success_cells_retained": True,
+            "missing_cells_not_imputed": True,
+        },
+        "evidence_audit": evidence_report,
+        "underfilled_cells": underfilled_cells,
+        "task_weights": task_weights,
+        "cells": cells,
+        "models": models,
+    }
 
 
 def build_workload_index(
@@ -272,3 +490,18 @@ def _ratio_or_none(numerator: float | None, denominator: float | None) -> float 
     if numerator is None or denominator is None or denominator == 0:
         return None
     return numerator / denominator
+
+
+def _complete_mean(values: list[float | None]) -> float | None:
+    if not values or any(value is None for value in values):
+        return None
+    return sum(float(value) for value in values if value is not None) / len(values)
+
+
+def _declared_weighted_sum(
+    cells: list[dict[str, object]],
+    metric: str,
+) -> float | None:
+    if any(not _is_number(cell.get(metric)) for cell in cells):
+        return None
+    return sum(float(cell["declared_weight"]) * float(cell[metric]) for cell in cells)

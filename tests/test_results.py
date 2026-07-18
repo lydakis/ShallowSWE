@@ -9,6 +9,7 @@ from shallowswe.results import (
     REPAIR_LOOP_SCHEMA_VERSION,
     RESULT_SCHEMA_VERSION,
     aggregate_repair_loops,
+    audit_repair_loop_evidence,
     aggregate_results,
     load_results,
     merge_prices,
@@ -38,6 +39,67 @@ class ResultExampleTests(unittest.TestCase):
 
 
 class ResultAggregationTests(unittest.TestCase):
+    def test_migrated_repair_rows_fail_closed_on_mixed_evidence(self) -> None:
+        common = {
+            "model": "small",
+            "task_id": "example",
+            "category": "code",
+            "size": "small",
+            "passed": True,
+            "stop_reason": "passed",
+            "verifier_submissions": 1,
+            "input_tokens": 1,
+            "output_tokens": 0,
+            "turns": 1,
+            "model_config_id": "mc_test",
+            "agent_policy_id": "ap_test",
+            "release_class": "protocol_validation",
+            "task_version": "example@v1",
+            "verifier_hash": "sha256:verifier",
+            "environment_image_digest": "sha256:environment",
+            "price_sheet_version": "prices-v1",
+            "verifier_submission_cap": 8,
+            "agent_step_cap": 128,
+        }
+        rows = [
+            repair_loop_from_mapping({**common, "loop": 0, "evidence_class": "official_pilot"}),
+            repair_loop_from_mapping(
+                {**common, "loop": 1, "evidence_class": "development_dry_run"}
+            ),
+        ]
+
+        report = audit_repair_loop_evidence(rows)
+
+        self.assertFalse(report["valid"])
+        self.assertIn("mixed_evidence_class", report["issues"])
+        with self.assertRaisesRegex(ValueError, "mixed_evidence_class"):
+            aggregate_repair_loops(rows, group_by=("model_config_id",))
+
+    def test_migrated_repair_rows_fail_closed_on_task_contract_drift(self) -> None:
+        common = {
+            "model": "small",
+            "task_id": "example",
+            "category": "code",
+            "size": "small",
+            "passed": True,
+            "stop_reason": "passed",
+            "verifier_submissions": 1,
+            "input_tokens": 1,
+            "output_tokens": 0,
+            "turns": 1,
+            "model_config_id": "mc_test",
+            "agent_policy_id": "ap_test",
+            "evidence_class": "official_pilot",
+            "release_class": "protocol_validation",
+            "verifier_hash": "sha256:verifier",
+        }
+        rows = [
+            repair_loop_from_mapping({**common, "loop": 0, "task_version": "example@v1"}),
+            repair_loop_from_mapping({**common, "loop": 1, "task_version": "example@v2"}),
+        ]
+
+        with self.assertRaisesRegex(ValueError, "mixed_task_version"):
+            aggregate_repair_loops(rows)
     def test_cpsc_includes_retry_tax_without_double_counting_cache(self) -> None:
         prices = {
             "small": ModelPrice(

@@ -30,7 +30,13 @@ from .mini_swe_config import (
     effective_scaffold_prompt_hash,
     load_effective_mini_swe_config,
 )
-from .results import EXCLUDED_STATUS, RepairLoopResult
+from .results import (
+    CAP_HIT_STOP_REASONS,
+    EXCLUDED_STATUS,
+    ModelPrice,
+    RepairLoopResult,
+    usage_cost_usd,
+)
 from .task_metadata import load_task
 from .trajectory_usage import raw_usage_totals_from_trajectory
 
@@ -75,7 +81,9 @@ def run_kaggle_repair_loop(
     launch_unit_id: str | None = None,
     pilot_stage: str | None = None,
     pilot_mode: str | None = None,
+    pilot_cohort: str | None = None,
     release_class: str = "protocol_validation",
+    canonical_price: ModelPrice | None = None,
     environment_factory: EnvironmentFactory | None = None,
     verifier_runner: VerifierRunner | None = None,
 ) -> RepairLoopResult:
@@ -92,6 +100,7 @@ def run_kaggle_repair_loop(
     artifacts_dir.mkdir(parents=True, exist_ok=True)
     trajectory_path = artifacts_dir / "mini-swe-agent.trajectory.json"
     diagnostics_path = artifacts_dir / "verifier-diagnostics.jsonl"
+    checkpoints_path = artifacts_dir / "repair-loop-checkpoints.jsonl"
     exception_path = artifacts_dir / "runner-exception.txt"
     materialize_task_environment(task_path, workspace_dir)
 
@@ -154,6 +163,9 @@ def run_kaggle_repair_loop(
         agent=agent,
         verifier_runner=selected_verifier_runner,
         diagnostics_path=diagnostics_path,
+        checkpoints_path=checkpoints_path,
+        trajectory_path=trajectory_path,
+        canonical_price=canonical_price,
         dollar_cap_usd=dollar_cap_usd,
     )
 
@@ -192,6 +204,7 @@ def run_kaggle_repair_loop(
         "reasoning_tokens": 0,
         "gateway_reported_cost_usd": None,
     }
+    canonical_spend = _canonical_usage_cost(usage, canonical_price)
     return RepairLoopResult(
         model=model_name,
         task_id=shallow_task.task_id,
@@ -226,7 +239,7 @@ def run_kaggle_repair_loop(
         token_source="kaggle-benchmarks-message-usage",
         inference_gateway="kaggle",
         requested_model=model_name,
-        resolved_model=model_name,
+        resolved_model=model.resolved_model,
         reasoning_effort=reasoning_effort,
         task_version=_task_contract_hash(task_path, verifier_dir),
         task_suite_version=task_suite_version,
@@ -240,6 +253,7 @@ def run_kaggle_repair_loop(
         launch_unit_id=launch_unit_id,
         pilot_stage=pilot_stage,
         pilot_mode=pilot_mode,
+        pilot_cohort=pilot_cohort,
         task_visibility="kaggle-chroot-seccomp-hidden-verifier",
         transcript_hash=_file_hash(trajectory_path),
         model_config_id=model_config_id,
@@ -255,12 +269,14 @@ def run_kaggle_repair_loop(
         evidence_class=evidence_class,
         funding_pool=funding_pool,
         actual_model_spend_usd=usage["gateway_reported_cost_usd"],
+        canonical_list_price_equivalent_spend_usd=canonical_spend,
         verifier_submission_cap=max_verifier_submissions,
         agent_step_cap=int(agent_config.get("step_limit") or 0) or None,
         cap_disclosure="undisclosed",
         routine_review_version=routine_review_version,
-        censoring_status=("right_censored" if stop_reason in {"submission_cap", "step_cap"} else "observed"),
+        censoring_status=("right_censored" if stop_reason in CAP_HIT_STOP_REASONS else "observed"),
         release_class=release_class,
+        event_checkpoints=backend.event_checkpoints,
         status=status,
         exclusion_reason=exclusion_reason,
         started_at=started_at.isoformat(),
@@ -275,13 +291,21 @@ class _KaggleRepairLoopBackend:
         agent: Any,
         verifier_runner: VerifierRunner,
         diagnostics_path: Path,
+        checkpoints_path: Path,
+        trajectory_path: Path,
+        canonical_price: ModelPrice | None,
         dollar_cap_usd: float | None,
     ) -> None:
         self.agent = agent
         self.verifier_runner = verifier_runner
         self.diagnostics_path = diagnostics_path
+        self.checkpoints_path = checkpoints_path
+        self.trajectory_path = trajectory_path
+        self.canonical_price = canonical_price
         self.dollar_cap_usd = dollar_cap_usd
         self.verifier_submissions = 0
+        self.agent_submissions = 0
+        self.event_checkpoints: list[dict[str, Any]] = []
         self._started = False
 
     async def submit(self, instruction: str) -> AgentSubmission:
@@ -290,7 +314,9 @@ class _KaggleRepairLoopBackend:
         else:
             result = self.agent.run(instruction)
             self._started = True
+        self.agent_submissions += 1
         cost = float(getattr(self.agent, "cost", 0.0) or 0.0)
+        self._record_checkpoint(event_type="agent_submission")
         return AgentSubmission(
             exit_status=result.get("exit_status"),
             dollar_cap_hit=(
@@ -301,6 +327,10 @@ class _KaggleRepairLoopBackend:
     async def verify(self) -> VerifierOutcome:
         result = self.verifier_runner()
         self.verifier_submissions += 1
+        self._record_checkpoint(
+            event_type="verifier_result",
+            result_class=result.outcome.result_class,
+        )
         with self.diagnostics_path.open("a") as handle:
             handle.write(
                 json.dumps(
@@ -313,6 +343,59 @@ class _KaggleRepairLoopBackend:
                 + "\n"
             )
         return result.outcome
+
+    def _record_checkpoint(
+        self,
+        *,
+        event_type: str,
+        result_class: str | None = None,
+    ) -> None:
+        usage = raw_usage_totals_from_trajectory(self.trajectory_path) or {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_tokens": 0,
+            "cache_write_tokens": 0,
+            "reasoning_tokens": 0,
+            "gateway_reported_cost_usd": None,
+        }
+        checkpoint = {
+            "event_index": len(self.event_checkpoints) + 1,
+            "event_type": event_type,
+            "agent_submission": self.agent_submissions,
+            "verifier_submission": self.verifier_submissions,
+            "result_class": result_class,
+            "cumulative_input_tokens": int(usage["input_tokens"]),
+            "cumulative_output_tokens": int(usage["output_tokens"]),
+            "cumulative_cache_read_tokens": int(usage["cache_read_tokens"]),
+            "cumulative_cache_write_tokens": int(usage["cache_write_tokens"]),
+            "cumulative_reasoning_tokens": int(usage["reasoning_tokens"]),
+            "cumulative_agent_steps": int(getattr(self.agent, "n_calls", 0)),
+            "cumulative_gateway_reported_cost_usd": usage[
+                "gateway_reported_cost_usd"
+            ],
+            "cumulative_canonical_spend_usd": _canonical_usage_cost(
+                usage,
+                self.canonical_price,
+            ),
+        }
+        self.event_checkpoints.append(checkpoint)
+        with self.checkpoints_path.open("a") as handle:
+            handle.write(json.dumps(checkpoint) + "\n")
+
+
+def _canonical_usage_cost(
+    usage: dict[str, Any],
+    price: ModelPrice | None,
+) -> float | None:
+    if price is None:
+        return None
+    return usage_cost_usd(
+        input_tokens=int(usage["input_tokens"]),
+        output_tokens=int(usage["output_tokens"]),
+        cache_read_tokens=int(usage["cache_read_tokens"]),
+        cache_write_tokens=int(usage["cache_write_tokens"]),
+        price=price,
+    )
 
 
 def dump_kaggle_result(row: RepairLoopResult) -> str:
