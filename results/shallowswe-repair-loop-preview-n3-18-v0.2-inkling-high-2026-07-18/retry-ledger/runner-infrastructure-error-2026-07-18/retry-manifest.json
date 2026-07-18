@@ -1,0 +1,27 @@
+{
+  "schema_version": "shallowswe.retry_ledger.v0.1",
+  "model_config": "openrouter/thinkingmachines/inkling[high]",
+  "reason": "runner_infrastructure_error",
+  "source_commit": "f83197f59aba1b0b0029e31887d4f7c937865918",
+  "rows": [
+    {
+      "task_id": "payout-reconcile",
+      "seed": 2,
+      "original_stop_reason": "runner_exception",
+      "original_status": "excluded",
+      "retry_status": "scored",
+      "retry_stop_reason": "passed",
+      "retry_passed": true
+    },
+    {
+      "task_id": "access-log-to-incidents",
+      "seed": 2,
+      "original_stop_reason": "runner_exception",
+      "original_status": "excluded",
+      "retry_status": "scored",
+      "retry_stop_reason": "verifier_submission_cap",
+      "retry_passed": false
+    }
+  ],
+  "policy": "Preserve the original excluded rows and retry only their schedule positions."
+}

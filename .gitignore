@@ -63,5 +63,8 @@ results/*
 !results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/*.json
 !results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/rows/
 !results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/rows/*.json
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/retry-ledger/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/retry-ledger/**/
+!results/shallowswe-repair-loop-preview-n3-18-v0.2-inkling-high-2026-07-18/retry-ledger/**/*.json
 artifacts/
 tmp/
