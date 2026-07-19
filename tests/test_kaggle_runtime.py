@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from types import SimpleNamespace
 import json
 import unittest
 
@@ -29,15 +28,18 @@ class _ScriptedLLM(LLMChat):
         commands: list[str],
         *,
         resolved_model: str | None = "test/model-snapshot",
+        support_temperature: bool = True,
     ) -> None:
-        super().__init__(name="scripted", support_temperature=True)
+        super().__init__(name="scripted", support_temperature=support_temperature)
         self.commands = list(commands)
         self.seen_roles: list[list[str]] = []
+        self.seen_kwargs: list[dict[str, object]] = []
         self.resolved_model = resolved_model
 
     def invoke(self, messages, system, tools=None, **kwargs):
-        del system, kwargs
+        del system
         self.seen_roles.append([message.sender.role for message in messages])
+        self.seen_kwargs.append(dict(kwargs))
         self.assert_tools = tools
         command = self.commands.pop(0)
         metadata = {
@@ -61,22 +63,6 @@ class _ScriptedLLM(LLMChat):
             ],
             meta=metadata,
         )
-
-
-class _ProviderResponseLLM(_ScriptedLLM):
-    def __init__(self) -> None:
-        super().__init__(["true"], resolved_model=None)
-        self.client = SimpleNamespace(
-            chat=SimpleNamespace(
-                completions=SimpleNamespace(
-                    create=lambda **_kwargs: SimpleNamespace(model="provider/model-snapshot")
-                )
-            )
-        )
-
-    def invoke(self, *args: object, **kwargs: object) -> LLMResponse:
-        self.client.chat.completions.create()
-        return super().invoke(*args, **kwargs)
 
 
 class _EmptyThenCommandLLM(_ScriptedLLM):
@@ -134,13 +120,27 @@ class KaggleRuntimeTests(unittest.TestCase):
         self.assertLess(redirect, evaluation)
         self.assertLess(evaluation, completion)
 
-    def test_captures_resolved_model_from_raw_provider_response(self) -> None:
-        llm = _ProviderResponseLLM()
+    def test_uses_runner_supplied_model_identity_without_wrapping_shared_client(self) -> None:
+        llm = _ScriptedLLM(["true"], resolved_model=None)
+        original_invoke = llm.invoke
         model = KaggleBenchmarksModel(llm=llm, model_name="requested/model-alias")
 
         model.query([{"role": "user", "content": "inspect the repository"}])
 
-        self.assertEqual(model.resolved_model, "provider/model-snapshot")
+        self.assertEqual(model.resolved_model, "scripted")
+        self.assertEqual(llm.invoke, original_invoke)
+
+    def test_omits_temperature_when_runner_model_does_not_support_it(self) -> None:
+        llm = _ScriptedLLM(["true"], support_temperature=False)
+        model = KaggleBenchmarksModel(
+            llm=llm,
+            model_name="requested/model-alias",
+            temperature=0.0,
+        )
+
+        model.query([{"role": "user", "content": "inspect the repository"}])
+
+        self.assertNotIn("temperature", llm.seen_kwargs[0])
 
     def test_empty_provider_turn_is_hidden_before_format_error_retry(self) -> None:
         llm = _EmptyThenCommandLLM()

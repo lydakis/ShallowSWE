@@ -114,19 +114,26 @@ class KaggleBenchmarksModel:
             proxy_api=proxy_api,
         )
         self._synced_message_count = 0
+        runner_model_name = getattr(llm, "name", None)
+        self._runner_model_name: str | None = (
+            runner_model_name
+            if isinstance(runner_model_name, str) and runner_model_name
+            else None
+        )
         self._resolved_model_names: set[str] = set()
-        self._install_provider_response_capture()
 
     def query(self, messages: list[dict[str, Any]], **kwargs: Any) -> dict[str, Any]:
         del kwargs
         self._sync_new_messages(messages)
-        response = self.llm.respond(
-            tools=[bash],
-            seed=self.config.seed,
-            temperature=self.config.temperature,
-            reasoning=self.config.reasoning,
+        request_kwargs = {
+            "tools": [bash],
+            "seed": self.config.seed,
+            "reasoning": self.config.reasoning,
             **self.config.model_kwargs,
-        )
+        }
+        if getattr(self.llm, "support_temperature", True):
+            request_kwargs["temperature"] = self.config.temperature
+        response = self.llm.respond(**request_kwargs)
         if not response.text and not response.tool_calls:
             # Kaggle records a provider's empty response in the active chat before
             # mini-swe-agent can turn it into a format-error retry. The GenAI
@@ -179,32 +186,11 @@ class KaggleBenchmarksModel:
 
     @property
     def resolved_model(self) -> str | None:
+        if not self._resolved_model_names:
+            return self._runner_model_name
         if len(self._resolved_model_names) != 1:
             return None
         return next(iter(self._resolved_model_names))
-
-    def _install_provider_response_capture(self) -> None:
-        """Capture the provider's resolved identity before Kaggle drops raw response metadata."""
-        client = getattr(self.llm, "client", None)
-        targets = (
-            (getattr(getattr(getattr(client, "chat", None), "completions", None), "create", None),
-             getattr(getattr(client, "chat", None), "completions", None), "create"),
-            (getattr(getattr(client, "models", None), "generate_content", None),
-             getattr(client, "models", None), "generate_content"),
-        )
-        for method, owner, attribute in targets:
-            if not callable(method) or owner is None:
-                continue
-
-            def capture(*args: Any, _method: Any = method, **kwargs: Any) -> Any:
-                raw_response = _method(*args, **kwargs)
-                self._capture_resolved_model(raw_response)
-                return raw_response
-
-            try:
-                setattr(owner, attribute, capture)
-            except (AttributeError, TypeError):
-                continue
 
     def _capture_resolved_model(self, source: Any) -> None:
         keys = ("resolved_model", "response_model", "model_version", "model_name", "model")
