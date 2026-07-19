@@ -64,6 +64,7 @@ def run_kaggle_repair_loop(
     transport_model_name: str | None = None,
     max_verifier_submissions: int = 3,
     agent_step_cap: int | None = None,
+    max_output_tokens: int | None = None,
     dollar_cap_usd: float | None = None,
     wall_time_cap_seconds: int | None = None,
     reasoning_effort: str | None = None,
@@ -100,6 +101,8 @@ def run_kaggle_repair_loop(
         raise ValueError("dollar_cap_usd must be positive")
     if agent_step_cap is not None and agent_step_cap <= 0:
         raise ValueError("agent_step_cap must be positive")
+    if max_output_tokens is not None and max_output_tokens <= 0:
+        raise ValueError("max_output_tokens must be positive")
     accounting = dict(result_accounting or {})
     required_price_sheet = accounting.get("required_price_sheet_version")
     if required_price_sheet is not None and price_sheet_version != required_price_sheet:
@@ -144,6 +147,8 @@ def run_kaggle_repair_loop(
     model_config = dict(config.get("model") or {})
     model_kwargs = dict(model_config.get("model_kwargs") or {})
     model_kwargs.pop("drop_params", None)
+    if max_output_tokens is not None:
+        model_kwargs["max_tokens"] = max_output_tokens
     model_config["model_kwargs"] = model_kwargs
     model_config.update(
         {

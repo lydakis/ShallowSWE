@@ -169,6 +169,7 @@ class KaggleRepairLoopTests(unittest.TestCase):
                     config_file=config,
                     max_verifier_submissions=3,
                     agent_step_cap=10,
+                    max_output_tokens=65536,
                     seed=7,
                     model_config_id="mc_test",
                     model_config_canonical_json={"requested_model": "test/model"},
@@ -206,7 +207,7 @@ class KaggleRepairLoopTests(unittest.TestCase):
             self.assertEqual(row.runner, "kaggle-benchmarks-repair-loop")
             self.assertEqual(row.model, "test/model")
             self.assertEqual(row.requested_model, "test/model")
-            self.assertIsNone(row.max_output_tokens)
+            self.assertEqual(row.max_output_tokens, 65536)
             self.assertEqual(row.inference_gateway, "kaggle")
             self.assertEqual(row.seed, 7)
             self.assertEqual(row.model_config_id, "mc_test")

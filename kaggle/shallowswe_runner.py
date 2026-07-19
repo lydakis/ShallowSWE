@@ -316,6 +316,12 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
                 else int(os.environ.get("SHALLOWSWE_MAX_VERIFIER_SUBMISSIONS", "3"))
             ),
             agent_step_cap=(int(limits["agent_steps"]) if limits is not None else None),
+            max_output_tokens=(
+                int(agent_policy["canonical"]["max_output_tokens"])
+                if agent_policy
+                and agent_policy["canonical"].get("max_output_tokens") is not None
+                else None
+            ),
             dollar_cap_usd=(
                 float(limits["dollar_usd"])
                 if limits and limits.get("dollar_usd") is not None
