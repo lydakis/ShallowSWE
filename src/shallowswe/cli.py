@@ -511,7 +511,6 @@ def main() -> None:
                     args.results_json,
                     args.methodology_json,
                     args.output_json,
-                    scoring_run_spec_path=args.scoring_run_spec,
                 ),
                 indent=2,
             )
@@ -563,6 +562,7 @@ def main() -> None:
                     args.results_json,
                     args.methodology_json,
                     args.output_json,
+                    scoring_run_spec_path=args.scoring_run_spec,
                 ),
                 indent=2,
             )
