@@ -6,7 +6,7 @@
 
 # %%
 from pathlib import Path
-from contextlib import redirect_stderr, redirect_stdout
+from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from dataclasses import replace
 import hashlib
 import json
@@ -15,6 +15,8 @@ import shutil
 import subprocess
 import sys
 import tarfile
+import threading
+import time
 import urllib.request
 
 
@@ -214,6 +216,45 @@ if RUN_SPEC is not None:
         RUN_UNIT = resolve_run_unit(RUN_SPEC, run_unit_id)
 RESULTS_ROOT = Path("/kaggle/working/shallowswe-results")
 RESULTS_ROOT.mkdir(parents=True, exist_ok=True)
+
+
+@contextmanager
+def _kaggle_iopub_heartbeat(interval_seconds: float = 2.0):
+    """Keep Kaggle's papermill IOPub watchdog alive during quiet agent work."""
+    stop = threading.Event()
+    started = time.monotonic()
+
+    def emit() -> None:
+        while not stop.wait(interval_seconds):
+            print(
+                json.dumps(
+                    {
+                        "event": "shallowswe_kaggle_heartbeat",
+                        "elapsed_seconds": round(time.monotonic() - started, 1),
+                    },
+                    sort_keys=True,
+                ),
+                file=sys.__stdout__,
+                flush=True,
+            )
+
+    thread = threading.Thread(target=emit, name="shallowswe-kaggle-heartbeat", daemon=True)
+    print(
+        json.dumps({"event": "shallowswe_kaggle_heartbeat_started"}, sort_keys=True),
+        file=sys.__stdout__,
+        flush=True,
+    )
+    thread.start()
+    try:
+        yield
+    finally:
+        stop.set()
+        thread.join(timeout=interval_seconds + 1.0)
+        print(
+            json.dumps({"event": "shallowswe_kaggle_heartbeat_stopped"}, sort_keys=True),
+            file=sys.__stdout__,
+            flush=True,
+        )
 
 
 @kbench.task(
@@ -430,19 +471,20 @@ if os.environ.get("KAGGLE_KERNEL_RUN_TYPE"):
         )
     )
     evaluation_log_path.parent.mkdir(parents=True, exist_ok=True)
-    with evaluation_log_path.open("a", buffering=1) as evaluation_log:
-        with redirect_stdout(evaluation_log), redirect_stderr(evaluation_log):
-            with kbench.client.enable_cache():
-                SHALLOWSWE_RUNS = shallowswe_repair_loop.evaluate(
-                    llm=[kbench.llm],
-                    task_id=task_ids,
-                    rollout_seed=seeds,
-                    n_jobs=execution["n_jobs"],
-                    timeout=execution["row_timeout_seconds"],
-                    on_failure="continue",
-                    max_attempts=execution["max_attempts"],
-                    retry_delay=execution["retry_delay_seconds"],
-                )
+    with _kaggle_iopub_heartbeat():
+        with evaluation_log_path.open("a", buffering=1) as evaluation_log:
+            with redirect_stdout(evaluation_log), redirect_stderr(evaluation_log):
+                with kbench.client.enable_cache():
+                    SHALLOWSWE_RUNS = shallowswe_repair_loop.evaluate(
+                        llm=[kbench.llm],
+                        task_id=task_ids,
+                        rollout_seed=seeds,
+                        n_jobs=execution["n_jobs"],
+                        timeout=execution["row_timeout_seconds"],
+                        on_failure="continue",
+                        max_attempts=execution["max_attempts"],
+                        retry_delay=execution["retry_delay_seconds"],
+                    )
     print(
         json.dumps(
             {

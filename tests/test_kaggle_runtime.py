@@ -120,6 +120,17 @@ class KaggleRuntimeTests(unittest.TestCase):
         self.assertLess(redirect, evaluation)
         self.assertLess(evaluation, completion)
 
+    def test_runner_keeps_kaggle_iopub_alive_during_quiet_evaluation(self) -> None:
+        source = Path("kaggle/shallowswe_runner.py").read_text()
+
+        heartbeat = source.index("with _kaggle_iopub_heartbeat():")
+        evaluation = source.index("SHALLOWSWE_RUNS = shallowswe_repair_loop.evaluate(")
+
+        self.assertLess(heartbeat, evaluation)
+        self.assertIn("interval_seconds: float = 2.0", source)
+        self.assertIn("file=sys.__stdout__", source)
+        self.assertIn("shallowswe_kaggle_heartbeat", source)
+
     def test_runner_removes_ephemeral_workspace_after_persisting_result(self) -> None:
         source = Path("kaggle/shallowswe_runner.py").read_text()
 
