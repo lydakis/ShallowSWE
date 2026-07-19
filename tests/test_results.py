@@ -12,6 +12,7 @@ from shallowswe.results import (
     aggregate_repair_loops,
     audit_repair_loop_evidence,
     aggregate_results,
+    load_prices,
     load_repair_loops,
     load_results,
     merge_prices,
@@ -25,6 +26,16 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 class ResultExampleTests(unittest.TestCase):
+    def test_weekend_openrouter_prices_preserve_long_context_cache_write_rate(self) -> None:
+        prices = load_prices(REPO_ROOT / "prices" / "openrouter-2026-07-19.json")
+
+        sol = prices["openai/gpt-5.6-sol"]
+        self.assertEqual(sol.long_context_threshold_tokens, 272000)
+        self.assertEqual(sol.long_context_input_per_1m, 10.0)
+        self.assertEqual(sol.long_context_cached_input_per_1m, 1.0)
+        self.assertEqual(sol.long_context_cache_write_per_1m, 12.5)
+        self.assertEqual(sol.long_context_output_per_1m, 45.0)
+
     def test_sample_result_uses_current_public_schema(self) -> None:
         path = REPO_ROOT / "examples" / "results.sample.json"
         raw_rows = json.loads(path.read_text())
@@ -502,6 +513,78 @@ class ResultAggregationTests(unittest.TestCase):
         self.assertAlmostEqual(summary["cpsc"], summary["realized_cpsc"])
         self.assertEqual(summary["reference_budget_complete_rows"], 2)
         self.assertEqual(summary["replacement_cost_complete_rows"], 2)
+
+    def test_repair_loop_aggregates_paired_repair_diagnostics(self) -> None:
+        common = {
+            "model": "small",
+            "task_id": "example",
+            "category": "code",
+            "size": "small",
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "turns": 1,
+        }
+
+        def checkpoint(result: str, spend: float) -> dict[str, object]:
+            return {
+                "event_type": "verifier_result",
+                "verifier_submission": 1,
+                "result_class": result,
+                "cumulative_agent_steps": 2,
+                "cumulative_input_tokens": 8,
+                "cumulative_output_tokens": 1,
+                "cumulative_canonical_spend_usd": spend,
+            }
+
+        rows = [
+            repair_loop_from_mapping(
+                {
+                    **common,
+                    "loop": 0,
+                    "passed": True,
+                    "stop_reason": "passed",
+                    "verifier_submissions": 1,
+                    "canonical_list_price_equivalent_spend_usd": 0.2,
+                    "event_checkpoints": [checkpoint("passed", 0.2)],
+                }
+            ),
+            repair_loop_from_mapping(
+                {
+                    **common,
+                    "loop": 1,
+                    "passed": True,
+                    "stop_reason": "passed",
+                    "verifier_submissions": 3,
+                    "canonical_list_price_equivalent_spend_usd": 0.8,
+                    "event_checkpoints": [checkpoint("generic_failure", 0.3)],
+                }
+            ),
+            repair_loop_from_mapping(
+                {
+                    **common,
+                    "loop": 2,
+                    "passed": False,
+                    "stop_reason": "dollar_cap",
+                    "verifier_submissions": 2,
+                    "canonical_list_price_equivalent_spend_usd": 0.9,
+                    "event_checkpoints": [checkpoint("generic_failure", 0.4)],
+                }
+            ),
+        ]
+
+        summary = aggregate_repair_loops(rows)[0]
+
+        self.assertEqual(summary["first_submit_observed_loops"], 3)
+        self.assertEqual(summary["first_submit_successes"], 1)
+        self.assertAlmostEqual(summary["first_submit_success_rate"], 1 / 3)
+        self.assertEqual(summary["first_failure_loops"], 2)
+        self.assertEqual(summary["repair_conversions"], 1)
+        self.assertAlmostEqual(summary["repair_conversion_rate"], 0.5)
+        self.assertAlmostEqual(
+            summary["mean_incremental_repair_spend_after_first_failure_usd"], 0.5
+        )
+        self.assertEqual(summary["median_verifier_submissions_per_repair_loop"], 2.0)
+        self.assertEqual(summary["p95_verifier_submissions_per_repair_loop"], 3.0)
 
     def test_repair_loop_default_grouping_separates_agent_policy_ids(self) -> None:
         common = {

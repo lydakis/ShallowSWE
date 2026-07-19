@@ -38,10 +38,12 @@ from .results import (
     ModelPrice,
     RepairLoopResult,
     SCORED_STATUS,
-    usage_cost_usd,
 )
 from .task_metadata import load_task
-from .trajectory_usage import raw_usage_totals_from_trajectory
+from .trajectory_usage import (
+    canonical_usage_cost_from_trajectory,
+    raw_usage_totals_from_trajectory,
+)
 
 
 KAGGLE_RUNNER = "kaggle-benchmarks-repair-loop"
@@ -250,7 +252,7 @@ def run_kaggle_repair_loop(
         "reasoning_tokens": 0,
         "gateway_reported_cost_usd": None,
     }
-    canonical_spend = _canonical_usage_cost(usage, canonical_price)
+    canonical_spend = canonical_usage_cost_from_trajectory(trajectory_path, canonical_price)
     reference_budget = accounting.get("reference_task_budget_usd")
     replacement_cost = accounting.get("reference_anchor_replacement_cost_usd")
     reference_charge = (
@@ -281,7 +283,7 @@ def run_kaggle_repair_loop(
         cache_write_tokens=int(usage["cache_write_tokens"]),
         turns=int(getattr(agent, "n_calls", 0)),
         agent_steps=int(getattr(agent, "n_calls", 0)),
-        peak_context_tokens=None,
+        peak_context_tokens=int(usage.get("peak_context_tokens") or 0) or None,
         reasoning_tokens=int(usage["reasoning_tokens"]),
         temperature=temperature,
         sampling_config={
@@ -537,29 +539,13 @@ class _KaggleRepairLoopBackend:
             "cumulative_gateway_reported_cost_usd": usage[
                 "gateway_reported_cost_usd"
             ],
-            "cumulative_canonical_spend_usd": _canonical_usage_cost(
-                usage,
-                self.canonical_price,
+            "cumulative_canonical_spend_usd": canonical_usage_cost_from_trajectory(
+                self.trajectory_path, self.canonical_price
             ),
         }
         self.event_checkpoints.append(checkpoint)
         with self.checkpoints_path.open("a") as handle:
             handle.write(json.dumps(checkpoint) + "\n")
-
-
-def _canonical_usage_cost(
-    usage: dict[str, Any],
-    price: ModelPrice | None,
-) -> float | None:
-    if price is None:
-        return None
-    return usage_cost_usd(
-        input_tokens=int(usage["input_tokens"]),
-        output_tokens=int(usage["output_tokens"]),
-        cache_read_tokens=int(usage["cache_read_tokens"]),
-        cache_write_tokens=int(usage["cache_write_tokens"]),
-        price=price,
-    )
 
 
 def dump_kaggle_result(row: RepairLoopResult) -> str:

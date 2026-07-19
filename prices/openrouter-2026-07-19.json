@@ -1,0 +1,69 @@
+{
+  "schema_version": "shallowswe.prices.v0.1",
+  "effective_date": "2026-07-19",
+  "gateway": "openrouter",
+  "source_urls": [
+    "https://openrouter.ai/api/v1/models?q=gpt-5.6-sol",
+    "https://openrouter.ai/api/v1/models?q=gpt-5.6-luna",
+    "https://openrouter.ai/api/v1/models?q=gpt-5.6-terra",
+    "https://openrouter.ai/api/v1/models?q=gemini-3.5-flash"
+  ],
+  "models": {
+    "openai/gpt-5.6-sol": {
+      "provider": "openai",
+      "input_per_1m": 5.0,
+      "cached_input_per_1m": 0.5,
+      "output_per_1m": 30.0,
+      "cache_write_per_1m": 6.25,
+      "long_context_threshold_tokens": 272000,
+      "long_context_input_per_1m": 10.0,
+      "long_context_cached_input_per_1m": 1.0,
+      "long_context_cache_write_per_1m": 12.5,
+      "long_context_output_per_1m": 45.0,
+      "aliases": [
+        "openrouter/openai/gpt-5.6-sol"
+      ]
+    },
+    "openai/gpt-5.6-luna": {
+      "provider": "openai",
+      "input_per_1m": 1.0,
+      "cached_input_per_1m": 0.1,
+      "output_per_1m": 6.0,
+      "cache_write_per_1m": 1.25,
+      "long_context_threshold_tokens": 272000,
+      "long_context_input_per_1m": 2.0,
+      "long_context_cached_input_per_1m": 0.2,
+      "long_context_cache_write_per_1m": 2.5,
+      "long_context_output_per_1m": 9.0,
+      "aliases": [
+        "openrouter/openai/gpt-5.6-luna"
+      ]
+    },
+    "openai/gpt-5.6-terra": {
+      "provider": "openai",
+      "input_per_1m": 2.5,
+      "cached_input_per_1m": 0.25,
+      "output_per_1m": 15.0,
+      "cache_write_per_1m": 3.125,
+      "long_context_threshold_tokens": 272000,
+      "long_context_input_per_1m": 5.0,
+      "long_context_cached_input_per_1m": 0.5,
+      "long_context_cache_write_per_1m": 6.25,
+      "long_context_output_per_1m": 22.5,
+      "aliases": [
+        "openrouter/openai/gpt-5.6-terra"
+      ]
+    },
+    "google/gemini-3.5-flash": {
+      "provider": "google",
+      "input_per_1m": 1.5,
+      "cached_input_per_1m": 0.15,
+      "output_per_1m": 9.0,
+      "cache_write_per_1m": 0.08333333333333334,
+      "aliases": [
+        "openrouter/google/gemini-3.5-flash",
+        "google/gemini-3.5-flash-20260519"
+      ]
+    }
+  }
+}

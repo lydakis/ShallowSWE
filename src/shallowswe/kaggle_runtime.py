@@ -154,6 +154,7 @@ class KaggleBenchmarksModel:
                 output_tokens=int(usage.output_tokens or 0),
                 cache_read_tokens=0,
                 cache_write_tokens=0,
+                peak_context_tokens=int(usage.input_tokens or 0),
                 price=self.canonical_price,
             )
             if self.canonical_price is not None

@@ -229,6 +229,7 @@ class ModelPrice:
     long_context_threshold_tokens: int | None = None
     long_context_input_per_1m: float | None = None
     long_context_cached_input_per_1m: float | None = None
+    long_context_cache_write_per_1m: float | None = None
     long_context_output_per_1m: float | None = None
 
 
@@ -521,6 +522,9 @@ def load_prices(path: Path) -> dict[str, ModelPrice]:
             long_context_cached_input_per_1m=_optional_float(
                 value.get("long_context_cached_input_per_1m")
             ),
+            long_context_cache_write_per_1m=_optional_float(
+                value.get("long_context_cache_write_per_1m")
+            ),
             long_context_output_per_1m=_optional_float(
                 value.get("long_context_output_per_1m")
             ),
@@ -647,6 +651,26 @@ def aggregate_repair_loops(
         total_verifier_submissions = sum(row.verifier_submissions for row in scored)
         successful_verifier_submissions = sum(row.verifier_submissions for row in successful)
         agent_step_rows = [row for row in scored if row.agent_steps is not None]
+        first_submit_rows = [
+            (row, checkpoint)
+            for row in scored
+            if (checkpoint := _first_verifier_checkpoint(row)) is not None
+        ]
+        first_submit_successes = sum(
+            1 for _, checkpoint in first_submit_rows if checkpoint.get("result_class") == "passed"
+        )
+        first_failure_rows = [
+            (row, checkpoint)
+            for row, checkpoint in first_submit_rows
+            if checkpoint.get("result_class") != "passed"
+        ]
+        repair_conversions = sum(1 for row, _ in first_failure_rows if row.passed)
+        incremental_repair_spends = [
+            float(row.canonical_list_price_equivalent_spend_usd) - float(first_spend)
+            for row, checkpoint in first_failure_rows
+            if row.canonical_list_price_equivalent_spend_usd is not None
+            and (first_spend := checkpoint.get("cumulative_canonical_spend_usd")) is not None
+        ]
 
         summary: dict[str, object] = dict(zip(group_by, key, strict=True))
         summary.update(
@@ -718,6 +742,42 @@ def aggregate_repair_loops(
                 ),
                 "mean_verifier_submissions_to_success": (
                     successful_verifier_submissions / successes if successes else None
+                ),
+                "median_verifier_submissions_per_repair_loop": (
+                    _percentile(
+                        [float(row.verifier_submissions) for row in scored],
+                        0.5,
+                    )
+                    if repair_loops
+                    else 0.0
+                ),
+                "p95_verifier_submissions_per_repair_loop": (
+                    _percentile(
+                        [float(row.verifier_submissions) for row in scored],
+                        0.95,
+                    )
+                    if repair_loops
+                    else 0.0
+                ),
+                "first_submit_observed_loops": len(first_submit_rows),
+                "first_submit_successes": first_submit_successes,
+                "first_submit_success_rate": (
+                    first_submit_successes / len(first_submit_rows)
+                    if first_submit_rows
+                    else None
+                ),
+                "first_failure_loops": len(first_failure_rows),
+                "repair_conversions": repair_conversions,
+                "repair_conversion_rate": (
+                    repair_conversions / len(first_failure_rows)
+                    if first_failure_rows
+                    else None
+                ),
+                "incremental_repair_spend_observed_loops": len(incremental_repair_spends),
+                "mean_incremental_repair_spend_after_first_failure_usd": (
+                    sum(incremental_repair_spends) / len(incremental_repair_spends)
+                    if incremental_repair_spends
+                    else None
                 ),
                 "stop_reasons": _count_stop_reasons(scored),
             }
@@ -940,7 +1000,14 @@ def usage_cost_usd(
     uncached_input = max(0, input_tokens - cache_read - cache_write)
 
     cache_write_rate = (
-        price.cache_write_per_1m
+        price.long_context_cache_write_per_1m
+        if (
+            price.long_context_threshold_tokens is not None
+            and peak_context_tokens is not None
+            and peak_context_tokens > price.long_context_threshold_tokens
+            and price.long_context_cache_write_per_1m is not None
+        )
+        else price.cache_write_per_1m
         if price.cache_write_per_1m is not None
         else input_rate
     )
@@ -1109,6 +1176,18 @@ def _count_stop_reasons(rows: list[RepairLoopResult]) -> dict[str, int]:
     for row in rows:
         counts[row.stop_reason] = counts.get(row.stop_reason, 0) + 1
     return dict(sorted(counts.items()))
+
+
+def _first_verifier_checkpoint(row: RepairLoopResult) -> dict[str, Any] | None:
+    return next(
+        (
+            checkpoint
+            for checkpoint in (row.event_checkpoints or [])
+            if checkpoint.get("event_type") == "verifier_result"
+            and int(checkpoint.get("verifier_submission") or 0) == 1
+        ),
+        None,
+    )
 
 
 def _percentile(values: list[float], quantile: float) -> float:
