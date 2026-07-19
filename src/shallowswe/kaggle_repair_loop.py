@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from contextvars import copy_context
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -9,6 +10,7 @@ import asyncio
 import hashlib
 import importlib.metadata
 import json
+import re
 import time
 import tomllib
 import traceback
@@ -35,6 +37,7 @@ from .results import (
     EXCLUDED_STATUS,
     ModelPrice,
     RepairLoopResult,
+    SCORED_STATUS,
     usage_cost_usd,
 )
 from .task_metadata import load_task
@@ -58,6 +61,7 @@ def run_kaggle_repair_loop(
     run_id: str,
     model_name: str,
     config_file: Path,
+    transport_model_name: str | None = None,
     max_verifier_submissions: int = 3,
     agent_step_cap: int | None = None,
     dollar_cap_usd: float | None = None,
@@ -75,6 +79,7 @@ def run_kaggle_repair_loop(
     context_limit: int | None = None,
     cache_policy: str | None = None,
     price_sheet_version: str | None = None,
+    price_sheet_date: str | None = None,
     routine_review_version: str | None = None,
     trajectory_id: str | None = None,
     experiment_id: str | None = None,
@@ -142,7 +147,7 @@ def run_kaggle_repair_loop(
     model_config["model_kwargs"] = model_kwargs
     model_config.update(
         {
-            "model_name": model_name,
+            "model_name": transport_model_name or model_name,
             "seed": seed,
             "temperature": temperature,
             "reasoning": reasoning_effort,
@@ -221,12 +226,12 @@ def run_kaggle_repair_loop(
         stop_reason = execution.stop_reason
         status = execution.status
         exclusion_reason = execution.exclusion_reason
-    except Exception:
+    except Exception as error:
         exception_path.write_text(traceback.format_exc())
         passed = False
-        stop_reason = "runner_exception"
-        status = EXCLUDED_STATUS
-        exclusion_reason = "runner_infrastructure_error"
+        stop_reason, status, exclusion_reason = _classify_runner_exception(error)
+        if stop_reason == "context_limit" and context_limit is None:
+            context_limit = _context_limit_from_exception(error)
     finally:
         if secure_environment is not None:
             secure_environment.export_workspace()
@@ -298,6 +303,7 @@ def run_kaggle_repair_loop(
         environment_image_digest=task_contract["environment_image_digest"],
         repo_commit_sha=repo_commit_sha,
         price_sheet_version=price_sheet_version,
+        price_sheet_date=price_sheet_date,
         seed=seed,
         run_id=run_id,
         trajectory_id=trajectory_id,
@@ -403,6 +409,38 @@ def _accounting_int(accounting: dict[str, Any], field: str) -> int | None:
 def _accounting_str(accounting: dict[str, Any], field: str) -> str | None:
     value = accounting.get(field)
     return str(value) if value is not None else None
+
+
+def _classify_runner_exception(error: Exception) -> tuple[str, str, str | None]:
+    message = f"{type(error).__name__}: {error}".lower()
+    if (
+        "input token count exceeds" in message
+        or "maximum context length" in message
+        or "context window" in message and "exceed" in message
+    ):
+        return ("context_limit", SCORED_STATUS, None)
+    if (
+        "status code 503" in message
+        or "503" in message
+        and (
+            "model" in message
+            or "service unavailable" in message
+            or "not reachable" in message
+        )
+        or "status code 429" in message
+        or "429" in message and "rate" in message
+    ):
+        return ("provider_unavailable", EXCLUDED_STATUS, "provider_or_network_error")
+    return ("runner_exception", EXCLUDED_STATUS, "runner_infrastructure_error")
+
+
+def _context_limit_from_exception(error: Exception) -> int | None:
+    match = re.search(
+        r"maximum (?:number of )?tokens allowed\s+(\d+)",
+        str(error),
+        flags=re.IGNORECASE,
+    )
+    return int(match.group(1)) if match else None
 
 
 class _KaggleRepairLoopBackend:
@@ -582,5 +620,6 @@ def _run_async(coroutine: Any) -> Any:
         asyncio.get_running_loop()
     except RuntimeError:
         return asyncio.run(coroutine)
+    context = copy_context()
     with ThreadPoolExecutor(max_workers=1) as executor:
-        return executor.submit(asyncio.run, coroutine).result()
+        return executor.submit(context.run, asyncio.run, coroutine).result()

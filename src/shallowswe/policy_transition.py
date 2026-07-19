@@ -98,6 +98,8 @@ def build_confirmation_run_spec(
         "agent_policies": [agent_policy],
         "units": units,
     }
+    if "execution_defaults" in base_run_spec:
+        spec["execution_defaults"] = dict(base_run_spec["execution_defaults"])
     spec["run_spec_sha256"] = run_spec_sha256(spec)
     validate_run_spec(spec)
     return spec
@@ -476,6 +478,8 @@ def build_scoring_run_spec(
         "agent_policies": [agent_policy],
         "units": units,
     }
+    if "execution_defaults" in base_run_spec:
+        spec["execution_defaults"] = dict(base_run_spec["execution_defaults"])
     spec["run_spec_sha256"] = run_spec_sha256(spec)
     validate_run_spec(spec)
     return spec

@@ -42,8 +42,8 @@ Build the current canary bundle:
 
 ```sh
 uv run shallowswe kaggle-pack /tmp/shallowswe-kaggle-canary \
-  --task-id env-flags-to-json \
-  --task-id invoice-multi-source-merge \
+  --task-id <task-id-a> \
+  --task-id <task-id-b> \
   --tasks-root tasks \
   --config-file configs/mini-swe-agent-kaggle-repair-loop.yaml \
   --run-spec configs/experiments/weekend-six-task-kaggle-2026-07-18/run-spec-canary.json \
@@ -103,6 +103,11 @@ kaggle benchmarks tasks push <task-name> \
 
 kaggle benchmarks tasks run <task-name> -m '<exact-kaggle-model-slug>' --wait
 ```
+
+The interactive Model Proxy and Benchmark Runner have separate model rosters. Preflight a
+runner-only model with a minimal `tasks run` and verify the downloaded `modelVersion.slug`; a local
+`load_model(...)` 503 does not establish runner unavailability. Task code must use the `llm` object
+provided by the Benchmark Runner instead of loading a second client.
 
 Never print, commit, or bundle the Kaggle token or model-proxy environment. The creation-only guard
 must never load or prompt Gemini 3 Flash. Gemini 3.5 Flash is a different configured model and is

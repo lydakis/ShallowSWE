@@ -14,7 +14,22 @@ from .mini_swe_config import effective_scaffold_prompt_hash, load_effective_mini
 
 
 KAGGLE_BUNDLE_SCHEMA_VERSION = "shallowswe.kaggle_bundle.v0.2"
-SUPPORTED_BASE_IMAGE = "python:3.12-slim"
+SUPPORTED_BASE_IMAGES = {
+    "python:3.12-slim",
+    (
+        "python:3.12.11-slim-bookworm@sha256:"
+        "519591d6871b7bc437060736b9f7456b8731f1499a57e22e6c285135ae657bf7"
+    ),
+    (
+        "golang:1.24.5-bookworm@sha256:"
+        "ef8c5c733079ac219c77edab604c425d748c740d8699530ea6aced9de79aea40"
+    ),
+}
+SUPPORTED_CROSS_STAGE_COPY = "--from=verifier-python /usr/local /usr/local"
+SUPPORTED_GO_RUNTIME_LINKS = (
+    "ln -sf /usr/local/go/bin/go /usr/local/bin/go "
+    "&& ln -sf /usr/local/go/bin/gofmt /usr/local/bin/gofmt"
+)
 
 
 def export_kaggle_bundle(
@@ -233,7 +248,8 @@ def materialize_task_environment(task_path: Path, workspace: Path) -> None:
     staged_paths: dict[str, Path] = {}
     for instruction, arguments in instructions:
         if instruction == "FROM":
-            if arguments != SUPPORTED_BASE_IMAGE:
+            image, separator, alias = arguments.partition(" AS ")
+            if image not in SUPPORTED_BASE_IMAGES or (separator and alias != "verifier-python"):
                 _unsupported(instruction, arguments)
             continue
         if instruction == "WORKDIR":
@@ -245,6 +261,8 @@ def materialize_task_environment(task_path: Path, workspace: Path) -> None:
                 _unsupported(instruction, arguments)
             continue
         if instruction == "COPY":
+            if arguments == SUPPORTED_CROSS_STAGE_COPY:
+                continue
             source_name, destination = _copy_arguments(arguments)
             source = environment / source_name
             if not source.exists():
@@ -259,6 +277,8 @@ def materialize_task_environment(task_path: Path, workspace: Path) -> None:
                 _unsupported(instruction, arguments)
             continue
         if instruction == "RUN":
+            if " ".join(arguments.split()) == SUPPORTED_GO_RUNTIME_LINKS:
+                continue
             tokens = shlex.split(arguments)
             if len(tokens) == 3 and tokens[0] in {"python", "python3"} and tokens[2] == "/app":
                 generator = staged_paths.get(tokens[1])
@@ -284,10 +304,21 @@ def _dockerfile_instructions(path: Path) -> list[tuple[str, str]]:
     if not path.is_file():
         raise ValueError(f"missing task Dockerfile: {path}")
     parsed: list[tuple[str, str]] = []
+    logical_lines: list[str] = []
+    pending = ""
     for raw_line in path.read_text().splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#"):
             continue
+        pending = f"{pending} {line}".strip()
+        if pending.endswith("\\"):
+            pending = pending[:-1].rstrip()
+            continue
+        logical_lines.append(pending)
+        pending = ""
+    if pending:
+        _unsupported("Dockerfile", "unterminated line continuation")
+    for line in logical_lines:
         instruction, separator, arguments = line.partition(" ")
         if not separator or not arguments.strip():
             _unsupported(instruction.upper(), arguments)

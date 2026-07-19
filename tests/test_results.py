@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import json
+from tempfile import TemporaryDirectory
 import unittest
 
 from shallowswe.results import (
@@ -11,6 +12,7 @@ from shallowswe.results import (
     aggregate_repair_loops,
     audit_repair_loop_evidence,
     aggregate_results,
+    load_repair_loops,
     load_results,
     merge_prices,
     repair_loop_from_mapping,
@@ -37,8 +39,79 @@ class ResultExampleTests(unittest.TestCase):
         self.assertEqual(rows[0].category, "code")
         self.assertEqual(rows[0].size, "small")
 
+    def test_load_repair_loops_recursively_collects_download_artifacts(self) -> None:
+        row = {
+            "model": "example-model",
+            "task_id": "example-task",
+            "category": "code",
+            "size": "small",
+            "loop": 1,
+            "passed": True,
+            "stop_reason": "passed",
+            "verifier_submissions": 1,
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "turns": 1,
+            "trajectory_id": "trajectory-1",
+        }
+        with TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            artifact = root / "task" / "model" / "run" / "repair-loop-result.json"
+            artifact.parent.mkdir(parents=True)
+            artifact.write_text(json.dumps([row]))
+            (root / "unrelated.json").write_text(json.dumps([row]))
+
+            rows = load_repair_loops(root)
+
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0].trajectory_id, "trajectory-1")
+
+    def test_load_repair_loops_rejects_duplicate_download_trajectories(self) -> None:
+        row = {
+            "model": "example-model",
+            "task_id": "example-task",
+            "category": "code",
+            "size": "small",
+            "loop": 1,
+            "passed": True,
+            "stop_reason": "passed",
+            "verifier_submissions": 1,
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "turns": 1,
+            "trajectory_id": "trajectory-1",
+        }
+        with TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            for name in ("first", "second"):
+                artifact = root / name / "repair-loop-result.json"
+                artifact.parent.mkdir(parents=True)
+                artifact.write_text(json.dumps([row]))
+
+            with self.assertRaisesRegex(ValueError, "duplicate trajectory_id"):
+                load_repair_loops(root)
+
 
 class ResultAggregationTests(unittest.TestCase):
+    def test_context_limit_is_a_right_censored_cap_hit(self) -> None:
+        row = repair_loop_from_mapping(
+            {
+                "model": "example-model",
+                "task_id": "example-task",
+                "category": "code",
+                "size": "small",
+                "loop": 1,
+                "passed": False,
+                "stop_reason": "context_limit",
+                "verifier_submissions": 0,
+                "input_tokens": 100,
+                "output_tokens": 10,
+                "turns": 2,
+            }
+        )
+
+        self.assertTrue(row.hit_scored_cap)
+
     def test_migrated_repair_rows_fail_closed_on_mixed_experiments(self) -> None:
         common = {
             "model": "small",

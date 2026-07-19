@@ -43,8 +43,8 @@ Build a private Kaggle bundle from the canonical task tree and one exact run spe
 
 ```sh
 uv run shallowswe kaggle-pack /tmp/shallowswe-kaggle-canary \
-  --task-id env-flags-to-json \
-  --task-id invoice-multi-source-merge \
+  --task-id <task-id-a> \
+  --task-id <task-id-b> \
   --tasks-root tasks \
   --config-file configs/mini-swe-agent-kaggle-repair-loop.yaml \
   --run-spec configs/experiments/weekend-six-task-kaggle-2026-07-18/run-spec-canary.json \

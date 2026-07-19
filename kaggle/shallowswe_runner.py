@@ -6,12 +6,16 @@
 
 # %%
 from pathlib import Path
+from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import replace
+import hashlib
 import json
 import os
 import shutil
 import subprocess
 import sys
+import tarfile
+import urllib.request
 
 
 FROZEN_RUN_UNIT_ID: str | None = None
@@ -65,6 +69,35 @@ def _prepare_bundle_root() -> Path:
 BUNDLE_ROOT = _prepare_bundle_root()
 
 
+GO_VERSION = "1.24.5"
+GO_ARCHIVE_SHA256 = "10ad9e86233e74c0f6590fe5426895de6bf388964210eac34a6d83f38918ecdc"
+
+
+def _install_go_runtime() -> Path:
+    install_root = Path("/opt/shallowswe-toolchains") / f"go{GO_VERSION}"
+    go_root = install_root / "go"
+    if (go_root / "bin" / "go").is_file():
+        return go_root
+    install_root.mkdir(parents=True, exist_ok=True)
+    archive = Path("/tmp") / f"go{GO_VERSION}.linux-amd64.tar.gz"
+    urllib.request.urlretrieve(
+        f"https://go.dev/dl/go{GO_VERSION}.linux-amd64.tar.gz",
+        archive,
+    )
+    actual_sha256 = hashlib.sha256(archive.read_bytes()).hexdigest()
+    if actual_sha256 != GO_ARCHIVE_SHA256:
+        raise RuntimeError(
+            "Go toolchain archive hash mismatch: "
+            f"{actual_sha256} != {GO_ARCHIVE_SHA256}"
+        )
+    with tarfile.open(archive, "r:gz") as payload:
+        payload.extractall(install_root, filter="data")
+    archive.unlink()
+    if not (go_root / "bin" / "go").is_file():
+        raise RuntimeError(f"Go {GO_VERSION} toolchain extraction failed")
+    return go_root
+
+
 def _install_runtime() -> None:
     requirements = BUNDLE_ROOT / "notebook" / "requirements-runtime.txt"
     wheels = sorted((BUNDLE_ROOT / "wheels").glob("*.whl"))
@@ -91,6 +124,7 @@ def _install_runtime() -> None:
         text=True,
     ).strip()
     os.environ["SHALLOWSWE_SANDBOX_PYTHON"] = sandbox_python
+    os.environ["SHALLOWSWE_GO_ROOT"] = str(_install_go_runtime())
     subprocess.run(
         [
             sys.executable,
@@ -124,7 +158,6 @@ _install_runtime()
 
 # %%
 import kaggle_benchmarks as kbench  # noqa: E402
-from kaggle_benchmarks.kaggle.models import load_model  # noqa: E402
 from IPython import get_ipython  # noqa: E402
 
 from shallowswe.kaggle_repair_loop import (  # noqa: E402
@@ -137,6 +170,7 @@ from shallowswe.kaggle_runtime import (  # noqa: E402
 )
 from shallowswe.run_spec import (  # noqa: E402
     resolve_agent_policy,
+    resolve_execution_options,
     resolve_execution_sampling,
     resolve_model_config,
     resolve_run_unit,
@@ -241,7 +275,14 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
         llm.name,
         upstream_provider=upstream_provider,
     )
-    native_llm = load_model(llm.name, api=proxy_api)
+    canonical_model_name = (
+        model_entry["canonical"]["requested_model"] if model_entry is not None else llm.name
+    )
+    transport_model_name = (
+        model_entry["canonical"].get("model_proxy_slug", llm.name)
+        if model_entry is not None
+        else llm.name
+    )
     price_model = (
         model_entry["canonical"].get("price_model") if model_entry is not None else llm.name
     )
@@ -258,13 +299,14 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
         ),
     )
     row = run_kaggle_repair_loop(
-        llm=native_llm,
+        llm=llm,
         task_path=BUNDLE_ROOT / task_entry["task_path"],
         verifier_dir=BUNDLE_ROOT / task_entry["verifier_path"],
         workspace_dir=run_root / "workspace",
         artifacts_dir=run_root / "artifacts",
         run_id=run_id,
-        model_name=llm.name,
+        model_name=canonical_model_name,
+        transport_model_name=transport_model_name,
         config_file=BUNDLE_ROOT / MANIFEST["mini_swe_agent_config"],
         max_verifier_submissions=(
             int(limits["verifier_submissions"])
@@ -347,6 +389,7 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
 if os.environ.get("KAGGLE_KERNEL_RUN_TYPE"):
     if RUN_UNIT is not None:
         task_ids, seeds = unit_matrix(RUN_UNIT)
+        execution = resolve_execution_options(RUN_SPEC, RUN_UNIT)
     else:
         selected_tasks = os.environ.get("SHALLOWSWE_TASK_IDS")
         task_ids = (
@@ -355,17 +398,45 @@ if os.environ.get("KAGGLE_KERNEL_RUN_TYPE"):
             else list(MANIFEST["task_ids"])
         )
         seeds = list(range(int(os.environ.get("SHALLOWSWE_SEEDS", "1"))))
-    with kbench.client.enable_cache():
-        SHALLOWSWE_RUNS = shallowswe_repair_loop.evaluate(
-            llm=[kbench.llm],
-            task_id=task_ids,
-            rollout_seed=seeds,
-            n_jobs=int(os.environ.get("SHALLOWSWE_N_JOBS", "1")),
-            timeout=int(os.environ.get("SHALLOWSWE_ROW_TIMEOUT_SECONDS", "2700")),
-            on_failure="continue",
-            max_attempts=int(os.environ.get("SHALLOWSWE_MAX_ATTEMPTS", "2")),
-            retry_delay=15,
+        execution = {
+            "n_jobs": int(os.environ.get("SHALLOWSWE_N_JOBS", "1")),
+            "row_timeout_seconds": int(
+                os.environ.get("SHALLOWSWE_ROW_TIMEOUT_SECONDS", "2700")
+            ),
+            "max_attempts": int(os.environ.get("SHALLOWSWE_MAX_ATTEMPTS", "2")),
+            "retry_delay_seconds": int(os.environ.get("SHALLOWSWE_RETRY_DELAY_SECONDS", "15")),
+        }
+    evaluation_log_path = Path(
+        os.environ.get(
+            "SHALLOWSWE_EVALUATION_LOG_PATH",
+            "/kaggle/working/shallowswe-evaluation.log",
         )
+    )
+    evaluation_log_path.parent.mkdir(parents=True, exist_ok=True)
+    with evaluation_log_path.open("a", buffering=1) as evaluation_log:
+        with redirect_stdout(evaluation_log), redirect_stderr(evaluation_log):
+            with kbench.client.enable_cache():
+                SHALLOWSWE_RUNS = shallowswe_repair_loop.evaluate(
+                    llm=[kbench.llm],
+                    task_id=task_ids,
+                    rollout_seed=seeds,
+                    n_jobs=execution["n_jobs"],
+                    timeout=execution["row_timeout_seconds"],
+                    on_failure="continue",
+                    max_attempts=execution["max_attempts"],
+                    retry_delay=execution["retry_delay_seconds"],
+                )
+    print(
+        json.dumps(
+            {
+                "event": "shallowswe_evaluation_complete",
+                "evaluation_log": str(evaluation_log_path),
+                "result_count": len(SHALLOWSWE_RUNS),
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
 
 # %%
 if os.environ.get("KAGGLE_KERNEL_RUN_TYPE"):

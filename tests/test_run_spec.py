@@ -6,6 +6,7 @@ from shallowswe.identity import agent_policy_id, model_config_id
 from shallowswe.run_spec import (
     audit_run_spec,
     resolve_agent_policy,
+    resolve_execution_options,
     resolve_execution_sampling,
     resolve_model_config,
     resolve_run_unit,
@@ -88,12 +89,53 @@ class RunSpecTests(unittest.TestCase):
             "six-task-shakedown-v1__sol-low-all__task-b__seed-4001",
         )
 
+    def test_resolves_generic_execution_defaults_and_unit_overrides(self) -> None:
+        self.spec["execution_defaults"] = {
+            "n_jobs": 6,
+            "row_timeout_seconds": 2800,
+            "max_attempts": 1,
+            "retry_delay_seconds": 0,
+        }
+        self.spec["units"][0]["execution"] = {"n_jobs": 2}
+
+        self.assertEqual(
+            resolve_execution_options(self.spec, self.spec["units"][0]),
+            {
+                "n_jobs": 2,
+                "row_timeout_seconds": 2800,
+                "max_attempts": 1,
+                "retry_delay_seconds": 0,
+            },
+        )
+
+    def test_rejects_unknown_execution_options(self) -> None:
+        self.spec["execution_defaults"] = {"canary_mode": 1}
+
+        with self.assertRaisesRegex(ValueError, "unknown execution options"):
+            validate_run_spec(self.spec)
+
     def test_rejects_model_effort_collapse(self) -> None:
         unit = resolve_run_unit(self.spec, "sol-low-all")
         unit["model_config_id"] = self.high_id
 
         with self.assertRaisesRegex(RuntimeError, "does not match"):
             resolve_model_config(self.spec, unit, observed_model="different-model")
+
+    def test_resolves_provider_qualified_transport_alias(self) -> None:
+        unit = resolve_run_unit(self.spec, "sol-low-all")
+        canonical = self.spec["model_configs"][0]["canonical"]
+        canonical["kaggle_model_slug"] = "gpt-5.6-sol"
+        canonical["model_proxy_slug"] = "openai/gpt-5.6-sol"
+        self.spec["model_configs"][0]["model_config_id"] = model_config_id(canonical)
+        unit["model_config_id"] = self.spec["model_configs"][0]["model_config_id"]
+
+        model = resolve_model_config(
+            self.spec,
+            unit,
+            observed_model="openai/gpt-5.6-sol",
+        )
+
+        self.assertEqual(model["canonical"]["requested_model"], "gpt-5.6-sol")
 
     def test_rejects_unregistered_task_or_seed(self) -> None:
         unit = resolve_run_unit(self.spec, "sol-low-all")
@@ -194,6 +236,39 @@ class RunSpecTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "resolved_model"):
             validate_result_execution_identity(row, self.spec, unit)
+
+    def test_result_identity_allows_missing_resolution_for_zero_usage_exclusion(self) -> None:
+        unit = self.spec["units"][0]
+        model = self.spec["model_configs"][0]
+        policy = self.spec["agent_policies"][0]
+        row = repair_loop_from_mapping(
+            {
+                "model": "gpt-5.6-sol",
+                "task_id": "task-a",
+                "category": "code",
+                "size": "small",
+                "loop": 4000,
+                "seed": 4000,
+                "passed": False,
+                "stop_reason": "provider_unavailable",
+                "verifier_submissions": 0,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "turns": 1,
+                "status": "excluded",
+                "exclusion_reason": "provider_or_network_error",
+                "requested_model": "gpt-5.6-sol",
+                "resolved_model": None,
+                "reasoning_effort": "low",
+                "temperature": 0.0,
+                "model_config_id": unit["model_config_id"],
+                "model_config_canonical_json": model["canonical"],
+                "agent_policy_id": unit["agent_policy_id"],
+                "agent_policy_canonical_json": policy["canonical"],
+            }
+        )
+
+        validate_result_execution_identity(row, self.spec, unit)
 
     def test_audit_reports_derived_trajectory_count(self) -> None:
         from pathlib import Path

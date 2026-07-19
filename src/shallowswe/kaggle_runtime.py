@@ -127,6 +127,13 @@ class KaggleBenchmarksModel:
             reasoning=self.config.reasoning,
             **self.config.model_kwargs,
         )
+        if not response.text and not response.tool_calls:
+            # Kaggle records a provider's empty response in the active chat before
+            # mini-swe-agent can turn it into a format-error retry. The GenAI
+            # serializer represents that blank assistant turn as an empty Part,
+            # which Gemini rejects on the next request. Keep the turn in the
+            # transcript for diagnostics, but omit it from subsequent model input.
+            response.is_visible_to_llm = False
         self._capture_resolved_model(getattr(response, "_meta", {}))
         actions, raw_tool_calls = self._parse_actions(response.tool_calls)
         usage = response.usage
@@ -477,9 +484,14 @@ def build_chroot_command(
     selected_env = {
         "HOME": "/home/sandbox",
         "LANG": "C.UTF-8",
-        "PATH": "/opt/python/bin:/usr/bin:/bin",
+        "PATH": "/opt/go/bin:/opt/python/bin:/usr/bin:/bin",
         "PYTHONHOME": "/opt/python",
         "PYTHONPATH": "/app",
+        "GOCACHE": "/tmp/go-build",
+        "GOMODCACHE": "/tmp/go-mod",
+        "GOROOT": "/opt/go",
+        "GOTOOLCHAIN": "local",
+        "CGO_ENABLED": "0",
         **(env or {}),
     }
     env_args = [f"{key}={value}" for key, value in selected_env.items()]
@@ -581,6 +593,12 @@ def _build_chroot_template(template: Path, python_executable: Path) -> Path:
         if alias_path.exists() or alias_path.is_symlink():
             alias_path.unlink()
         shutil.copy2(python_executable.resolve(), alias_path)
+    go_root_value = os.environ.get("SHALLOWSWE_GO_ROOT")
+    if go_root_value:
+        go_root = Path(go_root_value)
+        if not (go_root / "bin" / "go").is_file():
+            raise RuntimeError(f"Missing ShallowSWE Go runtime: {go_root}")
+        shutil.copytree(go_root, template / "opt" / "go", symlinks=True)
     shared_objects = [
         path
         for path in destination_prefix.rglob("*")

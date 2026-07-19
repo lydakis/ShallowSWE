@@ -82,6 +82,47 @@ class KaggleBundleTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unsupported Kaggle Dockerfile instruction"):
                 materialize_task_environment(task, Path(tmp) / "workspace")
 
+    def test_materializer_accepts_frozen_phase3_python_image(self) -> None:
+        with TemporaryDirectory() as tmp:
+            task = _write_task(Path(tmp) / "task")
+            environment = task / "environment"
+            (environment / "Dockerfile").write_text(
+                """\
+FROM python:3.12.11-slim-bookworm@sha256:519591d6871b7bc437060736b9f7456b8731f1499a57e22e6c285135ae657bf7
+WORKDIR /app
+COPY . /app
+ENV PYTHONPATH=/app
+"""
+            )
+            workspace = Path(tmp) / "workspace"
+
+            materialize_task_environment(task, workspace)
+
+            self.assertEqual((workspace / "visible.txt").read_text(), "visible\n")
+            self.assertTrue((workspace / "Dockerfile").is_file())
+
+    def test_materializer_accepts_frozen_phase3_go_image(self) -> None:
+        with TemporaryDirectory() as tmp:
+            task = _write_task(Path(tmp) / "task")
+            environment = task / "environment"
+            (environment / "Dockerfile").write_text(
+                """\
+FROM python:3.12.11-slim-bookworm@sha256:519591d6871b7bc437060736b9f7456b8731f1499a57e22e6c285135ae657bf7 AS verifier-python
+FROM golang:1.24.5-bookworm@sha256:ef8c5c733079ac219c77edab604c425d748c740d8699530ea6aced9de79aea40
+COPY --from=verifier-python /usr/local /usr/local
+RUN ln -sf /usr/local/go/bin/go /usr/local/bin/go \\
+    && ln -sf /usr/local/go/bin/gofmt /usr/local/bin/gofmt
+WORKDIR /app
+COPY . /app
+ENV PYTHONPATH=/app
+"""
+            )
+            workspace = Path(tmp) / "workspace"
+
+            materialize_task_environment(task, workspace)
+
+            self.assertEqual((workspace / "visible.txt").read_text(), "visible\n")
+
     def test_export_rejects_a_run_spec_task_missing_from_the_bundle(self) -> None:
         with TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -10,6 +10,7 @@ import kaggle_benchmarks as kbench
 from kaggle_benchmarks.actors.llms import LLMChat, LLMResponse
 from minisweagent.agents.interactive import InteractiveAgent
 from minisweagent.environments.local import LocalEnvironment
+from minisweagent.exceptions import FormatError
 
 from shallowswe.kaggle_runtime import (
     KaggleBenchmarksModel,
@@ -78,6 +79,19 @@ class _ProviderResponseLLM(_ScriptedLLM):
         return super().invoke(*args, **kwargs)
 
 
+class _EmptyThenCommandLLM(_ScriptedLLM):
+    def __init__(self) -> None:
+        super().__init__(["true"])
+        self._empty_pending = True
+
+    def invoke(self, messages, system, tools=None, **kwargs):
+        if self._empty_pending:
+            self._empty_pending = False
+            self.seen_roles.append([message.sender.role for message in messages])
+            return LLMResponse(content="", tool_calls=None, meta={})
+        return super().invoke(messages, system, tools=tools, **kwargs)
+
+
 class KaggleRuntimeTests(unittest.TestCase):
     def test_only_exact_kaggle_creation_placeholder_is_skipped(self) -> None:
         self.assertTrue(
@@ -99,15 +113,26 @@ class KaggleRuntimeTests(unittest.TestCase):
             )
         )
 
-    def test_runner_skips_creation_placeholder_before_loading_a_model(self) -> None:
+    def test_runner_uses_runner_supplied_model_after_creation_placeholder_guard(self) -> None:
         source = Path("kaggle/shallowswe_runner.py").read_text()
 
         guard = source.index("if is_kaggle_task_creation_placeholder(")
         resolution = source.index("model_entry = resolve_model_config(")
-        model_load = source.index("native_llm = load_model(")
+        runner_model_use = source.index("llm=llm,")
 
         self.assertLess(guard, resolution)
-        self.assertLess(guard, model_load)
+        self.assertLess(guard, runner_model_use)
+        self.assertNotIn("load_model(", source)
+
+    def test_runner_redirects_verbose_evaluation_output_to_an_artifact(self) -> None:
+        source = Path("kaggle/shallowswe_runner.py").read_text()
+
+        redirect = source.index("with redirect_stdout(evaluation_log), redirect_stderr")
+        evaluation = source.index("SHALLOWSWE_RUNS = shallowswe_repair_loop.evaluate(")
+        completion = source.index('"event": "shallowswe_evaluation_complete"')
+
+        self.assertLess(redirect, evaluation)
+        self.assertLess(evaluation, completion)
 
     def test_captures_resolved_model_from_raw_provider_response(self) -> None:
         llm = _ProviderResponseLLM()
@@ -116,6 +141,28 @@ class KaggleRuntimeTests(unittest.TestCase):
         model.query([{"role": "user", "content": "inspect the repository"}])
 
         self.assertEqual(model.resolved_model, "provider/model-snapshot")
+
+    def test_empty_provider_turn_is_hidden_before_format_error_retry(self) -> None:
+        llm = _EmptyThenCommandLLM()
+        model = KaggleBenchmarksModel(llm=llm, model_name="test/model")
+        messages = [{"role": "user", "content": "inspect"}]
+
+        with kbench.chats.new("empty-response-retry") as chat:
+            with self.assertRaises(FormatError):
+                model.query(messages)
+            messages.append(
+                {
+                    "role": "user",
+                    "content": "Tool call error: issue a bash tool call.",
+                }
+            )
+            second = model.query(messages)
+
+        self.assertTrue(second["tool_calls"])
+        self.assertEqual(llm.seen_roles[1], ["user", "user"])
+        blank = [message for message in chat.messages if not message.content]
+        self.assertEqual(len(blank), 1)
+        self.assertFalse(blank[0].is_visible_to_llm)
 
     def test_google_models_use_genai_model_proxy_api(self) -> None:
         self.assertEqual(model_proxy_api("google/gemini-3.5-flash"), "genai")
@@ -223,6 +270,10 @@ class KaggleRuntimeTests(unittest.TestCase):
         self.assertIn("chroot", command)
         self.assertIn("--userspec=65534:65534", command)
         self.assertIn(str(rootfs.resolve()), command)
+        self.assertIn("PATH=/opt/go/bin:/opt/python/bin:/usr/bin:/bin", command)
+        self.assertIn("GOROOT=/opt/go", command)
+        self.assertIn("GOTOOLCHAIN=local", command)
+        self.assertIn("GOCACHE=/tmp/go-build", command)
         self.assertNotIn("/kaggle/input", rendered)
         self.assertNotIn("/proc", rendered)
 

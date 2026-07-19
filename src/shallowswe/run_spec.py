@@ -9,6 +9,12 @@ from .identity import agent_policy_id, canonical_json, model_config_id
 
 
 RUN_SPEC_SCHEMA_VERSION = "shallowswe.run_spec.v0.1"
+DEFAULT_EXECUTION_OPTIONS = {
+    "n_jobs": 1,
+    "row_timeout_seconds": 2700,
+    "max_attempts": 2,
+    "retry_delay_seconds": 15,
+}
 
 
 def load_run_spec(path: Path) -> dict[str, Any]:
@@ -46,6 +52,7 @@ def validate_run_spec(spec: dict[str, Any]) -> None:
     units = _unique_rows(spec.get("units"), "run_unit_id")
     if not units:
         raise ValueError("run spec requires at least one unit")
+    _validate_execution_options(spec.get("execution_defaults", {}), "run spec")
 
     for identifier, config in model_configs.items():
         canonical = config.get("canonical")
@@ -111,6 +118,7 @@ def validate_run_spec(spec: dict[str, Any]) -> None:
         if not isinstance(accounting, dict):
             raise ValueError(f"run unit {identifier} accounting must be an object")
         _validate_accounting(accounting, unit=unit, unit_id=identifier)
+        _validate_execution_options(unit.get("execution", {}), f"run unit {identifier}")
 
     expected_hash = spec.get("run_spec_sha256")
     if expected_hash is not None and expected_hash != run_spec_sha256(spec):
@@ -140,7 +148,12 @@ def resolve_model_config(
         row
         for row in spec["model_configs"]
         if row["model_config_id"] == unit["model_config_id"]
-        and row["canonical"]["requested_model"] == observed_model
+        and observed_model
+        in {
+            row["canonical"]["requested_model"],
+            row["canonical"].get("kaggle_model_slug"),
+            row["canonical"].get("model_proxy_slug"),
+        }
     ]
     if len(matches) != 1:
         raise RuntimeError(
@@ -189,7 +202,15 @@ def validate_result_execution_identity(
         "agent_policy_canonical_json": policy,
     }
     for field, expected_value in expected.items():
-        if getattr(row, field, None) != expected_value:
+        observed_value = getattr(row, field, None)
+        missing_resolution_for_zero_usage_exclusion = (
+            field == "resolved_model"
+            and observed_value is None
+            and getattr(row, "status", None) == "excluded"
+            and int(getattr(row, "input_tokens", 0) or 0) == 0
+            and int(getattr(row, "output_tokens", 0) or 0) == 0
+        )
+        if observed_value != expected_value and not missing_resolution_for_zero_usage_exclusion:
             mismatches.append(field)
     for field in ("provider_route", "reasoning_effort"):
         if field in model and getattr(row, field, None) != model[field]:
@@ -231,6 +252,17 @@ def unit_matrix(unit: dict[str, Any]) -> tuple[list[str], list[int]]:
     return list(unit["task_ids"]), list(unit["rollout_seeds"])
 
 
+def resolve_execution_options(
+    spec: dict[str, Any],
+    unit: dict[str, Any],
+) -> dict[str, int]:
+    validate_run_spec(spec)
+    options = dict(DEFAULT_EXECUTION_OPTIONS)
+    options.update(spec.get("execution_defaults") or {})
+    options.update(unit.get("execution") or {})
+    return {field: int(options[field]) for field in DEFAULT_EXECUTION_OPTIONS}
+
+
 def trajectory_id(
     spec: dict[str, Any],
     unit: dict[str, Any],
@@ -266,6 +298,25 @@ def _positive_int(limits: dict[str, Any], field: str, unit_id: str) -> None:
     value = limits.get(field)
     if not isinstance(value, int) or value <= 0:
         raise ValueError(f"run unit {unit_id} requires positive limits.{field}")
+
+
+def _validate_execution_options(value: Any, owner: str) -> None:
+    if not isinstance(value, dict):
+        raise ValueError(f"{owner} execution options must be an object")
+    unknown = set(value) - set(DEFAULT_EXECUTION_OPTIONS)
+    if unknown:
+        raise ValueError(f"{owner} has unknown execution options: {sorted(unknown)}")
+    for field in ("n_jobs", "row_timeout_seconds", "max_attempts"):
+        configured = value.get(field)
+        if configured is not None and (
+            not isinstance(configured, int) or isinstance(configured, bool) or configured <= 0
+        ):
+            raise ValueError(f"{owner} requires positive execution option {field}")
+    retry_delay = value.get("retry_delay_seconds")
+    if retry_delay is not None and (
+        not isinstance(retry_delay, int) or isinstance(retry_delay, bool) or retry_delay < 0
+    ):
+        raise ValueError(f"{owner} requires non-negative execution option retry_delay_seconds")
 
 
 def _validate_accounting(

@@ -20,6 +20,7 @@ CAP_HIT_STOP_REASONS = frozenset(
         "verifier_submission_cap",
         "step_cap",
         "agent_step_cap",
+        "context_limit",
     }
 )
 
@@ -248,6 +249,31 @@ def dump_results(rows: Iterable[RolloutResult]) -> str:
 
 
 def load_repair_loops(path: Path) -> list[RepairLoopResult]:
+    if path.is_dir():
+        artifact_paths = sorted(path.rglob("repair-loop-result.json"))
+        if not artifact_paths:
+            raise ValueError(f"{path} contains no repair-loop-result.json artifacts")
+
+        rows: list[RepairLoopResult] = []
+        trajectory_sources: dict[str, Path] = {}
+        for artifact_path in artifact_paths:
+            artifact_rows = _load_repair_loop_array(artifact_path)
+            for row in artifact_rows:
+                if row.trajectory_id:
+                    previous_path = trajectory_sources.get(row.trajectory_id)
+                    if previous_path is not None:
+                        raise ValueError(
+                            "duplicate trajectory_id "
+                            f"{row.trajectory_id!r} in {previous_path} and {artifact_path}"
+                        )
+                    trajectory_sources[row.trajectory_id] = artifact_path
+            rows.extend(artifact_rows)
+        return rows
+
+    return _load_repair_loop_array(path)
+
+
+def _load_repair_loop_array(path: Path) -> list[RepairLoopResult]:
     raw = json.loads(path.read_text())
     if not isinstance(raw, list):
         raise ValueError(f"{path} must contain a JSON array of repair-loop result rows")

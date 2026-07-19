@@ -1,6 +1,3 @@
 agent:
   step_limit: 256
   wall_time_limit_seconds: 2400
-model:
-  model_kwargs:
-    max_tokens: 8192

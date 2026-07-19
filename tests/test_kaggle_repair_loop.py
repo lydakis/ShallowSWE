@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import json
+import asyncio
 import unittest
 
 import kaggle_benchmarks as kbench
@@ -10,7 +11,9 @@ from kaggle_benchmarks.actors.llms import LLMChat, LLMResponse
 from minisweagent.environments.local import LocalEnvironment
 
 from shallowswe.kaggle_repair_loop import (
+    _classify_runner_exception,
     _preflight_secure_environment,
+    _run_async,
     run_kaggle_repair_loop,
 )
 from shallowswe.kaggle_runtime import HiddenVerifierResult
@@ -42,6 +45,44 @@ class _ScriptedLLM(LLMChat):
 
 
 class KaggleRepairLoopTests(unittest.TestCase):
+    def test_classifies_provider_context_limit_as_scored_cap_hit(self) -> None:
+        error = RuntimeError(
+            "The input token count exceeds the maximum number of tokens allowed 1048576."
+        )
+
+        self.assertEqual(
+            _classify_runner_exception(error),
+            ("context_limit", "scored", None),
+        )
+
+    def test_classifies_pre_response_provider_503_as_infrastructure(self) -> None:
+        error = RuntimeError("503: The requested model is currently not reachable.")
+
+        self.assertEqual(
+            _classify_runner_exception(error),
+            ("provider_unavailable", "excluded", "provider_or_network_error"),
+        )
+
+    def test_async_bridge_preserves_kaggle_chat_context(self) -> None:
+        async def scenario() -> None:
+            async def emit_messages():
+                from kaggle_benchmarks import actors, contexts
+
+                actors.user.send("first")
+                actors.user.send("second")
+                return contexts.get_current().chat
+
+            with kbench.chats.new("event-loop-context", orphan=True) as chat:
+                observed_chat = _run_async(emit_messages())
+
+            self.assertIs(observed_chat, chat)
+            self.assertEqual(
+                [message.text for message in chat.messages],
+                ["first", "second"],
+            )
+
+        asyncio.run(scenario())
+
     def test_rejects_runtime_price_sheet_that_differs_from_frozen_policy(self) -> None:
         with self.assertRaisesRegex(ValueError, "runtime price sheet"):
             run_kaggle_repair_loop(
@@ -124,6 +165,7 @@ class KaggleRepairLoopTests(unittest.TestCase):
                     artifacts_dir=artifacts,
                     run_id="test-run",
                     model_name="test/model",
+                    transport_model_name="provider/test-model",
                     config_file=config,
                     max_verifier_submissions=3,
                     agent_step_cap=10,
@@ -148,6 +190,7 @@ class KaggleRepairLoopTests(unittest.TestCase):
                         "pressure_band": "low",
                     },
                     price_sheet_version="test-prices",
+                    price_sheet_date="2026-07-18",
                     routine_review_version="review-v1",
                     canonical_price=ModelPrice(1.0, None, 1.0),
                     environment_factory=lambda path, timeout: LocalEnvironment(
@@ -161,6 +204,9 @@ class KaggleRepairLoopTests(unittest.TestCase):
             self.assertEqual(row.verifier_submissions, 2)
             self.assertEqual(row.turns, 3)
             self.assertEqual(row.runner, "kaggle-benchmarks-repair-loop")
+            self.assertEqual(row.model, "test/model")
+            self.assertEqual(row.requested_model, "test/model")
+            self.assertIsNone(row.max_output_tokens)
             self.assertEqual(row.inference_gateway, "kaggle")
             self.assertEqual(row.seed, 7)
             self.assertEqual(row.model_config_id, "mc_test")
@@ -171,6 +217,7 @@ class KaggleRepairLoopTests(unittest.TestCase):
             self.assertEqual(row.run_spec_id, "test-spec")
             self.assertEqual(row.run_unit_id, "test-unit")
             self.assertEqual(row.run_metadata, {"phase": "test"})
+            self.assertEqual(row.price_sheet_date, "2026-07-18")
             self.assertEqual(row.reference_task_budget_usd, 0.05)
             self.assertEqual(row.reference_anchor_replacement_cost_usd, 0.02)
             self.assertEqual(row.anchor_confirmation_attempts, 8)
