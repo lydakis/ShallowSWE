@@ -298,91 +298,102 @@ def shallowswe_repair_loop(llm, task_id: str, rollout_seed: int) -> bool:
             "shallowswe-kaggle-smoke-v0.1",
         ),
     )
-    row = run_kaggle_repair_loop(
-        llm=llm,
-        task_path=BUNDLE_ROOT / task_entry["task_path"],
-        verifier_dir=BUNDLE_ROOT / task_entry["verifier_path"],
-        workspace_dir=run_root / "workspace",
-        artifacts_dir=run_root / "artifacts",
-        run_id=run_id,
-        model_name=canonical_model_name,
-        transport_model_name=transport_model_name,
-        config_file=BUNDLE_ROOT / MANIFEST["mini_swe_agent_config"],
-        max_verifier_submissions=(
-            int(limits["verifier_submissions"])
-            if limits is not None
-            else int(os.environ.get("SHALLOWSWE_MAX_VERIFIER_SUBMISSIONS", "3"))
-        ),
-        agent_step_cap=(int(limits["agent_steps"]) if limits is not None else None),
-        dollar_cap_usd=(
-            float(limits["dollar_usd"])
-            if limits and limits.get("dollar_usd") is not None
-            else float(os.environ["SHALLOWSWE_DOLLAR_CAP_USD"])
-            if os.environ.get("SHALLOWSWE_DOLLAR_CAP_USD") and RUN_UNIT is None
-            else None
-        ),
-        wall_time_cap_seconds=(
-            int(limits["wall_time_seconds"])
-            if limits is not None
-            else int(os.environ.get("SHALLOWSWE_WALL_TIME_CAP_SECONDS", "2400"))
-        ),
-        reasoning_effort=(
-            model_entry["canonical"].get("reasoning_effort")
-            if model_entry
-            else os.environ.get("SHALLOWSWE_REASONING_EFFORT") or None
-        ),
-        temperature=temperature,
-        seed=rollout_seed,
-        task_suite_version=task_suite_version,
-        repo_commit_sha=os.environ.get("SHALLOWSWE_REPO_COMMIT_SHA") or None,
-        model_config_id=model_entry.get("model_config_id") if model_entry else None,
-        model_config_canonical_json=model_entry.get("canonical") if model_entry else None,
-        agent_policy_id=agent_policy.get("agent_policy_id") if agent_policy else None,
-        agent_policy_canonical_json=agent_policy.get("canonical") if agent_policy else None,
-        provider_route=(
-            model_entry["canonical"]["provider_route"] if model_entry else "kaggle_model_proxy"
-        ),
-        context_limit=(
-            model_entry["canonical"].get("model_context_limit_tokens") if model_entry else None
-        ),
-        cache_policy=model_entry["canonical"].get("cache_policy") if model_entry else None,
-        price_sheet_version=(Path(MANIFEST["price_sheet"]).stem if MANIFEST.get("price_sheet") else None),
-        price_sheet_date=str(PRICE_PAYLOAD.get("effective_date") or "") or None,
-        routine_review_version=os.environ.get("SHALLOWSWE_ROUTINE_REVIEW_VERSION") or None,
-        trajectory_id=registered_trajectory_id,
-        experiment_id=RUN_SPEC.get("experiment_id") if RUN_SPEC else None,
-        run_spec_id=RUN_SPEC.get("run_spec_id") if RUN_SPEC else None,
-        run_unit_id=RUN_UNIT.get("run_unit_id") if RUN_UNIT else None,
-        run_metadata=dict(RUN_UNIT.get("metadata") or {}) if RUN_UNIT else None,
-        result_accounting=dict(RUN_UNIT.get("accounting") or {}) if RUN_UNIT else None,
-        canonical_price=canonical_price,
-        proxy_api=proxy_api,
-    )
-    if RUN_UNIT is not None:
-        try:
-            validate_result_execution_identity(row, RUN_SPEC, RUN_UNIT)
-        except ValueError as error:
-            row = replace(
-                row,
-                passed=False,
-                stop_reason="execution_identity_mismatch",
-                status=EXCLUDED_STATUS,
-                exclusion_reason="runner_execution_identity_mismatch",
-            )
-            (run_root / "repair-loop-result.json").write_text(
-                dump_kaggle_result(row)
-            )
-            raise RuntimeError(str(error)) from error
-    (run_root / "repair-loop-result.json").write_text(dump_kaggle_result(row))
-    if not row.is_scored:
-        raise RuntimeError(
-            f"Excluded ShallowSWE runner failure: {row.stop_reason} ({row.exclusion_reason})"
+    workspace_dir = run_root / "workspace"
+    try:
+        row = run_kaggle_repair_loop(
+            llm=llm,
+            task_path=BUNDLE_ROOT / task_entry["task_path"],
+            verifier_dir=BUNDLE_ROOT / task_entry["verifier_path"],
+            workspace_dir=workspace_dir,
+            artifacts_dir=run_root / "artifacts",
+            run_id=run_id,
+            model_name=canonical_model_name,
+            transport_model_name=transport_model_name,
+            config_file=BUNDLE_ROOT / MANIFEST["mini_swe_agent_config"],
+            max_verifier_submissions=(
+                int(limits["verifier_submissions"])
+                if limits is not None
+                else int(os.environ.get("SHALLOWSWE_MAX_VERIFIER_SUBMISSIONS", "3"))
+            ),
+            agent_step_cap=(int(limits["agent_steps"]) if limits is not None else None),
+            dollar_cap_usd=(
+                float(limits["dollar_usd"])
+                if limits and limits.get("dollar_usd") is not None
+                else float(os.environ["SHALLOWSWE_DOLLAR_CAP_USD"])
+                if os.environ.get("SHALLOWSWE_DOLLAR_CAP_USD") and RUN_UNIT is None
+                else None
+            ),
+            wall_time_cap_seconds=(
+                int(limits["wall_time_seconds"])
+                if limits is not None
+                else int(os.environ.get("SHALLOWSWE_WALL_TIME_CAP_SECONDS", "2400"))
+            ),
+            reasoning_effort=(
+                model_entry["canonical"].get("reasoning_effort")
+                if model_entry
+                else os.environ.get("SHALLOWSWE_REASONING_EFFORT") or None
+            ),
+            temperature=temperature,
+            seed=rollout_seed,
+            task_suite_version=task_suite_version,
+            repo_commit_sha=os.environ.get("SHALLOWSWE_REPO_COMMIT_SHA") or None,
+            model_config_id=model_entry.get("model_config_id") if model_entry else None,
+            model_config_canonical_json=model_entry.get("canonical") if model_entry else None,
+            agent_policy_id=agent_policy.get("agent_policy_id") if agent_policy else None,
+            agent_policy_canonical_json=agent_policy.get("canonical") if agent_policy else None,
+            provider_route=(
+                model_entry["canonical"]["provider_route"]
+                if model_entry
+                else "kaggle_model_proxy"
+            ),
+            context_limit=(
+                model_entry["canonical"].get("model_context_limit_tokens")
+                if model_entry
+                else None
+            ),
+            cache_policy=model_entry["canonical"].get("cache_policy") if model_entry else None,
+            price_sheet_version=(
+                Path(MANIFEST["price_sheet"]).stem if MANIFEST.get("price_sheet") else None
+            ),
+            price_sheet_date=str(PRICE_PAYLOAD.get("effective_date") or "") or None,
+            routine_review_version=os.environ.get("SHALLOWSWE_ROUTINE_REVIEW_VERSION") or None,
+            trajectory_id=registered_trajectory_id,
+            experiment_id=RUN_SPEC.get("experiment_id") if RUN_SPEC else None,
+            run_spec_id=RUN_SPEC.get("run_spec_id") if RUN_SPEC else None,
+            run_unit_id=RUN_UNIT.get("run_unit_id") if RUN_UNIT else None,
+            run_metadata=dict(RUN_UNIT.get("metadata") or {}) if RUN_UNIT else None,
+            result_accounting=dict(RUN_UNIT.get("accounting") or {}) if RUN_UNIT else None,
+            canonical_price=canonical_price,
+            proxy_api=proxy_api,
         )
-    kbench.assertions.assert_true(
-        row.passed,
-        expectation="The ShallowSWE hidden verifier should pass within the submission cap.",
-    )
-    return row.passed
+        if RUN_UNIT is not None:
+            try:
+                validate_result_execution_identity(row, RUN_SPEC, RUN_UNIT)
+            except ValueError as error:
+                row = replace(
+                    row,
+                    passed=False,
+                    stop_reason="execution_identity_mismatch",
+                    status=EXCLUDED_STATUS,
+                    exclusion_reason="runner_execution_identity_mismatch",
+                )
+                (run_root / "repair-loop-result.json").write_text(
+                    dump_kaggle_result(row)
+                )
+                raise RuntimeError(str(error)) from error
+        (run_root / "repair-loop-result.json").write_text(dump_kaggle_result(row))
+        if not row.is_scored:
+            raise RuntimeError(
+                f"Excluded ShallowSWE runner failure: {row.stop_reason} ({row.exclusion_reason})"
+            )
+        kbench.assertions.assert_true(
+            row.passed,
+            expectation="The ShallowSWE hidden verifier should pass within the submission cap.",
+        )
+        return row.passed
+    finally:
+        if workspace_dir.exists():
+            shutil.rmtree(workspace_dir)
 
 
 # %%

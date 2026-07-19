@@ -120,6 +120,21 @@ class KaggleRuntimeTests(unittest.TestCase):
         self.assertLess(redirect, evaluation)
         self.assertLess(evaluation, completion)
 
+    def test_runner_removes_ephemeral_workspace_after_persisting_result(self) -> None:
+        source = Path("kaggle/shallowswe_runner.py").read_text()
+
+        workspace = source.index('workspace_dir = run_root / "workspace"')
+        execution = source.index("row = run_kaggle_repair_loop(")
+        persisted = source.index(
+            '(run_root / "repair-loop-result.json").write_text(dump_kaggle_result(row))'
+        )
+        cleanup = source.index("shutil.rmtree(workspace_dir)")
+
+        self.assertLess(workspace, execution)
+        self.assertLess(execution, persisted)
+        self.assertLess(persisted, cleanup)
+        self.assertIn("finally:", source[persisted:cleanup])
+
     def test_uses_runner_supplied_model_identity_without_wrapping_shared_client(self) -> None:
         llm = _ScriptedLLM(["true"], resolved_model=None)
         original_invoke = llm.invoke
