@@ -1,0 +1,66 @@
+{
+  "schema_version": "shallowswe.kimi_k3_article_followup_spec.v0.1",
+  "analysis_id": "kimi-k3-article-followup-2026-07-19",
+  "status": "existing_data_only_no_runs_authorized",
+  "claim_boundary": {
+    "retrospective_exploratory_analysis": true,
+    "no_paid_run_authorization": true,
+    "no_training_or_mechanism_inference": true,
+    "deepswe_fresh_context_is_not_shallowswe_repair": true
+  },
+  "sources": {
+    "deepswe_trials": {
+      "sha256": "6c010fb3e03c7eafc189be320b17ff4aaaf07d40a5910c81992d83aa155a2802"
+    },
+    "deepswe_tasks": {
+      "sha256": "bae967f6472943564c3fc5232fba3c8e0ac465c1be5ccf9dd4895d4ee9df6242"
+    },
+    "shallowswe_k3_repair_loops": {
+      "path": "results/shallowswe-repair-loop-preview-n3-18-v0.2-kimi-k3-2026-07-17/repair-loop-results.json",
+      "sha256": "9d5825e696135bd8ea139b742cd3917ddef6ed2a01849bb7cb265000788fb784"
+    }
+  },
+  "configs": {
+    "G": "mini_swe_agent_grok_4_5_high",
+    "S": "mini_swe_agent_gpt_5_6_sol_high",
+    "X": "mini_swe_agent_gpt_5_6_sol_xhigh",
+    "M": "mini_swe_agent_gpt_5_6_sol_max",
+    "T": "mini_swe_agent_gpt_5_6_terra_max",
+    "L": "mini_swe_agent_gpt_5_6_luna_max",
+    "K": "mini_swe_agent_kimi_k3_max",
+    "F": "mini_swe_agent_claude_fable_5_xhigh",
+    "K2": "mini_swe_agent_kimi_k2_7_code_default"
+  },
+  "lineage": {
+    "pair_complete_cohort": ["K", "K2", "F"],
+    "focal_complete_cohort": ["G", "S", "X", "M", "T", "L", "K", "F", "K2"],
+    "focal_shared_control": ["G", "S", "X", "M", "T", "L"],
+    "broad_control_rule": "Exactly four scored attempts on every cohort task, excluding K, K2, and F.",
+    "empirical_logit_pseudocount": 0.5,
+    "primary_variant": "focal_complete_raw_focal_shared",
+    "bootstrap_cluster": "repository"
+  },
+  "retry": {
+    "symbols": ["K", "S", "L", "F"],
+    "attempts": [1, 2, 3, 4],
+    "ordering": "uniform_without_replacement_stop_after_first_success",
+    "bootstrap_cluster": "repository"
+  },
+  "decomposition": {
+    "formula": "mean_success_cost + ((1-p)/p) * mean_failure_cost",
+    "task_conditioned_sensitivity": "Mean task-level ratio among tasks with at least one observed success; all-fail tasks remain disclosed."
+  },
+  "cache": {
+    "step_bins": [[1, 9], [10, 24], [25, 49], [50, null]],
+    "deep_swe_sensitivity_fractions": [0.9341821464, 0.98, 1.0],
+    "prices_usd_per_million": {
+      "uncached_input": 3.0,
+      "cached_input": 0.3,
+      "output": 15.0
+    }
+  },
+  "analysis_controls": {
+    "seed": 20260719,
+    "bootstrap_replicates": 10000
+  }
+}

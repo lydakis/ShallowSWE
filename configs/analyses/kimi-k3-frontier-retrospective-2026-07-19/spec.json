@@ -1,0 +1,208 @@
+{
+  "schema_version": "shallowswe.kimi_k3_retrospective_analysis.v0.2",
+  "protocol_id": "kimi-k3-frontier-retrospective-2026-07-19",
+  "title": "Kimi K3 frozen DeepSWE retrospective analysis",
+  "status": "existing_data_only_no_runs_authorized",
+  "frozen_at": "2026-07-19T15:43:50-04:00",
+  "audit_corrected_at": "2026-07-19T16:14:04-04:00",
+  "audit_corrections": [
+    "Removed all launch planning, prospective hypotheses, budgets, and stopping rules after the scope was corrected to existing-data-only research.",
+    "Retained only the frozen source, descriptive policy semantics, cache sensitivities, and analysis controls."
+  ],
+  "repository_commit_at_freeze": "6017cac7ebebc44fb854c2e16b3562978b2561ad",
+  "claim_boundary": {
+    "source_scope": "Frozen public DeepSWE v1.1 rows and already-published benchmark artifacts only.",
+    "inference_scope": "Retrospective descriptive and exploratory analysis; no confirmatory or deployment claim.",
+    "no_paid_run_authorization": true,
+    "newly_generated_model_outcomes_excluded": true
+  },
+  "source_snapshot": {
+    "benchmark_release": "DeepSWE v1.1",
+    "leaderboard_generated_at": "2026-07-17T08:18:55.870582+00:00",
+    "latest_job": {
+      "name": "20260715-kimi-k3",
+      "finished_at": "2026-07-17T07:49:34.449180"
+    },
+    "n_tasks": 113,
+    "n_configurations": 44,
+    "source_rows": 19878,
+    "scored_rows": 19751,
+    "artifacts": [
+      {
+        "id": "leaderboard",
+        "url": "https://deepswe.datacurve.ai/artifacts/v1.1/leaderboard-live.json",
+        "bytes": 54868,
+        "sha256": "050663ae245106a7fc59312565059f46bd6ee10fa587131dd09a5062af5ed24d"
+      },
+      {
+        "id": "trials",
+        "url": "https://deepswe.datacurve.ai/artifacts/v1.1/trials.json",
+        "bytes": 32913393,
+        "sha256": "6c010fb3e03c7eafc189be320b17ff4aaaf07d40a5910c81992d83aa155a2802"
+      },
+      {
+        "id": "tasks",
+        "url": "https://deepswe.datacurve.ai/artifacts/v1.1/tasks.json",
+        "bytes": 57634,
+        "sha256": "bae967f6472943564c3fc5232fba3c8e0ac465c1be5ccf9dd4895d4ee9df6242"
+      }
+    ]
+  },
+  "model_symbols": {
+    "G": {
+      "config": "mini_swe_agent_grok_4_5_high",
+      "model": "grok-4-5",
+      "reasoning_effort": "high"
+    },
+    "S": {
+      "config": "mini_swe_agent_gpt_5_6_sol_high",
+      "model": "gpt-5-6-sol",
+      "reasoning_effort": "high"
+    },
+    "K": {
+      "config": "mini_swe_agent_kimi_k3_max",
+      "model": "kimi-k3",
+      "reasoning_effort": "max"
+    },
+    "L": {
+      "config": "mini_swe_agent_gpt_5_6_luna_max",
+      "model": "gpt-5-6-luna",
+      "reasoning_effort": "max"
+    },
+    "F": {
+      "config": "mini_swe_agent_claude_fable_5_xhigh",
+      "model": "claude-fable-5",
+      "reasoning_effort": "xhigh"
+    }
+  },
+  "locked_policies": {
+    "coverage_semantics": "multiset_any_verified_success",
+    "stopped_cost_semantics": "Evaluate slots from left to right, stop after the first verified success, and charge recorded cost and time for every attempted slot through the stop. A four-slot failure charges all four slots.",
+    "within_symbol_sampling": "Repeated symbols consume distinct attempts. Retrospective estimates average exhaustively over every distinct within-task attempt assignment.",
+    "policies": [
+      {
+        "id": "P0",
+        "label": "SSSS",
+        "slots": [
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        "role": "homogeneous_sol_reference"
+      },
+      {
+        "id": "P1",
+        "label": "KKKK",
+        "slots": [
+          "K",
+          "K",
+          "K",
+          "K"
+        ],
+        "role": "homogeneous_k3_reference"
+      },
+      {
+        "id": "P2",
+        "label": "GGGG",
+        "slots": [
+          "G",
+          "G",
+          "G",
+          "G"
+        ],
+        "role": "homogeneous_grok_reference"
+      },
+      {
+        "id": "P3",
+        "label": "GSSK",
+        "slots": [
+          "G",
+          "S",
+          "S",
+          "K"
+        ],
+        "role": "selected_mixed_discovery"
+      },
+      {
+        "id": "A0",
+        "label": "GSSL",
+        "slots": [
+          "G",
+          "S",
+          "S",
+          "L"
+        ],
+        "role": "direct_no_k_ablation"
+      },
+      {
+        "id": "D0",
+        "label": "LGLF",
+        "slots": [
+          "L",
+          "G",
+          "L",
+          "F"
+        ],
+        "role": "post_hoc_descriptive"
+      },
+      {
+        "id": "D1",
+        "label": "FFFF",
+        "slots": [
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        "role": "homogeneous_fable_reference"
+      }
+    ]
+  },
+  "cache_accounting": {
+    "historical_status": "K3 did not return cached-input telemetry. Every K3 row substitutes cache tokens equal to approximately 98 percent of input tokens.",
+    "historical_assumed_cache_fraction": 0.98,
+    "fallback_cache_fractions": [
+      0.0,
+      0.5,
+      0.9,
+      0.95,
+      0.98,
+      1.0
+    ],
+    "supplemental_research_cache_fractions": [
+      0.9341821464,
+      0.96,
+      0.97
+    ],
+    "artifact_implied_prices_usd_per_million": {
+      "uncached_input": 3.0,
+      "cached_input": 0.3,
+      "output": 15.0
+    },
+    "full_k3_snapshot_cpsc_sensitivity_usd": {
+      "cache_fraction_0.00": 44.23712516504854,
+      "cache_fraction_0.50": 25.133350542233007,
+      "cache_fraction_0.90": 9.850330843980581,
+      "cache_fraction_0.95": 7.93995338169903,
+      "cache_fraction_0.98": 6.793726904330097,
+      "cache_fraction_1.00": 6.029575919417475
+    },
+    "interpretation": "Hold token volumes and outcomes fixed while changing only the cached-input billing share. This is not a behavioral simulation."
+  },
+  "analysis_controls": {
+    "seed": 20260719,
+    "task_and_repository_bootstrap_replicates": 10000,
+    "primary_cluster": "repository",
+    "task_cluster_sensitivity": true,
+    "policy_assignment": "exhaustive_without_replacement",
+    "policy_status": "selection_conditioned_exploratory"
+  },
+  "excluded_paid_diagnostics": {
+    "cache_probe_cost_usd": 0.062832,
+    "interrupted_ofetch_cost_usd": 2.0142822,
+    "total_cost_usd": 2.0771142,
+    "interrupted_ofetch_verifier_result": null,
+    "included_in_research_findings": false
+  }
+}
