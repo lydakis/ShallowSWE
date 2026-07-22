@@ -185,6 +185,15 @@ def main() -> None:
     replacement_cost_parser.add_argument("repair_policy_json", type=Path)
     replacement_cost_parser.add_argument("methodology_json", type=Path)
     replacement_cost_parser.add_argument("output_json", type=Path)
+    replacement_cost_parser.add_argument(
+        "--confirmation-recovery-run-spec",
+        type=Path,
+        action="append",
+        default=[],
+        help=(
+            "exact targeted confirmation recovery RunSpec; may be supplied more than once"
+        ),
+    )
     scoring_spec_parser = subparsers.add_parser(
         "materialize-scoring-run-spec",
         help="materialize candidate scoring units under the frozen task policies",
@@ -538,6 +547,10 @@ def main() -> None:
             confirmation_run_spec=_load_json_object(
                 args.confirmation_run_spec_json
             ),
+            confirmation_recovery_run_specs=[
+                _load_json_object(path)
+                for path in args.confirmation_recovery_run_spec
+            ],
         )
         write_json_artifact(args.output_json, artifact)
         print(json.dumps(artifact, indent=2))

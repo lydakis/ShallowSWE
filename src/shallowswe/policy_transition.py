@@ -112,6 +112,7 @@ def build_anchor_replacement_costs(
     *,
     base_run_spec: dict[str, Any],
     confirmation_run_spec: dict[str, Any],
+    confirmation_recovery_run_specs: Iterable[dict[str, Any]] = (),
 ) -> dict[str, Any]:
     _validate_transition_inputs(repair_policy, methodology)
     confirmation_units = _exact_confirmation_units(
@@ -120,6 +121,15 @@ def build_anchor_replacement_costs(
         repair_policy,
         methodology,
     )
+    recovery_specs, recovery_units = _exact_confirmation_recovery_units(
+        confirmation_run_spec,
+        confirmation_units,
+        confirmation_recovery_run_specs,
+    )
+    allowed_specs = {
+        str(confirmation_run_spec["run_spec_id"]): confirmation_run_spec,
+        **{str(spec["run_spec_id"]): spec for spec in recovery_specs},
+    }
     anchor_id = _anchor_id(methodology)
     task_ids, expected_attempts = _confirmation_sampling(methodology)
     minimum_successes = int(
@@ -138,15 +148,13 @@ def build_anchor_replacement_costs(
         and row.model_config_id == anchor_id
     ]
     run_spec_ids = {row.run_spec_id for row in confirmation}
-    if None in run_spec_ids or len(run_spec_ids) != 1:
-        raise ValueError("confirmation results require one complete RunSpec identity")
+    if None in run_spec_ids or not run_spec_ids.issubset(allowed_specs):
+        raise ValueError("confirmation results require an exact allowed RunSpec identity")
     agent_policy_ids = {row.agent_policy_id for row in confirmation}
     if None in agent_policy_ids or len(agent_policy_ids) != 1:
         raise ValueError("confirmation results require one agent-policy identity")
-    confirmation_run_spec_id = str(next(iter(run_spec_ids)))
+    confirmation_run_spec_id = str(confirmation_run_spec["run_spec_id"])
     confirmation_agent_policy_id = str(next(iter(agent_policy_ids)))
-    if confirmation_run_spec_id != confirmation_run_spec["run_spec_id"]:
-        raise ValueError("confirmation results do not match the exact confirmation RunSpec")
     by_task: dict[str, list[RepairLoopResult]] = defaultdict(list)
     for row in confirmation:
         by_task[row.task_id].append(row)
@@ -168,10 +176,21 @@ def build_anchor_replacement_costs(
                 f"confirmation task {task_id} requires {expected_attempts} scored attempts"
             )
         for row in task_rows:
+            row_spec_id = str(row.run_spec_id)
+            row_spec = allowed_specs[row_spec_id]
+            if row_spec_id == confirmation_run_spec_id:
+                row_unit = expected_unit
+            else:
+                row_unit = recovery_units.get((row_spec_id, str(row.run_unit_id)))
+                if row_unit is None or row_unit["task_ids"] != [task_id]:
+                    raise ValueError(
+                        f"confirmation recovery row {row.trajectory_id or row.run_id} "
+                        "does not match an exact recovery unit"
+                    )
             validate_result_execution_identity(
                 row,
-                confirmation_run_spec,
-                expected_unit,
+                row_spec,
+                row_unit,
             )
         replicate_ids = {row.seed if row.seed is not None else row.loop for row in task_rows}
         if len(replicate_ids) != expected_attempts:
@@ -179,8 +198,7 @@ def build_anchor_replacement_costs(
         if (
             replicate_ids != set(expected_unit["rollout_seeds"])
             or any(
-                row.run_unit_id != expected_unit["run_unit_id"]
-                or row.experiment_id != confirmation_run_spec["experiment_id"]
+                row.experiment_id != confirmation_run_spec["experiment_id"]
                 or row.task_suite_version
                 != confirmation_run_spec["task_suite_version"]
                 or row.agent_policy_id != expected_unit["agent_policy_id"]
@@ -258,6 +276,14 @@ def build_anchor_replacement_costs(
         "price_sheet_version": price_sheet_version,
         "tasks": task_results,
     }
+    if recovery_specs:
+        payload["confirmation_recovery_run_specs"] = [
+            {
+                "run_spec_id": spec["run_spec_id"],
+                "run_spec_sha256": spec["run_spec_sha256"],
+            }
+            for spec in recovery_specs
+        ]
     payload["replacement_costs_sha256"] = _artifact_hash(payload)
     return payload
 
@@ -299,6 +325,75 @@ def _exact_confirmation_units(
         str(unit["task_ids"][0]): unit
         for unit in confirmation_run_spec["units"]
     }
+
+
+def _exact_confirmation_recovery_units(
+    confirmation_run_spec: dict[str, Any],
+    confirmation_units: dict[str, dict[str, Any]],
+    recovery_run_specs: Iterable[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[tuple[str, str], dict[str, Any]]]:
+    specs = list(recovery_run_specs)
+    original_id = str(confirmation_run_spec["run_spec_id"])
+    seen_spec_ids = {original_id}
+    indexed_units: dict[tuple[str, str], dict[str, Any]] = {}
+    expected_models = canonical_json(confirmation_run_spec["model_configs"])
+    expected_policies = canonical_json(confirmation_run_spec["agent_policies"])
+    expected_defaults = canonical_json(confirmation_run_spec.get("execution_defaults"))
+    unit_contract_fields = (
+        "runner",
+        "model_config_id",
+        "agent_policy_id",
+        "task_ids",
+        "limits",
+        "accounting",
+    )
+
+    for spec in specs:
+        validate_run_spec(spec)
+        spec_id = str(spec["run_spec_id"])
+        if spec_id in seen_spec_ids:
+            raise ValueError(f"duplicate confirmation recovery RunSpec: {spec_id}")
+        seen_spec_ids.add(spec_id)
+        if (
+            spec.get("experiment_id") != confirmation_run_spec.get("experiment_id")
+            or spec.get("task_suite_version")
+            != confirmation_run_spec.get("task_suite_version")
+            or canonical_json(spec.get("model_configs")) != expected_models
+            or canonical_json(spec.get("agent_policies")) != expected_policies
+            or canonical_json(spec.get("execution_defaults")) != expected_defaults
+        ):
+            raise ValueError("confirmation recovery changes the frozen confirmation identity")
+        units = spec.get("units")
+        if not isinstance(units, list) or not units:
+            raise ValueError("confirmation recovery RunSpec requires at least one unit")
+        for unit in units:
+            task_ids = unit.get("task_ids")
+            if not isinstance(task_ids, list) or len(task_ids) != 1:
+                raise ValueError("confirmation recovery units must target exactly one task")
+            task_id = str(task_ids[0])
+            original_unit = confirmation_units.get(task_id)
+            if original_unit is None or any(
+                canonical_json(unit.get(field)) != canonical_json(original_unit.get(field))
+                for field in unit_contract_fields
+            ):
+                raise ValueError("confirmation recovery changes the frozen confirmation contract")
+            original_metadata = original_unit.get("metadata") or {}
+            recovery_metadata = unit.get("metadata") or {}
+            if any(recovery_metadata.get(key) != value for key, value in original_metadata.items()):
+                raise ValueError("confirmation recovery changes the frozen confirmation contract")
+            seeds = unit.get("rollout_seeds")
+            if (
+                not isinstance(seeds, list)
+                or not seeds
+                or not set(seeds).issubset(set(original_unit["rollout_seeds"]))
+            ):
+                raise ValueError("confirmation recovery seeds are outside the frozen confirmation")
+            unit_id = str(unit.get("run_unit_id") or "")
+            key = (spec_id, unit_id)
+            if not unit_id or key in indexed_units:
+                raise ValueError("confirmation recovery unit identities must be unique")
+            indexed_units[key] = unit
+    return specs, indexed_units
 
 
 def build_scoring_run_spec(
@@ -407,6 +502,7 @@ def build_scoring_run_spec(
     wall_time = int(panel.get("wall_time_seconds") or default_wall_time)
     selected = repair_policy["selected_policy"]
     confirmation_failure_action = _confirmation_failure_action(methodology)
+    quota_safety_max_output_tokens = agent_policy["canonical"].get("max_output_tokens")
 
     units = []
     for role, model_id in sorted(roles.items()):
@@ -440,6 +536,21 @@ def build_scoring_run_spec(
                 accounting["reference_anchor_replacement_cost_usd"] = float(
                     replacement["replacement_cost_usd"]
                 )
+            metadata = {
+                "phase": "candidate_scoring",
+                "cohort": "candidate_panel",
+                "model_role": role,
+                "require_canonical_spend": True,
+                "repair_policy_sha256": repair_policy["repair_policy_sha256"],
+                "replacement_costs_sha256": replacement_costs[
+                    "replacement_costs_sha256"
+                ],
+                "anchor_confirmation_status": confirmation_status,
+            }
+            if isinstance(quota_safety_max_output_tokens, int):
+                metadata["quota_safety_max_output_tokens"] = (
+                    quota_safety_max_output_tokens
+                )
             units.append(
                 {
                     "run_unit_id": f"score-{role}-{task_id}",
@@ -456,17 +567,7 @@ def build_scoring_run_spec(
                         "wall_time_seconds": wall_time,
                     },
                     "accounting": accounting,
-                    "metadata": {
-                        "phase": "candidate_scoring",
-                        "cohort": "candidate_panel",
-                        "model_role": role,
-                        "require_canonical_spend": True,
-                        "repair_policy_sha256": repair_policy["repair_policy_sha256"],
-                        "replacement_costs_sha256": replacement_costs[
-                            "replacement_costs_sha256"
-                        ],
-                        "anchor_confirmation_status": confirmation_status,
-                    },
+                    "metadata": metadata,
                 }
             )
     spec = {

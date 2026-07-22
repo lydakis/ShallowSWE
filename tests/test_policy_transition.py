@@ -20,7 +20,7 @@ from shallowswe.policy_transition import (
     write_json_artifact,
 )
 from shallowswe.results import repair_loop_from_mapping
-from shallowswe.run_spec import validate_run_spec
+from shallowswe.run_spec import run_spec_sha256, validate_run_spec
 
 
 class PolicyTransitionTests(unittest.TestCase):
@@ -209,6 +209,90 @@ class PolicyTransitionTests(unittest.TestCase):
             self.confirmation_spec["run_spec_sha256"],
         )
         self.assertTrue(artifact["replacement_costs_sha256"].startswith("sha256:"))
+
+    def test_accepts_exact_targeted_confirmation_recovery_without_rewriting_identity(self) -> None:
+        recovery_spec = deepcopy(self.confirmation_spec)
+        original_unit = next(
+            unit for unit in recovery_spec["units"] if unit["task_ids"] == ["task-b"]
+        )
+        original_unit["run_unit_id"] = "anchor-confirmation-task-b-recovery-4007"
+        original_unit["kaggle_task_name"] = "confirm-task-b-recovery-4007"
+        original_unit["rollout_seeds"] = [4007]
+        original_unit["metadata"] = {
+            **original_unit["metadata"],
+            "supersedes_run_spec_id": "confirmation-v1",
+            "supersedes_seed": 4007,
+        }
+        recovery_spec["run_spec_id"] = "confirmation-recovery-v1"
+        recovery_spec["units"] = [original_unit]
+        recovery_spec["run_spec_sha256"] = run_spec_sha256(recovery_spec)
+        validate_run_spec(recovery_spec)
+
+        rows = []
+        for task_id, budget in (("task-a", 0.05), ("task-b", 0.10)):
+            for attempt in range(8):
+                row = _confirmation_row(
+                    task_id=task_id,
+                    loop=4000 + attempt,
+                    passed=True,
+                    spend=0.02 if task_id == "task-a" else 0.04,
+                    budget=budget,
+                    anchor_id=self.anchor_id,
+                    policy_id=self.policy_id,
+                    repair_policy_hash=str(self.repair_policy["repair_policy_sha256"]),
+                )
+                if task_id == "task-b" and attempt == 7:
+                    row = replace(
+                        row,
+                        run_spec_id="confirmation-recovery-v1",
+                        run_unit_id="anchor-confirmation-task-b-recovery-4007",
+                    )
+                rows.append(row)
+
+        artifact = build_anchor_replacement_costs(
+            rows,
+            self.repair_policy,
+            self.methodology,
+            base_run_spec=self.base_spec,
+            confirmation_run_spec=self.confirmation_spec,
+            confirmation_recovery_run_specs=[recovery_spec],
+        )
+
+        self.assertEqual(
+            artifact["confirmation_recovery_run_specs"],
+            [
+                {
+                    "run_spec_id": "confirmation-recovery-v1",
+                    "run_spec_sha256": recovery_spec["run_spec_sha256"],
+                }
+            ],
+        )
+        task_b = next(row for row in artifact["tasks"] if row["task_id"] == "task-b")
+        self.assertEqual(task_b["attempts"], 8)
+        self.assertEqual(task_b["successes"], 8)
+        self.assertAlmostEqual(task_b["replacement_cost_usd"], 0.04)
+
+    def test_rejects_targeted_recovery_that_changes_the_frozen_limits(self) -> None:
+        recovery_spec = deepcopy(self.confirmation_spec)
+        recovery_unit = next(
+            unit for unit in recovery_spec["units"] if unit["task_ids"] == ["task-b"]
+        )
+        recovery_unit["run_unit_id"] = "anchor-confirmation-task-b-recovery-4007"
+        recovery_unit["rollout_seeds"] = [4007]
+        recovery_unit["limits"]["wall_time_seconds"] = 3600
+        recovery_spec["run_spec_id"] = "confirmation-recovery-v1"
+        recovery_spec["units"] = [recovery_unit]
+        recovery_spec["run_spec_sha256"] = run_spec_sha256(recovery_spec)
+
+        with self.assertRaisesRegex(ValueError, "changes the frozen confirmation contract"):
+            build_anchor_replacement_costs(
+                [],
+                self.repair_policy,
+                self.methodology,
+                base_run_spec=self.base_spec,
+                confirmation_run_spec=self.confirmation_spec,
+                confirmation_recovery_run_specs=[recovery_spec],
+            )
 
     def test_rejects_rows_outside_the_exact_confirmation_run_spec(self) -> None:
         rows = [
@@ -478,6 +562,41 @@ class PolicyTransitionTests(unittest.TestCase):
         self.assertEqual(
             task_b_units[0]["metadata"]["anchor_confirmation_status"],
             "confirmation_failed",
+        )
+        self.assertNotIn(
+            "quota_safety_max_output_tokens",
+            task_b_units[0]["metadata"],
+        )
+
+    def test_scoring_units_record_capped_agent_output_limit(self) -> None:
+        base_spec = deepcopy(self.base_spec)
+        policy = base_spec["agent_policies"][0]["canonical"]
+        policy["max_output_tokens"] = 16_384
+        policy["output_token_policy"] = "explicit_kaggle_quota_safety_cap"
+        capped_policy_id = agent_policy_id(policy)
+        base_spec["agent_policies"][0]["agent_policy_id"] = capped_policy_id
+        base_spec["units"][0]["agent_policy_id"] = capped_policy_id
+        replacement_costs = self._replacement_costs()
+        replacement_costs["confirmation_agent_policy_id"] = capped_policy_id
+        replacement_costs["replacement_costs_sha256"] = _content_hash(
+            replacement_costs,
+            hash_field="replacement_costs_sha256",
+        )
+
+        spec = build_scoring_run_spec(
+            base_spec,
+            self._panel([5000, 5001, 5002]),
+            self.repair_policy,
+            replacement_costs,
+            self.methodology,
+        )
+
+        self.assertTrue(spec["units"])
+        self.assertTrue(
+            all(
+                unit["metadata"]["quota_safety_max_output_tokens"] == 16_384
+                for unit in spec["units"]
+            )
         )
 
     def test_json_artifacts_are_written_atomically_enough_for_manual_pipeline(self) -> None:
