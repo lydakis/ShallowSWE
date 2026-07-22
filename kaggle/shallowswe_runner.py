@@ -219,7 +219,7 @@ RESULTS_ROOT.mkdir(parents=True, exist_ok=True)
 
 
 @contextmanager
-def _kaggle_iopub_heartbeat(interval_seconds: float = 2.0):
+def _kaggle_iopub_heartbeat(output_stream, interval_seconds: float = 2.0):
     """Keep Kaggle's papermill IOPub watchdog alive during quiet agent work."""
     stop = threading.Event()
     started = time.monotonic()
@@ -234,14 +234,14 @@ def _kaggle_iopub_heartbeat(interval_seconds: float = 2.0):
                     },
                     sort_keys=True,
                 ),
-                file=sys.__stdout__,
+                file=output_stream,
                 flush=True,
             )
 
     thread = threading.Thread(target=emit, name="shallowswe-kaggle-heartbeat", daemon=True)
     print(
         json.dumps({"event": "shallowswe_kaggle_heartbeat_started"}, sort_keys=True),
-        file=sys.__stdout__,
+        file=output_stream,
         flush=True,
     )
     thread.start()
@@ -252,7 +252,7 @@ def _kaggle_iopub_heartbeat(interval_seconds: float = 2.0):
         thread.join(timeout=interval_seconds + 1.0)
         print(
             json.dumps({"event": "shallowswe_kaggle_heartbeat_stopped"}, sort_keys=True),
-            file=sys.__stdout__,
+            file=output_stream,
             flush=True,
         )
 
@@ -471,7 +471,11 @@ if os.environ.get("KAGGLE_KERNEL_RUN_TYPE"):
         )
     )
     evaluation_log_path.parent.mkdir(parents=True, exist_ok=True)
-    with _kaggle_iopub_heartbeat():
+    # Capture the IPython IOPub stream before redirecting verbose evaluation
+    # output. ``sys.__stdout__`` bypasses the notebook channel, so Papermill can
+    # time out even while the process is actively writing heartbeat lines.
+    iopub_stream = sys.stdout
+    with _kaggle_iopub_heartbeat(iopub_stream):
         with evaluation_log_path.open("a", buffering=1) as evaluation_log:
             with redirect_stdout(evaluation_log), redirect_stderr(evaluation_log):
                 with kbench.client.enable_cache():

@@ -73,11 +73,16 @@ def model_kwargs_for_proxy(
     *,
     proxy_api: str | None = None,
 ) -> dict[str, Any]:
-    """Translate the common output-token cap to the selected provider-native API."""
+    """Keep kwargs in the common form accepted by Kaggle's benchmark actor.
+
+    Kaggle routes both OpenAI and Google benchmark chats through its ``LLMChat``
+    compatibility layer. That layer accepts ``max_tokens`` and performs any
+    provider-specific translation itself. Passing the Google SDK spelling
+    ``max_output_tokens`` leaks through to its OpenAI-compatible chat client and
+    fails before inference.
+    """
     normalized = dict(model_kwargs)
-    selected_api = proxy_api or model_proxy_api(model_name)
-    if selected_api == "genai" and "max_tokens" in normalized:
-        normalized.setdefault("max_output_tokens", normalized.pop("max_tokens"))
+    del model_name, proxy_api
     return normalized
 
 
@@ -225,15 +230,13 @@ class KaggleBenchmarksModel:
             multimodal_regex=self.config.multimodal_regex,
         )
         for index, action in enumerate(actions):
-            output = (
-                outputs[index]
-                if index < len(outputs)
-                else {
-                    "returncode": -1,
-                    "output": "",
-                    "exception_info": "action was not executed",
-                }
-            )
+            # Kaggle's chat actor serializes ToolInvocationResult.output directly
+            # into the next provider request. Send the already-rendered observation,
+            # not the raw environment result: the latter can contain tens of
+            # megabytes even though mini-swe-agent correctly elides it for the
+            # trajectory. Keeping these two views aligned also prevents a provider
+            # request from exceeding Kaggle's per-input-part limit.
+            output = rendered[index].get("content", "")
             actors.Tool(name="bash").send(
                 ToolInvocationResult(
                     name="bash",

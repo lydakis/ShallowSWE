@@ -123,12 +123,17 @@ class KaggleRuntimeTests(unittest.TestCase):
     def test_runner_keeps_kaggle_iopub_alive_during_quiet_evaluation(self) -> None:
         source = Path("kaggle/shallowswe_runner.py").read_text()
 
-        heartbeat = source.index("with _kaggle_iopub_heartbeat():")
+        capture = source.index("iopub_stream = sys.stdout")
+        heartbeat = source.index("with _kaggle_iopub_heartbeat(iopub_stream):")
+        redirect = source.index("with redirect_stdout(evaluation_log), redirect_stderr")
         evaluation = source.index("SHALLOWSWE_RUNS = shallowswe_repair_loop.evaluate(")
 
-        self.assertLess(heartbeat, evaluation)
+        self.assertLess(capture, heartbeat)
+        self.assertLess(heartbeat, redirect)
+        self.assertLess(redirect, evaluation)
         self.assertIn("interval_seconds: float = 2.0", source)
-        self.assertIn("file=sys.__stdout__", source)
+        self.assertIn("file=output_stream", source)
+        self.assertNotIn("file=sys.__stdout__", source)
         self.assertIn("shallowswe_kaggle_heartbeat", source)
 
     def test_runner_removes_ephemeral_workspace_after_persisting_result(self) -> None:
@@ -201,7 +206,7 @@ class KaggleRuntimeTests(unittest.TestCase):
             model_kwargs_for_proxy(
                 "google/gemini-3.5-flash", {"max_tokens": 256, "top_p": 0.9}
             ),
-            {"max_output_tokens": 256, "top_p": 0.9},
+            {"max_tokens": 256, "top_p": 0.9},
         )
         self.assertEqual(
             model_kwargs_for_proxy(
@@ -209,18 +214,23 @@ class KaggleRuntimeTests(unittest.TestCase):
                 {"max_tokens": 256},
                 proxy_api="genai",
             ),
-            {"max_output_tokens": 256},
+            {"max_tokens": 256},
         )
 
     def test_model_adapter_uses_explicit_proxy_api_for_unqualified_kaggle_name(self) -> None:
         model = KaggleBenchmarksModel(
-            llm=_ScriptedLLM([]),
+            llm=_ScriptedLLM(["true"]),
             model_name="gemini-3.5-flash",
             proxy_api="genai",
             model_kwargs={"max_tokens": 256},
         )
 
-        self.assertEqual(model.config.model_kwargs, {"max_output_tokens": 256})
+        self.assertEqual(model.config.model_kwargs, {"max_tokens": 256})
+
+        model.query([{"role": "user", "content": "inspect"}])
+
+        self.assertEqual(model.llm.seen_kwargs[0]["max_tokens"], 256)
+        self.assertNotIn("max_output_tokens", model.llm.seen_kwargs[0])
 
     def test_model_adapter_runs_and_resumes_the_same_mini_swe_agent(self) -> None:
         with TemporaryDirectory() as tmp:
@@ -280,6 +290,29 @@ class KaggleRuntimeTests(unittest.TestCase):
             self.assertEqual(usage["output_tokens"], 20)
             self.assertAlmostEqual(usage["gateway_reported_cost_usd"], 0.012)
             self.assertAlmostEqual(agent.cost, 0.008)
+
+    def test_model_adapter_sends_elided_tool_output_to_kaggle_chat(self) -> None:
+        llm = _ScriptedLLM(["produce-large-output"])
+        model = KaggleBenchmarksModel(llm=llm, model_name="test/model")
+
+        with kbench.chats.new("large-tool-output") as chat:
+            response = model.query([{"role": "user", "content": "inspect"}])
+            rendered = model.format_observation_messages(
+                response,
+                [
+                    {
+                        "output": "x" * 29_340_273,
+                        "returncode": 0,
+                        "exception_info": "",
+                    }
+                ],
+            )
+
+        tool_messages = [message for message in chat.messages if message.sender.role == "tool"]
+        self.assertEqual(len(tool_messages), 1)
+        self.assertLess(len(tool_messages[0].text), 11_000)
+        self.assertEqual(tool_messages[0].content.output, rendered[0]["content"])
+        self.assertIn('"elided_chars": 29330273', tool_messages[0].content.output)
 
     def test_chroot_command_drops_privileges_and_inherits_network_filter(self) -> None:
         with TemporaryDirectory() as tmp:
